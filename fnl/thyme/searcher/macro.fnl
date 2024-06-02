@@ -27,7 +27,6 @@
       (true result)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)]
         (set compiler-options.env ?env)
-        ;; Note: Make sure to pop callstack before logging.
         (when-not (= fnl-path backup-path)
           (MacroBackupManager:backup-module! module-name fnl-path))
         #result)
