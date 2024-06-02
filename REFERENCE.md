@@ -2,6 +2,18 @@
 
 TODO
 
+## Terminology
+
+### Pool
+
+To prevent SSD from wearing out, `nvim-thyme` tries to delete and create files
+_as few times_ as possible; instead, it tries to hide possibly outdated files
+to the `pool` directory, and restore from the `pool` when the contents to be
+written are the same as the corresponding files in the `pool`.
+
+The `pool` directory is in `(.. (vim.fn.stdpath :state) "/thyme/pool")`:\
+Try `:Fnl (vim.cmd.edit (.. (vim.fn.stdpath :state) "/thyme/pool")`.
+
 ## Options for `.nvim-thyme.fnl`
 
 ### compiler-options
