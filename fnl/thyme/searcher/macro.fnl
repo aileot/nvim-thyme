@@ -1,6 +1,6 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local BackupManager (require :thyme.backup-manager))
+(local BackupManager (require :thyme.utils.backup-manager))
 (local MacroBackupManager (BackupManager.new :macro))
 
 (local {: file-readable?} (require :thyme.utils.fs))
