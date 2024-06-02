@@ -72,7 +72,7 @@ ModuleMap["get-lua-path"] = function(self)
   return self["_entry-map"]["lua-path"]
 end
 ModuleMap["macro?"] = function(self)
-  return self["_entry-map"]["macro?"]
+  return (self["_entry-map"] and self["_entry-map"]["macro?"])
 end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dep-map"]
