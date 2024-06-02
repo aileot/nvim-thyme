@@ -4,6 +4,8 @@
 (local ModuleMap (require :thyme.module-map.unit))
 
 (local {: delete-log-file!} (require :thyme.utils.fs))
+(local {: each-file} (require :thyme.utils.iterator))
+(local {: hide-file!} (require :thyme.utils.pool))
 (local {: state-prefix} (require :thyme.const))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
@@ -78,10 +80,8 @@
 
 (fn clear-dependency-log-files! []
   "Clear all the dependency log files managed by nvim-thyme."
-  (let [modmap-dir modmap-prefix]
-    (each [log-file _ (vim.fs.dir modmap-dir)]
-      (let [path (Path.join modmap-dir log-file)]
-        (delete-log-file! path)))))
+  ;; Note: hide-dir! instead also move modmap dir wastefully.
+  (each-file hide-file! modmap-prefix))
 
 {: log-module-map!
  : fnl-path->entry-map
