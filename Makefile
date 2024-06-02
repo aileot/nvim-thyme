@@ -18,8 +18,6 @@ REPO_ROOT:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 TEST_ROOT:=$(REPO_ROOT)/test
 SPEC_ROOT:=$(TEST_ROOT)
 
-TEST_DEPS:=$(TEST_ROOT)/.test-deps
-
 FNL_SPECS:=$(wildcard $(SPEC_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
 
