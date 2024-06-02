@@ -3,7 +3,6 @@
 (local Path (require :thyme.utils.path))
 (local ModuleMap (require :thyme.module-map.unit))
 
-(local {: delete-log-file!} (require :thyme.utils.fs))
 (local {: each-file} (require :thyme.utils.iterator))
 (local {: hide-file!} (require :thyme.utils.pool))
 (local {: state-prefix} (require :thyme.const))
