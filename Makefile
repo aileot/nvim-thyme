@@ -8,7 +8,8 @@ MAKEFLAGS += --warn-undefined-variables
 FENNEL ?= fennel
 VUSTED ?= vusted
 
-FNL_FLAGS ?= --correlate
+# Note: The --correlate flag is likely to cause conflicts.
+FNL_FLAGS ?=
 FNL_EXTRA_FLAGS ?=
 
 VUSTED_FLAGS ?= --shuffle --output=utfTerminal
