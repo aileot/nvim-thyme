@@ -1,5 +1,7 @@
 (import-macros {: when-not : inc : dec} :thyme.macros)
 
+(local Path (require :thyme.utils.path))
+
 (fn ipairs-reverse [seq]
   "`ipairs` but in reverse order.
 @param seq sequence
@@ -81,6 +83,14 @@ iterator is only for plain text.
         :directory (each-file call full-path)
         :link (call full-path)
         else (error (.. "expected :file or :directory, got " else))))))
+
+(fn each-dir [call dir-path]
+  "Iterate over directories, from children to parent, and execute `call`."
+  (each [relative-path fs-type (vim.fs.dir dir-path {:depth math.huge})]
+    (let [full-path (Path.join dir-path relative-path)]
+      (when (= fs-type :directory)
+        (each-dir call full-path)
+        (call full-path)))))
 
 (fn double-quoted-or-else [text]
   "Split `text` at `double-quoted string` or anything else. Use it like
@@ -182,6 +192,7 @@ When f returns a truthy value, recursively walks the children."
  : gsplit
  : pairs-from-longer-key
  : each-file
+ : each-dir
  : double-quoted-or-else
  : string-or-else
  : walk-tree}
