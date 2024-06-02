@@ -4,7 +4,8 @@
  local Path = require("thyme.utils.path")
 
  local _local_1_ = require("thyme.const") local lua_cache_prefix = _local_1_["lua-cache-prefix"]
- local _local_2_ = require("thyme.module-map.logger") local clear_dependency_log_files_21 = _local_2_["clear-dependency-log-files!"]
+ local _local_2_ = require("thyme.utils.pool") local hide_dir_21 = _local_2_["hide-dir!"]
+ local _local_3_ = require("thyme.module-map.logger") local clear_dependency_log_files_21 = _local_3_["clear-dependency-log-files!"]
 
  local function module_name__3elua_path(module_name)
 
@@ -18,16 +19,10 @@
 
  local function delete_cache_files_21()
 
-
-
-
- local _3_ = vim.fn.delete(lua_cache_prefix, "rf") if (_3_ == 0) then
-
- clear_dependency_log_files_21() return 0 else local _ = _3_ return -1 end end
-
+ hide_dir_21(lua_cache_prefix)
+ return clear_dependency_log_files_21() end
 
  local function clear_cache_21(_3fopts)
-
 
 
 
@@ -36,13 +31,12 @@
 
  if (false == opts.prompt) then
  _3fidx = idx_yes else _3fidx = nil end
- local _6_ = (_3fidx or vim.fn.confirm(("Remove cache files under %s?"):format(path), "&No\n&yes", 1, "Warning")) if (_6_ == idx_yes) then
+ local _5_ = (_3fidx or vim.fn.confirm(("Remove cache files under %s?"):format(path), "&No\n&yes", 1, "Warning")) if (_5_ == idx_yes) then
 
 
- if (0 == delete_cache_files_21()) then
- return vim.notify(("Cleared cache: " .. path)) else
- return vim.notify(("Failed to clear cache " .. path), vim.log.levels.ERROR) end else local _ = _6_
 
+ delete_cache_files_21()
+ return vim.notify(("Cleared cache: " .. path)) else local _ = _5_
  return vim.notify(("Abort. " .. path .. " is already cleared.")) end end
 
  return {["module-name->lua-path"] = module_name__3elua_path, ["clear-cache!"] = clear_cache_21}
