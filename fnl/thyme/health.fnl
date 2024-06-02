@@ -1,7 +1,12 @@
 (local fennel (require :fennel))
 
 (local {: get-main-config} (require :thyme.config))
+(local {: each-file} (require :thyme.utils.iterator))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
+(local {: macro-recorded? : peek-module-name : peek-fnl-path}
+       (require :thyme.module-map.format))
+
+(local {:get-root get-module-map-root} (require :thyme.module-map.unit))
 
 (local (report-start report-info report-ok report-warn report-error)
        (let [health vim.health]
@@ -45,8 +50,25 @@
   (report-info "WIP: The root path of module-mapping: ")
   (report-info "WIP: The root path of pool: "))
 
+(fn report-imported-macros []
+  (report-start "Thyme Imported Macros")
+  (let [root (get-module-map-root)
+        reporter (fn [log-path]
+                   (when (macro-recorded? log-path)
+                     (let [module-name (peek-module-name log-path)
+                           fnl-path (peek-fnl-path log-path)
+                           msg (: "%s
+- source file:
+  %s
+- dependency-map file:
+  %s" :format
+                                  module-name fnl-path log-path)]
+                       (report-info msg))))]
+    (each-file reporter root)))
+
 {:check (fn []
           (report-integrations)
           (report-thyme-config)
           (report-fennel-paths)
-          (report-thyme-disk-info))}
+          (report-thyme-disk-info)
+          (report-imported-macros))}
