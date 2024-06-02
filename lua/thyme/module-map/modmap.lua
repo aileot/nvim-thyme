@@ -9,7 +9,7 @@
 
  local _local_3_ = require("thyme.const") local state_prefix = _local_3_["state-prefix"]
 
- local _local_4_ = require("thyme.pool") local hide_file_21 = _local_4_["hide-file!"] local restore_file_21 = _local_4_["restore-file!"]
+ local _local_4_ = require("thyme.utils.pool") local hide_file_21 = _local_4_["hide-file!"] local restore_file_21 = _local_4_["restore-file!"]
 
  local _local_5_ = require("thyme.module-map.format") local modmap__3eline = _local_5_["modmap->line"] local read_module_map_file = _local_5_["read-module-map-file"]
 
