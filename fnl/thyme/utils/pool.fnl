@@ -4,6 +4,7 @@
 (local fs (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
+(local {: each-file} (require :thyme.utils.iterator))
 
 (local pool-prefix (Path.join state-prefix :pool))
 
@@ -21,4 +22,7 @@
 (fn copy-file! [path]
   (fs.copyfile path (path->pool-path path)))
 
-{: hide-file! : restore-file! : copy-file!}
+(fn hide-dir! [dir-path]
+  (each-file hide-file! dir-path))
+
+{: hide-file! : restore-file! : copy-file! : hide-dir!}
