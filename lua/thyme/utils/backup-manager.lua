@@ -26,6 +26,6 @@ end
 BackupManager["backup-module!"] = function(self, module_name, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
   local backup_path = self["module-name->backup-path"](self, module_name)
-  return fs.copyfile(path, backup_path)
+  return assert(fs.copyfile(path, backup_path))
 end
 return BackupManager
