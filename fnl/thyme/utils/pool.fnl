@@ -1,7 +1,7 @@
 (local {: state-prefix} (require :thyme.const))
 
 (local Path (require :thyme.utils.path))
-(local fs (require :thyme.utils.fs))
+(local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
 (local {: each-file : each-dir} (require :thyme.utils.iterator))
@@ -26,4 +26,13 @@
   (each-file hide-file! dir-path)
   (each-dir hide-file! dir-path))
 
-{: hide-file! : restore-file! : copy-file! : hide-dir!}
+(fn can-restore-file? [path expected-contents]
+  "Check if `expected-contents` is stored in pool-path of `path`.
+@param path string
+@param expected-contents string
+@return boolean"
+  (let [pool-path (path->pool-path path)]
+    (and (file-readable? pool-path) ;
+         (= expected-contents (read-file pool-path)))))
+
+{: hide-file! : restore-file! : copy-file! : hide-dir! : can-restore-file?}
