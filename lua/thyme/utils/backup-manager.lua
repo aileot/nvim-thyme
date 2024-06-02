@@ -1,6 +1,7 @@
 local Path = require("thyme.utils.path")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
+local read_file = _local_1_["read-file"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
 local state_prefix = _local_2_["state-prefix"]
@@ -16,6 +17,11 @@ BackupManager.new = function(label)
 end
 BackupManager["module-name->backup-path"] = function(self, module_name)
   return Path.join(self.root, module_name)
+end
+BackupManager["should-backup-module?"] = function(self, module_name, expected_contents)
+  assert(not file_readable_3f(module_name), ("expected module-name, got path " .. module_name))
+  local backup_path = self["module-name->backup-path"](self, module_name)
+  return (file_readable_3f(backup_path) and (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
 BackupManager["backup-module!"] = function(self, module_name, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
