@@ -11,18 +11,28 @@
 (vim.fn.mkdir pool-prefix :p)
 
 (fn path->pool-path [path]
+  "Determine the unique pool-path for `path`.
+@param path string
+@return string"
   (Path.join pool-prefix (uri-encode path)))
 
 (fn hide-file! [path]
+  "Move `path` to its own pool-path.
+@param path string"
   (fs.rename path (path->pool-path path)))
 
 (fn restore-file! [path]
+  "Move back `path` from its own pool-path.
+@param path string"
   (fs.rename (path->pool-path path) path))
 
 (fn copy-file! [path]
   (fs.copyfile path (path->pool-path path)))
 
 (fn hide-dir! [dir-path]
+  "Move `dir-path` and its children (files, directories, links) to their
+pool-paths respectively.
+@param dir-path string"
   (each-file hide-file! dir-path)
   (each-dir hide-file! dir-path))
 

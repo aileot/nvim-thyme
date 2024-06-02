@@ -11,22 +11,36 @@
  vim.fn.mkdir(pool_prefix, "p")
 
  local function path__3epool_path(path)
+
+
+
  return Path.join(pool_prefix, uri_encode(path)) end
 
  local function hide_file_21(path)
+
+
  return fs.rename(path, path__3epool_path(path)) end
 
  local function restore_file_21(path)
+
+
  return fs.rename(path__3epool_path(path), path) end
 
  local function copy_file_21(path)
  return fs.copyfile(path, path__3epool_path(path)) end
 
  local function hide_dir_21(dir_path)
+
+
+
  each_file(hide_file_21, dir_path)
  return each_dir(hide_file_21, dir_path) end
 
  local function can_restore_file_3f(path, expected_contents)
+
+
+
+
  local pool_path = path__3epool_path(path)
  return (file_readable_3f(pool_path) and (expected_contents == read_file(pool_path))) end
 
