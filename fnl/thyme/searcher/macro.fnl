@@ -1,6 +1,7 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local ModuleMap (require :thyme.module-map.callstack))
+(local {: pcall-with-logger! : is-logged? : log-again!}
+       (require :thyme.module-map.callstack))
 
 (local BackupManager (require :thyme.backup-manager))
 (local MacroBackupManager (BackupManager.new :macro))
@@ -22,8 +23,8 @@
     ;; macro definitions depend. Note that, for macro modules, either
     ;; "compilerEnv" or "compiler-env" should be used instead of "env" field.
     (set compiler-options.env :_COMPILER)
-    (case (ModuleMap.pcall-with-logger! fennel.eval fnl-path nil
-                                        compiler-options module-name)
+    (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
+                              module-name)
       (true result)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)]
         (set compiler-options.env ?env)
@@ -81,7 +82,7 @@ thyme-macro-searcher: %s is found for the macro module %s, but failed to evaluat
                    ;; to fennel.macro-loaded.
                    ;; Note: The value at fennel.macro-loaded cannot be reset
                    ;; in __index.
-                   (if (ModuleMap.is-logged? module-name)
+                   (if (is-logged? module-name)
                        (do
                          (rawset self module-name nil)
                          (tset cache-table module-name val))
@@ -90,7 +91,7 @@ thyme-macro-searcher: %s is found for the macro module %s, but failed to evaluat
                 ;; Note: __index runs after __newindex runs.
                 (case (. cache-table module-name)
                   cached (do
-                           (ModuleMap.log-again! module-name)
+                           (log-again! module-name)
                            cached)))}))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
