@@ -15,6 +15,7 @@ local _local_5_ = require("thyme.module-map.format")
 local modmap__3eline = _local_5_["modmap->line"]
 local read_module_map_file = _local_5_["read-module-map-file"]
 local modmap_prefix = Path.join(state_prefix, "modmap")
+vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
 ModuleMap.__index = ModuleMap
 local function fnl_path__3elog_path(dependency_fnl_path)
@@ -72,7 +73,7 @@ ModuleMap["get-lua-path"] = function(self)
   return self["_entry-map"]["lua-path"]
 end
 ModuleMap["macro?"] = function(self)
-  return self["_entry-map"]["macro?"]
+  return (self["_entry-map"] and self["_entry-map"]["macro?"])
 end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dep-map"]

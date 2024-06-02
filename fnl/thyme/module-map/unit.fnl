@@ -17,6 +17,8 @@
 
 (local modmap-prefix (Path.join state-prefix :modmap))
 
+(vim.fn.mkdir modmap-prefix :p)
+
 (local ModuleMap {})
 (set ModuleMap.__index ModuleMap)
 
@@ -81,7 +83,10 @@
   self._entry-map.lua-path)
 
 (fn ModuleMap.macro? [self]
-  self._entry-map.macro?)
+  ;; Note: It would be more complicated to prepare another dir for macro
+  ;; files; log-path could not be determined in "new" method on a simple
+  ;; logic.
+  (and self._entry-map self._entry-map.macro?))
 
 (fn ModuleMap.get-dependent-maps [self]
   self._dep-map)
