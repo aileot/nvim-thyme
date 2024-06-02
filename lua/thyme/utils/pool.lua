@@ -9,7 +9,6 @@ local _local_3_ = require("thyme.utils.uri")
 local uri_encode = _local_3_["uri-encode"]
 local _local_4_ = require("thyme.utils.iterator")
 local each_file = _local_4_["each-file"]
-local each_dir = _local_4_["each-dir"]
 local pool_prefix = Path.join(state_prefix, "pool")
 vim.fn.mkdir(pool_prefix, "p")
 local function path__3epool_path(path)
@@ -25,8 +24,7 @@ local function copy_file_21(path)
   return fs.copyfile(path, path__3epool_path(path))
 end
 local function hide_dir_21(dir_path)
-  each_file(hide_file_21, dir_path)
-  return hide_file_21(dir_path)
+  return each_file(hide_file_21, dir_path)
 end
 local function can_restore_file_3f(path, expected_contents)
   local pool_path = path__3epool_path(path)

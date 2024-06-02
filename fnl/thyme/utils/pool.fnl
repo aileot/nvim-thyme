@@ -4,7 +4,7 @@
 (local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
-(local {: each-file : each-dir} (require :thyme.utils.iterator))
+(local {: each-file} (require :thyme.utils.iterator))
 
 (local pool-prefix (Path.join state-prefix :pool))
 
@@ -30,11 +30,12 @@
   (fs.copyfile path (path->pool-path path)))
 
 (fn hide-dir! [dir-path]
-  "Move `dir-path` and its children (files, directories, links) to their
+  "Move `dir-path` and its children (either file or link) to their
 pool-paths respectively.
 @param dir-path string"
-  (each-file hide-file! dir-path)
-  (hide-file! dir-path))
+  ;; Note: Hiding directories only add extra management costs on restoring
+  ;; files later.
+  (each-file hide-file! dir-path))
 
 (fn can-restore-file? [path expected-contents]
   "Check if `expected-contents` is stored in pool-path of `path`.
