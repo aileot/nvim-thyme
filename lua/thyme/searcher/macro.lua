@@ -20,11 +20,11 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   if ((_4_ == true) and (nil ~= _5_)) then
     local result = _5_
     local backup_path = MacroBackupManager["module-name->backup-path"](MacroBackupManager, module_name)
-    compiler_options.env = _3fenv
     if ((fnl_path ~= backup_path) and MacroBackupManager["should-backup-module?"](MacroBackupManager, module_name, read_file(fnl_path))) then
       MacroBackupManager["backup-module!"](MacroBackupManager, module_name, fnl_path)
     else
     end
+    compiler_options.env = _3fenv
     local function _7_()
       return result
     end

@@ -26,11 +26,11 @@
                               module-name)
       (true result)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)]
-        (set compiler-options.env ?env)
         (when (and (not= fnl-path backup-path)
                    (MacroBackupManager:should-backup-module? module-name
                                                              (read-file fnl-path)))
           (MacroBackupManager:backup-module! module-name fnl-path))
+        (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
 thyme-macro-searcher: %s is found for the macro module %s, but failed to evaluate it in a compiler environment
