@@ -9,7 +9,8 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-(local {: hide-file! : restore-file!} (require :thyme.utils.pool))
+(local {: hide-file! : restore-file! : can-restore-file?}
+       (require :thyme.utils.pool))
 
 (local {: modmap->line : read-module-map-file}
        (require :thyme.module-map.format))
@@ -59,7 +60,9 @@
     (assert (not (file-readable? log-path))
             (.. "this method only expects an empty log file for the module "
                 module-name))
-    (write-log-file! log-path modmap-line)
+    (if (can-restore-file? log-path modmap-line)
+        (restore-file! log-path)
+        (write-log-file! log-path modmap-line))
     (set self._entry-map modmap)))
 
 (fn ModuleMap.get-log-path [self]
