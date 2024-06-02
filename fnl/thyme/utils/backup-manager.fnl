@@ -31,6 +31,7 @@
 @param path string"
   ;; Note: Saving a chunk of macro module is probably impossible.
   (assert (file-readable? path) (.. "expected readable file, got " path))
-  (fs.copyfile path (self:module-name->backup-path module-name)))
+  (let [backup-path (self:module-name->backup-path module-name)]
+    (fs.copyfile path backup-path)))
 
 BackupManager
