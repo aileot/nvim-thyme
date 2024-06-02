@@ -3,13 +3,19 @@
 ;; module. Load such modules inside the function after the check whether
 ;; loading module is "fennel" or not.
 ;; Note: This module is only for nvim main-config, never for project.
-(import-macros {: lazy-require-with-key} :thyme.macros)
+(import-macros {: require-with-key : lazy-require-with-key} :thyme.macros)
 
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
 
 (local M {:loader search-fnl-module-on-rtp!
           :view (lazy-require-with-key :thyme.wrapper.fennel :view)
           :eval (lazy-require-with-key :thyme.wrapper.fennel :eval)
+          :compile_file (fn [...]
+                          (let [key (if (select 3 ...) :compile-file!
+                                        :compile-file)]
+                            ((require-with-key :thyme.wrapper.fennel key) ...)))
+          :compile-file (lazy-require-with-key :thyme.wrapper.fennel
+                                               :compile-file)
           :compile-file! (lazy-require-with-key :thyme.wrapper.fennel
                                                 :compile-file!)
           :compile-string (lazy-require-with-key :thyme.wrapper.fennel
@@ -31,6 +37,7 @@
     (let [new-key (-> k
                       (: :gsub "!" "")
                       (: :gsub "%-" "_"))]
-      (tset M new-key v))))
+      (when (= nil (. M new-key))
+        (tset M new-key v)))))
 
 M
