@@ -1,5 +1,6 @@
 local _local_1_ = require("thyme.utils.fs")
 local read_file = _local_1_["read-file"]
+local assert_is_log_file = _local_1_["assert-is-log-file"]
 local _local_2_ = require("thyme.utils.iterator")
 local gsplit = _local_2_["gsplit"]
 local marker = {sep = "\t", macro = "\v", ["end"] = "\n"}
@@ -42,4 +43,52 @@ local function read_module_map_file(log_path)
   end
   return tbl_16_auto
 end
-return {["modmap->line"] = modmap__3eline, ["read-module-map-file"] = read_module_map_file}
+local function macro_recorded_3f(log_path)
+  assert_is_log_file(log_path)
+  local file = assert(io.open(log_path, "r"), ("failed to read " .. log_path))
+  local function close_handlers_12_auto(ok_13_auto, ...)
+    file:close()
+    if ok_13_auto then
+      return ...
+    else
+      return error(..., 0)
+    end
+  end
+  local function _11_()
+    return (nil ~= file:read("*l"):find(marker.macro, 1, true))
+  end
+  return close_handlers_12_auto(_G.xpcall(_11_, (package.loaded.fennel or debug).traceback))
+end
+local function peek_module_name(log_path)
+  assert_is_log_file(log_path)
+  local file = assert(io.open(log_path, "r"), ("failed to read " .. log_path))
+  local function close_handlers_12_auto(ok_13_auto, ...)
+    file:close()
+    if ok_13_auto then
+      return ...
+    else
+      return error(..., 0)
+    end
+  end
+  local function _13_()
+    return file:read("*l"):match(("^(.-)" .. marker.sep))
+  end
+  return close_handlers_12_auto(_G.xpcall(_13_, (package.loaded.fennel or debug).traceback))
+end
+local function peek_fnl_path(log_path)
+  assert_is_log_file(log_path)
+  local file = assert(io.open(log_path, "r"), ("failed to read " .. log_path))
+  local function close_handlers_12_auto(ok_13_auto, ...)
+    file:close()
+    if ok_13_auto then
+      return ...
+    else
+      return error(..., 0)
+    end
+  end
+  local function _15_()
+    return file:read("*l"):match(("^.-" .. marker.sep .. "(.-)" .. marker.sep))
+  end
+  return close_handlers_12_auto(_G.xpcall(_15_, (package.loaded.fennel or debug).traceback))
+end
+return {["modmap->line"] = modmap__3eline, ["read-module-map-file"] = read_module_map_file, ["macro-recorded?"] = macro_recorded_3f, ["peek-module-name"] = peek_module_name, ["peek-fnl-path"] = peek_fnl_path}
