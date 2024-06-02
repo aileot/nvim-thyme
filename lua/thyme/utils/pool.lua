@@ -42,7 +42,9 @@
 
 
  local pool_path = path__3epool_path(path)
- return (file_readable_3f(pool_path) and (expected_contents == read_file(pool_path))) end
+ return (file_readable_3f(pool_path) and (read_file(pool_path) == assert(expected_contents, "expected non empty string for `expected-contents`"))) end
+
+
 
 
  return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["copy-file!"] = copy_file_21, ["hide-dir!"] = hide_dir_21, ["can-restore-file?"] = can_restore_file_3f}

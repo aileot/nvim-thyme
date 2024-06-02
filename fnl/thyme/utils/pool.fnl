@@ -43,6 +43,8 @@ pool-paths respectively.
 @return boolean"
   (let [pool-path (path->pool-path path)]
     (and (file-readable? pool-path) ;
-         (= expected-contents (read-file pool-path)))))
+         (= (read-file pool-path)
+            (assert expected-contents
+                    "expected non empty string for `expected-contents`")))))
 
 {: hide-file! : restore-file! : copy-file! : hide-dir! : can-restore-file?}
