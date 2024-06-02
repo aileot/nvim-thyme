@@ -26,9 +26,6 @@
 @param path string"
   (assert (fs.rename (path->pool-path path) path)))
 
-(fn copy-file! [path]
-  (fs.copyfile path (path->pool-path path)))
-
 (fn hide-dir! [dir-path]
   "Move `dir-path` and its children (either file or link) to their
 pool-paths respectively.
@@ -48,4 +45,4 @@ pool-paths respectively.
             (assert expected-contents
                     "expected non empty string for `expected-contents`")))))
 
-{: hide-file! : restore-file! : copy-file! : hide-dir! : can-restore-file?}
+{: hide-file! : restore-file! : hide-dir! : can-restore-file?}
