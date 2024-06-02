@@ -138,7 +138,7 @@ thyme-loader: %s is found for the module %s, but failed to compile it
           (let [backup-path (ModuleBackupManager:module-name->backup-path module-name)
                 rollback? config.rollback]
             (if (and rollback? (file-readable? backup-path))
-                (let [msg (: "thyme-backup-loader: temporarily restore backup for the module %s due to the following error: %s"
+                (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
                              :format module-name error-msg)]
                   (vim.notify_once msg vim.log.levels.WARN)
                   (loadfile backup-path))

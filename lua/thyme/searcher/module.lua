@@ -174,7 +174,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then
-        local msg = ("thyme-backup-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
+        local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
         vim.notify_once(msg, vim.log.levels.WARN)
         return loadfile(backup_path)
       else
