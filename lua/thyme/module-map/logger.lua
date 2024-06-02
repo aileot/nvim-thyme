@@ -1,7 +1,7 @@
 
 
  local Path = require("thyme.utils.path")
- local ModuleMap = require("thyme.module-map.modmap")
+ local ModuleMap = require("thyme.module-map.unit")
 
  local _local_1_ = require("thyme.utils.fs") local delete_log_file_21 = _local_1_["delete-log-file!"]
  local _local_2_ = require("thyme.const") local state_prefix = _local_2_["state-prefix"]

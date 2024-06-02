@@ -1,7 +1,7 @@
 (import-macros {: when-not : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local ModuleMap (require :thyme.module-map.modmap))
+(local ModuleMap (require :thyme.module-map.unit))
 
 (local {: delete-log-file!} (require :thyme.utils.fs))
 (local {: state-prefix} (require :thyme.const))
