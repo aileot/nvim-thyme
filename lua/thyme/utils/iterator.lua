@@ -1,6 +1,6 @@
 
 
- local fs = require("thyme.utils.fs")
+ local Path = require("thyme.utils.path")
 
  local function ipairs_reverse(seq)
 
@@ -76,11 +76,12 @@
 
  local function each_file(call, dir_path)
 
- for path, fs_type in vim.fs.dir(dir_path, {depth = math.huge}) do
+ for relative_path, fs_type in vim.fs.dir(dir_path, {depth = math.huge}) do
+ local full_path = Path.join(dir_path, relative_path)
  if (fs_type == "file") then
- call(path) elseif (fs_type == "directory") then
- each_file(call, path) elseif (fs_type == "link") then
- call(path) elseif (nil ~= fs_type) then local _else = fs_type
+ call(full_path) elseif (fs_type == "directory") then
+ each_file(call, full_path) elseif (fs_type == "link") then
+ call(full_path) elseif (nil ~= fs_type) then local _else = fs_type
  error(("expected :file or :directory, got " .. _else)) else end end return nil end
 
  local function double_quoted_or_else(text) local pat_double_quoted = "^\".-[^\\]\"" local pat_empty_string = "^\"\"" local pat_else = "^[^\"]+"

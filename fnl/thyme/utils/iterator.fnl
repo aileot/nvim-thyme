@@ -74,12 +74,13 @@ iterator is only for plain text.
 
 (fn each-file [call dir-path]
   "Iterate over files and execute `call`. Directories are ignored."
-  (each [path fs-type (vim.fs.dir dir-path {:depth math.huge})]
-    (case fs-type
-      :file (call path)
-      :directory (each-file call path)
-      :link (call path)
-      else (error (.. "expected :file or :directory, got " else)))))
+  (each [relative-path fs-type (vim.fs.dir dir-path {:depth math.huge})]
+    (let [full-path (Path.join dir-path relative-path)]
+      (case fs-type
+        :file (call full-path)
+        :directory (each-file call full-path)
+        :link (call full-path)
+        else (error (.. "expected :file or :directory, got " else))))))
 
 (fn double-quoted-or-else [text]
   "Split `text` at `double-quoted string` or anything else. Use it like
