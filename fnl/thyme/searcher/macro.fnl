@@ -3,7 +3,7 @@
 (local BackupManager (require :thyme.utils.backup-manager))
 (local MacroBackupManager (BackupManager.new :macro))
 
-(local {: file-readable?} (require :thyme.utils.fs))
+(local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: pcall-with-logger! : is-logged? : log-again!}
        (require :thyme.module-map.callstack))
 
@@ -27,7 +27,9 @@
       (true result)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)]
         (set compiler-options.env ?env)
-        (when-not (= fnl-path backup-path)
+        (when (and (not= fnl-path backup-path)
+                   (MacroBackupManager:should-backup-module? module-name
+                                                             (read-file fnl-path)))
           (MacroBackupManager:backup-module! module-name fnl-path))
         #result)
       (_ msg) (let [msg-prefix (: "

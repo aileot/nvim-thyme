@@ -2,6 +2,7 @@ local BackupManager = require("thyme.utils.backup-manager")
 local MacroBackupManager = BackupManager.new("macro")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
+local read_file = _local_1_["read-file"]
 local _local_2_ = require("thyme.module-map.callstack")
 local pcall_with_logger_21 = _local_2_["pcall-with-logger!"]
 local is_logged_3f = _local_2_["is-logged?"]
@@ -20,7 +21,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     local result = _5_
     local backup_path = MacroBackupManager["module-name->backup-path"](MacroBackupManager, module_name)
     compiler_options.env = _3fenv
-    if not (fnl_path == backup_path) then
+    if ((fnl_path ~= backup_path) and MacroBackupManager["should-backup-module?"](MacroBackupManager, module_name, read_file(fnl_path))) then
       MacroBackupManager["backup-module!"](MacroBackupManager, module_name, fnl_path)
     else
     end
