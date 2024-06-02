@@ -78,6 +78,7 @@ iterator is only for plain text.
     (case fs-type
       :file (call path)
       :directory (each-file call path)
+      :link (call path)
       else (error (.. "expected :file or :directory, got " else)))))
 
 (fn double-quoted-or-else [text]
