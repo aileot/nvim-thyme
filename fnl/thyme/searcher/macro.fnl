@@ -1,12 +1,11 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local {: pcall-with-logger! : is-logged? : log-again!}
-       (require :thyme.module-map.callstack))
-
 (local BackupManager (require :thyme.backup-manager))
 (local MacroBackupManager (BackupManager.new :macro))
 
 (local {: file-readable?} (require :thyme.utils.fs))
+(local {: pcall-with-logger! : is-logged? : log-again!}
+       (require :thyme.module-map.callstack))
 
 (local cache {:macro-loaded {}})
 
