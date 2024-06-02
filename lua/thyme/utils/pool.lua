@@ -20,11 +20,11 @@ end
 local function restore_file_21(path)
   return assert(fs.rename(path__3epool_path(path), path))
 end
-local function hide_dir_21(dir_path)
+local function hide_files_in_dir_21(dir_path)
   return each_file(hide_file_21, dir_path)
 end
 local function can_restore_file_3f(path, expected_contents)
   local pool_path = path__3epool_path(path)
   return (file_readable_3f(pool_path) and (read_file(pool_path) == assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
-return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["hide-dir!"] = hide_dir_21, ["can-restore-file?"] = can_restore_file_3f}
+return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["hide-files-in-dir!"] = hide_files_in_dir_21, ["can-restore-file?"] = can_restore_file_3f}
