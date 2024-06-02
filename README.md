@@ -425,7 +425,7 @@ for performance as described in [Commands](#Commands) section above.
   - Define some `autocmd`s in your config or in .nvim.fnl.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
-  - Use git hooks. (The [.githooks](,/.githooks) is an WIP example. Help wanted.)
+  - Use git hooks. (The [.githooks](,/.githooks) is a WIP example. Help wanted.)
 
 ## Acknowledgement
 
