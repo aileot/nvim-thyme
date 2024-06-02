@@ -124,8 +124,10 @@ cache dir.
                                                    (do
                                                      (write-lua-file! lua-path
                                                                       lua-code)
-                                                     (ModuleBackupManager:backup-module! module-name
-                                                                                         lua-path)))
+                                                     (when (ModuleBackupManager:should-backup-module? module-name
+                                                                                                      lua-code)
+                                                       (ModuleBackupManager:backup-module! module-name
+                                                                                           lua-path))))
                                                (load lua-code lua-path))
                              (_ msg) (let [msg-prefix (: "
 thyme-loader: %s is found for the module %s, but failed to compile it

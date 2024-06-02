@@ -146,7 +146,10 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
             restore_file_21(lua_path)
           else
             write_lua_file_21(lua_path, lua_code)
-            ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+            if ModuleBackupManager["should-backup-module?"](ModuleBackupManager, module_name, lua_code) then
+              ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+            else
+            end
           end
           _22_, _23_ = load(lua_code, lua_path)
         elseif (true and (nil ~= _28_)) then
