@@ -9,7 +9,8 @@
 
  local _local_3_ = require("thyme.const") local state_prefix = _local_3_["state-prefix"]
 
- local _local_4_ = require("thyme.utils.pool") local hide_file_21 = _local_4_["hide-file!"] local restore_file_21 = _local_4_["restore-file!"]
+ local _local_4_ = require("thyme.utils.pool") local hide_file_21 = _local_4_["hide-file!"] local restore_file_21 = _local_4_["restore-file!"] local can_restore_file_3f = _local_4_["can-restore-file?"]
+
 
  local _local_5_ = require("thyme.module-map.format") local modmap__3eline = _local_5_["modmap->line"] local read_module_map_file = _local_5_["read-module-map-file"]
 
@@ -59,7 +60,9 @@
  assert(not file_readable_3f(log_path), ("this method only expects an empty log file for the module " .. module_name))
 
 
- write_log_file_21(log_path, modmap_line)
+ if can_restore_file_3f(log_path, modmap_line) then
+ restore_file_21(log_path) else
+ write_log_file_21(log_path, modmap_line) end
  self["_entry-map"] = modmap return nil end
 
  ModuleMap["get-log-path"] = function(self)
