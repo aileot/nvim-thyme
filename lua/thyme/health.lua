@@ -11,8 +11,8 @@ do
   end
 end
 local function report_thyme_config()
-  report_start("Thyme current config on .nvim-thyme.fnl")
-  return report_info(fennel.view(get_main_config()))
+  report_start("Thyme .nvim-thyme.fnl")
+  return report_info(("The current config:\n" .. fennel.view(get_main_config())))
 end
 local function report_fennel_paths()
   report_start("Thyme fennel.{path,macro-path}")

@@ -13,8 +13,8 @@
                      health.report_warn health.report_error))))
 
 (fn report-thyme-config []
-  (report-start "Thyme current config on .nvim-thyme.fnl")
-  (report-info (fennel.view (get-main-config))))
+  (report-start "Thyme .nvim-thyme.fnl")
+  (report-info (.. "The current config:\n" (fennel.view (get-main-config)))))
 
 (fn report-fennel-paths []
   (report-start "Thyme fennel.{path,macro-path}")
