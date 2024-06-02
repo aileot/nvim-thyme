@@ -34,7 +34,7 @@
 pool-paths respectively.
 @param dir-path string"
   (each-file hide-file! dir-path)
-  (each-dir hide-file! dir-path))
+  (hide-file! dir-path))
 
 (fn can-restore-file? [path expected-contents]
   "Check if `expected-contents` is stored in pool-path of `path`.

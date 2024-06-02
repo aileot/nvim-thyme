@@ -26,7 +26,7 @@ local function copy_file_21(path)
 end
 local function hide_dir_21(dir_path)
   each_file(hide_file_21, dir_path)
-  return each_dir(hide_file_21, dir_path)
+  return hide_file_21(dir_path)
 end
 local function can_restore_file_3f(path, expected_contents)
   local pool_path = path__3epool_path(path)
