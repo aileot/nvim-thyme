@@ -19,8 +19,16 @@ local function report_fennel_paths()
   report_info(("fennel.path:\n- " .. (fennel.path):gsub(";", "\n- ")))
   return report_info(("fennel.macro-path:\n- " .. (fennel["macro-path"]):gsub(";", "\n- ")))
 end
+local function report_thyme_disk_info()
+  report_start("Thyme Disk Info")
+  report_info("WIP: The root path of Lua cache: ")
+  report_info("WIP: The root path of backups for rollback: ")
+  report_info("WIP: The root path of module-mapping: ")
+  return report_info("WIP: The root path of pool: ")
+end
 local function _3_()
   report_thyme_config()
-  return report_fennel_paths()
+  report_fennel_paths()
+  return report_thyme_disk_info()
 end
 return {check = _3_}

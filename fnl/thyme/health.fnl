@@ -22,6 +22,15 @@
                    (fennel.path:gsub ";" "\n- ")))
   (report-info (.. "fennel.macro-path:\n- " (fennel.macro-path:gsub ";" "\n- "))))
 
+(fn report-thyme-disk-info []
+  (report-start "Thyme Disk Info")
+  ;; WIP: Import paths
+  (report-info "WIP: The root path of Lua cache: ")
+  (report-info "WIP: The root path of backups for rollback: ")
+  (report-info "WIP: The root path of module-mapping: ")
+  (report-info "WIP: The root path of pool: "))
+
 {:check (fn []
           (report-thyme-config)
-          (report-fennel-paths))}
+          (report-fennel-paths)
+          (report-thyme-disk-info))}
