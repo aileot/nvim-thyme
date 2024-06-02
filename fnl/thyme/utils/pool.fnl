@@ -19,19 +19,16 @@
 (fn hide-file! [path]
   "Move `path` to its own pool-path.
 @param path string"
-  (fs.rename path (path->pool-path path)))
+  (assert (fs.rename path (path->pool-path path))))
 
 (fn restore-file! [path]
   "Move back `path` from its own pool-path.
 @param path string"
-  (fs.rename (path->pool-path path) path))
+  (assert (fs.rename (path->pool-path path) path)))
 
-(fn copy-file! [path]
-  (fs.copyfile path (path->pool-path path)))
-
-(fn hide-dir! [dir-path]
-  "Move `dir-path` and its children (either file or link) to their
-pool-paths respectively.
+(fn hide-files-in-dir! [dir-path]
+  "Move all the files and links in the `dir-path` to their pool-paths
+  respectively.
 @param dir-path string"
   ;; Note: Hiding directories only add extra management costs on restoring
   ;; files later.
@@ -48,4 +45,4 @@ pool-paths respectively.
             (assert expected-contents
                     "expected non empty string for `expected-contents`")))))
 
-{: hide-file! : restore-file! : copy-file! : hide-dir! : can-restore-file?}
+{: hide-file! : restore-file! : hide-files-in-dir! : can-restore-file?}

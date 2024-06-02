@@ -4,7 +4,7 @@
 (local Path (require :thyme.utils.path))
 
 (local {: lua-cache-prefix} (require :thyme.const))
-(local {: hide-dir!} (require :thyme.utils.pool))
+(local {: hide-files-in-dir!} (require :thyme.utils.pool))
 (local {: clear-dependency-log-files!} (require :thyme.module-map.logger))
 
 (fn module-name->lua-path [module-name]
@@ -19,7 +19,7 @@
 
 (fn delete-cache-files! []
   "Delete cache files and the related files."
-  (hide-dir! lua-cache-prefix)
+  (hide-files-in-dir! lua-cache-prefix)
   (clear-dependency-log-files!))
 
 (fn clear-cache! [?opts]

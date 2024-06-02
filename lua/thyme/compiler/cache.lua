@@ -2,7 +2,7 @@ local Path = require("thyme.utils.path")
 local _local_1_ = require("thyme.const")
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local _local_2_ = require("thyme.utils.pool")
-local hide_dir_21 = _local_2_["hide-dir!"]
+local hide_files_in_dir_21 = _local_2_["hide-files-in-dir!"]
 local _local_3_ = require("thyme.module-map.logger")
 local clear_dependency_log_files_21 = _local_3_["clear-dependency-log-files!"]
 local function module_name__3elua_path(module_name)
@@ -10,7 +10,7 @@ local function module_name__3elua_path(module_name)
   return Path.join(lua_cache_prefix, lua_module_path)
 end
 local function delete_cache_files_21()
-  hide_dir_21(lua_cache_prefix)
+  hide_files_in_dir_21(lua_cache_prefix)
   return clear_dependency_log_files_21()
 end
 local function clear_cache_21(_3fopts)
