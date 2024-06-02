@@ -10,13 +10,16 @@
 
 (fn uri-encode [uri]
   (let [percent-patterns "[^A-Za-z0-9%-_.!~*'()]"]
-    (uri:gsub percent-patterns encode-with-percent)))
+    ;; Note: Without `case`, `gsub` also returns the matched positions.
+    (case (uri:gsub percent-patterns encode-with-percent)
+      encoded encoded)))
 
 (fn hex->char [hex]
   (-> (tonumber hex 16)
       (string.char)))
 
 (fn uri-decode [uri]
-  (uri:gsub "%%([a-fA-F0-9][a-fA-F0-9])" hex->char))
+  (case (uri:gsub "%%([a-fA-F0-9][a-fA-F0-9])" hex->char)
+    decoded decoded))
 
 {: uri-encode : uri-decode}
