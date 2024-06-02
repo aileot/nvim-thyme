@@ -15,10 +15,10 @@ local function path__3epool_path(path)
   return Path.join(pool_prefix, uri_encode(path))
 end
 local function hide_file_21(path)
-  return fs.rename(path, path__3epool_path(path))
+  return assert(fs.rename(path, path__3epool_path(path)))
 end
 local function restore_file_21(path)
-  return fs.rename(path__3epool_path(path), path)
+  return assert(fs.rename(path__3epool_path(path), path))
 end
 local function copy_file_21(path)
   return fs.copyfile(path, path__3epool_path(path))

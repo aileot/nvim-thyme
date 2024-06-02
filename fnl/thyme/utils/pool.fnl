@@ -19,12 +19,12 @@
 (fn hide-file! [path]
   "Move `path` to its own pool-path.
 @param path string"
-  (fs.rename path (path->pool-path path)))
+  (assert (fs.rename path (path->pool-path path))))
 
 (fn restore-file! [path]
   "Move back `path` from its own pool-path.
 @param path string"
-  (fs.rename (path->pool-path path) path))
+  (assert (fs.rename (path->pool-path path) path)))
 
 (fn copy-file! [path]
   (fs.copyfile path (path->pool-path path)))
