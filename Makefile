@@ -5,8 +5,6 @@ SHELL := /usr/bin/bash
 MAKEFLAGS += --no-builtin-rules
 MAKEFLAGS += --warn-undefined-variables
 
-MODNAME=thyme
-
 FENNEL ?= fennel
 VUSTED ?= vusted
 
@@ -25,12 +23,12 @@ TEST_DEPS:=$(TEST_ROOT)/.test-deps
 FNL_SPECS:=$(wildcard $(SPEC_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
 
-FNL_SRC:=$(wildcard fnl/$(MODNAME)/*.fnl)
-FNL_SRC+=$(wildcard fnl/$(MODNAME)/*/*.fnl)
+FNL_SRC:=$(wildcard fnl/*/*.fnl)
+FNL_SRC+=$(wildcard fnl/*/*/*.fnl)
 FNL_SRC:=$(filter-out %/macros.fnl,$(FNL_SRC))
 LUA_RES:=$(FNL_SRC:fnl/%.fnl=lua/%.lua)
 
-FNL_SRC_DIRS:=$(wildcard fnl/$(MODNAME)/*/)
+FNL_SRC_DIRS:=$(wildcard fnl/*/*/)
 LUA_RES_DIRS:=$(FNL_SRC_DIRS:fnl/%=lua/%)
 
 REPO_FNL_DIR := $(REPO_ROOT)/fnl
@@ -49,7 +47,7 @@ help: ## Show this help
 	@egrep -h '^\S+: .*## \S+' $(MAKEFILE_LIST) | sed 's/: .*##/:/' | column -t -c 2 -s ':' | sed 's/^/  /'
 	@echo
 
-lua/thyme/%/:
+lua/%/:
 	@mkdir -p $@
 
 lua/%.lua: fnl/%.fnl
