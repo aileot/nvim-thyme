@@ -1,5 +1,7 @@
 
 
+ local Path = require("thyme.utils.path")
+
  local function ipairs_reverse(seq)
 
 
@@ -72,6 +74,24 @@
  local key = keys[i]
  return key, tbl[key] end return _14_ end
 
+ local function each_file(call, dir_path)
+
+ for relative_path, fs_type in vim.fs.dir(dir_path, {depth = math.huge}) do
+ local full_path = Path.join(dir_path, relative_path)
+ if (fs_type == "file") then
+ call(full_path) elseif (fs_type == "directory") then
+ each_file(call, full_path) elseif (fs_type == "link") then
+ call(full_path) elseif (nil ~= fs_type) then local _else = fs_type
+ error(("expected :file or :directory, got " .. _else)) else end end return nil end
+
+ local function each_dir(call, dir_path)
+
+ for relative_path, fs_type in vim.fs.dir(dir_path, {depth = math.huge}) do
+ local full_path = Path.join(dir_path, relative_path)
+ if (fs_type == "directory") then
+ each_dir(call, full_path)
+ call(full_path) else end end return nil end
+
  local function double_quoted_or_else(text) local pat_double_quoted = "^\".-[^\\]\"" local pat_empty_string = "^\"\"" local pat_else = "^[^\"]+"
 
 
@@ -83,15 +103,15 @@
  local patterns = {pat_double_quoted, pat_empty_string, pat_else}
  local max_idx = #patterns
  local rest = text
- local function _15_()
- local result = nil for i, pat in ipairs(patterns) do if result then break end local _16_, _17_ = rest:find(pat)
+ local function _17_()
+ local result = nil for i, pat in ipairs(patterns) do if result then break end local _18_, _19_ = rest:find(pat)
 
- if ((nil ~= _16_) and (nil ~= _17_)) then local idx_from = _16_ local idx_to = _17_ local result0 = rest:sub(idx_from, idx_to) rest = rest:sub((1 + idx_to))
+ if ((nil ~= _18_) and (nil ~= _19_)) then local idx_from = _18_ local idx_to = _19_ local result0 = rest:sub(idx_from, idx_to) rest = rest:sub((1 + idx_to))
 
 
- result = result0 else local _ = _16_
+ result = result0 else local _ = _18_
  if ((i == max_idx) and ("" ~= rest)) then
- result = error(("expected empty string, failed to consume the rest of the string.\n- Consumed text:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n- The rest:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"):format(text:sub(1, (1 - #rest)), rest)) else result = nil end end end return result end return _15_ end
+ result = error(("expected empty string, failed to consume the rest of the string.\n- Consumed text:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n- The rest:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"):format(text:sub(1, (1 - #rest)), rest)) else result = nil end end end return result end return _17_ end
 
 
 
@@ -122,19 +142,19 @@
  local rest = text
  local last_pat = nil
  local last_matched = nil
- local function _20_()
+ local function _22_()
 
 
- local result = nil for i, pat in ipairs(patterns) do if result then break end local _21_, _22_ = rest:find(pat)
+ local result = nil for i, pat in ipairs(patterns) do if result then break end local _23_, _24_ = rest:find(pat)
 
- if ((nil ~= _21_) and (nil ~= _22_)) then local idx_from = _21_ local idx_to = _22_ local result0 = rest:sub(idx_from, idx_to)
+ if ((nil ~= _23_) and (nil ~= _24_)) then local idx_from = _23_ local idx_to = _24_ local result0 = rest:sub(idx_from, idx_to)
 
  last_pat = pat
  last_matched = result0 rest = rest:sub((1 + idx_to))
 
- result = result0 else local _ = _21_
+ result = result0 else local _ = _23_
  if ((i == max_idx) and ("" ~= rest)) then
- result = error(("expected empty string, failed to consume the rest of the string.\n- Consumed text:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\nThe last matched pattern: %s\n\nThe last matched string:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n- The rest:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"):format(text:sub(1, (1 - #rest)), last_pat, last_matched, rest)) else result = nil end end end return result end return _20_ end
+ result = error(("expected empty string, failed to consume the rest of the string.\n- Consumed text:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\nThe last matched pattern: %s\n\nThe last matched string:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n- The rest:\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n%s\n<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"):format(text:sub(1, (1 - #rest)), last_pat, last_matched, rest)) else result = nil end end end return result end return _22_ end
 
 
 
@@ -166,4 +186,4 @@
  walk((_3fcustom_iterator or pairs), nil, nil, root)
  return root end
 
- return {["ipairs-reverse"] = ipairs_reverse, ["char-by-char"] = char_by_char, ["uncouple-substrings"] = uncouple_substrings, gsplit = gsplit, ["pairs-from-longer-key"] = pairs_from_longer_key, ["double-quoted-or-else"] = double_quoted_or_else, ["string-or-else"] = string_or_else, ["walk-tree"] = walk_tree}
+ return {["ipairs-reverse"] = ipairs_reverse, ["char-by-char"] = char_by_char, ["uncouple-substrings"] = uncouple_substrings, gsplit = gsplit, ["pairs-from-longer-key"] = pairs_from_longer_key, ["each-file"] = each_file, ["each-dir"] = each_dir, ["double-quoted-or-else"] = double_quoted_or_else, ["string-or-else"] = string_or_else, ["walk-tree"] = walk_tree}

@@ -8,14 +8,15 @@
 
 
  local _local_3_ = require("thyme.utils.iterator") local gsplit = _local_3_["gsplit"]
+ local _local_4_ = require("thyme.utils.pool") local can_restore_file_3f = _local_4_["can-restore-file?"] local restore_file_21 = _local_4_["restore-file!"]
 
- local _local_4_ = require("thyme.wrapper.nvim") local get_runtime_files = _local_4_["get-runtime-files"]
+ local _local_5_ = require("thyme.wrapper.nvim") local get_runtime_files = _local_5_["get-runtime-files"]
 
- local _local_5_ = require("thyme.config") local get_main_config = _local_5_["get-main-config"]
+ local _local_6_ = require("thyme.config") local get_main_config = _local_6_["get-main-config"]
 
- local _local_6_ = require("thyme.module-map.callstack") local pcall_with_logger_21 = _local_6_["pcall-with-logger!"]
+ local _local_7_ = require("thyme.module-map.callstack") local pcall_with_logger_21 = _local_7_["pcall-with-logger!"]
 
- local _local_7_ = require("thyme.searcher.macro") local initialize_macro_searcher_on_rtp_21 = _local_7_["initialize-macro-searcher-on-rtp!"]
+ local _local_8_ = require("thyme.searcher.macro") local initialize_macro_searcher_on_rtp_21 = _local_8_["initialize-macro-searcher-on-rtp!"]
 
  local BackupManager = require("thyme.backup-manager")
  local ModuleBackupManager = BackupManager.new("module")
@@ -34,7 +35,7 @@
 
 
  local cached_fennel_path = Path.join(lua_cache_prefix, fennel_lua_file)
- local _let_8_ = vim.fs.find("Makefile", {upward = true, path = fnl_src_path}) local fennel_src_Makefile = _let_8_[1]
+ local _let_9_ = vim.fs.find("Makefile", {upward = true, path = fnl_src_path}) local fennel_src_Makefile = _let_9_[1]
 
  local _ = assert(fennel_src_Makefile, "Could not find Makefile for fennel.lua.")
  local fennel_src_root = vim.fs.dirname(fennel_src_Makefile)
@@ -61,8 +62,8 @@
  local function initialize_module_searcher_on_rtp_21(fennel)
  local std_config_home = vim.fn.stdpath("config") local fnl_dir = "/fnl/" local fennel_path
 
- local _10_ do local tbl_21_auto = {} local i_22_auto = 0 for _, suffix in ipairs({"?.fnl", "?/init.fnl"}) do
- local val_23_auto = (std_config_home .. fnl_dir .. suffix) if (nil ~= val_23_auto) then i_22_auto = (i_22_auto + 1) do end (tbl_21_auto)[i_22_auto] = val_23_auto else end end _10_ = tbl_21_auto end fennel_path = table.concat(_10_, ";")
+ local _11_ do local tbl_21_auto = {} local i_22_auto = 0 for _, suffix in ipairs({"?.fnl", "?/init.fnl"}) do
+ local val_23_auto = (std_config_home .. fnl_dir .. suffix) if (nil ~= val_23_auto) then i_22_auto = (i_22_auto + 1) do end (tbl_21_auto)[i_22_auto] = val_23_auto else end end _11_ = tbl_21_auto end fennel_path = table.concat(_11_, ";")
 
 
 
@@ -72,17 +73,17 @@
  local function update_fennel_paths_21(fennel)
  local config = get_main_config() local base_path_cache
 
- local function _12_(self, key)
+ local function _13_(self, key)
  rawset(self, key, get_runtime_files({key}, true))
 
- return self[key] end base_path_cache = setmetatable({}, {__index = _12_}) local macro_path
- local _13_ do local tbl_21_auto = {} local i_22_auto = 0 for fnl_template in gsplit(config["macro-path"], ";") do local val_23_auto
+ return self[key] end base_path_cache = setmetatable({}, {__index = _13_}) local macro_path
+ local _14_ do local tbl_21_auto = {} local i_22_auto = 0 for fnl_template in gsplit(config["macro-path"], ";") do local val_23_auto
  if ("/" == fnl_template:sub(1, 1)) then
  val_23_auto = fnl_template else local offset, rest = fnl_template:match("^%./([^?]*)(.-)$")
 
  local base_paths = base_path_cache[offset]
- local _14_ do local tbl_21_auto0 = {} local i_22_auto0 = 0 for _, dir in pairs(base_paths) do
- local val_23_auto0 = (dir .. rest) if (nil ~= val_23_auto0) then i_22_auto0 = (i_22_auto0 + 1) do end (tbl_21_auto0)[i_22_auto0] = val_23_auto0 else end end _14_ = tbl_21_auto0 end val_23_auto = table.concat(_14_, ";") end if (nil ~= val_23_auto) then i_22_auto = (i_22_auto + 1) do end (tbl_21_auto)[i_22_auto] = val_23_auto else end end _13_ = tbl_21_auto end macro_path = table.concat(_13_, ";"):gsub("/%./", "/")
+ local _15_ do local tbl_21_auto0 = {} local i_22_auto0 = 0 for _, dir in pairs(base_paths) do
+ local val_23_auto0 = (dir .. rest) if (nil ~= val_23_auto0) then i_22_auto0 = (i_22_auto0 + 1) do end (tbl_21_auto0)[i_22_auto0] = val_23_auto0 else end end _15_ = tbl_21_auto0 end val_23_auto = table.concat(_15_, ";") end if (nil ~= val_23_auto) then i_22_auto = (i_22_auto + 1) do end (tbl_21_auto)[i_22_auto] = val_23_auto else end end _14_ = tbl_21_auto end macro_path = table.concat(_14_, ";"):gsub("/%./", "/")
 
 
 
@@ -100,7 +101,7 @@
 
 
  local fennel = require("fennel")
- local _let_18_ = require("thyme.config") local get_main_config0 = _let_18_["get-main-config"]
+ local _let_19_ = require("thyme.config") local get_main_config0 = _let_19_["get-main-config"]
  local config = get_main_config0()
  if (nil == cache.rtp) then
  initialize_macro_searcher_on_rtp_21(fennel)
@@ -108,27 +109,30 @@
  if not (cache.rtp == vim.o.rtp) then
  cache.rtp = vim.o.rtp
  update_fennel_paths_21(fennel) else end
- local _21_, _22_ = nil, nil do local _23_, _24_ = fennel["search-module"](module_name, fennel.path) if (nil ~= _23_) then local fnl_path = _23_
- local _let_25_ = require("thyme.compiler.cache") local module_name__3elua_path = _let_25_["module-name->lua-path"]
+ local _22_, _23_ = nil, nil do local _24_, _25_ = fennel["search-module"](module_name, fennel.path) if (nil ~= _24_) then local fnl_path = _24_
+ local _let_26_ = require("thyme.compiler.cache") local module_name__3elua_path = _let_26_["module-name->lua-path"]
  local lua_path = module_name__3elua_path(module_name)
  local compiler_options = config["compiler-options"]
- local _26_, _27_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name) if ((_26_ == true) and (nil ~= _27_)) then local lua_code = _27_
+ local _27_, _28_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name) if ((_27_ == true) and (nil ~= _28_)) then local lua_code = _28_
 
 
 
 
- write_lua_file_21(lua_path, lua_code) ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+ if can_restore_file_3f(lua_path, lua_code) then
+ restore_file_21(lua_path) else
+
+ write_lua_file_21(lua_path, lua_code) ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path) end
 
 
 
- _21_, _22_ = load(lua_code, lua_path) elseif (true and (nil ~= _27_)) then local _ = _26_ local msg = _27_
+ _22_, _23_ = load(lua_code, lua_path) elseif (true and (nil ~= _28_)) then local _ = _27_ local msg = _28_
  local msg_prefix = ("\nthyme-loader: %s is found for the module %s, but failed to compile it\n\t"):format(fnl_path, module_name)
 
 
 
- _21_, _22_ = nil, (msg_prefix .. msg) else _21_, _22_ = nil end elseif (true and (nil ~= _24_)) then local _ = _23_ local msg = _24_
- _21_, _22_ = nil, ("\nthyme-loader: " .. msg) else _21_, _22_ = nil end end if (nil ~= _21_) then local chunk = _21_
- return chunk elseif (true and (nil ~= _22_)) then local _ = _21_ local error_msg = _22_ local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
+ _22_, _23_ = nil, (msg_prefix .. msg) else _22_, _23_ = nil end elseif (true and (nil ~= _25_)) then local _ = _24_ local msg = _25_
+ _22_, _23_ = nil, ("\nthyme-loader: " .. msg) else _22_, _23_ = nil end end if (nil ~= _22_) then local chunk = _22_
+ return chunk elseif (true and (nil ~= _23_)) then local _ = _22_ local error_msg = _23_ local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
 
 
  local rollback_3f = config.rollback

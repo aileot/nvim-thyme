@@ -8,6 +8,7 @@
        (require :thyme.utils.fs))
 
 (local {: gsplit} (require :thyme.utils.iterator))
+(local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
@@ -117,10 +118,13 @@ cache dir.
                                                      compiler-options
                                                      module-name)
                              (true lua-code) (do
-                                               (write-lua-file! lua-path
-                                                                lua-code)
-                                               (ModuleBackupManager:backup-module! module-name
-                                                                                   lua-path)
+                                               (if (can-restore-file? lua-path lua-code)
+                                                   (restore-file! lua-path)
+                                                   (do
+                                                     (write-lua-file! lua-path
+                                                                      lua-code)
+                                                     (ModuleBackupManager:backup-module! module-name
+                                                                                         lua-path)))
                                                (load lua-code lua-path))
                              (_ msg) (let [msg-prefix (: "
 thyme-loader: %s is found for the module %s, but failed to compile it

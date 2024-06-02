@@ -4,6 +4,7 @@
 (local Path (require :thyme.utils.path))
 
 (local {: lua-cache-prefix} (require :thyme.const))
+(local {: hide-dir!} (require :thyme.utils.pool))
 (local {: clear-dependency-log-files!} (require :thyme.module-map.logger))
 
 (fn module-name->lua-path [module-name]
@@ -17,19 +18,13 @@
     (Path.join lua-cache-prefix lua-module-path)))
 
 (fn delete-cache-files! []
-  "Delete cache files.
-@return number 0 for success, -1 for any failures"
-  ;; TODO: vim.fn.delete from Lua might be unsafe; replace it with
-  ;; os.remove or uv.fs_unlink/us.fs_rmdir.
-  (case (vim.fn.delete lua-cache-prefix :rf)
-    0 (do
-        (clear-dependency-log-files!) 0)
-    _ -1))
+  "Delete cache files and the related files."
+  (hide-dir! lua-cache-prefix)
+  (clear-dependency-log-files!))
 
 (fn clear-cache! [?opts]
   "Clear lua cache files compiled by nvim-thyme.
-@param ?opts.prompt boolean (default: true) Set false to clear cache without prompt
-@param ?opts.path string? without it, clear cache dir. glob is available."
+@param ?opts.prompt boolean (default: true) Set false to clear cache without prompt"
   ;; TODO: Clear the other cache directories?
   (let [opts (or ?opts {})
         path lua-cache-prefix
@@ -39,10 +34,9 @@
     (match (or ?idx ;
                (vim.fn.confirm (: "Remove cache files under %s?" :format path)
                                "&No\n&yes" 1 :Warning))
-      idx-yes (if (= 0 (delete-cache-files!))
-                  (vim.notify (.. "Cleared cache: " path))
-                  (vim.notify (.. "Failed to clear cache " path)
-                              vim.log.levels.ERROR))
+      idx-yes (do
+                (delete-cache-files!)
+                (vim.notify (.. "Cleared cache: " path)))
       _ (vim.notify (.. "Abort. " path " is already cleared.")))))
 
 {: module-name->lua-path : clear-cache!}
