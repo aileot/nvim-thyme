@@ -72,6 +72,14 @@ iterator is only for plain text.
       (let [key (. keys i)]
         (values key (. tbl key))))))
 
+(fn each-file [call dir-path]
+  "Iterate over files and execute `call`. Directories are ignored."
+  (each [path fs-type (vim.fs.dir dir-path {:depth math.huge})]
+    (case fs-type
+      :file (call path)
+      :directory (each-file call path)
+      else (error (.. "expected :file or :directory, got " else)))))
+
 (fn double-quoted-or-else [text]
   "Split `text` at `double-quoted string` or anything else. Use it like
 `string.gmatch`.
@@ -171,6 +179,7 @@ When f returns a truthy value, recursively walks the children."
  : uncouple-substrings
  : gsplit
  : pairs-from-longer-key
+ : each-file
  : double-quoted-or-else
  : string-or-else
  : walk-tree}
