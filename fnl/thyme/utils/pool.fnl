@@ -3,12 +3,14 @@
 (local Path (require :thyme.utils.path))
 (local fs (require :thyme.utils.fs))
 
+(local {: uri-encode} (require :thyme.utils.uri))
+
 (local pool-prefix (Path.join state-prefix :pool))
 
 (vim.fn.mkdir pool-prefix :p)
 
 (fn path->pool-path [path]
-  (Path.join pool-prefix path))
+  (Path.join pool-prefix (uri-encode path)))
 
 (fn hide-file! [path]
   (fs.rename path (path->pool-path path)))

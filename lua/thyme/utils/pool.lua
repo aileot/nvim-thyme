@@ -3,12 +3,14 @@
  local Path = require("thyme.utils.path")
  local fs = require("thyme.utils.fs")
 
+ local _local_2_ = require("thyme.utils.uri") local uri_encode = _local_2_["uri-encode"]
+
  local pool_prefix = Path.join(state_prefix, "pool")
 
  vim.fn.mkdir(pool_prefix, "p")
 
  local function path__3epool_path(path)
- return Path.join(pool_prefix, path) end
+ return Path.join(pool_prefix, uri_encode(path)) end
 
  local function hide_file_21(path)
  return fs.rename(path, path__3epool_path(path)) end
