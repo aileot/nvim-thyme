@@ -15,6 +15,7 @@ local _local_5_ = require("thyme.module-map.format")
 local modmap__3eline = _local_5_["modmap->line"]
 local read_module_map_file = _local_5_["read-module-map-file"]
 local modmap_prefix = Path.join(state_prefix, "modmap")
+vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
 ModuleMap.__index = ModuleMap
 local function fnl_path__3elog_path(dependency_fnl_path)

@@ -17,6 +17,8 @@
 
 (local modmap-prefix (Path.join state-prefix :modmap))
 
+(vim.fn.mkdir modmap-prefix :p)
+
 (local ModuleMap {})
 (set ModuleMap.__index ModuleMap)
 
