@@ -4,7 +4,7 @@
  local fs = require("thyme.utils.fs")
 
  local _local_2_ = require("thyme.utils.uri") local uri_encode = _local_2_["uri-encode"]
- local _local_3_ = require("thyme.utils.iterator") local each_file = _local_3_["each-file"]
+ local _local_3_ = require("thyme.utils.iterator") local each_file = _local_3_["each-file"] local each_dir = _local_3_["each-dir"]
 
  local pool_prefix = Path.join(state_prefix, "pool")
 
@@ -23,6 +23,7 @@
  return fs.copyfile(path, path__3epool_path(path)) end
 
  local function hide_dir_21(dir_path)
- return each_file(hide_file_21, dir_path) end
+ each_file(hide_file_21, dir_path)
+ return each_dir(hide_file_21, dir_path) end
 
  return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["copy-file!"] = copy_file_21, ["hide-dir!"] = hide_dir_21}
