@@ -37,15 +37,6 @@ if not file_readable_3f(config_path) then
   end
 else
 end
-local function find_config_file(path)
-  local _10_ = vim.fs.find(config_filename, {upward = true, type = "file", stop = uv.os_homedir(), path = path})
-  if ((_G.type(_10_) == "table") and (nil ~= _10_[1])) then
-    local project_config_path = _10_[1]
-    return project_config_path
-  else
-    return nil
-  end
-end
 local get_main_config = nil
 local function read_config(config_file_path)
   assert_is_fnl_file(config_file_path)
@@ -53,13 +44,13 @@ local function read_config(config_file_path)
   local fennel = require("fennel")
   local config_table
   do
-    local _12_ = cache["config-list"][config_file_path]
-    local function _13_()
-      local _3fcache = _12_
+    local _10_ = cache["config-list"][config_file_path]
+    local function _11_()
+      local _3fcache = _10_
       return ((nil == _3fcache) or (_3fcache.mtime.sec < fs_stat.mtime.sec))
     end
-    if (true and _13_()) then
-      local _3fcache = _12_
+    if (true and _11_()) then
+      local _3fcache = _10_
       local config_lines
       if secure_nvim_env_3f then
         config_lines = read_file(config_file_path)
@@ -72,8 +63,8 @@ local function read_config(config_file_path)
       local mtime = fs_stat.mtime
       cache["config-list"][config_file_path] = {config = config, mtime = mtime}
       config_table = config
-    elseif ((_G.type(_12_) == "table") and (nil ~= _12_.config)) then
-      local config = _12_.config
+    elseif ((_G.type(_10_) == "table") and (nil ~= _10_.config)) then
+      local config = _10_.config
       config_table = config
     else
       config_table = nil
@@ -82,15 +73,15 @@ local function read_config(config_file_path)
   local config = vim.tbl_deep_extend("keep", config_table, default_opts)
   return config
 end
-local function _16_()
-  local function _17_()
+local function _14_()
+  local function _15_()
     local main_config = read_config(config_path)
     cache["main-config"] = main_config
     return main_config
   end
-  return (cache["main-config"] or _17_())
+  return (cache["main-config"] or _15_())
 end
-get_main_config = _16_
+get_main_config = _14_
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
@@ -99,4 +90,4 @@ local function get_option_value(config, key)
   _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:106")
   return (rawget(config, key) or rawget(default_opts, key))
 end
-return {["get-main-config"] = get_main_config, ["find-config-file"] = find_config_file, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}
+return {["get-main-config"] = get_main_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}

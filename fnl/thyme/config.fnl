@@ -51,13 +51,13 @@
                _ (vim.cmd.trust)))
           (vim.defer_fn 800)))))
 
-(fn find-config-file [path]
-  "Return the config path, or `nil` if not detected.
-@param path
-@return string?"
-  (case (vim.fs.find config-filename
-                     {:upward true :type :file :stop (uv.os_homedir) : path})
-    [project-config-path] project-config-path))
+;; (fn find-config-file [path]
+;;   "Return the config path, or `nil` if not detected.
+;; @param path
+;; @return string?"
+;;   (case (vim.fs.find config-filename
+;;                      {:upward true :type :file :stop (uv.os_homedir) : path})
+;;     [project-config-path] project-config-path))
 
 (var get-main-config nil)
 
@@ -109,8 +109,4 @@
   (or (rawget config key) ;
       (rawget default-opts key)))
 
-{: get-main-config
- : find-config-file
- : read-config
- : get-option-value
- : config-file?}
+{: get-main-config : read-config : get-option-value : config-file?}
