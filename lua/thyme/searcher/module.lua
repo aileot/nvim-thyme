@@ -112,13 +112,21 @@ local function update_fennel_paths_21(fennel)
   fennel["macro-path"] = macro_path
   return nil
 end
+local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
+  write_lua_file_21(lua_path, lua_code)
+  if ModuleBackupManager["should-backup-module?"](ModuleBackupManager, module_name, lua_code) then
+    return ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+  else
+    return nil
+  end
+end
 local function search_fnl_module_on_rtp_21(module_name, ...)
   if ("fennel" == module_name) then
     return compile_fennel_into_rtp_21()
   else
     local fennel = require("fennel")
-    local _let_19_ = require("thyme.config")
-    local get_main_config0 = _let_19_["get-main-config"]
+    local _let_20_ = require("thyme.config")
+    local get_main_config0 = _let_20_["get-main-config"]
     local config = get_main_config0()
     if (nil == cache.rtp) then
       initialize_macro_searcher_on_rtp_21(fennel)
@@ -130,50 +138,46 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       update_fennel_paths_21(fennel)
     else
     end
-    local _22_, _23_ = nil, nil
+    local _23_, _24_ = nil, nil
     do
-      local _24_, _25_ = fennel["search-module"](module_name, fennel.path)
-      if (nil ~= _24_) then
-        local fnl_path = _24_
-        local _let_26_ = require("thyme.compiler.cache")
-        local module_name__3elua_path = _let_26_["module-name->lua-path"]
+      local _25_, _26_ = fennel["search-module"](module_name, fennel.path)
+      if (nil ~= _25_) then
+        local fnl_path = _25_
+        local _let_27_ = require("thyme.compiler.cache")
+        local module_name__3elua_path = _let_27_["module-name->lua-path"]
         local lua_path = module_name__3elua_path(module_name)
         local compiler_options = config["compiler-options"]
-        local _27_, _28_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
-        if ((_27_ == true) and (nil ~= _28_)) then
-          local lua_code = _28_
+        local _28_, _29_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+        if ((_28_ == true) and (nil ~= _29_)) then
+          local lua_code = _29_
           if can_restore_file_3f(lua_path, lua_code) then
             restore_file_21(lua_path)
           else
-            write_lua_file_21(lua_path, lua_code)
-            if ModuleBackupManager["should-backup-module?"](ModuleBackupManager, module_name, lua_code) then
-              ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
-            else
-            end
+            write_lua_file_with_backup_21(lua_path, lua_code, module_name)
           end
-          _22_, _23_ = load(lua_code, lua_path)
-        elseif (true and (nil ~= _28_)) then
-          local _ = _27_
-          local msg = _28_
+          _23_, _24_ = load(lua_code, lua_path)
+        elseif (true and (nil ~= _29_)) then
+          local _ = _28_
+          local msg = _29_
           local msg_prefix = ("\nthyme-loader: %s is found for the module %s, but failed to compile it\n\t"):format(fnl_path, module_name)
-          _22_, _23_ = nil, (msg_prefix .. msg)
+          _23_, _24_ = nil, (msg_prefix .. msg)
         else
-          _22_, _23_ = nil
+          _23_, _24_ = nil
         end
-      elseif (true and (nil ~= _25_)) then
-        local _ = _24_
-        local msg = _25_
-        _22_, _23_ = nil, ("\nthyme-loader: " .. msg)
+      elseif (true and (nil ~= _26_)) then
+        local _ = _25_
+        local msg = _26_
+        _23_, _24_ = nil, ("\nthyme-loader: " .. msg)
       else
-        _22_, _23_ = nil
+        _23_, _24_ = nil
       end
     end
-    if (nil ~= _22_) then
-      local chunk = _22_
+    if (nil ~= _23_) then
+      local chunk = _23_
       return chunk
-    elseif (true and (nil ~= _23_)) then
-      local _ = _22_
-      local error_msg = _23_
+    elseif (true and (nil ~= _24_)) then
+      local _ = _23_
+      local error_msg = _24_
       local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then

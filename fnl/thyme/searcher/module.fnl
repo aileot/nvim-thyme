@@ -89,6 +89,11 @@ fennel.lua.
                        (: :gsub "/%./" "/"))]
     (set fennel.macro-path macro-path)))
 
+(fn write-lua-file-with-backup! [lua-path lua-code module-name]
+  (write-lua-file! lua-path lua-code)
+  (when (ModuleBackupManager:should-backup-module? module-name lua-code)
+    (ModuleBackupManager:backup-module! module-name lua-path)))
+
 (fn search-fnl-module-on-rtp! [module-name ...]
   "Search for fennel source file to compile into lua and save in nvim-thyme
 cache dir.
@@ -121,13 +126,9 @@ cache dir.
                                                (if (can-restore-file? lua-path
                                                                       lua-code)
                                                    (restore-file! lua-path)
-                                                   (do
-                                                     (write-lua-file! lua-path
-                                                                      lua-code)
-                                                     (when (ModuleBackupManager:should-backup-module? module-name
-                                                                                                      lua-code)
-                                                       (ModuleBackupManager:backup-module! module-name
-                                                                                           lua-path))))
+                                                   (write-lua-file-with-backup! lua-path
+                                                                                lua-code
+                                                                                module-name))
                                                (load lua-code lua-path))
                              (_ msg) (let [msg-prefix (: "
 thyme-loader: %s is found for the module %s, but failed to compile it
