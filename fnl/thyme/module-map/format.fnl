@@ -14,6 +14,8 @@
 @param modmap.fnl-path string
 @param modmap.lua-path string?
 @return string"
+  ;; Note: The modmap log files would not store file size, which significantly
+  ;; reduces the reusability of log files in the pool.
   (assert (and modmap.module-name modmap.fnl-path)
           (: "modmap requires 'module-name' and 'fnl-path'; got module-name: %s, fnl-path: %s"
              :format modmap.module-name modmap.fnl-path))
