@@ -65,8 +65,7 @@
 - source file:
   %s
 - dependency-map file:
-  %s" :format
-                                  module-name fnl-path log-path)]
+  %s" :format module-name fnl-path log-path)]
                        (report-info msg))))]
     (each-file reporter root)))
 
