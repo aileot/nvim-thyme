@@ -16,16 +16,13 @@
 ;; fnlfmt: skip
 (local default-opts ;
        {:rollback true
+        :preproc nil
         :compiler-options {}
         ;; Set to fennel.macro-path for macro modules.
         :macro-path (-> ["./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
-                        (table.concat ";"))
-        :preproc #$
-        :notifier {:reload false
-                   :recompile vim.notify
-                   :fennel-update vim.notify}})
+                        (table.concat ";"))})
 
 (when-not (file-readable? config-path)
   ;; Generate main-config-file if missing.
