@@ -2,8 +2,7 @@
 
 (local fennel (require :fennel))
 
-(local {: file-readable? : read-file : write-lua-file!}
-       (require :thyme.utils.fs))
+(local {: file-readable? : read-file} (require :thyme.utils.fs))
 
 (local {: get-main-config} (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
@@ -13,6 +12,8 @@
         : fnl-path->dependent-map
         : clear-module-map!
         : restore-module-map!} (require :thyme.module-map.logger))
+
+(local {: write-lua-file-with-backup!} (require :thyme.searcher.module))
 
 (lambda update-module-dependencies! [fnl-path ?lua-path-to-clear opts]
   "Clear cache files of `fnl-path` and its dependent files.
@@ -46,7 +47,7 @@
                                   module-name)
           (true lua-code)
           ;; Note: The lua-code update-check has already been done above.
-          (write-lua-file! ?lua-path-to-clear lua-code)
+          (write-lua-file-with-backup! ?lua-path-to-clear lua-code module-name)
           (_ error-msg)
           (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
 %s" :format fnl-path error-msg)]
