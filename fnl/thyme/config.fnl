@@ -1,9 +1,6 @@
 (import-macros {: when-not : nvim-get-option} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
-
 (local {: config-filename : config-path} (require :thyme.const))
-(local {: contains?} (require :thyme.utils.general))
 (local {: file-readable?
         : assert-is-fnl-file
         : read-file
@@ -12,13 +9,9 @@
 
 (local cache {:main-config nil :config-list {}})
 
-(local secure-config-home
-       (or (os.getenv :XDG_CONFIG_HOME) (vim.fn.expand "~/.config")))
-
-(local secure-nvim-config-home (Path.join secure-config-home :nvim))
-(local secure-config-path (Path.join secure-nvim-config-home config-filename))
-(local secure-config-paths
-       [secure-config-path (vim.fn.resolve secure-config-path)])
+;; Note: Please keep this security check simple.
+(local nvim-appname vim.env.NVIM_APPNAME)
+(local secure-nvim-env? (or nvim-appname (= "" nvim-appname)))
 
 ;; fnlfmt: skip
 (local default-opts ;
@@ -85,12 +78,7 @@
                        (where ?cache
                               (or (= nil ?cache) ;
                                   (< ?cache.mtime.sec fs-stat.mtime.sec)))
-                       ;; TODO: Advise to allow file once denied?
-                       ;; Note: Always read the main config-file at
-                       ;; ~/.config/nvim without asking.
-                       (let [secure-config? (contains? secure-config-paths
-                                                       config-file-path)
-                             config-lines (if secure-config?
+                       (let [config-lines (if secure-nvim-env?
                                               (read-file config-file-path)
                                               (vim.secure.read config-file-path))
                              compiler-options {:error-pinpoint false}
@@ -101,8 +89,7 @@
                          (tset cache.config-list config-file-path
                                {: config : mtime})
                          config)
-                       {: config}
-                       config)
+                       {: config} config)
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 
