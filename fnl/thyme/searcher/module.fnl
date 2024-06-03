@@ -118,7 +118,8 @@ cache dir.
                                                      compiler-options
                                                      module-name)
                              (true lua-code) (do
-                                               (if (can-restore-file? lua-path lua-code)
+                                               (if (can-restore-file? lua-path
+                                                                      lua-code)
                                                    (restore-file! lua-path)
                                                    (do
                                                      (write-lua-file! lua-path
