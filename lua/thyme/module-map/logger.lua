@@ -22,7 +22,7 @@ local function log_module_map_21(dependency, dependent_stack)
   local function _6_()
     local modmap, logged_3f = ModuleMap.new(dependency["fnl-path"])
     if not logged_3f then
-      modmap["set-module-map!"](modmap, dependency)
+      modmap["initialize-module-map!"](modmap, dependency)
     else
     end
     module_maps[dependency["fnl-path"]] = modmap

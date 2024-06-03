@@ -30,7 +30,7 @@
   (let [module-map (or (rawget module-maps dependency.fnl-path)
                        (let [(modmap logged?) (ModuleMap.new dependency.fnl-path)]
                          (when-not logged?
-                           (modmap:set-module-map! dependency))
+                           (modmap:initialize-module-map! dependency))
                          (tset module-maps dependency.fnl-path modmap)
                          modmap))]
     (case (last dependent-stack)

@@ -48,12 +48,12 @@
     (set self._dep-map modmap)
     (values self logged?)))
 
-(fn ModuleMap.set-module-map! [self
-                               {: module-name
-                                : fnl-path
-                                :lua-path _lua-path
-                                :macro? _macro?
-                                &as modmap}]
+(fn ModuleMap.initialize-module-map! [self
+                                      {: module-name
+                                       : fnl-path
+                                       :lua-path _lua-path
+                                       :macro? _macro?
+                                       &as modmap}]
   ;; Note: fnl-path should be managed in resolved path as described in the
   ;; `new` method.
   (set modmap.fnl-path (vim.fn.resolve fnl-path))
