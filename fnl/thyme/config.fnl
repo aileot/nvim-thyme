@@ -1,40 +1,25 @@
 (import-macros {: when-not : nvim-get-option} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
-
 (local {: config-filename : config-path} (require :thyme.const))
-(local {: contains?} (require :thyme.utils.general))
-(local {: file-readable?
-        : assert-is-fnl-file
-        : read-file
-        : write-fnl-file!
-        : uv} (require :thyme.utils.fs))
+(local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
+       (require :thyme.utils.fs))
 
-(local cache {:main-config nil :config-list {}})
+(local cache {:main-config nil})
 
-(local secure-config-home
-       (or (os.getenv :XDG_CONFIG_HOME) (vim.fn.expand "~/.config")))
-
-(local secure-nvim-config-home (Path.join secure-config-home :nvim))
-(local secure-config-path (Path.join secure-nvim-config-home config-filename))
-(local secure-config-paths
-       [secure-config-path (vim.fn.resolve secure-config-path)])
+;; Note: Please keep this security check simple.
+(local nvim-appname vim.env.NVIM_APPNAME)
+(local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
 ;; fnlfmt: skip
 (local default-opts ;
        {:rollback true
+        :preproc nil
         :compiler-options {}
         ;; Set to fennel.macro-path for macro modules.
         :macro-path (-> ["./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))})
-
-(local default-opts-main-only
-       {:preproc #$
-        :notifier {:reload false
-                   :recompile vim.notify
-                   :fennel-update vim.notify}})
 
 (when-not (file-readable? config-path)
   ;; Generate main-config-file if missing.
@@ -63,64 +48,44 @@
                _ (vim.cmd.trust)))
           (vim.defer_fn 800)))))
 
-(fn find-config-file [path]
-  "Return the config path, or `nil` if not detected.
-@param path
-@return string?"
-  (case (vim.fs.find config-filename
-                     {:upward true :type :file :stop (uv.os_homedir) : path})
-    [project-config-path] project-config-path))
-
-(var get-main-config nil)
+;; (fn find-config-file [path]
+;;   "Return the config path, or `nil` if not detected.
+;; @param path
+;; @return string?"
+;;   (case (vim.fs.find config-filename
+;;                      {:upward true :type :file :stop (uv.os_homedir) : path})
+;;     [project-config-path] project-config-path))
 
 (fn read-config [config-file-path]
   "Return config table of `config-file-path`.
 @param config-file string a directory path.
 @return table"
   (assert-is-fnl-file config-file-path)
-  (let [fs-stat (uv.fs_stat config-file-path)
-        ;; Note: fennel is likely to get into loop or previous error.
-        fennel (require :fennel)
-        config-table (case (. cache.config-list config-file-path)
-                       (where ?cache
-                              (or (= nil ?cache) ;
-                                  (< ?cache.mtime.sec fs-stat.mtime.sec)))
-                       ;; TODO: Advise to allow file once denied?
-                       ;; Note: Always read the main config-file at
-                       ;; ~/.config/nvim without asking.
-                       (let [secure-config? (contains? secure-config-paths
-                                                       config-file-path)
-                             config-lines (if secure-config?
-                                              (read-file config-file-path)
-                                              (vim.secure.read config-file-path))
-                             compiler-options {:error-pinpoint false}
-                             ?config (fennel.eval config-lines compiler-options)
-                             config (or ?config {})
-                             ;; Note: It would be so nervous to watch nsec, too.
-                             mtime fs-stat.mtime]
-                         (tset cache.config-list config-file-path
-                               {: config : mtime})
-                         config)
-                       {: config}
-                       config)
+  ;; Note: fennel is likely to get into loop or previous error.
+  (let [fennel (require :fennel)
+        config-code (if secure-nvim-env?
+                        (read-file config-file-path)
+                        (vim.secure.read config-file-path))
+        compiler-options {:error-pinpoint ["|>>" "<<|"]}
+        ?config (fennel.eval config-code compiler-options)
+        config-table (or ?config {})
+        ;; Note: It would be so nervous to watch nsec, too.
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 
-(set get-main-config ;
-     (fn []
-       "Return the config found at stdpath('config').
-        @return table Thyme config"
-       (or cache.main-config ;
-           (let [main-config (vim.tbl_deep_extend :keep
-                                                  (read-config config-path)
-                                                  default-opts-main-only)]
-             (set cache.main-config main-config)
-             main-config))))
+(fn get-main-config []
+  "Return the config found at stdpath('config') on the first load.
+@return table Thyme config"
+  (or cache.main-config ;
+      (let [main-config (read-config config-path)]
+        (set cache.main-config main-config)
+        main-config)))
 
 (fn config-file? [path]
   "Tell if `path` is a thyme's config file.
 @param path string
 @return boolean"
+  ;; Note: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
 (lambda get-option-value [config key]
@@ -129,8 +94,4 @@
   (or (rawget config key) ;
       (rawget default-opts key)))
 
-{: get-main-config
- : find-config-file
- : read-config
- : get-option-value
- : config-file?}
+{: get-main-config : read-config : get-option-value : config-file?}
