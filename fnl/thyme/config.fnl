@@ -85,6 +85,7 @@
   "Tell if `path` is a thyme's config file.
 @param path string
 @return boolean"
+  ;; Note: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
 (lambda get-option-value [config key]
