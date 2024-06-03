@@ -1,13 +1,10 @@
 (import-macros {: when-not : nvim-get-option} :thyme.macros)
 
 (local {: config-filename : config-path} (require :thyme.const))
-(local {: file-readable?
-        : assert-is-fnl-file
-        : read-file
-        : write-fnl-file!
-        : uv} (require :thyme.utils.fs))
+(local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
+       (require :thyme.utils.fs))
 
-(local cache {:main-config nil :config-list {}})
+(local cache {:main-config nil})
 
 ;; Note: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
@@ -66,25 +63,15 @@
 @param config-file string a directory path.
 @return table"
   (assert-is-fnl-file config-file-path)
-  (let [fs-stat (uv.fs_stat config-file-path)
-        ;; Note: fennel is likely to get into loop or previous error.
-        fennel (require :fennel)
-        config-table (case (. cache.config-list config-file-path)
-                       (where ?cache
-                              (or (= nil ?cache) ;
-                                  (< ?cache.mtime.sec fs-stat.mtime.sec)))
-                       (let [config-lines (if secure-nvim-env?
-                                              (read-file config-file-path)
-                                              (vim.secure.read config-file-path))
-                             compiler-options {:error-pinpoint false}
-                             ?config (fennel.eval config-lines compiler-options)
-                             config (or ?config {})
-                             ;; Note: It would be so nervous to watch nsec, too.
-                             mtime fs-stat.mtime]
-                         (tset cache.config-list config-file-path
-                               {: config : mtime})
-                         config)
-                       {: config} config)
+  ;; Note: fennel is likely to get into loop or previous error.
+  (let [fennel (require :fennel)
+        config-code (if secure-nvim-env?
+                        (read-file config-file-path)
+                        (vim.secure.read config-file-path))
+        compiler-options {:error-pinpoint ["|>>" "<<|"]}
+        ?config (fennel.eval config-code compiler-options)
+        config-table (or ?config {})
+        ;; Note: It would be so nervous to watch nsec, too.
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 

@@ -6,8 +6,7 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local uv = _local_2_["uv"]
-local cache = {["main-config"] = nil, ["config-list"] = {}}
+local cache = {["main-config"] = nil}
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {rollback = true, preproc = nil, ["compiler-options"] = {}, ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
@@ -40,54 +39,34 @@ end
 local get_main_config = nil
 local function read_config(config_file_path)
   assert_is_fnl_file(config_file_path)
-  local fs_stat = uv.fs_stat(config_file_path)
   local fennel = require("fennel")
-  local config_table
-  do
-    local _10_ = cache["config-list"][config_file_path]
-    local function _11_()
-      local _3fcache = _10_
-      return ((nil == _3fcache) or (_3fcache.mtime.sec < fs_stat.mtime.sec))
-    end
-    if (true and _11_()) then
-      local _3fcache = _10_
-      local config_lines
-      if secure_nvim_env_3f then
-        config_lines = read_file(config_file_path)
-      else
-        config_lines = vim.secure.read(config_file_path)
-      end
-      local compiler_options = {["error-pinpoint"] = false}
-      local _3fconfig = fennel.eval(config_lines, compiler_options)
-      local config = (_3fconfig or {})
-      local mtime = fs_stat.mtime
-      cache["config-list"][config_file_path] = {config = config, mtime = mtime}
-      config_table = config
-    elseif ((_G.type(_10_) == "table") and (nil ~= _10_.config)) then
-      local config = _10_.config
-      config_table = config
-    else
-      config_table = nil
-    end
+  local config_code
+  if secure_nvim_env_3f then
+    config_code = read_file(config_file_path)
+  else
+    config_code = vim.secure.read(config_file_path)
   end
+  local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}}
+  local _3fconfig = fennel.eval(config_code, compiler_options)
+  local config_table = (_3fconfig or {})
   local config = vim.tbl_deep_extend("keep", config_table, default_opts)
   return config
 end
-local function _14_()
-  local function _15_()
+local function _11_()
+  local function _12_()
     local main_config = read_config(config_path)
     cache["main-config"] = main_config
     return main_config
   end
-  return (cache["main-config"] or _15_())
+  return (cache["main-config"] or _12_())
 end
-get_main_config = _14_
+get_main_config = _11_
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
 local function get_option_value(config, key)
-  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:106")
-  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:106")
+  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:93")
+  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:93")
   return (rawget(config, key) or rawget(default_opts, key))
 end
 return {["get-main-config"] = get_main_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}
