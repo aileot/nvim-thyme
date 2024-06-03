@@ -34,7 +34,11 @@
 
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")
-  (report-info (.. "The current config:\n" (fennel.view (get-main-config)))))
+  (let [config (get-main-config)]
+    (set config.source nil)
+    (set config.module-name nil)
+    (set config.filename nil)
+    (report-info (.. "The current config:\n" (fennel.view config)))))
 
 (fn report-fennel-paths []
   (report-start "Thyme fennel.{path,macro-path}")
