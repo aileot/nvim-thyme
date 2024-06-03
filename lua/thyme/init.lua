@@ -29,18 +29,15 @@ local function _9_(...)
   return require("thyme.wrapper.fennel").macrodebug(...)
 end
 local function _10_(...)
-  return require("thyme.user.check")["check-to-update!"](...)
-end
-local function _11_(...)
   return require("thyme.user.watch")["watch-to-update!"](...)
 end
-local function _12_(...)
+local function _11_(...)
   return require("thyme.user.keymaps")["define-keymaps!"](...)
 end
-local function _13_(...)
+local function _12_(...)
   return require("thyme.user.commands")["define-commands!"](...)
 end
-M = {loader = search_fnl_module_on_rtp_21, view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_, ["check-file!"] = _10_, ["watch-files!"] = _11_, ["define-keymaps!"] = _12_, ["define-commands!"] = _13_}
+M = {loader = search_fnl_module_on_rtp_21, view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_, ["watch-files!"] = _10_, ["define-keymaps!"] = _11_, ["define-commands!"] = _12_}
 for k, v in pairs(M) do
   if k:find("[^-!]") then
     local new_key = k:gsub("!", ""):gsub("%-", "_")
