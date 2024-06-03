@@ -258,7 +258,6 @@
        :bang true
        :desc "[thyme] clear the lua cache and dependency map logs"}
       ;; TODO: Or `:confirm` prefix to ask?
-      ;; TODO: Clear compiled lua in project.
       (fn []
         (if (clear-cache!)
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
