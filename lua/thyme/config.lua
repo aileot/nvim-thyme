@@ -10,12 +10,11 @@ local uv = _local_2_["uv"]
 local cache = {["main-config"] = nil, ["config-list"] = {}}
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = (nvim_appname or ("" == nvim_appname))
-local default_opts = {rollback = true, ["compiler-options"] = {}, ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
-local default_opts_main_only
+local default_opts
 local function _3_(_241)
   return _241
 end
-default_opts_main_only = {preproc = _3_, notifier = {recompile = vim.notify, ["fennel-update"] = vim.notify, reload = false}}
+default_opts = {rollback = true, ["compiler-options"] = {}, ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), preproc = _3_, notifier = {recompile = vim.notify, ["fennel-update"] = vim.notify, reload = false}}
 if not file_readable_3f(config_path) then
   local _4_ = vim.fn.confirm(("Missing \"%s\" at %s... Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&Yes\n&no", 1, "Warning")
   if (_4_ == 2) then
@@ -89,7 +88,7 @@ local function read_config(config_file_path)
 end
 local function _17_()
   local function _18_()
-    local main_config = vim.tbl_deep_extend("keep", read_config(config_path), default_opts_main_only)
+    local main_config = read_config(config_path)
     cache["main-config"] = main_config
     return main_config
   end
@@ -100,8 +99,8 @@ local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
 local function get_option_value(config, key)
-  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:113")
-  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:113")
+  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:109")
+  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:109")
   return (rawget(config, key) or rawget(default_opts, key))
 end
 return {["get-main-config"] = get_main_config, ["find-config-file"] = find_config_file, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}

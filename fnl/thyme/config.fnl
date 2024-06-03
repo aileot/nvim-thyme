@@ -21,10 +21,8 @@
         :macro-path (-> ["./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
-                        (table.concat ";"))})
-
-(local default-opts-main-only
-       {:preproc #$
+                        (table.concat ";"))
+        :preproc #$
         :notifier {:reload false
                    :recompile vim.notify
                    :fennel-update vim.notify}})
@@ -98,9 +96,7 @@
        "Return the config found at stdpath('config').
         @return table Thyme config"
        (or cache.main-config ;
-           (let [main-config (vim.tbl_deep_extend :keep
-                                                  (read-config config-path)
-                                                  default-opts-main-only)]
+           (let [main-config (read-config config-path)]
              (set cache.main-config main-config)
              main-config))))
 
