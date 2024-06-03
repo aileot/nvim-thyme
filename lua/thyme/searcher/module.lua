@@ -192,4 +192,4 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     end
   end
 end
-return {["search-fnl-module-on-rtp!"] = search_fnl_module_on_rtp_21}
+return {["search-fnl-module-on-rtp!"] = search_fnl_module_on_rtp_21, ["write-lua-file-with-backup!"] = write_lua_file_with_backup_21}
