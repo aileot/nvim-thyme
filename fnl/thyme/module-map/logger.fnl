@@ -5,6 +5,7 @@
 
 (local {: each-file} (require :thyme.utils.iterator))
 (local {: hide-file!} (require :thyme.utils.pool))
+(local {: uri-encode} (require :thyme.utils.uri))
 (local {: state-prefix} (require :thyme.const))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
@@ -29,11 +30,12 @@
   (let [module-map (or (rawget module-maps dependency.fnl-path)
                        (let [(modmap logged?) (ModuleMap.new dependency.fnl-path)]
                          (when-not logged?
-                           (modmap:set-module-map! dependency))
+                           (modmap:initialize-module-map! dependency))
                          (tset module-maps dependency.fnl-path modmap)
                          modmap))]
     (case (last dependent-stack)
-      dependent (when-not (module-map:get-dependent-map dependent.fnl-path)
+      dependent (when-not (-> (module-map:get-dependent-maps)
+                              (. dependent.fnl-path))
                   (module-map:add-dependent dependent)))))
 
 (fn fnl-path->entry-map [fnl-path]
@@ -52,7 +54,8 @@
   ;; Note: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
   (-> (. module-maps fnl-path)
-      (: :get-dependent-map)))
+      (: :get-dependent-maps)
+      (. fnl-path)))
 
 (fn fnl-path->lua-path [fnl-path]
   "Convert `fnl-path` into the `lua-path`.
@@ -66,16 +69,21 @@
 ;;       (: :gsub Path.sep ".")))
 
 (fn clear-module-map! [fnl-path]
-  "Clear module entry-map of `fnl-path`:
+  "Clear module entry-map of `fnl-path` stored in `module-maps`.
 @param fnl-path string"
   (let [modmap (. module-maps fnl-path)]
-    (modmap:clear!)))
+    ;; Note: Because `log-module-map!` determine to initialize the modmap for
+    ;; `fnl-path` by whether `module-maps` stores any table at `fnl-path`,
+    ;; escaping the modmap is necessary.
+    (tset module-maps (uri-encode fnl-path) modmap)
+    (tset module-maps fnl-path nil)))
 
 (fn restore-module-map! [fnl-path]
-  "Restore the once-cleared module entry-map of `fnl-path`:
+  "Restore the once-cleared (or hidden) module entry-map of `fnl-path` in
+  `module-maps`.
 @param fnl-path string"
-  (let [modmap (. module-maps fnl-path)]
-    (modmap:restore!)))
+  (let [modmap (. module-maps (uri-encode fnl-path))]
+    (tset module-maps fnl-path modmap)))
 
 (fn clear-dependency-log-files! []
   "Clear all the dependency log files managed by nvim-thyme."

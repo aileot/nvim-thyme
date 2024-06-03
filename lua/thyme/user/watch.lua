@@ -14,7 +14,8 @@ local function watch_to_update_21(_3fopts)
   local callback
   local function _4_(_3_)
     local fnl_path = _3_["match"]
-    return check_to_update_21(fnl_path, opts)
+    check_to_update_21(fnl_path, opts)
+    return nil
   end
   callback = _4_
   _3fgroup = group

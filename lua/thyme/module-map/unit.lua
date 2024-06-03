@@ -39,7 +39,7 @@ ModuleMap.new = function(raw_fnl_path)
   self["_dep-map"] = modmap
   return self, logged_3f
 end
-ModuleMap["set-module-map!"] = function(self, _7_)
+ModuleMap["initialize-module-map!"] = function(self, _7_)
   local module_name = _7_["module-name"]
   local fnl_path = _7_["fnl-path"]
   local _lua_path = _7_["lua-path"]
@@ -77,9 +77,6 @@ ModuleMap["macro?"] = function(self)
 end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dep-map"]
-end
-ModuleMap["get-dependent-map"] = function(self, dependent_fnl_path)
-  return self["_dep-map"][dependent_fnl_path]
 end
 ModuleMap["add-dependent"] = function(self, dependent)
   if not self["_dep-map"][dependent["fnl-path"]] then

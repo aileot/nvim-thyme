@@ -147,4 +147,4 @@ thyme-loader: %s is found for the module %s, but failed to compile it
                   (loadfile backup-path))
                 error-msg))))))
 
-{: search-fnl-module-on-rtp!}
+{: search-fnl-module-on-rtp! : write-lua-file-with-backup!}
