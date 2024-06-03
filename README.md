@@ -285,10 +285,8 @@ All the interfaces are provided from the "thyme" module: get them from
 `require("thyme")`.
 
 - [loader](./REFERENCE.md#loader) is to be appended to `package.loaders`.
-- [check-file!](./REFERENCE.md#check-file!)
-  or [check_file](./REFERENCE.md#check_file) checks a given file. It checks once the file, and recompiles it if updated.
 - [watch-files!](./REFERENCE.md#watch-files!)
-  or [watch_files](./REFERENCE.md#watch_files) creates a set of autocmds to watch files. This is a wrapper of `check-file!` with recommended autocmds.
+  or [watch_files](./REFERENCE.md#watch_files) creates a set of autocmds to watch files.
 - [define-keymaps!](./REFERENCE.md#define-keymaps!)
   or [define_keymaps](./REFERENCE.md#define_keymaps) defines a set of keymaps in the [list](#Keymaps) below.
 - [define-commands!](./REFERENCE.md#define-commands!)
