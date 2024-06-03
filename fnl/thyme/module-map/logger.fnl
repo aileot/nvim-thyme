@@ -72,10 +72,9 @@
   "Clear module entry-map of `fnl-path` stored in `module-maps`.
 @param fnl-path string"
   (let [modmap (. module-maps fnl-path)]
-    (modmap:clear!)
     ;; Note: Because `log-module-map!` determine to initialize the modmap for
     ;; `fnl-path` by whether `module-maps` stores any table at `fnl-path`,
-    ;; escaping the modmap addition to `(modmap:clear!)` is necessary.
+    ;; escaping the modmap is necessary.
     (tset module-maps (uri-encode fnl-path) modmap)
     (tset module-maps fnl-path nil)))
 
@@ -84,7 +83,6 @@
   `module-maps`.
 @param fnl-path string"
   (let [modmap (. module-maps (uri-encode fnl-path))]
-    (modmap:restore!)
     (tset module-maps fnl-path modmap)))
 
 (fn clear-dependency-log-files! []
