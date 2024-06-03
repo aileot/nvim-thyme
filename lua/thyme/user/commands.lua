@@ -254,8 +254,9 @@ local function define_commands_21(_3fopts)
     return vim.cmd(("tab drop " .. lua_cache_prefix))
   end
   vim.api.nvim_create_user_command((cmd_prefix .. "CacheOpen"), _46_, {desc = "[thyme] open the cache root directory"})
-  local function _47_(a)
-    return clear_cache_21({prompt = not a.bang})
+  local function _47_()
+    clear_cache_21()
+    return vim.notify(("Cleared cache: " .. lua_cache_prefix))
   end
   vim.api.nvim_create_user_command((cmd_prefix .. "CacheClear"), _47_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
   local function _50_(_48_)

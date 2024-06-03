@@ -259,8 +259,9 @@
        :desc "[thyme] clear the lua cache and dependency map logs"}
       ;; TODO: Or `:confirm` prefix to ask?
       ;; TODO: Clear compiled lua in project.
-      (fn [a]
-        (clear-cache! {:prompt (not a.bang)})))
+      (fn []
+        (clear-cache!)
+        (vim.notify (.. "Cleared cache: " lua-cache-prefix))))
     (command! (.. cmd-prefix :Alternate)
       ;; TODO: Alternate lua-file to fennel-file.
       {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
