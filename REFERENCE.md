@@ -66,10 +66,6 @@ Such a feature should be achieved independently of a runtime compiler plugin.
 
 ### `define_keymaps`
 
-### `check-file!`
-
-### `check_file`
-
 ### `watch-files!`
 
 ### `watch_files`
