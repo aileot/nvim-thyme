@@ -33,7 +33,7 @@
         (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
-thyme-macro-searcher: %s is found for the macro module %s, but failed to evaluate it in a compiler environment
+thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment
 \t" :format fnl-path module-name)]
                 (set compiler-options.env ?env)
                 ;; Note: Unlike Lua's package.loaders, Fennel macro-searcher
