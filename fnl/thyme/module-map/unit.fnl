@@ -91,9 +91,6 @@
 (fn ModuleMap.get-dependent-maps [self]
   self._dep-map)
 
-(fn ModuleMap.get-dependent-map [self dependent-fnl-path]
-  (. self._dep-map dependent-fnl-path))
-
 (fn ModuleMap.add-dependent [self dependent]
   (when-not (. self._dep-map dependent.fnl-path)
     (let [modmap-line (modmap->line dependent)

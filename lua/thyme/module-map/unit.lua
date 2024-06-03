@@ -78,9 +78,6 @@ end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dep-map"]
 end
-ModuleMap["get-dependent-map"] = function(self, dependent_fnl_path)
-  return self["_dep-map"][dependent_fnl_path]
-end
 ModuleMap["add-dependent"] = function(self, dependent)
   if not self["_dep-map"][dependent["fnl-path"]] then
     local modmap_line = modmap__3eline(dependent)

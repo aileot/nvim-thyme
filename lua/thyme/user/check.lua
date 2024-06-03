@@ -18,19 +18,10 @@ local restore_module_map_21 = _local_5_["restore-module-map!"]
 local function update_module_dependencies_21(fnl_path, _3flua_path_to_clear, opts)
   _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:17")
   _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:17")
-  local should_recompile_lua_cache_3f = false
-  if (_3flua_path_to_clear and file_readable_3f(_3flua_path_to_clear)) then
-    local new_lua_code = compile_file(fnl_path)
-    if not (new_lua_code == read_file(_3flua_path_to_clear)) then
-      should_recompile_lua_cache_3f = true
-    else
-    end
-  else
-  end
   do
-    local _8_ = fnl_path__3edependent_map(fnl_path)
-    if (nil ~= _8_) then
-      local dependent_map = _8_
+    local _6_ = fnl_path__3edependent_map(fnl_path)
+    if (nil ~= _6_) then
+      local dependent_map = _6_
       for dependent_fnl_path, dependent in pairs(dependent_map) do
         if not (fnl_path == dependent_fnl_path) then
           update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
@@ -40,21 +31,22 @@ local function update_module_dependencies_21(fnl_path, _3flua_path_to_clear, opt
     else
     end
   end
+  local should_recompile_lua_cache_3f = (_3flua_path_to_clear and (not file_readable_3f(_3flua_path_to_clear) or (read_file(_3flua_path_to_clear) ~= compile_file(fnl_path))))
   if should_recompile_lua_cache_3f then
     local config = get_main_config()
     local compiler_options = config["compiler-options"]
-    local _let_11_ = fnl_path__3eentry_map(fnl_path)
-    local module_name = _let_11_["module-name"]
+    local _let_9_ = fnl_path__3eentry_map(fnl_path)
+    local module_name = _let_9_["module-name"]
     compiler_options["module-name"] = module_name
     clear_module_map_21(fnl_path)
-    local _12_, _13_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, _3flua_path_to_clear, compiler_options, module_name)
-    if ((_12_ == true) and (nil ~= _13_)) then
-      local lua_code = _13_
+    local _10_, _11_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, _3flua_path_to_clear, compiler_options, module_name)
+    if ((_10_ == true) and (nil ~= _11_)) then
+      local lua_code = _11_
       return write_lua_file_21(_3flua_path_to_clear, lua_code)
-    elseif (true and (nil ~= _13_)) then
-      local _ = _12_
-      local error_msg = _13_
-      local msg = ("thyme-recompiler: abort recompiling %s due to the following error\n\t%s"):format(fnl_path, error_msg)
+    elseif (true and (nil ~= _11_)) then
+      local _ = _10_
+      local error_msg = _11_
+      local msg = ("thyme-recompiler: abort recompiling %s due to the following error\n%s"):format(fnl_path, error_msg)
       vim.notify(msg, vim.log.levels.WARN)
       return restore_module_map_21(fnl_path)
     else

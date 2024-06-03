@@ -30,7 +30,7 @@ local function log_module_map_21(dependency, dependent_stack)
   local _7_ = dependent_stack[#dependent_stack]
   if (nil ~= _7_) then
     local dependent = _7_
-    if not module_map["get-dependent-map"](module_map, dependent["fnl-path"]) then
+    if not module_map["get-dependent-maps"](module_map)[dependent["fnl-path"]] then
       return module_map["add-dependent"](module_map, dependent)
     else
       return nil
@@ -43,7 +43,7 @@ local function fnl_path__3eentry_map(fnl_path)
   return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-entry-map")
 end
 local function fnl_path__3edependent_map(fnl_path)
-  return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-dependent-map")
+  return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-dependent-maps")[fnl_path]
 end
 local function fnl_path__3elua_path(fnl_path)
   local _10_ = fnl_path__3eentry_map(fnl_path)

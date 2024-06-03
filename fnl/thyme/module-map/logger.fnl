@@ -33,7 +33,8 @@
                          (tset module-maps dependency.fnl-path modmap)
                          modmap))]
     (case (last dependent-stack)
-      dependent (when-not (module-map:get-dependent-map dependent.fnl-path)
+      dependent (when-not (-> (module-map:get-dependent-maps)
+                              (. dependent.fnl-path))
                   (module-map:add-dependent dependent)))))
 
 (fn fnl-path->entry-map [fnl-path]
@@ -52,7 +53,8 @@
   ;; Note: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
   (-> (. module-maps fnl-path)
-      (: :get-dependent-map)))
+      (: :get-dependent-maps)
+      (. fnl-path)))
 
 (fn fnl-path->lua-path [fnl-path]
   "Convert `fnl-path` into the `lua-path`.
