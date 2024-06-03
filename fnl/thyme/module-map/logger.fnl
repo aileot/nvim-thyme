@@ -5,6 +5,7 @@
 
 (local {: each-file} (require :thyme.utils.iterator))
 (local {: hide-file!} (require :thyme.utils.pool))
+(local {: uri-encode} (require :thyme.utils.uri))
 (local {: state-prefix} (require :thyme.const))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
@@ -68,16 +69,23 @@
 ;;       (: :gsub Path.sep ".")))
 
 (fn clear-module-map! [fnl-path]
-  "Clear module entry-map of `fnl-path`:
+  "Clear module entry-map of `fnl-path` stored in `module-maps`.
 @param fnl-path string"
   (let [modmap (. module-maps fnl-path)]
-    (modmap:clear!)))
+    (modmap:clear!)
+    ;; Note: Because `log-module-map!` determine to initialize the modmap for
+    ;; `fnl-path` by whether `module-maps` stores any table at `fnl-path`,
+    ;; escaping the modmap addition to `(modmap:clear!)` is necessary.
+    (tset module-maps (uri-encode fnl-path) modmap)
+    (tset module-maps fnl-path nil)))
 
 (fn restore-module-map! [fnl-path]
-  "Restore the once-cleared module entry-map of `fnl-path`:
+  "Restore the once-cleared (or hidden) module entry-map of `fnl-path` in
+  `module-maps`.
 @param fnl-path string"
-  (let [modmap (. module-maps fnl-path)]
-    (modmap:restore!)))
+  (let [modmap (. module-maps (uri-encode fnl-path))]
+    (modmap:restore!)
+    (tset module-maps fnl-path modmap)))
 
 (fn clear-dependency-log-files! []
   "Clear all the dependency log files managed by nvim-thyme."
