@@ -11,7 +11,7 @@
 
 ;; Note: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
-(local secure-nvim-env? (or nvim-appname (= "" nvim-appname)))
+(local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
 ;; fnlfmt: skip
 (local default-opts ;

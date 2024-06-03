@@ -9,7 +9,7 @@ local write_fnl_file_21 = _local_2_["write-fnl-file!"]
 local uv = _local_2_["uv"]
 local cache = {["main-config"] = nil, ["config-list"] = {}}
 local nvim_appname = vim.env.NVIM_APPNAME
-local secure_nvim_env_3f = (nvim_appname or ("" == nvim_appname))
+local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {rollback = true, preproc = nil, ["compiler-options"] = {}, ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
 if not file_readable_3f(config_path) then
   local _3_ = vim.fn.confirm(("Missing \"%s\" at %s... Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&Yes\n&no", 1, "Warning")
