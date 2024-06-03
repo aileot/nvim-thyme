@@ -10,7 +10,12 @@ local function module_name__3elua_path(module_name)
   return Path.join(lua_cache_prefix, lua_module_path)
 end
 local function clear_cache_21()
-  hide_files_in_dir_21(lua_cache_prefix)
-  return clear_dependency_log_files_21()
+  if vim.fs.find("*.lua", {type = "file", path = lua_cache_prefix, limit = math.huge}) then
+    hide_files_in_dir_21(lua_cache_prefix)
+    clear_dependency_log_files_21()
+    return true
+  else
+    return nil
+  end
 end
 return {["module-name->lua-path"] = module_name__3elua_path, ["clear-cache!"] = clear_cache_21}
