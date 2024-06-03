@@ -1,9 +1,9 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local BackupManager (require :thyme.backup-manager))
+(local BackupManager (require :thyme.utils.backup-manager))
 (local MacroBackupManager (BackupManager.new :macro))
 
-(local {: file-readable?} (require :thyme.utils.fs))
+(local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: pcall-with-logger! : is-logged? : log-again!}
        (require :thyme.module-map.callstack))
 
@@ -26,13 +26,14 @@
                               module-name)
       (true result)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)]
-        (set compiler-options.env ?env)
-        ;; Note: Make sure to pop callstack before logging.
-        (when-not (= fnl-path backup-path)
+        (when (and (not= fnl-path backup-path)
+                   (MacroBackupManager:should-backup-module? module-name
+                                                             (read-file fnl-path)))
           (MacroBackupManager:backup-module! module-name fnl-path))
+        (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
-thyme-macro-searcher: %s is found for the macro module %s, but failed to evaluate it in a compiler environment
+thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment
 \t" :format fnl-path module-name)]
                 (set compiler-options.env ?env)
                 ;; Note: Unlike Lua's package.loaders, Fennel macro-searcher
@@ -63,7 +64,7 @@ thyme-macro-searcher: %s is found for the macro module %s, but failed to evaluat
               chunk
               ;; TODO: As described in the error message below, append
               ;; thyme-backup-loader independently to fennel.macro-searchers?
-              (let [msg (: "thyme-backup-loader: temporarily restore backup for the module %s due to the following error: %s"
+              (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
                            :format module-name error-msg)]
                 (vim.notify_once msg vim.log.levels.WARN)
                 chunk)

@@ -1,7 +1,8 @@
-local BackupManager = require("thyme.backup-manager")
+local BackupManager = require("thyme.utils.backup-manager")
 local MacroBackupManager = BackupManager.new("macro")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
+local read_file = _local_1_["read-file"]
 local _local_2_ = require("thyme.module-map.callstack")
 local pcall_with_logger_21 = _local_2_["pcall-with-logger!"]
 local is_logged_3f = _local_2_["is-logged?"]
@@ -19,11 +20,11 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   if ((_4_ == true) and (nil ~= _5_)) then
     local result = _5_
     local backup_path = MacroBackupManager["module-name->backup-path"](MacroBackupManager, module_name)
-    compiler_options.env = _3fenv
-    if not (fnl_path == backup_path) then
+    if ((fnl_path ~= backup_path) and MacroBackupManager["should-backup-module?"](MacroBackupManager, module_name, read_file(fnl_path))) then
       MacroBackupManager["backup-module!"](MacroBackupManager, module_name, fnl_path)
     else
     end
+    compiler_options.env = _3fenv
     local function _7_()
       return result
     end
@@ -31,7 +32,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   elseif (true and (nil ~= _5_)) then
     local _ = _4_
     local msg = _5_
-    local msg_prefix = ("\nthyme-macro-searcher: %s is found for the macro module %s, but failed to evaluate it in a compiler environment\n\t"):format(fnl_path, module_name)
+    local msg_prefix = ("\nthyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment\n\t"):format(fnl_path, module_name)
     compiler_options.env = _3fenv
     return nil, (msg_prefix .. msg)
   else
@@ -69,7 +70,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
       local _15_, _16_ = macro_module__3e_3fchunk(module_name, backup_path)
       if (nil ~= _15_) then
         local chunk = _15_
-        local msg = ("thyme-backup-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
+        local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
         vim.notify_once(msg, vim.log.levels.WARN)
         return chunk
       elseif (true and (nil ~= _16_)) then

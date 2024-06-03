@@ -19,7 +19,7 @@ local _local_7_ = require("thyme.module-map.callstack")
 local pcall_with_logger_21 = _local_7_["pcall-with-logger!"]
 local _local_8_ = require("thyme.searcher.macro")
 local initialize_macro_searcher_on_rtp_21 = _local_8_["initialize-macro-searcher-on-rtp!"]
-local BackupManager = require("thyme.backup-manager")
+local BackupManager = require("thyme.utils.backup-manager")
 local ModuleBackupManager = BackupManager.new("module")
 local cache = {rtp = nil}
 local function compile_fennel_into_rtp_21()
@@ -146,7 +146,10 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
             restore_file_21(lua_path)
           else
             write_lua_file_21(lua_path, lua_code)
-            ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+            if ModuleBackupManager["should-backup-module?"](ModuleBackupManager, module_name, lua_code) then
+              ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+            else
+            end
           end
           _22_, _23_ = load(lua_code, lua_path)
         elseif (true and (nil ~= _28_)) then
@@ -174,7 +177,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then
-        local msg = ("thyme-backup-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
+        local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
         vim.notify_once(msg, vim.log.levels.WARN)
         return loadfile(backup_path)
       else
