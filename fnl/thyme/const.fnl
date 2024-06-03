@@ -23,17 +23,8 @@
 (local lua-cache-prefix (-> (Path.join cache-prefix :lua)
                             (vim.fn.expand)))
 
-(local fnl-src-prefix (Path.join stdpath-config :fnl))
-(local resolved-src-prefix (vim.fn.resolve fnl-src-prefix))
-(local fnl-src-prefixes
-       (if (= fnl-src-prefix resolved-src-prefix)
-           [fnl-src-prefix]
-           [fnl-src-prefix resolved-src-prefix]))
-
 {: stdpath-config
  : lua-cache-prefix
  : config-filename
  : config-path
- :state-prefix (Path.join (vim.fn.stdpath :state) :thyme)
- ;; TODO: Consider symbolic links.
- :fnl-src-prefix (Path.join stdpath-config :fnl)}
+ :state-prefix (Path.join (vim.fn.stdpath :state) :thyme)}
