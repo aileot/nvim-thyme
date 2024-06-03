@@ -6,14 +6,18 @@ local _local_2_ = require("thyme.config")
 local get_main_config = _local_2_["get-main-config"]
 local _local_3_ = require("thyme.utils.iterator")
 local each_file = _local_3_["each-file"]
-local _local_4_ = require("thyme.wrapper.nvim")
-local get_runtime_files = _local_4_["get-runtime-files"]
-local _local_5_ = require("thyme.module-map.format")
-local macro_recorded_3f = _local_5_["macro-recorded?"]
-local peek_module_name = _local_5_["peek-module-name"]
-local peek_fnl_path = _local_5_["peek-fnl-path"]
-local _local_6_ = require("thyme.module-map.unit")
-local get_root_of_modmap = _local_6_["get-root"]
+local _local_4_ = require("thyme.utils.backup-manager")
+local get_root_of_backup = _local_4_["get-root"]
+local _local_5_ = require("thyme.utils.pool")
+local get_root_of_pool = _local_5_["get-root"]
+local _local_6_ = require("thyme.wrapper.nvim")
+local get_runtime_files = _local_6_["get-runtime-files"]
+local _local_7_ = require("thyme.module-map.format")
+local macro_recorded_3f = _local_7_["macro-recorded?"]
+local peek_module_name = _local_7_["peek-module-name"]
+local peek_fnl_path = _local_7_["peek-fnl-path"]
+local _local_8_ = require("thyme.module-map.unit")
+local get_root_of_modmap = _local_8_["get-root"]
 local report_start, report_info, report_ok, report_warn, report_error = nil, nil, nil, nil, nil
 do
   local health = vim.health
@@ -36,12 +40,12 @@ local function report_integrations()
   end
   local dependency_files = {"parser/fennel.so"}
   for _, file in ipairs(dependency_files) do
-    local _9_ = get_runtime_files({file}, false)
-    if ((_G.type(_9_) == "table") and (nil ~= _9_[1])) then
-      local path = _9_[1]
+    local _11_ = get_runtime_files({file}, false)
+    if ((_G.type(_11_) == "table") and (nil ~= _11_[1])) then
+      local path = _11_[1]
       report_ok(("%s is detected at %s."):format(file, path))
     else
-      local _0 = _9_
+      local _0 = _11_
       report_warn(("missing %s."):format(file))
     end
   end
@@ -62,17 +66,17 @@ local function report_fennel_paths()
 end
 local function report_thyme_disk_info()
   report_start("Thyme Disk Info")
-  report_info(("The path to .nvim-thyme.fnl: " .. config_path))
-  report_info(("The root path of Lua cache: " .. lua_cache_prefix))
-  report_info("WIP: The root path of backups for rollback: ")
-  report_info("WIP: The root path of module-mapping: ")
-  return report_info("WIP: The root path of pool: ")
+  report_info(("The path to .nvim-thyme.fnl:\t" .. config_path))
+  report_info(("The root path of Lua cache:\t" .. lua_cache_prefix))
+  report_info(("The root path of backups for rollback:\t" .. get_root_of_backup()))
+  report_info(("The root path of module-mapping:\t" .. get_root_of_modmap()))
+  return report_info(("The root path of pool:\t" .. get_root_of_pool()))
 end
 local function report_imported_macros()
   report_start("Thyme Imported Macros")
   local root = get_root_of_modmap()
   local reporter
-  local function _11_(log_path)
+  local function _13_(log_path)
     if macro_recorded_3f(log_path) then
       local module_name = peek_module_name(log_path)
       local fnl_path = peek_fnl_path(log_path)
@@ -82,14 +86,14 @@ local function report_imported_macros()
       return nil
     end
   end
-  reporter = _11_
+  reporter = _13_
   return each_file(reporter, root)
 end
-local function _13_()
+local function _15_()
   report_integrations()
   report_thyme_config()
   report_fennel_paths()
   report_thyme_disk_info()
   return report_imported_macros()
 end
-return {check = _13_}
+return {check = _15_}

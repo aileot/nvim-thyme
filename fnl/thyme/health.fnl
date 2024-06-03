@@ -1,7 +1,11 @@
 (local fennel (require :fennel))
 
+(local {: lua-cache-prefix : config-path} (require :thyme.const))
+
 (local {: get-main-config} (require :thyme.config))
 (local {: each-file} (require :thyme.utils.iterator))
+(local {:get-root get-root-of-backup} (require :thyme.utils.backup-manager))
+(local {:get-root get-root-of-pool} (require :thyme.utils.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 (local {: macro-recorded? : peek-module-name : peek-fnl-path}
        (require :thyme.module-map.format))
@@ -48,11 +52,12 @@
 
 (fn report-thyme-disk-info []
   (report-start "Thyme Disk Info")
-  ;; WIP: Import paths
-  (report-info "WIP: The root path of Lua cache: ")
-  (report-info "WIP: The root path of backups for rollback: ")
-  (report-info "WIP: The root path of module-mapping: ")
-  (report-info "WIP: The root path of pool: "))
+  (report-info (.. "The path to .nvim-thyme.fnl:\t" config-path))
+  (report-info (.. "The root path of Lua cache:\t" lua-cache-prefix))
+  (report-info (.. "The root path of backups for rollback:\t"
+                   (get-root-of-backup)))
+  (report-info (.. "The root path of module-mapping:\t" (get-root-of-modmap)))
+  (report-info (.. "The root path of pool:\t" (get-root-of-pool))))
 
 (fn report-imported-macros []
   (report-start "Thyme Imported Macros")
