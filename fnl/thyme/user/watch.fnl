@@ -29,7 +29,9 @@ the same.
         event (or opts.event [:BufWritePost :FileChangedShellPost])
         pattern (or opts.pattern :*.fnl)
         callback (fn [{:match fnl-path}]
-                   (check-to-update! fnl-path opts))]
+                   (check-to-update! fnl-path opts)
+                   ;; Prevent not to destroy the autocmd.
+                   nil)]
     (set ?group group)
     (let [id (autocmd! event {: group : pattern : callback})]
       (if (. watch-autocmds event)

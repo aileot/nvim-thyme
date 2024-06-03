@@ -42,12 +42,13 @@ local function log_module_map_21(dependency, dependent_stack)
   end
 end
 local function fnl_path__3eentry_map(fnl_path)
-  return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-entry-map")
+  return (function(tgt, m, ...) return tgt[m](tgt, ...) end)((module_maps[fnl_path] or module_maps[uri_encode(fnl_path)]), "get-entry-map")
 end
 local function fnl_path__3edependent_map(fnl_path)
   return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-dependent-maps")[fnl_path]
 end
 local function fnl_path__3elua_path(fnl_path)
+  p(">>>", fnl_path)
   local _11_ = fnl_path__3eentry_map(fnl_path)
   if (nil ~= _11_) then
     local modmap = _11_
@@ -58,15 +59,13 @@ local function fnl_path__3elua_path(fnl_path)
 end
 local function clear_module_map_21(fnl_path)
   local modmap = module_maps[fnl_path]
-  modmap["clear!"](modmap)
-  do end (module_maps)[uri_encode(fnl_path)] = modmap
+  module_maps[uri_encode(fnl_path)] = modmap
   module_maps[fnl_path] = nil
   return nil
 end
 local function restore_module_map_21(fnl_path)
   local modmap = module_maps[uri_encode(fnl_path)]
-  modmap["restore!"](modmap)
-  do end (module_maps)[fnl_path] = modmap
+  module_maps[fnl_path] = modmap
   return nil
 end
 local function clear_dependency_log_files_21()
