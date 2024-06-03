@@ -27,7 +27,7 @@
 (fn line->modmap [line]
   "Convert `line` into a modmap table.
 @return `line` string
-@param table"
+@param table module-map"
   (let [inline-dependent-map-pattern ;
         (.. "^(.-)" marker.sep "(.-)" marker.sep "(.*)$")]
     (match (line:match inline-dependent-map-pattern)
@@ -41,11 +41,8 @@
       (error (: "Invalid format: \"%s\"" :format line)))))
 
 (fn read-module-map-file [log-path]
-  "Get a dependent-map of `dependency-fnl-path`.
-The map is restored from the corresponding cache file, or is initialized by an
-empty table.
-@param self table
-@param dependency-fnl-path string
+  "Read module-map from `log-path`.
+@param log-path string
 @return table"
   (collect [line (-> (read-file log-path)
                      ;; Trim the last end-marker.
