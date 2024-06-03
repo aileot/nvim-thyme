@@ -92,88 +92,6 @@ iterator is only for plain text.
         (each-dir call full-path)
         (call full-path)))))
 
-(fn double-quoted-or-else [text]
-  "Split `text` at `double-quoted string` or anything else. Use it like
-`string.gmatch`.
-@param text
-@return fun(): string?"
-  (let [pat-double-quoted "^\".-[^\\]\""
-        pat-empty-string "^\"\""
-        pat-else "^[^\"]+"
-        patterns [pat-double-quoted pat-empty-string pat-else]
-        max-idx (length patterns)]
-    (var rest text)
-    (fn []
-      (accumulate [result nil ;
-                   i pat (ipairs patterns) &until result]
-        (case (rest:find pat)
-          (idx-from idx-to) (let [result (rest:sub idx-from idx-to)]
-                              (set rest (rest:sub (+ 1 idx-to)))
-                              result)
-          _ (when (and (= i max-idx) (not= "" rest))
-              (error (: "expected empty string, failed to consume the rest of the string.
-- Consumed text:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-%s
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-- The rest:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-%s
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                        :format (text:sub 1 (- 1 (length rest))) ;
-                        rest))))))))
-
-(fn string-or-else [text]
-  "Split `text` at `string` or non-string text. Use it like `string.gmatch`.
-@param text
-@return fun(): string?"
-  ;; Note: `\"` only matters inside double-quoted string.
-  (let [pat-string "^\".-[^\\]\""
-        pat-empty-string "^\"\""
-        pat-spaces "^[%s\n]+"
-        pat-colon-string "^:[^%])}%s\n]+"
-        pat-non-string "^[^\"]+"
-        patterns [pat-spaces
-                  pat-string
-                  pat-empty-string
-                  pat-colon-string
-                  pat-non-string]
-        max-idx (length patterns)]
-    (var rest text)
-    (var last-pat nil)
-    (var last-matched nil)
-    (fn []
-      ;; Note: `or` list does not let us construct `string.find` failback
-      ;; sequence.
-      (accumulate [result nil ;
-                   i pat (ipairs patterns) &until result]
-        (case (rest:find pat)
-          (idx-from idx-to) (let [result (rest:sub idx-from idx-to)]
-                              (set last-pat pat)
-                              (set last-matched result)
-                              (set rest (rest:sub (+ 1 idx-to)))
-                              result)
-          _ (when (and (= i max-idx) (not= "" rest))
-              (error (: "expected empty string, failed to consume the rest of the string.
-- Consumed text:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-%s
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-The last matched pattern: %s
-
-The last matched string:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-%s
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-- The rest:
->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-%s
-<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<"
-                        :format (text:sub 1 (- 1 (length rest))) ;
-                        last-pat last-matched rest))))))))
-
 ;; Copiled from src/fennel/utils.fnl @318
 (fn walk-tree [root f ?custom-iterator]
   "Walks a tree (like the AST), invoking f(node, idx, parent) on each node.
@@ -193,6 +111,4 @@ When f returns a truthy value, recursively walks the children."
  : pairs-from-longer-key
  : each-file
  : each-dir
- : double-quoted-or-else
- : string-or-else
  : walk-tree}
