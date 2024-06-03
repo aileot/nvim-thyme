@@ -10,8 +10,8 @@
 (fn modmap->line [modmap]
   "Convert `modmap` table into a line.
 @param modmap table
-@param modmap.fnl-path string
 @param modmap.module-name string
+@param modmap.fnl-path string
 @param modmap.lua-path string?
 @return string"
   (assert (and modmap.module-name modmap.fnl-path)
