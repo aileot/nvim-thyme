@@ -21,8 +21,6 @@
           :compile-string (lazy-require-with-key :thyme.wrapper.fennel
                                                  :compile-string)
           :macrodebug (lazy-require-with-key :thyme.wrapper.fennel :macrodebug)
-          :check-file! (lazy-require-with-key :thyme.user.check
-                                              :check-to-update!)
           :watch-files! (lazy-require-with-key :thyme.user.watch
                                                :watch-to-update!)
           :define-keymaps! (lazy-require-with-key :thyme.user.keymaps
