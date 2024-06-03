@@ -36,7 +36,6 @@ if not file_readable_3f(config_path) then
   end
 else
 end
-local get_main_config = nil
 local function read_config(config_file_path)
   assert_is_fnl_file(config_file_path)
   local fennel = require("fennel")
@@ -52,21 +51,20 @@ local function read_config(config_file_path)
   local config = vim.tbl_deep_extend("keep", config_table, default_opts)
   return config
 end
-local function _11_()
-  local function _12_()
+local function get_main_config()
+  local function _11_()
     local main_config = read_config(config_path)
     cache["main-config"] = main_config
     return main_config
   end
-  return (cache["main-config"] or _12_())
+  return (cache["main-config"] or _11_())
 end
-get_main_config = _11_
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
 local function get_option_value(config, key)
-  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:93")
-  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:93")
+  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:90")
+  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:90")
   return (rawget(config, key) or rawget(default_opts, key))
 end
 return {["get-main-config"] = get_main_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}

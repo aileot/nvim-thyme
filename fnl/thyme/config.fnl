@@ -56,8 +56,6 @@
 ;;                      {:upward true :type :file :stop (uv.os_homedir) : path})
 ;;     [project-config-path] project-config-path))
 
-(var get-main-config nil)
-
 (fn read-config [config-file-path]
   "Return config table of `config-file-path`.
 @param config-file string a directory path.
@@ -75,14 +73,13 @@
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 
-(set get-main-config ;
-     (fn []
-       "Return the config found at stdpath('config').
-        @return table Thyme config"
-       (or cache.main-config ;
-           (let [main-config (read-config config-path)]
-             (set cache.main-config main-config)
-             main-config))))
+(fn get-main-config []
+  "Return the config found at stdpath('config') on the first load.
+@return table Thyme config"
+  (or cache.main-config ;
+      (let [main-config (read-config config-path)]
+        (set cache.main-config main-config)
+        main-config)))
 
 (fn config-file? [path]
   "Tell if `path` is a thyme's config file.
