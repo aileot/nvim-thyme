@@ -255,28 +255,31 @@ local function define_commands_21(_3fopts)
   end
   vim.api.nvim_create_user_command((cmd_prefix .. "CacheOpen"), _46_, {desc = "[thyme] open the cache root directory"})
   local function _47_()
-    clear_cache_21()
-    return vim.notify(("Cleared cache: " .. lua_cache_prefix))
+    if clear_cache_21() then
+      return vim.notify(("Cleared cache: " .. lua_cache_prefix))
+    else
+      return vim.notify(("No cache files detected at " .. lua_cache_prefix))
+    end
   end
   vim.api.nvim_create_user_command((cmd_prefix .. "CacheClear"), _47_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
-  local function _50_(_48_)
-    local _arg_49_ = _48_["fargs"]
-    local _3fpath = _arg_49_[1]
-    local mods = _48_["smods"]
+  local function _51_(_49_)
+    local _arg_50_ = _49_["fargs"]
+    local _3fpath = _arg_50_[1]
+    local mods = _49_["smods"]
     local input_path = vim.fn.expand((_3fpath or "%:p"))
     local output_path
     do
-      local _51_ = input_path:sub(-4)
-      if (_51_ == ".fnl") then
-        local _52_ = fnl_path__3elua_path(input_path)
-        if (nil ~= _52_) then
-          local lua_path = _52_
+      local _52_ = input_path:sub(-4)
+      if (_52_ == ".fnl") then
+        local _53_ = fnl_path__3elua_path(input_path)
+        if (nil ~= _53_) then
+          local lua_path = _53_
           output_path = lua_path
         else
-          local _ = _52_
-          local _53_ = (input_path:sub(1, -4) .. "lua")
-          if (nil ~= _53_) then
-            local lua_path = _53_
+          local _ = _53_
+          local _54_ = (input_path:sub(1, -4) .. "lua")
+          if (nil ~= _54_) then
+            local lua_path = _54_
             if file_readable_3f(lua_path) then
               output_path = lua_path
             else
@@ -286,14 +289,14 @@ local function define_commands_21(_3fopts)
             output_path = nil
           end
         end
-      elseif (_51_ == ".lua") then
+      elseif (_52_ == ".lua") then
         if vim.startswith(input_path, lua_cache_prefix) then
           output_path = vim.api.nvim_get_runtime_file(input_path:sub(#lua_cache_prefix):gsub("%.lua$", ".fnl"):gsub("^", "*"), false)[1]
         else
           output_path = vim.fn.glob(input_path:gsub("/lua/", "/*/"):gsub("%.lua$", ".fnl"), false)
         end
       else
-        local _ = _51_
+        local _ = _52_
         output_path = error("expected a fnl or lua file, got", input_path)
       end
     end
@@ -307,6 +310,6 @@ local function define_commands_21(_3fopts)
       end
     end
   end
-  return vim.api.nvim_create_user_command((cmd_prefix .. "Alternate"), _50_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
+  return vim.api.nvim_create_user_command((cmd_prefix .. "Alternate"), _51_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
 end
 return {["define-commands!"] = define_commands_21}

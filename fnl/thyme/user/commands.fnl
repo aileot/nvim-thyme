@@ -260,8 +260,9 @@
       ;; TODO: Or `:confirm` prefix to ask?
       ;; TODO: Clear compiled lua in project.
       (fn []
-        (clear-cache!)
-        (vim.notify (.. "Cleared cache: " lua-cache-prefix))))
+        (if (clear-cache!)
+            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
+            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (command! (.. cmd-prefix :Alternate)
       ;; TODO: Alternate lua-file to fennel-file.
       {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
