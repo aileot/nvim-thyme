@@ -10,7 +10,7 @@
 
 ;; Note: In case config is managed over symbolic link or something else,
 ;; compare it with a each project config later.
-(local config-path (Path.join stdpath-config config-filename))
+(local config-path (vim.fn.resolve (Path.join stdpath-config config-filename)))
 
 (local cache-prefix
        (assert (or (rtp:match "([^,]+/thyme/compile[^,]-),")
