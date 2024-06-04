@@ -59,12 +59,14 @@ The project started from scratch. _Now in Beta!_
 ## Requirements
 
 - Neovim v0.10.0+
-- [Fennel][] on your `&runtimepath`, in short, `&rtp`. (_not embedded_ unlike other plugins)
+- [Fennel][] on your `&runtimepath`, in short, `&rtp`.
+  (_not embedded_ unlike other plugins)
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
   on `&rtp` by yourself)
 - (Optional) a tree-sitter parser for fennel like [tree-sitter-fennel], or via
   [nvim-treesitter][] on `&rtp`.
-- (Optional) [parinfer-rust][] on `&rtp` (to improve UX on the commands and keymaps)
+- (Optional) [parinfer-rust][] on `&rtp`
+  (to improve UX on the commands and keymaps)
 
 ## Installation
 
@@ -315,13 +317,17 @@ loaded once a session of nvim. For example,
 All the interfaces are provided from the "thyme" module: get them from
 `require("thyme")`.
 
-- [loader](./REFERENCE.md#loader) is to be appended to `package.loaders`.
+- [loader](./REFERENCE.md#loader)
+  is to be appended to `package.loaders`.
 - [watch-files!](./REFERENCE.md#watch-files!)
-  or [watch_files](./REFERENCE.md#watch_files) creates a set of autocmds to watch files.
+  or [watch_files](./REFERENCE.md#watch_files)
+  creates a set of autocmds to watch files.
 - [define-keymaps!](./REFERENCE.md#define-keymaps!)
-  or [define_keymaps](./REFERENCE.md#define_keymaps) defines a set of keymaps in the [list](#Keymaps) below.
+  or [define_keymaps](./REFERENCE.md#define_keymaps)
+  defines a set of keymaps in the [list](#Keymaps) below.
 - [define-commands!](./REFERENCE.md#define-commands!)
-  or [define_commands](./REFERENCE.md#define_commands) defines a set of command in the [list](#Commands) below.
+  or [define_commands](./REFERENCE.md#define_commands)
+  defines a set of command in the [list](#Commands) below.
 
 ### Keymaps
 
@@ -347,7 +353,8 @@ The commands are defined with either `define_commands` or `define-commands!`.
 The following command list is an example defined by the functions,
 with its default `cmd-prefix` option `Fnl`.
 
-- `:Fnl` is an alias of `:FnlEval`. (It'll be undefined if `cmd-prefix` is an empty string.)
+- `:Fnl` is an alias of `:FnlEval`.
+  (It'll be undefined if `cmd-prefix` is an empty string.)
 - `:FnlEval` evaluates its following Fennel expression.
 - `:FnlCompileString` prints the Lua compiled results of its following Fennel expression.
 - `:FnlCacheClear` clears Lua caches of Fennel files, and their dependency map logs.
@@ -446,23 +453,25 @@ for performance as described in [Commands](#Commands) section above.
 
 ## Not in Plan
 
-- Regardless of the nvim-plugin convention, `nvim-thyme` will _**not** provide
-  a `setup` function._
+- Regardless of the nvim-plugin convention,
+  `nvim-thyme` will _**not** provide a `setup` function._
   No matter how optimized a `setup` file is, searching a file
   (whether lua module or vim autoload)
   through `&rtp` would be inevitably the biggest cost.
-- Unlike [tangerine.nvim][], `nvim-thyme` will _**not** compile
-  `$XDG_CONFIG_HOME/nvim/init.fnl`._
-- Unlike [hotpot.nvim][], `nvim-thyme` will _**not** load `plugin/*.fnl`,
-  `ftplugin/*.fnl`, and so on._
-- Unlike [nfnl][] and other compiler plugins, `nvim-thyme` will _**not**
-  compile Fennel files which is not loaded in nvim runtime by default._
+- Unlike [tangerine.nvim][],
+  `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
+- Unlike [hotpot.nvim][],
+  `nvim-thyme` will _**not** load `plugin/*.fnl`, `ftplugin/*.fnl`, and so on._
+- Unlike [nfnl][] and other compiler plugins,
+  `nvim-thyme` will _**not** compile Fennel files which is not loaded in nvim
+  runtime by default._
   If you still need to compile Fennel files in a project apart from nvim
   runtime, you have several options:
   - Define some `autocmd`s in your config or in .nvim.fnl.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
-  - Use git hooks. (The [.githooks](,/.githooks) is a WIP example. Help wanted.)
+  - Use git hooks.
+    (See the [.githooks](,/.githooks) in this project as a WIP example. Help wanted.)
 
 ## Acknowledgement
 
