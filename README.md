@@ -54,18 +54,19 @@ The project started from scratch. _Now in Beta!_
   contents are updated.
   This pool system is adopted here and there in this project.
   That prevents your SSD from wearing out
-  unless I am misunderstanding how SSD work,
-  or your OS has already optimized the file system.
+  though your modern SSD and OS might have optimized the file system already.
 
 ## Requirements
 
 - Neovim v0.10.0+
-- [Fennel][] on your `&runtimepath`, in short, `&rtp`. (_not embedded_ unlike other plugins)
+- [Fennel][] on your `&runtimepath`, in short, `&rtp`.
+  (_not embedded_ unlike other plugins)
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
   on `&rtp` by yourself)
 - (Optional) a tree-sitter parser for fennel like [tree-sitter-fennel], or via
   [nvim-treesitter][] on `&rtp`.
-- (Optional) [parinfer-rust][] on `&rtp` (to improve UX on the commands and keymaps)
+- (Optional) [parinfer-rust][] on `&rtp`
+  (to improve UX on the commands and keymaps)
 
 ## Installation
 
@@ -151,9 +152,16 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
   },
 },
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
-{ "aileot/nvim-laurel", {
-  build = ":FnlCacheClear!",
-  -- and other settings
+{ "aileot/nvim-laurel",
+  {
+    build = ":FnlCacheClear!",
+    -- and other settings
+  },
+},
+-- Optional dependency plugin.
+{ "eraserhd/parinfer-rust",
+  {
+    build = "cargo build --release",
   },
 },
 ```
@@ -279,18 +287,47 @@ settings.
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
+For performance, you can `bootstrap` _macro_ plugins inside `.nvim-thyme.fnl`
+since, on missing a module written in Fennel, `.nvim-thyme.fnl` is always
+loaded once a session of nvim. For example,
+
+```fennel
+(local root :/your/dir-path/to/install/plugins
+(fn bootstrap! [url]
+  ;; Note: How to extract name from url depends on what plugin manager you use.
+  (let [name (url:gsub "^.*/" "")
+        path (.. root "/" name)]
+    (when (not (vim.uv.fs_stat path))
+      (vim.notify (: "Install missing %s from %s..." :format name url)
+                  vim.log.levels.WARN)
+      (vim.fn.system [:git :clone "--filter=blob:none" url path])
+      (vim.notify (: "%s is installed under %s." :format url path)))
+    (vim.opt.rtp:prepend path)))
+
+(bootstrap! "https://github.com/aileot/nvim-laurel")
+{:rollback true
+ :compiler-options {:correlate true
+                    ;; :compilerEnv _G
+                    :error-pinpoint ["|>>" "<<|"]}
+ :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
+```
+
 ### Functions
 
 All the interfaces are provided from the "thyme" module: get them from
 `require("thyme")`.
 
-- [loader](./REFERENCE.md#loader) is to be appended to `package.loaders`.
+- [loader](./REFERENCE.md#loader)
+  is to be appended to `package.loaders`.
 - [watch-files!](./REFERENCE.md#watch-files!)
-  or [watch_files](./REFERENCE.md#watch_files) creates a set of autocmds to watch files.
+  or [watch_files](./REFERENCE.md#watch_files)
+  creates a set of autocmds to watch files.
 - [define-keymaps!](./REFERENCE.md#define-keymaps!)
-  or [define_keymaps](./REFERENCE.md#define_keymaps) defines a set of keymaps in the [list](#Keymaps) below.
+  or [define_keymaps](./REFERENCE.md#define_keymaps)
+  defines a set of keymaps in the [list](#Keymaps) below.
 - [define-commands!](./REFERENCE.md#define-commands!)
-  or [define_commands](./REFERENCE.md#define_commands) defines a set of command in the [list](#Commands) below.
+  or [define_commands](./REFERENCE.md#define_commands)
+  defines a set of command in the [list](#Commands) below.
 
 ### Keymaps
 
@@ -316,7 +353,8 @@ The commands are defined with either `define_commands` or `define-commands!`.
 The following command list is an example defined by the functions,
 with its default `cmd-prefix` option `Fnl`.
 
-- `:Fnl` is an alias of `:FnlEval`. (It'll be undefined if `cmd-prefix` is an empty string.)
+- `:Fnl` is an alias of `:FnlEval`.
+  (It'll be undefined if `cmd-prefix` is an empty string.)
 - `:FnlEval` evaluates its following Fennel expression.
 - `:FnlCompileString` prints the Lua compiled results of its following Fennel expression.
 - `:FnlCacheClear` clears Lua caches of Fennel files, and their dependency map logs.
@@ -415,23 +453,25 @@ for performance as described in [Commands](#Commands) section above.
 
 ## Not in Plan
 
-- Regardless of the nvim-plugin convention, `nvim-thyme` will _**not** provide
-  a `setup` function._
+- Regardless of the nvim-plugin convention,
+  `nvim-thyme` will _**not** provide a `setup` function._
   No matter how optimized a `setup` file is, searching a file
   (whether lua module or vim autoload)
   through `&rtp` would be inevitably the biggest cost.
-- Unlike [tangerine.nvim][], `nvim-thyme` will _**not** compile
-  `$XDG_CONFIG_HOME/nvim/init.fnl`._
-- Unlike [hotpot.nvim][], `nvim-thyme` will _**not** load `plugin/*.fnl`,
-  `ftplugin/*.fnl`, and so on._
-- Unlike [nfnl][] and other compiler plugins, `nvim-thyme` will _**not**
-  compile Fennel files which is not loaded in nvim runtime by default._
+- Unlike [tangerine.nvim][],
+  `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
+- Unlike [hotpot.nvim][],
+  `nvim-thyme` will _**not** load `plugin/*.fnl`, `ftplugin/*.fnl`, and so on._
+- Unlike [nfnl][] and other compiler plugins,
+  `nvim-thyme` will _**not** compile Fennel files which is not loaded in nvim
+  runtime by default._
   If you still need to compile Fennel files in a project apart from nvim
   runtime, you have several options:
   - Define some `autocmd`s in your config or in .nvim.fnl.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
-  - Use git hooks. (The [.githooks](,/.githooks) is a WIP example. Help wanted.)
+  - Use git hooks.
+    (See the [.githooks](,/.githooks) in this project as a WIP example. Help wanted.)
 
 ## Acknowledgement
 
