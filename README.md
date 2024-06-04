@@ -285,6 +285,31 @@ settings.
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
+For performance, you can `bootstrap` _macro_ plugins inside `.nvim-thyme.fnl`
+since, on missing a module written in Fennel, `.nvim-thyme.fnl` is always
+loaded once a session of nvim. For example,
+
+```fennel
+(local root :/your/dir-path/to/install/plugins
+(fn bootstrap! [url]
+  ;; Note: How to extract name from url depends on what plugin manager you use.
+  (let [name (url:gsub "^.*/" "")
+        path (.. root "/" name)]
+    (when (not (vim.uv.fs_stat path))
+      (vim.notify (: "Install missing %s from %s..." :format name url)
+                  vim.log.levels.WARN)
+      (vim.fn.system [:git :clone "--filter=blob:none" url path])
+      (vim.notify (: "%s is installed under %s." :format url path)))
+    (vim.opt.rtp:prepend path)))
+
+(bootstrap! "https://github.com/aileot/nvim-laurel")
+{:rollback true
+ :compiler-options {:correlate true
+                    ;; :compilerEnv _G
+                    :error-pinpoint ["|>>" "<<|"]}
+ :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
+```
+
 ### Functions
 
 All the interfaces are provided from the "thyme" module: get them from
