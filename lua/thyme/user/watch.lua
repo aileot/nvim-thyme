@@ -1,5 +1,6 @@
 local _local_1_ = require("thyme.const")
 local config_path = _local_1_["config-path"]
+local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local _local_2_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_2_["clear-cache!"]
 local _local_3_ = require("thyme.user.check")
@@ -19,7 +20,10 @@ local function watch_to_update_21(_3fopts)
     local fnl_path = _5_["match"]
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
-      clear_cache_21()
+      if clear_cache_21() then
+        vim.notify(("Cleared cache: " .. lua_cache_prefix))
+      else
+      end
     else
       check_to_update_21(resolved_path, opts)
     end
