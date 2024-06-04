@@ -12,7 +12,6 @@
 (macro autocmd! [...]
   `(vim.api.nvim_create_autocmd ,...))
 
-(local watch-autocmds {})
 (fn watch-to-update! [?opts]
   "Add an autocmd in augroup \"Thyme\" to watch fennel files.
 It overrides the previously defined `autocmd`s if both event and pattern are
@@ -33,12 +32,6 @@ the same.
                    ;; Prevent not to destroy the autocmd.
                    nil)]
     (set ?group group)
-    (let [id (autocmd! event {: group : pattern : callback})]
-      (if (. watch-autocmds event)
-          (let [?id-duplicated-pattern (. watch-autocmds event pattern)]
-            (when ?id-duplicated-pattern
-              (vim.api.nvim_del_autocmd ?id-duplicated-pattern)))
-          (tset watch-autocmds event {}))
-      (tset watch-autocmds event pattern id))))
+    (autocmd! event {: group : pattern : callback})))
 
 {: watch-to-update!}
