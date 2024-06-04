@@ -5,8 +5,7 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-;; Note: If the folder is named "backup", its purpose is unclear.
-(local backup-prefix (Path.join state-prefix :rollback))
+(local backup-prefix (Path.join state-prefix :backup))
 
 (local BackupManager {})
 
