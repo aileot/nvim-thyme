@@ -1,7 +1,7 @@
 (import-macros {: when-not} :thyme.macros)
 
 (local BackupManager (require :thyme.utils.backup-manager))
-(local MacroBackupManager (BackupManager.new :macro))
+(local MacroBackupManager (BackupManager.new :macro-rollback))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: pcall-with-logger! : is-logged? : log-again!}
