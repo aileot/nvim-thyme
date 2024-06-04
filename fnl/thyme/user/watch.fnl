@@ -32,7 +32,6 @@ the same.
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
-                         ;; TODO: Reduce the occasions to clear?
                          (when (clear-cache!)
                            (vim.notify (.. "Cleared cache: " lua-cache-prefix)))
                          (check-to-update! resolved-path opts))
