@@ -2,6 +2,8 @@
 ;;; It only helps users write shorter than with vim.api.nvim_create_augroup
 ;;; and vim.api.nvim_create_autocmd.
 
+(local {: config-path : lua-cache-prefix} (require :thyme.const))
+(local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: check-to-update!} (require :thyme.user.check))
 
 (var ?group nil)
@@ -28,9 +30,13 @@ the same.
         event (or opts.event [:BufWritePost :FileChangedShellPost])
         pattern (or opts.pattern :*.fnl)
         callback (fn [{:match fnl-path}]
-                   (check-to-update! fnl-path opts)
-                   ;; Prevent not to destroy the autocmd.
-                   nil)]
+                   (let [resolved-path (vim.fn.resolve fnl-path)]
+                     (if (= config-path resolved-path)
+                         (when (clear-cache!)
+                           (vim.notify (.. "Cleared cache: " lua-cache-prefix)))
+                         (check-to-update! resolved-path opts))
+                     ;; Prevent not to destroy the autocmd.
+                     nil))]
     (set ?group group)
     (autocmd! event {: group : pattern : callback})))
 
