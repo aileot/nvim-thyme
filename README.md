@@ -54,8 +54,7 @@ The project started from scratch. _Now in Beta!_
   contents are updated.
   This pool system is adopted here and there in this project.
   That prevents your SSD from wearing out
-  unless I am misunderstanding how SSD work,
-  or your OS has already optimized the file system.
+  though your modern SSD and OS might have optimized the file system already.
 
 ## Requirements
 
