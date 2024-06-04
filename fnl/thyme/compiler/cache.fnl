@@ -17,26 +17,14 @@
   (let [lua-module-path (.. (module-name:gsub "%." Path.sep) :.lua)]
     (Path.join lua-cache-prefix lua-module-path)))
 
-(fn delete-cache-files! []
-  "Delete cache files and the related files."
-  (hide-files-in-dir! lua-cache-prefix)
-  (clear-dependency-log-files!))
-
-(fn clear-cache! [?opts]
-  "Clear lua cache files compiled by nvim-thyme.
-@param ?opts.prompt boolean (default: true) Set false to clear cache without prompt"
-  ;; TODO: Clear the other cache directories?
-  (let [opts (or ?opts {})
-        path lua-cache-prefix
-        idx-yes 2
-        ?idx (when (= false opts.prompt)
-               idx-yes)]
-    (match (or ?idx ;
-               (vim.fn.confirm (: "Remove cache files under %s?" :format path)
-                               "&No\n&yes" 1 :Warning))
-      idx-yes (do
-                (delete-cache-files!)
-                (vim.notify (.. "Cleared cache: " path)))
-      _ (vim.notify (.. "Abort. " path " is already cleared.")))))
+(fn clear-cache! []
+  "Clear lua cache files and other related state files.
+@return boolean if `true`, any files are cleared."
+  (when (vim.fs.find :*.lua {:type :file
+                             :path lua-cache-prefix
+                             :limit math.huge})
+    (hide-files-in-dir! lua-cache-prefix)
+    (clear-dependency-log-files!)
+    true))
 
 {: module-name->lua-path : clear-cache!}
