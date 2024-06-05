@@ -104,7 +104,7 @@ ModuleMap["restore!"] = function(self)
   self["_dep-map"] = self["__dep-map"]
   return restore_file_21(log_path)
 end
-ModuleMap["clear-log-files!"] = function()
+ModuleMap["clear-module-map-files!"] = function()
   return each_file(hide_file_21, modmap_prefix)
 end
 return ModuleMap

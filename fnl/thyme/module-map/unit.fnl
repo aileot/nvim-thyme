@@ -118,7 +118,7 @@
     (set self._dep-map self.__dep-map)
     (restore-file! log-path)))
 
-(fn ModuleMap.clear-log-files! []
+(fn ModuleMap.clear-module-map-files! []
   "Clear all the module-map log files managed by nvim-thyme."
   ;; Note: hide-dir! instead also move modmap dir wastefully.
   (each-file hide-file! modmap-prefix))
