@@ -5,15 +5,17 @@ local write_log_file_21 = _local_1_["write-log-file!"]
 local append_log_file_21 = _local_1_["append-log-file!"]
 local _local_2_ = require("thyme.utils.uri")
 local uri_encode = _local_2_["uri-encode"]
-local _local_3_ = require("thyme.const")
-local state_prefix = _local_3_["state-prefix"]
-local _local_4_ = require("thyme.utils.pool")
-local hide_file_21 = _local_4_["hide-file!"]
-local restore_file_21 = _local_4_["restore-file!"]
-local can_restore_file_3f = _local_4_["can-restore-file?"]
-local _local_5_ = require("thyme.module-map.format")
-local modmap__3eline = _local_5_["modmap->line"]
-local read_module_map_file = _local_5_["read-module-map-file"]
+local _local_3_ = require("thyme.utils.iterator")
+local each_file = _local_3_["each-file"]
+local _local_4_ = require("thyme.const")
+local state_prefix = _local_4_["state-prefix"]
+local _local_5_ = require("thyme.utils.pool")
+local hide_file_21 = _local_5_["hide-file!"]
+local restore_file_21 = _local_5_["restore-file!"]
+local can_restore_file_3f = _local_5_["can-restore-file?"]
+local _local_6_ = require("thyme.module-map.format")
+local modmap__3eline = _local_6_["modmap->line"]
+local read_module_map_file = _local_6_["read-module-map-file"]
 local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
@@ -39,12 +41,12 @@ ModuleMap.new = function(raw_fnl_path)
   self["_dep-map"] = modmap
   return self, logged_3f
 end
-ModuleMap["initialize-module-map!"] = function(self, _7_)
-  local module_name = _7_["module-name"]
-  local fnl_path = _7_["fnl-path"]
-  local _lua_path = _7_["lua-path"]
-  local _macro_3f = _7_["macro?"]
-  local modmap = _7_
+ModuleMap["initialize-module-map!"] = function(self, _8_)
+  local module_name = _8_["module-name"]
+  local fnl_path = _8_["fnl-path"]
+  local _lua_path = _8_["lua-path"]
+  local _macro_3f = _8_["macro?"]
+  local modmap = _8_
   modmap["fnl-path"] = vim.fn.resolve(fnl_path)
   local modmap_line = modmap__3eline(modmap)
   local log_path = self["get-log-path"](self)
@@ -101,5 +103,8 @@ ModuleMap["restore!"] = function(self)
   self["_entry-map"] = self["__entry-map"]
   self["_dep-map"] = self["__dep-map"]
   return restore_file_21(log_path)
+end
+ModuleMap["clear-log-files!"] = function()
+  return each_file(hide_file_21, modmap_prefix)
 end
 return ModuleMap
