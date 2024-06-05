@@ -1,6 +1,6 @@
 (import-macros {: when-not : last} :thyme.macros)
 
-(local {: read-file} (require :thyme.utils.fs))
+(local {: read-file : assert-is-log-file} (require :thyme.utils.fs))
 
 (local {: gsplit} (require :thyme.utils.iterator))
 
@@ -52,4 +52,46 @@ empty table.
     (let [{: fnl-path &as modmap} (line->modmap line)]
       (values fnl-path modmap))))
 
-{: modmap->line : read-module-map-file}
+(fn macro-recorded? [log-path]
+  "Tell if the primarily saved module-map in `log-path` is a macro module.
+@param log-path string
+@return boolean"
+  (assert-is-log-file log-path)
+  (with-open [file (assert (io.open log-path :r)
+                           (.. "failed to read " log-path))]
+    ;; Peek the first line.
+    (not= nil ;
+          (-> (file:read :*l)
+              ;; Find macro-marker with `find` instead of comparing the line end
+              ;; char with `=` just in case not to get into trouble when the log
+              ;; format is updated (though unlikely): what position macro marker is
+              ;; saved could be changed.
+              (: :find marker.macro 1 true)))))
+
+(fn peek-module-name [log-path]
+  "Peek the primary `module-name` of the module-map recorded in `log-path`.
+@param log-path string
+@return string"
+  (assert-is-log-file log-path)
+  (with-open [file (assert (io.open log-path :r)
+                           (.. "failed to read " log-path))]
+    ;; Peek the first line.
+    (-> (file:read :*l)
+        (: :match (.. "^(.-)" marker.sep)))))
+
+(fn peek-fnl-path [log-path]
+  "Peek the primary `fnl-path` of the module-map recorded in `log-path`.
+@param log-path string
+@return string"
+  (assert-is-log-file log-path)
+  (with-open [file (assert (io.open log-path :r)
+                           (.. "failed to read " log-path))]
+    ;; Peek the first line.
+    (-> (file:read :*l)
+        (: :match (.. "^.-" marker.sep "(.-)" marker.sep)))))
+
+{: modmap->line
+ : read-module-map-file
+ : macro-recorded?
+ : peek-module-name
+ : peek-fnl-path}

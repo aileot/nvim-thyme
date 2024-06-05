@@ -123,4 +123,9 @@
   ;; Note: hide-dir! instead also move modmap dir wastefully.
   (each-file hide-file! modmap-prefix))
 
+(fn ModuleMap.get-root []
+  "Return the root directory to store module-map states.
+  @return string the root path"
+  modmap-prefix)
+
 ModuleMap

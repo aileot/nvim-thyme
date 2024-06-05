@@ -107,4 +107,7 @@ end
 ModuleMap["clear-module-map-files!"] = function()
   return each_file(hide_file_21, modmap_prefix)
 end
+ModuleMap["get-root"] = function()
+  return modmap_prefix
+end
 return ModuleMap

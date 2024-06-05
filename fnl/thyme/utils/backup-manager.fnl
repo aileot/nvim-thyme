@@ -42,4 +42,9 @@
   (let [backup-path (self:module-name->backup-path module-name)]
     (assert (fs.copyfile path backup-path))))
 
+(fn BackupManager.get-root []
+  "Return the root directory of backup files.
+@return string the root path"
+  backup-prefix)
+
 BackupManager

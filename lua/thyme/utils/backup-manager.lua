@@ -28,4 +28,7 @@ BackupManager["backup-module!"] = function(self, module_name, path)
   local backup_path = self["module-name->backup-path"](self, module_name)
   return assert(fs.copyfile(path, backup_path))
 end
+BackupManager["get-root"] = function()
+  return backup_prefix
+end
 return BackupManager
