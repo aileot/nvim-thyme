@@ -6,6 +6,7 @@
        (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
+(local {: each-file} (require :thyme.utils.iterator))
 
 (local {: state-prefix} (require :thyme.const))
 
@@ -116,5 +117,10 @@
     (set self._entry-map self.__entry-map)
     (set self._dep-map self.__dep-map)
     (restore-file! log-path)))
+
+(fn ModuleMap.clear-module-map-files! []
+  "Clear all the module-map log files managed by nvim-thyme."
+  ;; Note: hide-dir! instead also move modmap dir wastefully.
+  (each-file hide-file! modmap-prefix))
 
 ModuleMap

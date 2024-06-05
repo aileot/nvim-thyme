@@ -110,6 +110,8 @@
 @param log-lines string log code
 @param log-path log path to be written"
   (assert-is-log-file log-path)
+  (-> (vim.fs.dirname log-path)
+      (vim.fn.mkdir :p))
   (write-file! log-path log-lines))
 
 (fn append-log-file! [log-path log-lines]

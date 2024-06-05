@@ -123,6 +123,7 @@ local function delete_log_file_21(log_path)
 end
 local function write_log_file_21(log_path, log_lines)
   assert_is_log_file(log_path)
+  vim.fn.mkdir(vim.fs.dirname(log_path), "p")
   return write_file_21(log_path, log_lines)
 end
 local function append_log_file_21(log_path, log_lines)

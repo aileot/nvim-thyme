@@ -1,16 +1,8 @@
 (import-macros {: when-not : last} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
 (local ModuleMap (require :thyme.module-map.unit))
 
-(local {: each-file} (require :thyme.utils.iterator))
-(local {: hide-file!} (require :thyme.utils.pool))
 (local {: uri-encode} (require :thyme.utils.uri))
-(local {: state-prefix} (require :thyme.const))
-
-(local modmap-prefix (Path.join state-prefix :modmap))
-
-(vim.fn.mkdir modmap-prefix :p)
 
 ;; TODO: Replace the metatable on __index with a general function. The
 ;; metatable is for `get-entry-map` and `get-dependent-map`; never for
@@ -84,11 +76,6 @@
 @param fnl-path string"
   (let [modmap (. module-maps (uri-encode fnl-path))]
     (tset module-maps fnl-path modmap)))
-
-(fn clear-dependency-log-files! []
-  "Clear all the dependency log files managed by nvim-thyme."
-  ;; Note: hide-dir! instead also move modmap dir wastefully.
-  (each-file hide-file! modmap-prefix))
 
 {: log-module-map!
  : fnl-path->entry-map
