@@ -51,6 +51,14 @@ local function report_integrations()
   end
   return nil
 end
+local function report_thyme_disk_info()
+  report_start("Thyme Disk Info")
+  report_info(("The path to .nvim-thyme.fnl:\t" .. config_path))
+  report_info(("The root path of Lua cache:\t" .. lua_cache_prefix))
+  report_info(("The root path of backups for rollback:\t" .. get_root_of_backup()))
+  report_info(("The root path of module-mapping:\t" .. get_root_of_modmap()))
+  return report_info(("The root path of pool:\t" .. get_root_of_pool()))
+end
 local function report_thyme_config()
   report_start("Thyme .nvim-thyme.fnl")
   local config = get_main_config()
@@ -63,14 +71,6 @@ local function report_fennel_paths()
   report_start("Thyme fennel.{path,macro-path}")
   report_info(("fennel.path:\n- " .. (fennel.path):gsub(";", "\n- ")))
   return report_info(("fennel.macro-path:\n- " .. (fennel["macro-path"]):gsub(";", "\n- ")))
-end
-local function report_thyme_disk_info()
-  report_start("Thyme Disk Info")
-  report_info(("The path to .nvim-thyme.fnl:\t" .. config_path))
-  report_info(("The root path of Lua cache:\t" .. lua_cache_prefix))
-  report_info(("The root path of backups for rollback:\t" .. get_root_of_backup()))
-  report_info(("The root path of module-mapping:\t" .. get_root_of_modmap()))
-  return report_info(("The root path of pool:\t" .. get_root_of_pool()))
 end
 local function report_imported_macros()
   report_start("Thyme Imported Macros")
@@ -91,9 +91,9 @@ local function report_imported_macros()
 end
 local function _15_()
   report_integrations()
+  report_thyme_disk_info()
   report_thyme_config()
   report_fennel_paths()
-  report_thyme_disk_info()
   return report_imported_macros()
 end
 return {check = _15_}

@@ -36,6 +36,15 @@
         [path] (report-ok (: "%s is detected at %s." :format file path))
         _ (report-warn (: "missing %s." :format file))))))
 
+(fn report-thyme-disk-info []
+  (report-start "Thyme Disk Info")
+  (report-info (.. "The path to .nvim-thyme.fnl:\t" config-path))
+  (report-info (.. "The root path of Lua cache:\t" lua-cache-prefix))
+  (report-info (.. "The root path of backups for rollback:\t"
+                   (get-root-of-backup)))
+  (report-info (.. "The root path of module-mapping:\t" (get-root-of-modmap)))
+  (report-info (.. "The root path of pool:\t" (get-root-of-pool))))
+
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")
   (let [config (get-main-config)]
@@ -49,15 +58,6 @@
   (report-info (.. "fennel.path:\n- " ;
                    (fennel.path:gsub ";" "\n- ")))
   (report-info (.. "fennel.macro-path:\n- " (fennel.macro-path:gsub ";" "\n- "))))
-
-(fn report-thyme-disk-info []
-  (report-start "Thyme Disk Info")
-  (report-info (.. "The path to .nvim-thyme.fnl:\t" config-path))
-  (report-info (.. "The root path of Lua cache:\t" lua-cache-prefix))
-  (report-info (.. "The root path of backups for rollback:\t"
-                   (get-root-of-backup)))
-  (report-info (.. "The root path of module-mapping:\t" (get-root-of-modmap)))
-  (report-info (.. "The root path of pool:\t" (get-root-of-pool))))
 
 (fn report-imported-macros []
   (report-start "Thyme Imported Macros")
@@ -76,7 +76,7 @@
 
 {:check (fn []
           (report-integrations)
+          (report-thyme-disk-info)
           (report-thyme-config)
           (report-fennel-paths)
-          (report-thyme-disk-info)
           (report-imported-macros))}
