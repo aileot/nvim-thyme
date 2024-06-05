@@ -6,7 +6,7 @@
 (local {: macro-recorded? : peek-module-name : peek-fnl-path}
        (require :thyme.module-map.format))
 
-(local {:get-root get-module-map-root} (require :thyme.module-map.unit))
+(local {:get-root get-root-of-modmap} (require :thyme.module-map.unit))
 
 (local (report-start report-info report-ok report-warn report-error)
        (let [health vim.health]
@@ -56,7 +56,7 @@
 
 (fn report-imported-macros []
   (report-start "Thyme Imported Macros")
-  (let [root (get-module-map-root)
+  (let [root (get-root-of-modmap)
         reporter (fn [log-path]
                    (when (macro-recorded? log-path)
                      (let [module-name (peek-module-name log-path)

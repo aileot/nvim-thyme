@@ -13,7 +13,7 @@ local macro_recorded_3f = _local_5_["macro-recorded?"]
 local peek_module_name = _local_5_["peek-module-name"]
 local peek_fnl_path = _local_5_["peek-fnl-path"]
 local _local_6_ = require("thyme.module-map.unit")
-local get_module_map_root = _local_6_["get-root"]
+local get_root_of_modmap = _local_6_["get-root"]
 local report_start, report_info, report_ok, report_warn, report_error = nil, nil, nil, nil, nil
 do
   local health = vim.health
@@ -70,7 +70,7 @@ local function report_thyme_disk_info()
 end
 local function report_imported_macros()
   report_start("Thyme Imported Macros")
-  local root = get_module_map_root()
+  local root = get_root_of_modmap()
   local reporter
   local function _11_(log_path)
     if macro_recorded_3f(log_path) then
