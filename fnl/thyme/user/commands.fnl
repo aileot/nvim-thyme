@@ -8,7 +8,7 @@
 
 (local {: get-main-config : config-file?} (require :thyme.config))
 
-(local {: file-readable? : read-file : write-lua-file!}
+(local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
@@ -119,7 +119,7 @@
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (command! :ThymeUninstall
-      {:desc "[thyme] remove all the thyme's cache, state, and data files"}
+      {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
         (let [files [lua-cache-prefix
                      (Path.join (vim.fn.stdpath :cache) :thyme)
@@ -127,7 +127,11 @@
                      (Path.join (vim.fn.stdpath :data) :thyme)]]
           (each [_ path (ipairs files)]
             (assert-is-file-of-thyme path)
-            (vim.fn.delete path :rf)))))
+            (when (directory? path)
+              (case (vim.fn.delete path :rf)
+                0 (vim.notify (.. "[thyme] successfully deleted " path))
+                _ (error (.. "[thyme] failed to delete " path)))))
+          (vim.notify (.. "[thyme] successfully uninstalled")))))
     (when-not (= "" fnl-cmd-prefix)
       (command! fnl-cmd-prefix
         {:nargs "*"
