@@ -45,4 +45,13 @@
             (assert expected-contents
                     "expected non empty string for `expected-contents`")))))
 
-{: hide-file! : restore-file! : hide-files-in-dir! : can-restore-file?}
+(fn get-root []
+  "Return the root directory of pool.
+@return string the root path"
+  pool-prefix)
+
+{: hide-file!
+ : restore-file!
+ : hide-files-in-dir!
+ : can-restore-file?
+ : get-root}
