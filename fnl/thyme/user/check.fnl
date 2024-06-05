@@ -48,9 +48,8 @@
   ;; Note: module names only matter on &rtp to reload.
   (case (fnl-path->dependent-map fnl-path)
     dependent-map (each [dependent-fnl-path dependent (pairs dependent-map)]
-                    (when-not (= fnl-path dependent-fnl-path)
-                      (update-module-dependencies! dependent-fnl-path
-                                                   dependent.lua-path opts))))
+                    (update-module-dependencies! dependent-fnl-path
+                                                 dependent.lua-path opts)))
   (let [should-recompile-lua-cache? ;
         (and ?lua-path-to-clear
              (or (not (file-readable? ?lua-path-to-clear))

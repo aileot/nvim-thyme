@@ -45,10 +45,7 @@ local function update_module_dependencies_21(fnl_path, _3flua_path_to_clear, opt
     if (nil ~= _11_) then
       local dependent_map = _11_
       for dependent_fnl_path, dependent in pairs(dependent_map) do
-        if not (fnl_path == dependent_fnl_path) then
-          update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
-        else
-        end
+        update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
       end
     else
     end
