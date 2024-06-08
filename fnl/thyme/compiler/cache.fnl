@@ -19,11 +19,9 @@
 
 (fn clear-cache! []
   "Clear lua cache files and other related state files.
-@return boolean if `true`, any files are cleared."
-  ;; PERF: Because compiling always depends on `(require :fennel)`, or
-  ;; fennel.lua, just check if fennel.lua is there to tell if the cache
-  ;; directory contains any cache file.
-  (case (vim.fs.find :fennel.lua {:type :file :path lua-cache-prefix})
+@return boolean return `true` when all the lua caches are cleared; otherwise, return `false`."
+  ;; Note: glob is unavailable in vim.fs.find.
+  (case (vim.fs.find #(= :.lua ($:sub -4)) {:type :file :path lua-cache-prefix})
     [nil] false
     _ (do
         (hide-files-in-dir! lua-cache-prefix)
