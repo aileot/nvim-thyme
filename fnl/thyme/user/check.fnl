@@ -68,13 +68,14 @@
     (when ?lua-path
       (case strategy
         ;; TODO: Activate the strategies:
-        ;; - clear-all
         ;; - clear
-        ;; - recompile
         ;; - reload
         ;; - and `always-` prefixed option each
         :always-clear-all
         (clear-cache!)
+        :clear-all
+        (when (should-recompile-lua-cache? fnl-path ?lua-path)
+          (clear-cache!))
         :always-recompile
         (let [ok? (recompile! fnl-path ?lua-path module-name)]
           (when (and ok? notifiers.recompile)
