@@ -80,16 +80,38 @@
 
 (fn define-commands! [?opts]
   "Define user commands.
+@param opts.fnl-cmd-prefix string (default: \"Fnl\")
 @param opts.compiler-options table? (default: same values as main config)
 @param opts.overwrite-cmd-history? bool? (default: true)
 @param opts.omit-trailing-parens? bool? (default: true)"
   (let [opts (or ?opts {})
-        cmd-prefix (or opts.cmd-prefix :Fnl)
+        fnl-cmd-prefix (or opts.fnl-cmd-prefix :Fnl)
         compiler-options opts.compiler-options
         overwrite-cmd-history? (or opts.overwrite-cmd-history? true)
         omit-trailing-parens? (or opts.omit-trailing-parens? true)]
-    (when-not (= "" cmd-prefix)
-      (command! cmd-prefix
+    (command! :ThymeConfigOpen
+      {:desc (.. "[thyme] open the main config file " config-filename)}
+      (fn []
+        (vim.cmd (.. "tab drop " config-path))))
+    (command! :ThymeCacheOpen
+      {:desc "[thyme] open the cache root directory"}
+      (fn []
+        ;; Note: Filer plugin like oil.nvim usually modifies the buffer name
+        ;; so that `:tab drop` is unlikely to work expectedly.
+        (vim.cmd (.. "tab drop " lua-cache-prefix))))
+    (command! :ThymeCacheClear
+      ;; Note: No args will be allowed because handling module-map would
+      ;; be a bit complicated.
+      {:bar true
+       :bang true
+       :desc "[thyme] clear the lua cache and dependency map logs"}
+      ;; TODO: Or `:confirm` prefix to ask?
+      (fn []
+        (if (clear-cache!)
+            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
+            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
+    (when-not (= "" fnl-cmd-prefix)
+      (command! fnl-cmd-prefix
         {:nargs "*"
          :complete :lua
          :desc "[thyme] evaluate the following fennel expression, and display the results"}
@@ -98,7 +120,7 @@
                                           : compiler-options
                                           : overwrite-cmd-history?
                                           : omit-trailing-parens?})))
-    (command! (.. cmd-prefix :Eval)
+    (command! (.. fnl-cmd-prefix :Eval)
       {:nargs "*"
        :complete :lua
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
@@ -107,7 +129,7 @@
                                         : compiler-options
                                         : overwrite-cmd-history?
                                         : omit-trailing-parens?}))
-    (command! (.. cmd-prefix :CompileString)
+    (command! (.. fnl-cmd-prefix :CompileString)
       {:nargs "*"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
@@ -116,7 +138,7 @@
                                         : compiler-options
                                         : overwrite-cmd-history?
                                         : omit-trailing-parens?}))
-    (command! (.. cmd-prefix :EvalFile)
+    (command! (.. fnl-cmd-prefix :EvalFile)
       {:range "%"
        :nargs "?"
        :complete :file
@@ -138,7 +160,7 @@
                                                          : omit-trailing-parens?})]
           (set a.args fnl-code)
           (callback a))))
-    (command! (.. cmd-prefix :EvalBuffer)
+    (command! (.. fnl-cmd-prefix :EvalBuffer)
       {:range "%"
        :nargs "?"
        :complete :buffer
@@ -155,7 +177,7 @@
                                                          : omit-trailing-parens?})]
           (set a.args fnl-code)
           (callback a))))
-    (command! (.. cmd-prefix :CompileBuffer)
+    (command! (.. fnl-cmd-prefix :CompileBuffer)
       {:range "%"
        :nargs "?"
        :complete :buffer
@@ -173,7 +195,7 @@
                                                          : omit-trailing-parens?})]
           (set a.args fnl-code)
           (callback a))))
-    ;; (command! (.. cmd-prefix :ReplOnRtp)
+    ;; (command! (.. fnl-cmd-prefix :ReplOnRtp)
     ;;   {:nargs "*" :desc "WIP: Start REPL in thyme"}
     ;;   (fn [a]
     ;;     "Start REPL in thyme.
@@ -191,7 +213,7 @@
     ;;       (if floating-window?
     ;;           (vim.api.nvim_open_win buf true win-opts)
     ;;           (open-buffer! buf opts.mods)))))
-    (command! (.. cmd-prefix :CompileFile)
+    (command! (.. fnl-cmd-prefix :CompileFile)
       {:nargs "*"
        :bang true
        :complete :file
@@ -241,28 +263,7 @@
                         ;; TODO: Remove dependent files.
                         (write-lua-file! lua-path lua-lines)
                         (vim.notify msg))))))))))
-    (command! (.. cmd-prefix :ConfigOpen)
-      {:desc (.. "[thyme] open the main config file " config-filename)}
-      (fn []
-        (vim.cmd (.. "tab drop " config-path))))
-    (command! (.. cmd-prefix :CacheOpen)
-      {:desc "[thyme] open the cache root directory"}
-      (fn []
-        ;; Note: Filer plugin like oil.nvim usually modifies the buffer name
-        ;; so that `:tab drop` is unlikely to work expectedly.
-        (vim.cmd (.. "tab drop " lua-cache-prefix))))
-    (command! (.. cmd-prefix :CacheClear)
-      ;; Note: No args will be allowed because handling module-map would
-      ;; be a bit complicated.
-      {:bar true
-       :bang true
-       :desc "[thyme] clear the lua cache and dependency map logs"}
-      ;; TODO: Or `:confirm` prefix to ask?
-      (fn []
-        (if (clear-cache!)
-            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
-            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
-    (command! (.. cmd-prefix :Alternate)
+    (command! (.. fnl-cmd-prefix :Alternate)
       ;; TODO: Alternate lua-file to fennel-file.
       {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
       (fn [{:fargs [?path] :smods mods}]
