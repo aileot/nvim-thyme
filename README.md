@@ -38,8 +38,9 @@ The project started from scratch. _Now in Beta!_
 
 - As you may have noticed, the term of _Zero overhead_ only means it does not
   affect startup time once compiled.
-- As you may have noticed, the term of _JIT (Just-in-time)_ in this project
-  is more like JIT in
+- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
+  misleading due to the convention.
+  The _JIT_ in this project is more like JIT in
   [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
   than in
   [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
