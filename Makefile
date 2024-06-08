@@ -22,7 +22,7 @@ SPEC_ROOT:=$(TEST_ROOT)
 FNL_SPECS:=$(wildcard $(SPEC_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
 
-FNL_SRC_DIR=src
+FNL_SRC_DIR=fnl
 
 FNL_SRC:=$(wildcard $(FNL_SRC_DIR)/*/*.fnl)
 FNL_SRC+=$(wildcard $(FNL_SRC_DIR)/*/*/*.fnl)

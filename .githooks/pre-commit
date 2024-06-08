@@ -10,7 +10,7 @@ set -Ceu -o pipefail
 
 root=$(git rev-parse --show-toplevel)
 
-fnl_dir="$root/src"
+fnl_dir="$root/fnl"
 lua_dir="$root/lua"
 
 make build >/dev/null
