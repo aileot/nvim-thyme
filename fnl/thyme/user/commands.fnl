@@ -1,5 +1,6 @@
 (import-macros {: when-not : str? : dec : first} :thyme.macros)
 
+(local Path (require :thyme.utils.path))
 (local tts (require :thyme.wrapper.treesitter))
 
 (local {: lua-cache-prefix : config-filename : config-path}
@@ -78,6 +79,13 @@
                                     (fennel.view ?text compiler-options))]
                        (tts.print text {: lang}))))))))
 
+(fn assert-is-file-of-thyme [path]
+  (let [sep (or (path:match "/") "\\")]
+    (assert (or (= (.. sep :thyme) (path:sub -6))
+                (path:find (.. sep :thyme sep) 1 true))
+            (.. path " does not belong to thyme"))
+    path))
+
 (fn define-commands! [?opts]
   "Define user commands.
 @param opts.fnl-cmd-prefix string (default: \"Fnl\")
@@ -110,6 +118,16 @@
         (if (clear-cache!)
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
+    (command! :ThymeUninstall
+      {:desc "[thyme] remove all the thyme's cache, state, and data files"}
+      (fn []
+        (let [files [lua-cache-prefix
+                     (Path.join (vim.fn.stdpath :cache) :thyme)
+                     (Path.join (vim.fn.stdpath :state) :thyme)
+                     (Path.join (vim.fn.stdpath :data) :thyme)]]
+          (each [_ path (ipairs files)]
+            (assert-is-file-of-thyme path)
+            (vim.fn.delete path :rf)))))
     (when-not (= "" fnl-cmd-prefix)
       (command! fnl-cmd-prefix
         {:nargs "*"
