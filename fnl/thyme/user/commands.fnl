@@ -246,13 +246,13 @@
                         ;; TODO: Remove dependent files.
                         (write-lua-file! lua-path lua-lines)
                         (vim.notify msg))))))))))
-    (command! (.. fnl-cmd-prefix :CacheOpen)
+    (command! :ThymeCacheOpen
       {:desc "[thyme] open the cache root directory"}
       (fn []
         ;; Note: Filer plugin like oil.nvim usually modifies the buffer name
         ;; so that `:tab drop` is unlikely to work expectedly.
         (vim.cmd (.. "tab drop " lua-cache-prefix))))
-    (command! (.. fnl-cmd-prefix :CacheClear)
+    (command! :ThymeCacheClear
       ;; Note: No args will be allowed because handling module-map would
       ;; be a bit complicated.
       {:bar true
