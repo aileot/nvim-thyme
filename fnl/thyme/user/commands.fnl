@@ -88,6 +88,10 @@
         compiler-options opts.compiler-options
         overwrite-cmd-history? (or opts.overwrite-cmd-history? true)
         omit-trailing-parens? (or opts.omit-trailing-parens? true)]
+    (command! :ThymeConfigOpen
+      {:desc (.. "[thyme] open the main config file " config-filename)}
+      (fn []
+        (vim.cmd (.. "tab drop " config-path))))
     (when-not (= "" cmd-prefix)
       (command! cmd-prefix
         {:nargs "*"
