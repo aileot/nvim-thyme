@@ -25,10 +25,8 @@
   ;; Generate main-config-file if missing.
   (case (vim.fn.confirm (: "Missing \"%s\" at %s... Generate and open it?"
                            :format config-filename (vim.fn.stdpath :config))
-                        "&Yes\n&no" 1 :Warning)
-    2 (error "abort proceeding with nvim-thyme")
-    _
-    (let [recommended-config ";; Generated with recommended options by nvim-thyme.
+                        "&No\n&yes" 1 :Warning)
+    2 (let [recommended-config ";; recommended options of nvim-thyme
 {:rollback true
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
@@ -38,15 +36,15 @@
  ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in
  ;; `./fnl/?.fnl`.
  :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"]
-      ;; TODO: It's desirable to write file later with fennel.view.
-      (write-fnl-file! config-path recommended-config)
-      (vim.cmd.tabedit config-path)
-      (-> #(when (= config-path (vim.api.nvim_buf_get_name 0))
-             (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                   "&Yes\n&no" 1 :Question)
-               2 (error (.. "abort trusting " config-path))
-               _ (vim.cmd.trust)))
-          (vim.defer_fn 800)))))
+        (write-fnl-file! config-path recommended-config)
+        (vim.cmd.tabedit config-path)
+        (-> #(when (= config-path (vim.api.nvim_buf_get_name 0))
+               (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
+                                     "&Yes\n&no" 1 :Question)
+                 2 (error (.. "abort trusting " config-path))
+                 _ (vim.cmd.trust)))
+            (vim.defer_fn 800)))
+    _ (error "abort proceeding with nvim-thyme")))
 
 ;; (fn find-config-file [path]
 ;;   "Return the config path, or `nil` if not detected.

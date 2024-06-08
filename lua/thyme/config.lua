@@ -11,12 +11,9 @@ local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {rollback = true, preproc = nil, ["compiler-options"] = {}, ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
 if not file_readable_3f(config_path) then
-  local _3_ = vim.fn.confirm(("Missing \"%s\" at %s... Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&Yes\n&no", 1, "Warning")
+  local _3_ = vim.fn.confirm(("Missing \"%s\" at %s... Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_3_ == 2) then
-    error("abort proceeding with nvim-thyme")
-  else
-    local _ = _3_
-    local recommended_config = ";; Generated with recommended options by nvim-thyme.\n{:rollback true\n :compiler-options {:correlate true\n                    ;; :compilerEnv _G\n                    :error-pinpoint [\"|>>\" \"<<|\"]}\n ;; The path patterns for fennel.macro-path to find Fennel macro module path.\n ;; Relative path markers (`.`) are internally replaced with the paths on\n ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in\n ;; `./fnl/?.fnl`.\n :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"
+    local recommended_config = ";; recommended options of nvim-thyme\n{:rollback true\n :compiler-options {:correlate true\n                    ;; :compilerEnv _G\n                    :error-pinpoint [\"|>>\" \"<<|\"]}\n ;; The path patterns for fennel.macro-path to find Fennel macro module path.\n ;; Relative path markers (`.`) are internally replaced with the paths on\n ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in\n ;; `./fnl/?.fnl`.\n :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
     local function _4_()
@@ -25,7 +22,7 @@ if not file_readable_3f(config_path) then
         if (_5_ == 2) then
           return error(("abort trusting " .. config_path))
         else
-          local _0 = _5_
+          local _ = _5_
           return vim.cmd.trust()
         end
       else
@@ -33,6 +30,9 @@ if not file_readable_3f(config_path) then
       end
     end
     vim.defer_fn(_4_, 800)
+  else
+    local _ = _3_
+    error("abort proceeding with nvim-thyme")
   end
 else
 end
@@ -63,8 +63,8 @@ local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
 local function get_option_value(config, key)
-  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:91")
-  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:91")
+  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:89")
+  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:89")
   return (rawget(config, key) or rawget(default_opts, key))
 end
 return {["get-main-config"] = get_main_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}
