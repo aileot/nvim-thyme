@@ -93,6 +93,23 @@
       {:desc (.. "[thyme] open the main config file " config-filename)}
       (fn []
         (vim.cmd (.. "tab drop " config-path))))
+    (command! :ThymeCacheOpen
+      {:desc "[thyme] open the cache root directory"}
+      (fn []
+        ;; Note: Filer plugin like oil.nvim usually modifies the buffer name
+        ;; so that `:tab drop` is unlikely to work expectedly.
+        (vim.cmd (.. "tab drop " lua-cache-prefix))))
+    (command! :ThymeCacheClear
+      ;; Note: No args will be allowed because handling module-map would
+      ;; be a bit complicated.
+      {:bar true
+       :bang true
+       :desc "[thyme] clear the lua cache and dependency map logs"}
+      ;; TODO: Or `:confirm` prefix to ask?
+      (fn []
+        (if (clear-cache!)
+            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
+            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (when-not (= "" fnl-cmd-prefix)
       (command! fnl-cmd-prefix
         {:nargs "*"
@@ -246,23 +263,6 @@
                         ;; TODO: Remove dependent files.
                         (write-lua-file! lua-path lua-lines)
                         (vim.notify msg))))))))))
-    (command! :ThymeCacheOpen
-      {:desc "[thyme] open the cache root directory"}
-      (fn []
-        ;; Note: Filer plugin like oil.nvim usually modifies the buffer name
-        ;; so that `:tab drop` is unlikely to work expectedly.
-        (vim.cmd (.. "tab drop " lua-cache-prefix))))
-    (command! :ThymeCacheClear
-      ;; Note: No args will be allowed because handling module-map would
-      ;; be a bit complicated.
-      {:bar true
-       :bang true
-       :desc "[thyme] clear the lua cache and dependency map logs"}
-      ;; TODO: Or `:confirm` prefix to ask?
-      (fn []
-        (if (clear-cache!)
-            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
-            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (command! (.. fnl-cmd-prefix :Alternate)
       ;; TODO: Alternate lua-file to fennel-file.
       {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
