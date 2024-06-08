@@ -241,7 +241,7 @@
                         ;; TODO: Remove dependent files.
                         (write-lua-file! lua-path lua-lines)
                         (vim.notify msg))))))))))
-    (command! (.. cmd-prefix :ConfigOpen)
+    (command! :ThymeConfigOpen
       {:desc (.. "[thyme] open the main config file " config-filename)}
       (fn []
         (vim.cmd (.. "tab drop " config-path))))

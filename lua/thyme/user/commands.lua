@@ -249,7 +249,7 @@ local function define_commands_21(_3fopts)
   local function _45_()
     return vim.cmd(("tab drop " .. config_path))
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "ConfigOpen"), _45_, {desc = ("[thyme] open the main config file " .. config_filename)})
+  vim.api.nvim_create_user_command("ThymeConfigOpen", _45_, {desc = ("[thyme] open the main config file " .. config_filename)})
   local function _46_()
     return vim.cmd(("tab drop " .. lua_cache_prefix))
   end
