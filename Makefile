@@ -22,15 +22,17 @@ SPEC_ROOT:=$(TEST_ROOT)
 FNL_SPECS:=$(wildcard $(SPEC_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
 
-FNL_SRC:=$(wildcard fnl/*/*.fnl)
-FNL_SRC+=$(wildcard fnl/*/*/*.fnl)
+FNL_SRC_DIR=src
+
+FNL_SRC:=$(wildcard $(FNL_SRC_DIR)/*/*.fnl)
+FNL_SRC+=$(wildcard $(FNL_SRC_DIR)/*/*/*.fnl)
 FNL_SRC:=$(filter-out %/macros.fnl,$(FNL_SRC))
-LUA_RES:=$(FNL_SRC:fnl/%.fnl=lua/%.lua)
+LUA_RES:=$(FNL_SRC:$(FNL_SRC_DIR)/%.fnl=lua/%.lua)
 
-FNL_SRC_DIRS:=$(wildcard fnl/*/*/)
-LUA_RES_DIRS:=$(FNL_SRC_DIRS:fnl/%=lua/%)
+FNL_SRC_DIRS:=$(wildcard $(FNL_SRC_DIR)/*/*/)
+LUA_RES_DIRS:=$(FNL_SRC_DIRS:$(FNL_SRC_DIR)/%=lua/%)
 
-REPO_FNL_DIR := $(REPO_ROOT)/fnl
+REPO_FNL_DIR := $(REPO_ROOT)/$(FNL_SRC_DIR)
 REPO_FNL_PATH := $(REPO_FNL_DIR)/?.fnl;$(REPO_FNL_DIR)/?/init.fnl
 REPO_MACRO_DIR := $(REPO_FNL_DIR)
 REPO_MACRO_PATH := $(REPO_MACRO_DIR)/?.fnl;$(REPO_MACRO_DIR)/?/init.fnl
@@ -49,7 +51,7 @@ help: ## Show this help
 lua/%/:
 	@mkdir -p $@
 
-lua/%.lua: fnl/%.fnl
+lua/%.lua: $(FNL_SRC_DIR)/%.fnl
 	@$(FENNEL) \
 		$(FNL_FLAGS) \
 		$(FNL_EXTRA_FLAGS) \
