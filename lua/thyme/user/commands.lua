@@ -86,7 +86,7 @@ local function wrap_fennel_wrapper_for_command(callback, _12_)
 end
 local function define_commands_21(_3fopts)
   local opts = (_3fopts or {})
-  local cmd_prefix = (opts["cmd-prefix"] or "Fnl")
+  local fnl_cmd_prefix = (opts["fnl-cmd-prefix"] or "Fnl")
   local compiler_options = opts["compiler-options"]
   local overwrite_cmd_history_3f = (opts["overwrite-cmd-history?"] or true)
   local omit_trailing_parens_3f = (opts["omit-trailing-parens?"] or true)
@@ -94,12 +94,12 @@ local function define_commands_21(_3fopts)
     return vim.cmd(("tab drop " .. config_path))
   end
   vim.api.nvim_create_user_command("ThymeConfigOpen", _19_, {desc = ("[thyme] open the main config file " .. config_filename)})
-  if not ("" == cmd_prefix) then
-    vim.api.nvim_create_user_command(cmd_prefix, wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
+  if not ("" == fnl_cmd_prefix) then
+    vim.api.nvim_create_user_command(fnl_cmd_prefix, wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   else
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "Eval"), wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
-  vim.api.nvim_create_user_command((cmd_prefix .. "CompileString"), wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", desc = "[thyme] display the compiled lua results of the following fennel expression"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Eval"), wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileString"), wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   local function _23_(_21_)
     local _arg_22_ = _21_["fargs"]
     local _3fpath = _arg_22_[1]
@@ -115,7 +115,7 @@ local function define_commands_21(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "EvalFile"), _23_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "EvalFile"), _23_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
   local function _26_(_24_)
     local _arg_25_ = _24_["fargs"]
     local _3fpath = _arg_25_[1]
@@ -136,7 +136,7 @@ local function define_commands_21(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "EvalBuffer"), _26_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "EvalBuffer"), _26_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
   local function _30_(_28_)
     local _arg_29_ = _28_["fargs"]
     local _3fpath = _arg_29_[1]
@@ -157,7 +157,7 @@ local function define_commands_21(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "CompileBuffer"), _30_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileBuffer"), _30_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
   local function _33_(_32_)
     local glob_paths = _32_["fargs"]
     local force_compile_3f = _32_["bang"]
@@ -249,11 +249,11 @@ local function define_commands_21(_3fopts)
       return nil
     end
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "CompileFile"), _33_, {nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl buffer"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileFile"), _33_, {nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl buffer"})
   local function _46_()
     return vim.cmd(("tab drop " .. lua_cache_prefix))
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "CacheOpen"), _46_, {desc = "[thyme] open the cache root directory"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CacheOpen"), _46_, {desc = "[thyme] open the cache root directory"})
   local function _47_()
     if clear_cache_21() then
       return vim.notify(("Cleared cache: " .. lua_cache_prefix))
@@ -261,7 +261,7 @@ local function define_commands_21(_3fopts)
       return vim.notify(("No cache files detected at " .. lua_cache_prefix))
     end
   end
-  vim.api.nvim_create_user_command((cmd_prefix .. "CacheClear"), _47_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CacheClear"), _47_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
   local function _51_(_49_)
     local _arg_50_ = _49_["fargs"]
     local _3fpath = _arg_50_[1]
@@ -310,6 +310,6 @@ local function define_commands_21(_3fopts)
       end
     end
   end
-  return vim.api.nvim_create_user_command((cmd_prefix .. "Alternate"), _51_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
+  return vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Alternate"), _51_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
 end
 return {["define-commands!"] = define_commands_21}
