@@ -15,6 +15,7 @@
         : restore-module-map!} (require :thyme.module-map.logger))
 
 (local {: write-lua-file-with-backup!} (require :thyme.searcher.module))
+(local {: clear-cache!} (require :thyme.compiler.cache))
 
 (local default-strategy :recompile)
 
@@ -72,6 +73,8 @@
         ;; - recompile
         ;; - reload
         ;; - and `always-` prefixed option each
+        :always-clear-all
+        (clear-cache!)
         :always-recompile
         (let [ok? (recompile! fnl-path ?lua-path module-name)]
           (when (and ok? notifiers.recompile)
