@@ -3,7 +3,7 @@
 (local fennel (require :fennel))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
-
+(local {: lua-cache-prefix} (require :thyme.const))
 (local {: get-main-config} (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
@@ -71,10 +71,16 @@
         ;; - reload
         ;; - and `always-` prefixed option each
         :always-clear-all
-        (clear-cache!)
+        (let [clear-any? (clear-cache!)]
+          (when (and clear-any? notifiers.clear)
+            (notifiers.clear (.. "[thyme] clear all the cache under "
+                                 lua-cache-prefix))))
         :clear-all
         (when (should-recompile-lua-cache? fnl-path ?lua-path)
-          (clear-cache!))
+          (let [clear-any? (clear-cache!)]
+            (when (and clear-any? notifiers.clear)
+              (notifiers.clear (.. "[thyme] clear all the cache under "
+                                   lua-cache-prefix)))))
         :always-recompile
         (let [ok? (recompile! fnl-path ?lua-path module-name)]
           (when (and ok? notifiers.recompile)
