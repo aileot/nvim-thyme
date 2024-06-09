@@ -24,6 +24,11 @@
                     i)
     _ 0))
 
+(fn should-recompile-lua-cache? [fnl-path ?lua-path]
+  (and ?lua-path (or (not (file-readable? ?lua-path))
+                     (not= (read-file ?lua-path) ;
+                           (compile-file fnl-path)))))
+
 (fn recompile! [fnl-path lua-path module-name]
   "Recompile `fnl-path` to `lua-path`.
 @param fnl-path string
@@ -69,18 +74,11 @@
         ;; - and `always-` prefixed option each
         :always-recompile
         (when (recompile! fnl-path ?lua-path module-name)
-          (notifiers.recompile (.. "[thyme] successfully recompile "
-                                   fnl-path)))
+          (notifiers.recompile (.. "[thyme] successfully recompile " fnl-path)))
         :recompile
-        (let [should-recompile-lua-cache? ;
-              (and ?lua-path
-                   (or (not (file-readable? ?lua-path))
-                       (not= (read-file ?lua-path) ;
-                             (compile-file fnl-path))))]
-          (when should-recompile-lua-cache?
-            (when (recompile! fnl-path ?lua-path module-name)
-              (notifiers.recompile (.. "[thyme] successfully recompile "
-                                       fnl-path)))))))
+        (when (should-recompile-lua-cache? fnl-path ?lua-path)
+          (when (recompile! fnl-path ?lua-path module-name)
+            (notifiers.recompile (.. "[thyme] successfully recompile " fnl-path))))))
     (case strategy
       (where (or :recompile :reload :always-recompile :always-reload))
       (case (fnl-path->dependent-map fnl-path)
