@@ -66,13 +66,15 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   local notifiers = (opts.notifier or {})
   if _3flua_path then
     if (strategy == "always-recompile") then
-      if recompile_21(fnl_path, _3flua_path, module_name) then
+      local ok_3f = recompile_21(fnl_path, _3flua_path, module_name)
+      if (ok_3f and notifiers.recompile) then
         notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
       else
       end
     elseif (strategy == "recompile") then
       if should_recompile_lua_cache_3f(fnl_path, _3flua_path) then
-        if recompile_21(fnl_path, _3flua_path, module_name) then
+        local ok_3f = recompile_21(fnl_path, _3flua_path, module_name)
+        if (ok_3f and notifiers.recompile) then
           notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
         else
         end

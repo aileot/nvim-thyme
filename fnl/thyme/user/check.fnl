@@ -73,12 +73,15 @@
         ;; - reload
         ;; - and `always-` prefixed option each
         :always-recompile
-        (when (recompile! fnl-path ?lua-path module-name)
-          (notifiers.recompile (.. "[thyme] successfully recompile " fnl-path)))
+        (let [ok? (recompile! fnl-path ?lua-path module-name)]
+          (when (and ok? notifiers.recompile)
+            (notifiers.recompile (.. "[thyme] successfully recompile " fnl-path))))
         :recompile
         (when (should-recompile-lua-cache? fnl-path ?lua-path)
-          (when (recompile! fnl-path ?lua-path module-name)
-            (notifiers.recompile (.. "[thyme] successfully recompile " fnl-path))))))
+          (let [ok? (recompile! fnl-path ?lua-path module-name)]
+            (when (and ok? notifiers.recompile)
+              (notifiers.recompile (.. "[thyme] successfully recompile "
+                                       fnl-path)))))))
     (case strategy
       (where (or :recompile :reload :always-recompile :always-reload))
       (case (fnl-path->dependent-map fnl-path)
