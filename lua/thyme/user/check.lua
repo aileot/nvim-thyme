@@ -33,6 +33,9 @@ local function fnl_path__3edependent_count(fnl_path)
     return 0
   end
 end
+local function should_recompile_lua_cache_3f(fnl_path, _3flua_path)
+  return (_3flua_path and (not file_readable_3f(_3flua_path) or (read_file(_3flua_path) ~= compile_file(fnl_path))))
+end
 local function recompile_21(fnl_path, lua_path, module_name)
   local config = get_main_config()
   local compiler_options = config["compiler-options"]
@@ -55,22 +58,23 @@ local function recompile_21(fnl_path, lua_path, module_name)
   end
 end
 local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:54")
-  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:54")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:59")
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:59")
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)
   local module_name = _let_13_["module-name"]
   local notifiers = (opts.notifier or {})
   if _3flua_path then
     if (strategy == "always-recompile") then
-      if recompile_21(fnl_path, _3flua_path, module_name) then
+      local ok_3f = recompile_21(fnl_path, _3flua_path, module_name)
+      if (ok_3f and notifiers.recompile) then
         notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
       else
       end
     elseif (strategy == "recompile") then
-      local should_recompile_lua_cache_3f = (_3flua_path and (not file_readable_3f(_3flua_path) or (read_file(_3flua_path) ~= compile_file(fnl_path))))
-      if should_recompile_lua_cache_3f then
-        if recompile_21(fnl_path, _3flua_path, module_name) then
+      if should_recompile_lua_cache_3f(fnl_path, _3flua_path) then
+        local ok_3f = recompile_21(fnl_path, _3flua_path, module_name)
+        if (ok_3f and notifiers.recompile) then
           notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
         else
         end
