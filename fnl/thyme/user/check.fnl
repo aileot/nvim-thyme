@@ -23,36 +23,36 @@
                     i)
     _ 0))
 
-(fn recompile! [fnl-path lua-path compiler-options module-name]
+(fn recompile! [fnl-path lua-path module-name]
   "Recompile `fnl-path` to `lua-path`.
 @param fnl-path string
 @param lua-path string"
-  ;; Note: With "module-name" option, macro-searcher can map macro
-  ;; dependency.
-  ;; TODO: Clear lua cache if necessary.
-  (set compiler-options.module-name module-name)
-  ;; Note: module-map must be cleared before logging, but after getting
-  ;; its maps.
-  (clear-module-map! fnl-path)
-  (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
-                            compiler-options module-name)
-    (true lua-code)
-    ;; Note: The lua-code update-check has already been done above.
-    (write-lua-file-with-backup! lua-path lua-code module-name)
-    (_ error-msg)
-    (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
-%s" :format fnl-path error-msg)]
-      (vim.notify msg vim.log.levels.WARN)
-      (restore-module-map! fnl-path))))
+  (let [config (get-main-config)
+        compiler-options config.compiler-options]
+    ;; Note: With "module-name" option, macro-searcher can map macro
+    ;; dependency.
+    ;; TODO: Clear lua cache if necessary.
+    (set compiler-options.module-name module-name)
+    ;; Note: module-map must be cleared before logging, but after getting
+    ;; its maps.
+    (clear-module-map! fnl-path)
+    (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
+                              compiler-options module-name)
+      (true lua-code)
+      ;; Note: The lua-code update-check has already been done above.
+      (write-lua-file-with-backup! lua-path lua-code module-name)
+      (_ error-msg)
+      (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
+  %s" :format fnl-path error-msg)]
+        (vim.notify msg vim.log.levels.WARN)
+        (restore-module-map! fnl-path)))))
 
 (lambda update-module-dependencies! [fnl-path ?lua-path opts]
   "Clear cache files of `fnl-path` and its dependent files.
 @param fnl-path string
 @param ?lua-path-to-compile string
 @param opts table"
-  (let [config (get-main-config)
-        compiler-options config.compiler-options
-        strategy (or opts._strategy (error "no strategy is specified"))
+  (let [strategy (or opts._strategy (error "no strategy is specified"))
         {: module-name} (fnl-path->entry-map fnl-path)]
     (when ?lua-path
       (case strategy
@@ -63,8 +63,7 @@
         ;; - reload
         ;; - and `always-` prefixed option each
         :always-recompile
-        (recompile! fnl-path ?lua-path ;
-                    compiler-options module-name)
+        (recompile! fnl-path ?lua-path module-name)
         :recompile
         (let [should-recompile-lua-cache? ;
               (and ?lua-path
@@ -72,8 +71,7 @@
                        (not= (read-file ?lua-path) ;
                              (compile-file fnl-path))))]
           (when should-recompile-lua-cache?
-            (recompile! fnl-path ?lua-path ;
-                        compiler-options module-name)))))
+            (recompile! fnl-path ?lua-path module-name)))))
     (case strategy
       (where (or :recompile :reload :always-recompile :always-reload))
       (case (fnl-path->dependent-map fnl-path)
