@@ -61,7 +61,8 @@
 @param fnl-path string
 @param ?lua-path-to-compile string
 @param opts table"
-  (let [strategy (or opts._strategy (error "no strategy is specified"))
+  (let [always-recompile? opts._always-recompile?
+        strategy (or opts._strategy (error "no strategy is specified"))
         {: module-name} (fnl-path->entry-map fnl-path)
         notifiers (or opts.notifier {})]
     (when ?lua-path
@@ -70,29 +71,22 @@
         ;; - clear
         ;; - reload
         ;; - and `always-` prefixed option each
-        :always-clear-all
-        (let [clear-any? (clear-cache!)]
-          (when (and clear-any? notifiers.clear)
-            (notifiers.clear (.. "[thyme] clear all the cache under "
-                                 lua-cache-prefix))))
         :clear-all
-        (when (should-recompile-lua-cache? fnl-path ?lua-path)
+        (when (or always-recompile?
+                  (should-recompile-lua-cache? fnl-path ?lua-path))
           (let [clear-any? (clear-cache!)]
             (when (and clear-any? notifiers.clear)
               (notifiers.clear (.. "[thyme] clear all the cache under "
                                    lua-cache-prefix)))))
-        :always-recompile
-        (let [ok? (recompile! fnl-path ?lua-path module-name)]
-          (when (and ok? notifiers.recompile)
-            (notifiers.recompile (.. "[thyme] successfully recompile " fnl-path))))
         :recompile
-        (when (should-recompile-lua-cache? fnl-path ?lua-path)
+        (when (or always-recompile?
+                  (should-recompile-lua-cache? fnl-path ?lua-path))
           (let [ok? (recompile! fnl-path ?lua-path module-name)]
             (when (and ok? notifiers.recompile)
               (notifiers.recompile (.. "[thyme] successfully recompile "
                                        fnl-path)))))))
     (case strategy
-      (where (or :recompile :reload :always-recompile :always-reload))
+      (where (or :recompile :reload))
       (case (fnl-path->dependent-map fnl-path)
         dependent-map (each [dependent-fnl-path dependent (pairs dependent-map)]
                         (update-module-dependencies! dependent-fnl-path
