@@ -90,7 +90,7 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
     end
   else
   end
-  if ((strategy == "recompile") or (strategy == "reload")) then
+  if ((strategy == "clear-all") or (strategy == "clear") or (strategy == "recompile") or (strategy == "reload")) then
     local _21_ = fnl_path__3edependent_map(fnl_path)
     if (nil ~= _21_) then
       local dependent_map = _21_

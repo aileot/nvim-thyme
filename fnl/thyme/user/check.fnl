@@ -86,7 +86,7 @@
               (notifiers.recompile (.. "[thyme] successfully recompile "
                                        fnl-path)))))))
     (case strategy
-      (where (or :recompile :reload))
+      (where (or :clear-all :clear :recompile :reload))
       (case (fnl-path->dependent-map fnl-path)
         dependent-map (each [dependent-fnl-path dependent (pairs dependent-map)]
                         (update-module-dependencies! dependent-fnl-path
