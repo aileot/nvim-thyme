@@ -2,7 +2,6 @@
 
 (local fennel (require :fennel))
 
-(local {: do-nothing} (require :thyme.utils.general))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 
 (local {: get-main-config} (require :thyme.config))
