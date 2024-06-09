@@ -2,6 +2,7 @@
 
 (local fennel (require :fennel))
 
+(local {: do-nothing} (require :thyme.utils.general))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 
 (local {: get-main-config} (require :thyme.config))
@@ -28,7 +29,8 @@
 @param fnl-path string
 @param lua-path string"
   (let [config (get-main-config)
-        compiler-options config.compiler-options]
+        compiler-options config.compiler-options
+        notifiers (or config.notifier {:recompile do-nothing})]
     ;; Note: With "module-name" option, macro-searcher can map macro
     ;; dependency.
     ;; TODO: Clear lua cache if necessary.
@@ -38,9 +40,11 @@
     (clear-module-map! fnl-path)
     (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
                               compiler-options module-name)
-      (true lua-code)
-      ;; Note: The lua-code update-check has already been done above.
-      (write-lua-file-with-backup! lua-path lua-code module-name)
+      (true lua-code) (do
+                        (write-lua-file-with-backup! lua-path lua-code
+                                                     module-name)
+                        (notifiers.recompile (.. "thyme-recompiler: successfully recompile "
+                                                 fnl-path)))
       (_ error-msg)
       (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
   %s" :format fnl-path error-msg)]
