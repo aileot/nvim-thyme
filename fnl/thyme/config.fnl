@@ -67,7 +67,6 @@
         compiler-options {:error-pinpoint ["|>>" "<<|"]}
         ?config (fennel.eval config-code compiler-options)
         config-table (or ?config {})
-        ;; Note: It would be so nervous to watch nsec, too.
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 
