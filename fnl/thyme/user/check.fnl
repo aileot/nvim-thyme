@@ -1,4 +1,4 @@
-(import-macros {: when-not} :thyme.macros)
+(import-macros {: when-not : inc} :thyme.macros)
 
 (local fennel (require :fennel))
 
@@ -109,14 +109,23 @@ How to update is to be determined by `strategy` option.
         lua-path (fnl-path->lua-path fnl-path)]
     (case (fnl-path->entry-map fnl-path)
       modmap (let [dependent-count (fnl-path->dependent-count fnl-path)
-                   strategy (case (type opts.strategy)
-                              :string opts.strategy
-                              :function (let [context {:module-name modmap.module-name}]
-                                          (opts.strategy dependent-count
-                                                         context))
-                              :nil default-strategy
-                              else (error (.. "expected string or function, got "
-                                              else)))]
+                   user-strategy (case (type opts.strategy)
+                                   :string opts.strategy
+                                   :function (let [context {:module-name modmap.module-name}]
+                                               (opts.strategy dependent-count
+                                                              context))
+                                   :nil default-strategy
+                                   else (error (.. "expected string or function, got "
+                                                   else)))
+                   always-prefix :always-
+                   always-prefix-length (length always-prefix)
+                   always-recompile? (= always-prefix
+                                        (user-strategy:sub 1
+                                                           always-prefix-length))
+                   strategy (if always-recompile?
+                                (user-strategy:sub (inc always-prefix-length))
+                                user-strategy)]
+               (set opts._always-recompile? always-recompile?)
                (set opts._strategy strategy)
                (update-module-dependencies! fnl-path lua-path opts)
                (set opts._strategy nil)))))

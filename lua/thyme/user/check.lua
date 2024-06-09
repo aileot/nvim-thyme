@@ -124,23 +124,33 @@ local function check_to_update_21(fnl_path, _3fopts)
   if (nil ~= _26_) then
     local modmap = _26_
     local dependent_count = fnl_path__3edependent_count(fnl_path)
-    local strategy
+    local user_strategy
     do
       local _27_ = type(opts.strategy)
       if (_27_ == "string") then
-        strategy = opts.strategy
+        user_strategy = opts.strategy
       elseif (_27_ == "function") then
         local context = {["module-name"] = modmap["module-name"]}
-        strategy = opts.strategy(dependent_count, context)
+        user_strategy = opts.strategy(dependent_count, context)
       elseif (_27_ == "nil") then
-        strategy = default_strategy
+        user_strategy = default_strategy
       elseif (nil ~= _27_) then
         local _else = _27_
-        strategy = error(("expected string or function, got " .. _else))
+        user_strategy = error(("expected string or function, got " .. _else))
       else
-        strategy = nil
+        user_strategy = nil
       end
     end
+    local always_prefix = "always-"
+    local always_prefix_length = #always_prefix
+    local always_recompile_3f = (always_prefix == user_strategy:sub(1, always_prefix_length))
+    local strategy
+    if always_recompile_3f then
+      strategy = user_strategy:sub((always_prefix_length + 1))
+    else
+      strategy = user_strategy
+    end
+    opts["_always-recompile?"] = always_recompile_3f
     opts._strategy = strategy
     update_module_dependencies_21(fnl_path, lua_path, opts)
     opts._strategy = nil
