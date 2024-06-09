@@ -70,7 +70,6 @@
         ;; TODO: Activate the strategies:
         ;; - clear
         ;; - reload
-        ;; - and `always-` prefixed option each
         :clear-all
         (when (or always-recompile?
                   (should-recompile-lua-cache? fnl-path ?lua-path))
