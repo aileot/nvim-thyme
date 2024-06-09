@@ -2,6 +2,7 @@
 
 (local fennel (require :fennel))
 
+(local {: do-nothing} (require :thyme.utils.general))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 
 (local {: get-main-config} (require :thyme.config))
@@ -23,37 +24,41 @@
                     i)
     _ 0))
 
-(fn recompile! [fnl-path lua-path compiler-options module-name]
+(fn recompile! [fnl-path lua-path module-name]
   "Recompile `fnl-path` to `lua-path`.
 @param fnl-path string
-@param lua-path string"
-  ;; Note: With "module-name" option, macro-searcher can map macro
-  ;; dependency.
-  ;; TODO: Clear lua cache if necessary.
-  (set compiler-options.module-name module-name)
-  ;; Note: module-map must be cleared before logging, but after getting
-  ;; its maps.
-  (clear-module-map! fnl-path)
-  (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
-                            compiler-options module-name)
-    (true lua-code)
-    ;; Note: The lua-code update-check has already been done above.
-    (write-lua-file-with-backup! lua-path lua-code module-name)
-    (_ error-msg)
-    (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
-%s" :format fnl-path error-msg)]
-      (vim.notify msg vim.log.levels.WARN)
-      (restore-module-map! fnl-path))))
+@param lua-path string
+@return boolean return `true` if successfully recompile `fnl-path`; otherwise, return `false`."
+  (let [config (get-main-config)
+        compiler-options config.compiler-options]
+    ;; Note: With "module-name" option, macro-searcher can map macro
+    ;; dependency.
+    ;; TODO: Clear lua cache if necessary.
+    (set compiler-options.module-name module-name)
+    ;; Note: module-map must be cleared before logging, but after getting
+    ;; its maps.
+    (clear-module-map! fnl-path)
+    (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
+                              compiler-options module-name)
+      (true lua-code) (do
+                        (write-lua-file-with-backup! lua-path lua-code
+                                                     module-name)
+                        true)
+      (_ error-msg)
+      (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
+  %s" :format fnl-path error-msg)]
+        (vim.notify msg vim.log.levels.WARN)
+        (restore-module-map! fnl-path)
+        false))))
 
 (lambda update-module-dependencies! [fnl-path ?lua-path opts]
   "Clear cache files of `fnl-path` and its dependent files.
 @param fnl-path string
 @param ?lua-path-to-compile string
 @param opts table"
-  (let [config (get-main-config)
-        compiler-options config.compiler-options
-        strategy (or opts._strategy (error "no strategy is specified"))
-        {: module-name} (fnl-path->entry-map fnl-path)]
+  (let [strategy (or opts._strategy (error "no strategy is specified"))
+        {: module-name} (fnl-path->entry-map fnl-path)
+        notifiers (or opts.notifier {})]
     (when ?lua-path
       (case strategy
         ;; TODO: Activate the strategies:
@@ -63,8 +68,9 @@
         ;; - reload
         ;; - and `always-` prefixed option each
         :always-recompile
-        (recompile! fnl-path ?lua-path ;
-                    compiler-options module-name)
+        (when (recompile! fnl-path ?lua-path module-name)
+          (notifiers.recompile (.. "[thyme] successfully recompile "
+                                   fnl-path)))
         :recompile
         (let [should-recompile-lua-cache? ;
               (and ?lua-path
@@ -72,8 +78,9 @@
                        (not= (read-file ?lua-path) ;
                              (compile-file fnl-path))))]
           (when should-recompile-lua-cache?
-            (recompile! fnl-path ?lua-path ;
-                        compiler-options module-name)))))
+            (when (recompile! fnl-path ?lua-path module-name)
+              (notifiers.recompile (.. "[thyme] successfully recompile "
+                                       fnl-path)))))))
     (case strategy
       (where (or :recompile :reload :always-recompile :always-reload))
       (case (fnl-path->dependent-map fnl-path)
