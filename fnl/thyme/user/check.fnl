@@ -27,10 +27,10 @@
 (fn recompile! [fnl-path lua-path module-name]
   "Recompile `fnl-path` to `lua-path`.
 @param fnl-path string
-@param lua-path string"
+@param lua-path string
+@return boolean return `true` if successfully recompile `fnl-path`; otherwise, return `false`."
   (let [config (get-main-config)
-        compiler-options config.compiler-options
-        notifiers (or config.notifier {:recompile do-nothing})]
+        compiler-options config.compiler-options]
     ;; Note: With "module-name" option, macro-searcher can map macro
     ;; dependency.
     ;; TODO: Clear lua cache if necessary.
@@ -43,13 +43,13 @@
       (true lua-code) (do
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)
-                        (notifiers.recompile (.. "thyme-recompiler: successfully recompile "
-                                                 fnl-path)))
+                        true)
       (_ error-msg)
       (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
   %s" :format fnl-path error-msg)]
         (vim.notify msg vim.log.levels.WARN)
-        (restore-module-map! fnl-path)))))
+        (restore-module-map! fnl-path)
+        false))))
 
 (lambda update-module-dependencies! [fnl-path ?lua-path opts]
   "Clear cache files of `fnl-path` and its dependent files.
@@ -57,7 +57,8 @@
 @param ?lua-path-to-compile string
 @param opts table"
   (let [strategy (or opts._strategy (error "no strategy is specified"))
-        {: module-name} (fnl-path->entry-map fnl-path)]
+        {: module-name} (fnl-path->entry-map fnl-path)
+        notifiers (or opts.notifier {})]
     (when ?lua-path
       (case strategy
         ;; TODO: Activate the strategies:
@@ -67,7 +68,9 @@
         ;; - reload
         ;; - and `always-` prefixed option each
         :always-recompile
-        (recompile! fnl-path ?lua-path module-name)
+        (when (recompile! fnl-path ?lua-path module-name)
+          (notifiers.recompile (.. "[thyme] successfully recompile "
+                                   fnl-path)))
         :recompile
         (let [should-recompile-lua-cache? ;
               (and ?lua-path
@@ -75,7 +78,9 @@
                        (not= (read-file ?lua-path) ;
                              (compile-file fnl-path))))]
           (when should-recompile-lua-cache?
-            (recompile! fnl-path ?lua-path module-name)))))
+            (when (recompile! fnl-path ?lua-path module-name)
+              (notifiers.recompile (.. "[thyme] successfully recompile "
+                                       fnl-path)))))))
     (case strategy
       (where (or :recompile :reload :always-recompile :always-reload))
       (case (fnl-path->dependent-map fnl-path)

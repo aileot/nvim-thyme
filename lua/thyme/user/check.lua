@@ -36,20 +36,20 @@ end
 local function recompile_21(fnl_path, lua_path, module_name)
   local config = get_main_config()
   local compiler_options = config["compiler-options"]
-  local notifiers = (config.notifier or {recompile = do_nothing})
   compiler_options["module-name"] = module_name
   clear_module_map_21(fnl_path)
   local _10_, _11_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
   if ((_10_ == true) and (nil ~= _11_)) then
     local lua_code = _11_
     write_lua_file_with_backup_21(lua_path, lua_code, module_name)
-    return notifiers.recompile(("thyme-recompiler: successfully recompile " .. fnl_path))
+    return true
   elseif (true and (nil ~= _11_)) then
     local _ = _10_
     local error_msg = _11_
     local msg = ("thyme-recompiler: abort recompiling %s due to the following error\n  %s"):format(fnl_path, error_msg)
     vim.notify(msg, vim.log.levels.WARN)
-    return restore_module_map_21(fnl_path)
+    restore_module_map_21(fnl_path)
+    return false
   else
     return nil
   end
@@ -60,13 +60,20 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)
   local module_name = _let_13_["module-name"]
+  local notifiers = (opts.notifier or {})
   if _3flua_path then
     if (strategy == "always-recompile") then
-      recompile_21(fnl_path, _3flua_path, module_name)
+      if recompile_21(fnl_path, _3flua_path, module_name) then
+        notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
+      else
+      end
     elseif (strategy == "recompile") then
       local should_recompile_lua_cache_3f = (_3flua_path and (not file_readable_3f(_3flua_path) or (read_file(_3flua_path) ~= compile_file(fnl_path))))
       if should_recompile_lua_cache_3f then
-        recompile_21(fnl_path, _3flua_path, module_name)
+        if recompile_21(fnl_path, _3flua_path, module_name) then
+          notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
+        else
+        end
       else
       end
     else
@@ -74,9 +81,9 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   else
   end
   if ((strategy == "recompile") or (strategy == "reload") or (strategy == "always-recompile") or (strategy == "always-reload")) then
-    local _17_ = fnl_path__3edependent_map(fnl_path)
-    if (nil ~= _17_) then
-      local dependent_map = _17_
+    local _19_ = fnl_path__3edependent_map(fnl_path)
+    if (nil ~= _19_) then
+      local dependent_map = _19_
       for dependent_fnl_path, dependent in pairs(dependent_map) do
         update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
       end
@@ -92,22 +99,22 @@ end
 local function check_to_update_21(fnl_path, _3fopts)
   local opts = (_3fopts or {})
   local lua_path = fnl_path__3elua_path(fnl_path)
-  local _20_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _20_) then
-    local modmap = _20_
+  local _22_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _22_) then
+    local modmap = _22_
     local dependent_count = fnl_path__3edependent_count(fnl_path)
     local strategy
     do
-      local _21_ = type(opts.strategy)
-      if (_21_ == "string") then
+      local _23_ = type(opts.strategy)
+      if (_23_ == "string") then
         strategy = opts.strategy
-      elseif (_21_ == "function") then
+      elseif (_23_ == "function") then
         local context = {["module-name"] = modmap["module-name"]}
         strategy = opts.strategy(dependent_count, context)
-      elseif (_21_ == "nil") then
+      elseif (_23_ == "nil") then
         strategy = default_strategy
-      elseif (nil ~= _21_) then
-        local _else = _21_
+      elseif (nil ~= _23_) then
+        local _else = _23_
         strategy = error(("expected string or function, got " .. _else))
       else
         strategy = nil
