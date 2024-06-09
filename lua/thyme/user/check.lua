@@ -93,7 +93,7 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
     end
   else
     local _ = strategy
-    return error(("unsupported sstrategy: " .. strategy))
+    return error(("unsupported strategy: " .. strategy))
   end
 end
 local function check_to_update_21(fnl_path, _3fopts)

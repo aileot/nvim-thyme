@@ -87,7 +87,7 @@
         dependent-map (each [dependent-fnl-path dependent (pairs dependent-map)]
                         (update-module-dependencies! dependent-fnl-path
                                                      dependent.lua-path opts)))
-      _ (error (.. "unsupported sstrategy: " strategy)))))
+      _ (error (.. "unsupported strategy: " strategy)))))
 
 (fn check-to-update! [fnl-path ?opts]
   "Check if the compiled lua files mapped to `fnl-path` should be updated.
