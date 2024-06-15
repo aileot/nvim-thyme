@@ -30,6 +30,8 @@
         (it* "result in a number with correlate=true."
           (let [fnl-opts {:correlate true}]
             (assert.is_same 2 (thyme.eval fnl-code fnl-opts)))))))
+  ;; TODO: Is thyme.macrodebug theoretically impossible to test?
+  ;; /usr/share/lua/5.1/luassert/assertions.lua:126: the 'same' function requires a minimum of 2 arguments, got: 1
   (describe* :thyme.compile-string
     (describe* "compiles `(+ 1 1)`"
       (let [fnl-code "(+ 1 1)"]
