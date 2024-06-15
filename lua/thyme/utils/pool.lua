@@ -18,6 +18,7 @@ local function hide_file_21(path)
   return assert(fs.rename(path, path__3epool_path(path)))
 end
 local function restore_file_21(path)
+  vim.fn.mkdir(vim.fs.dirname(path), "p")
   return assert(fs.rename(path__3epool_path(path), path))
 end
 local function hide_files_in_dir_21(dir_path)

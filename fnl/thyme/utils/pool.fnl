@@ -24,6 +24,8 @@
 (fn restore-file! [path]
   "Move back `path` from its own pool-path.
 @param path string"
+  (-> (vim.fs.dirname path)
+      (vim.fn.mkdir :p))
   (assert (fs.rename (path->pool-path path) path)))
 
 (fn hide-files-in-dir! [dir-path]
