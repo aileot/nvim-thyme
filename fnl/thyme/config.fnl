@@ -64,7 +64,8 @@
         config-code (if secure-nvim-env?
                         (read-file config-file-path)
                         (vim.secure.read config-file-path))
-        compiler-options {:error-pinpoint ["|>>" "<<|"]}
+        compiler-options {:error-pinpoint ["|>>" "<<|"]
+                          :filename config-file-path}
         ?config (fennel.eval config-code compiler-options)
         config-table (or ?config {})
         config (vim.tbl_deep_extend :keep config-table default-opts)]
