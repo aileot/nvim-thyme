@@ -17,6 +17,7 @@ VUSTED_EXTRA_FLAGS ?=
 
 REPO_ROOT:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 TEST_ROOT:=$(REPO_ROOT)/test
+TEST_CONTEXT_DIR:=$(TEST_ROOT)/.context
 
 FNL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
@@ -78,7 +79,11 @@ clean-test: ## Clean lua test files compiled from fnl
 
 .PHONY: test
 test: build $(LUA_SPECS) ## Run test
-	@$(VUSTED) \
+	@XDG_CONFIG_HOME="$(TEST_CONTEXT_DIR)/config" \
+		XDG_CACHE_HOME="$(TEST_CONTEXT_DIR)/cache" \
+		XDG_DATA_HOME="$(TEST_CONTEXT_DIR)/data" \
+		XDG_STATE_HOME="$(TEST_CONTEXT_DIR)/state" \
+		$(VUSTED) \
 		$(VUSTED_FLAGS) \
 		$(VUSTED_EXTRA_FLAGS) \
 		$(TEST_ROOT)
