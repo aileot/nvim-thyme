@@ -69,8 +69,8 @@ local function report_thyme_config()
 end
 local function report_fennel_paths()
   report_start("Thyme fennel.{path,macro-path}")
-  report_info(("fennel.path:\n- " .. (fennel.path):gsub(";", "\n- ")))
-  return report_info(("fennel.macro-path:\n- " .. (fennel["macro-path"]):gsub(";", "\n- ")))
+  report_info(("fennel.path:\n- " .. fennel.path:gsub(";", "\n- ")))
+  return report_info(("fennel.macro-path:\n- " .. fennel["macro-path"]:gsub(";", "\n- ")))
 end
 local function report_imported_macros()
   report_start("Thyme Imported Macros")

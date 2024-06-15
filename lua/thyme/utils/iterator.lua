@@ -81,7 +81,7 @@ local function pairs_from_longer_key(tbl)
       local val_23_auto = k
       if (nil ~= val_23_auto) then
         i_22_auto = (i_22_auto + 1)
-        do end (tbl_21_auto)[i_22_auto] = val_23_auto
+        tbl_21_auto[i_22_auto] = val_23_auto
       else
       end
     end

@@ -3,7 +3,7 @@ local read_file = _local_1_["read-file"]
 local assert_is_log_file = _local_1_["assert-is-log-file"]
 local _local_2_ = require("thyme.utils.iterator")
 local gsplit = _local_2_["gsplit"]
-local marker = {sep = "\t", macro = "\v", ["end"] = "\n"}
+local marker = {sep = "\t", macro = "\11", ["end"] = "\n"}
 local function modmap__3eline(modmap)
   assert((modmap["module-name"] and modmap["fnl-path"]), ("modmap requires 'module-name' and 'fnl-path'; got module-name: %s, fnl-path: %s"):format(modmap["module-name"], modmap["fnl-path"]))
   return (modmap["module-name"] .. marker.sep .. modmap["fnl-path"] .. marker.sep .. (modmap["lua-path"] or marker.macro) .. marker["end"])
@@ -57,7 +57,7 @@ local function macro_recorded_3f(log_path)
   local function _11_()
     return (nil ~= file:read("*l"):find(marker.macro, 1, true))
   end
-  return close_handlers_12_auto(_G.xpcall(_11_, (package.loaded.fennel or debug).traceback))
+  return close_handlers_12_auto(_G.xpcall(_11_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
 local function peek_module_name(log_path)
   assert_is_log_file(log_path)
@@ -73,7 +73,7 @@ local function peek_module_name(log_path)
   local function _13_()
     return file:read("*l"):match(("^(.-)" .. marker.sep))
   end
-  return close_handlers_12_auto(_G.xpcall(_13_, (package.loaded.fennel or debug).traceback))
+  return close_handlers_12_auto(_G.xpcall(_13_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
 local function peek_fnl_path(log_path)
   assert_is_log_file(log_path)
@@ -89,6 +89,6 @@ local function peek_fnl_path(log_path)
   local function _15_()
     return file:read("*l"):match(("^.-" .. marker.sep .. "(.-)" .. marker.sep))
   end
-  return close_handlers_12_auto(_G.xpcall(_15_, (package.loaded.fennel or debug).traceback))
+  return close_handlers_12_auto(_G.xpcall(_15_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
 return {["modmap->line"] = modmap__3eline, ["read-module-map-file"] = read_module_map_file, ["macro-recorded?"] = macro_recorded_3f, ["peek-module-name"] = peek_module_name, ["peek-fnl-path"] = peek_fnl_path}

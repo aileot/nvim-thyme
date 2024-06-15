@@ -8,10 +8,11 @@ local check_to_update_21 = _local_3_["check-to-update!"]
 local _3fgroup = nil
 local function watch_to_update_21(_3fopts)
   local group
-  local function _4_(...)
-    return vim.api.nvim_create_augroup("ThymeWatch", {})
+  local or_4_ = _3fgroup
+  if not or_4_ then
+    or_4_ = vim.api.nvim_create_augroup("ThymeWatch", {})
   end
-  group = (_3fgroup or _4_())
+  group = or_4_
   local opts = (_3fopts or {})
   local event = (opts.event or {"BufWritePost", "FileChangedShellPost"})
   local pattern = (opts.pattern or "*.fnl")

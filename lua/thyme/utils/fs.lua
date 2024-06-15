@@ -3,7 +3,7 @@ local raw_uv = (vim.uv or vim.loop)
 local uv
 local function _1_(self, key)
   local call = (raw_uv[key] or raw_uv[("fs_" .. key)])
-  do end (self)[key] = call
+  self[key] = call
   local function _2_(...)
     return call(...)
   end
@@ -68,7 +68,7 @@ local function read_file(path)
   local function _8_()
     return file:read("*a")
   end
-  return close_handlers_12_auto(_G.xpcall(_8_, (package.loaded.fennel or debug).traceback))
+  return close_handlers_12_auto(_G.xpcall(_8_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
 local function write_file_21(path, contents)
   local f = assert(io.open(path, "w"), ("failed to write to " .. path))
@@ -83,7 +83,7 @@ local function write_file_21(path, contents)
   local function _10_()
     return f:write(contents)
   end
-  return close_handlers_12_auto(_G.xpcall(_10_, (package.loaded.fennel or debug).traceback))
+  return close_handlers_12_auto(_G.xpcall(_10_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
 local function append_file_21(path, contents)
   local f = assert(io.open(path, "a"), ("failed to append to " .. path))
@@ -98,7 +98,7 @@ local function append_file_21(path, contents)
   local function _12_()
     return f:write(contents)
   end
-  return close_handlers_12_auto(_G.xpcall(_12_, (package.loaded.fennel or debug).traceback))
+  return close_handlers_12_auto(_G.xpcall(_12_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
 local function delete_file_21(path)
   return uv.fs_unlink(path)

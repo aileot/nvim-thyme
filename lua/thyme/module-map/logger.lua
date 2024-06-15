@@ -4,25 +4,26 @@ local uri_encode = _local_1_["uri-encode"]
 local module_maps
 local function _2_(self, fnl_path)
   local modmap = ModuleMap.new(fnl_path)
-  do end (self)[fnl_path] = modmap
+  self[fnl_path] = modmap
   return modmap
 end
 module_maps = setmetatable({}, {__index = _2_})
 local function log_module_map_21(dependency, dependent_stack)
   local module_map
-  local function _3_()
+  local or_3_ = rawget(module_maps, dependency["fnl-path"])
+  if not or_3_ then
     local modmap, logged_3f = ModuleMap.new(dependency["fnl-path"])
     if not logged_3f then
       modmap["initialize-module-map!"](modmap, dependency)
     else
     end
     module_maps[dependency["fnl-path"]] = modmap
-    return modmap
+    or_3_ = modmap
   end
-  module_map = (rawget(module_maps, dependency["fnl-path"]) or _3_())
-  local _5_ = dependent_stack[#dependent_stack]
-  if (nil ~= _5_) then
-    local dependent = _5_
+  module_map = or_3_
+  local _6_ = dependent_stack[#dependent_stack]
+  if (nil ~= _6_) then
+    local dependent = _6_
     if not module_map["get-dependent-maps"](module_map)[dependent["fnl-path"]] then
       return module_map["add-dependent"](module_map, dependent)
     else
@@ -33,15 +34,17 @@ local function log_module_map_21(dependency, dependent_stack)
   end
 end
 local function fnl_path__3eentry_map(fnl_path)
-  return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-entry-map")
+  local tgt_9_ = module_maps[fnl_path]
+  return (tgt_9_)["get-entry-map"](tgt_9_)
 end
 local function fnl_path__3edependent_map(fnl_path)
-  return (function(tgt, m, ...) return tgt[m](tgt, ...) end)(module_maps[fnl_path], "get-dependent-maps")[fnl_path]
+  local tgt_10_ = module_maps[fnl_path]
+  return (tgt_10_)["get-dependent-maps"](tgt_10_)[fnl_path]
 end
 local function fnl_path__3elua_path(fnl_path)
-  local _8_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _8_) then
-    local modmap = _8_
+  local _11_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _11_) then
+    local modmap = _11_
     return modmap["lua-path"]
   else
     return nil

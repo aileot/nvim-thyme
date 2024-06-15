@@ -44,7 +44,7 @@ M["define-keymaps!"] = function(_3fopts)
       operator_callback = _4_
       vim.api.nvim_set_keymap("n", lhs, rhs_2fn, {noremap = true})
       vim.api.nvim_set_keymap("x", lhs, rhs_2fx, {noremap = true, silent = true})
-      do end (M)[callback_name] = marks__3eprint
+      M[callback_name] = marks__3eprint
       M[operator_callback_name] = operator_callback
     end
   end

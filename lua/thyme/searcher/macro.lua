@@ -99,7 +99,7 @@ local function overwrite_metatable_21(original_table, cache_table)
   local function _22_(self, module_name, val)
     if is_logged_3f(module_name) then
       rawset(self, module_name, nil)
-      do end (cache_table)[module_name] = val
+      cache_table[module_name] = val
       return nil
     else
       return rawset(self, module_name, val)

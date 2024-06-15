@@ -54,7 +54,7 @@ local function initialize_module_searcher_on_rtp_21(fennel)
       local val_23_auto = (std_config_home .. fnl_dir .. suffix)
       if (nil ~= val_23_auto) then
         i_22_auto = (i_22_auto + 1)
-        do end (tbl_21_auto)[i_22_auto] = val_23_auto
+        tbl_21_auto[i_22_auto] = val_23_auto
       else
       end
     end
@@ -92,7 +92,7 @@ local function update_fennel_paths_21(fennel)
             local val_23_auto0 = (dir .. rest)
             if (nil ~= val_23_auto0) then
               i_22_auto0 = (i_22_auto0 + 1)
-              do end (tbl_21_auto0)[i_22_auto0] = val_23_auto0
+              tbl_21_auto0[i_22_auto0] = val_23_auto0
             else
             end
           end
@@ -102,7 +102,7 @@ local function update_fennel_paths_21(fennel)
       end
       if (nil ~= val_23_auto) then
         i_22_auto = (i_22_auto + 1)
-        do end (tbl_21_auto)[i_22_auto] = val_23_auto
+        tbl_21_auto[i_22_auto] = val_23_auto
       else
       end
     end

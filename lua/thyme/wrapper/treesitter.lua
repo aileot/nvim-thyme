@@ -26,7 +26,7 @@ local function set_hl_chunk_cache_21(text, _3fhl_name)
   end
   local hl_chunk = {text, _3fhl_group}
   local idx = (_3fhl_name or idx_empty_hl_name)
-  do end (hl_chunk_cache)[text][idx] = hl_chunk
+  hl_chunk_cache[text][idx] = hl_chunk
   return hl_chunk
 end
 local function get_hl_chunk_cache(text, _3fhl_name)
@@ -106,23 +106,25 @@ local function text__3ehl_chunks(text, _3fopts)
       if ts_tree then
         local lang = tree:lang()
         local hl_query
-        local function _14_()
+        local or_14_ = hl_cache[lang]
+        if not or_14_ then
           local hlq = ts.query.get(lang, "highlights")
-          do end (hl_cache)[lang] = hlq
-          return hlq
+          hl_cache[lang] = hlq
+          or_14_ = hlq
         end
-        hl_query = (hl_cache[lang] or _14_())
+        hl_query = or_14_
         local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
         for id, node, metadata in iter do
-          local _15_ = hl_query.captures[id]
-          if ((_15_ == "spell") or (_15_ == "nospell")) then
+          local _16_ = hl_query.captures[id]
+          if ((_16_ == "spell") or (_16_ == "nospell")) then
           else
-            local function _16_()
-              local capture = _15_
-              return not vim.startswith(capture, "_")
+            local and_17_ = (nil ~= _16_)
+            if and_17_ then
+              local capture = _16_
+              and_17_ = not vim.startswith(capture, "_")
             end
-            if ((nil ~= _15_) and _16_()) then
-              local capture = _15_
+            if and_17_ then
+              local capture = _16_
               local txt = ts.get_node_text(node, text)
               local hl_name = ("@" .. capture)
               local row01, col01 = node:range()

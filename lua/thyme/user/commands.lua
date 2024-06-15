@@ -210,7 +210,7 @@ local function define_commands_21(_3fopts)
           local val_23_auto = vim.split(vim.fn.glob(path), "\n")
           if (nil ~= val_23_auto) then
             i_22_auto = (i_22_auto + 1)
-            do end (tbl_21_auto)[i_22_auto] = val_23_auto
+            tbl_21_auto[i_22_auto] = val_23_auto
           else
           end
         end
@@ -235,39 +235,45 @@ local function define_commands_21(_3fopts)
       path_pairs = tbl_16_auto
     end
     local existing_lua_files = {}
-    local function _45_(...)
-      local tbl_21_auto = {}
-      local i_22_auto = 0
-      for _, lua_file in pairs(path_pairs) do
-        local val_23_auto
-        if file_readable_3f(lua_file) then
-          val_23_auto = table.insert(existing_lua_files, lua_file)
-        else
-          val_23_auto = nil
+    local or_45_ = force_compile_3f
+    if not or_45_ then
+      local _46_
+      do
+        local tbl_21_auto = {}
+        local i_22_auto = 0
+        for _, lua_file in pairs(path_pairs) do
+          local val_23_auto
+          if file_readable_3f(lua_file) then
+            val_23_auto = table.insert(existing_lua_files, lua_file)
+          else
+            val_23_auto = nil
+          end
+          if (nil ~= val_23_auto) then
+            i_22_auto = (i_22_auto + 1)
+            tbl_21_auto[i_22_auto] = val_23_auto
+          else
+          end
         end
-        if (nil ~= val_23_auto) then
-          i_22_auto = (i_22_auto + 1)
-          do end (tbl_21_auto)[i_22_auto] = val_23_auto
+        _46_ = tbl_21_auto
+      end
+      local and_49_ = _46_
+      if and_49_ then
+        if (0 < #existing_lua_files) then
+          local _50_ = vim.fn.confirm(("The following files have already existed:\n" .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
+          if (_50_ == 2) then
+            and_49_ = true
+          else
+            local _ = _50_
+            vim.notify("Abort")
+            and_49_ = false
+          end
         else
+          and_49_ = nil
         end
       end
-      return tbl_21_auto
+      or_45_ = and_49_
     end
-    local function _50_()
-      if (0 < #existing_lua_files) then
-        local _48_ = vim.fn.confirm(("The following files have already existed:\n" .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
-        if (_48_ == 2) then
-          return true
-        else
-          local _ = _48_
-          vim.notify("Abort")
-          return false
-        end
-      else
-        return nil
-      end
-    end
-    if (force_compile_3f or (_45_() and _50_())) then
+    if or_45_ then
       local config = get_main_config()
       local fennel_options = config["compiler-options"]
       for fnl_path, lua_path in pairs(path_pairs) do
@@ -287,24 +293,24 @@ local function define_commands_21(_3fopts)
     end
   end
   vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileFile"), _40_, {nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl buffer"})
-  local function _55_(_53_)
-    local _arg_54_ = _53_["fargs"]
-    local _3fpath = _arg_54_[1]
-    local mods = _53_["smods"]
+  local function _60_(_58_)
+    local _arg_59_ = _58_["fargs"]
+    local _3fpath = _arg_59_[1]
+    local mods = _58_["smods"]
     local input_path = vim.fn.expand((_3fpath or "%:p"))
     local output_path
     do
-      local _56_ = input_path:sub(-4)
-      if (_56_ == ".fnl") then
-        local _57_ = fnl_path__3elua_path(input_path)
-        if (nil ~= _57_) then
-          local lua_path = _57_
+      local _61_ = input_path:sub(-4)
+      if (_61_ == ".fnl") then
+        local _62_ = fnl_path__3elua_path(input_path)
+        if (nil ~= _62_) then
+          local lua_path = _62_
           output_path = lua_path
         else
-          local _ = _57_
-          local _58_ = (input_path:sub(1, -4) .. "lua")
-          if (nil ~= _58_) then
-            local lua_path = _58_
+          local _ = _62_
+          local _63_ = (input_path:sub(1, -4) .. "lua")
+          if (nil ~= _63_) then
+            local lua_path = _63_
             if file_readable_3f(lua_path) then
               output_path = lua_path
             else
@@ -314,14 +320,14 @@ local function define_commands_21(_3fopts)
             output_path = nil
           end
         end
-      elseif (_56_ == ".lua") then
+      elseif (_61_ == ".lua") then
         if vim.startswith(input_path, lua_cache_prefix) then
           output_path = vim.api.nvim_get_runtime_file(input_path:sub(#lua_cache_prefix):gsub("%.lua$", ".fnl"):gsub("^", "*"), false)[1]
         else
           output_path = vim.fn.glob(input_path:gsub("/lua/", "/*/"):gsub("%.lua$", ".fnl"), false)
         end
       else
-        local _ = _56_
+        local _ = _61_
         output_path = error("expected a fnl or lua file, got", input_path)
       end
     end
@@ -335,6 +341,6 @@ local function define_commands_21(_3fopts)
       end
     end
   end
-  return vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Alternate"), _55_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
+  return vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Alternate"), _60_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
 end
 return {["define-commands!"] = define_commands_21}

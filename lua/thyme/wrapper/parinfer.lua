@@ -39,7 +39,7 @@ end
 local function search_parinfer_lib()
   local parinfer_lib
   do
-    local _5_ = (ffi.os):lower()
+    local _5_ = ffi.os:lower()
     if (_5_ == "windows") then
       parinfer_lib = "parinfer_rust.dll"
     elseif (_5_ == "osx") then
