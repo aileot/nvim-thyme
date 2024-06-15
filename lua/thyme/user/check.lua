@@ -26,7 +26,7 @@ local function fnl_path__3edependent_count(fnl_path)
   if (nil ~= _9_) then
     local dependent_map = _9_
     local i = 0
-    for _, _0 in pairs(dependent_map) do
+    for _ in pairs(dependent_map) do
       i = i
     end
     return i

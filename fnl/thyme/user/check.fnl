@@ -20,7 +20,7 @@
 
 (fn fnl-path->dependent-count [fnl-path]
   (case (fnl-path->dependent-map fnl-path)
-    dependent-map (accumulate [i 0 _ _ (pairs dependent-map)]
+    dependent-map (accumulate [i 0 _ (pairs dependent-map)]
                     i)
     _ 0))
 
