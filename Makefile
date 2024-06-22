@@ -62,6 +62,7 @@ lua/%.lua: $(FNL_SRC_DIR)/%.fnl
 .PHONY: clean
 clean:
 	@rm -rf lua/
+	@rm -f $(LUA_SPECS)
 
 .PHONY: build
 build: $(LUA_RES_DIRS) $(LUA_RES)
@@ -72,10 +73,6 @@ build: $(LUA_RES_DIRS) $(LUA_RES)
 		$(FNL_EXTRA_FLAGS) \
 		--add-macro-path "$(REPO_MACRO_PATH);$(TEST_ROOT)/?.fnl" \
 		--compile $< > $@
-
-.PHONY: clean-test
-clean-test: ## Clean lua test files compiled from fnl
-	@rm $(LUA_SPECS) || exit 0
 
 .PHONY: test
 test: build $(LUA_SPECS) ## Run test
