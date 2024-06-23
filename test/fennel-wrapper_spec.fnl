@@ -1,4 +1,4 @@
-(import-macros {: describe* : it*} :test._busted_macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (require :test.init)
 
