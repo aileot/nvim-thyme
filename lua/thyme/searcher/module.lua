@@ -4,6 +4,7 @@ local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
+local read_file = _local_2_["read-file"]
 local write_lua_file_21 = _local_2_["write-lua-file!"]
 local fs = _local_2_
 local _local_3_ = require("thyme.utils.iterator")
@@ -38,7 +39,11 @@ local function compile_fennel_into_rtp_21()
   else
   end
   vim.fn.mkdir(vim.fs.dirname(cached_fennel_path), "p")
-  fs.symlink(fennel_lua_path, cached_fennel_path)
+  if can_restore_file_3f(cached_fennel_path, read_file(fennel_lua_path)) then
+    restore_file_21(cached_fennel_path)
+  else
+    fs.copyfile(fennel_lua_path, cached_fennel_path)
+  end
   assert_is_file_readable(fennel_lua_path)
   return assert(loadfile(cached_fennel_path))
 end
@@ -46,7 +51,7 @@ local function initialize_module_searcher_on_rtp_21(fennel)
   local std_config_home = vim.fn.stdpath("config")
   local fnl_dir = "/fnl/"
   local fennel_path
-  local _11_
+  local _12_
   do
     local tbl_21_auto = {}
     local i_22_auto = 0
@@ -58,22 +63,22 @@ local function initialize_module_searcher_on_rtp_21(fennel)
       else
       end
     end
-    _11_ = tbl_21_auto
+    _12_ = tbl_21_auto
   end
-  fennel_path = table.concat(_11_, ";")
+  fennel_path = table.concat(_12_, ";")
   fennel.path = fennel_path
   return nil
 end
 local function update_fennel_paths_21(fennel)
   local config = get_main_config()
   local base_path_cache
-  local function _13_(self, key)
+  local function _14_(self, key)
     rawset(self, key, get_runtime_files({key}, true))
     return self[key]
   end
-  base_path_cache = setmetatable({}, {__index = _13_})
+  base_path_cache = setmetatable({}, {__index = _14_})
   local macro_path
-  local _14_
+  local _15_
   do
     local tbl_21_auto = {}
     local i_22_auto = 0
@@ -84,7 +89,7 @@ local function update_fennel_paths_21(fennel)
       else
         local offset, rest = fnl_template:match("^%./([^?]*)(.-)$")
         local base_paths = base_path_cache[offset]
-        local _15_
+        local _16_
         do
           local tbl_21_auto0 = {}
           local i_22_auto0 = 0
@@ -96,9 +101,9 @@ local function update_fennel_paths_21(fennel)
             else
             end
           end
-          _15_ = tbl_21_auto0
+          _16_ = tbl_21_auto0
         end
-        val_23_auto = table.concat(_15_, ";")
+        val_23_auto = table.concat(_16_, ";")
       end
       if (nil ~= val_23_auto) then
         i_22_auto = (i_22_auto + 1)
@@ -106,9 +111,9 @@ local function update_fennel_paths_21(fennel)
       else
       end
     end
-    _14_ = tbl_21_auto
+    _15_ = tbl_21_auto
   end
-  macro_path = table.concat(_14_, ";"):gsub("/%./", "/")
+  macro_path = table.concat(_15_, ";"):gsub("/%./", "/")
   fennel["macro-path"] = macro_path
   return nil
 end
@@ -125,8 +130,8 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     return compile_fennel_into_rtp_21()
   else
     local fennel = require("fennel")
-    local _let_20_ = require("thyme.config")
-    local get_main_config0 = _let_20_["get-main-config"]
+    local _let_21_ = require("thyme.config")
+    local get_main_config0 = _let_21_["get-main-config"]
     local config = get_main_config0()
     if (nil == cache.rtp) then
       initialize_macro_searcher_on_rtp_21(fennel)
@@ -138,46 +143,46 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       update_fennel_paths_21(fennel)
     else
     end
-    local _23_, _24_ = nil, nil
+    local _24_, _25_ = nil, nil
     do
-      local _25_, _26_ = fennel["search-module"](module_name, fennel.path)
-      if (nil ~= _25_) then
-        local fnl_path = _25_
-        local _let_27_ = require("thyme.compiler.cache")
-        local module_name__3elua_path = _let_27_["module-name->lua-path"]
+      local _26_, _27_ = fennel["search-module"](module_name, fennel.path)
+      if (nil ~= _26_) then
+        local fnl_path = _26_
+        local _let_28_ = require("thyme.compiler.cache")
+        local module_name__3elua_path = _let_28_["module-name->lua-path"]
         local lua_path = module_name__3elua_path(module_name)
         local compiler_options = config["compiler-options"]
-        local _28_, _29_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
-        if ((_28_ == true) and (nil ~= _29_)) then
-          local lua_code = _29_
+        local _29_, _30_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+        if ((_29_ == true) and (nil ~= _30_)) then
+          local lua_code = _30_
           if can_restore_file_3f(lua_path, lua_code) then
             restore_file_21(lua_path)
           else
             write_lua_file_with_backup_21(lua_path, lua_code, module_name)
           end
-          _23_, _24_ = load(lua_code, lua_path)
-        elseif (true and (nil ~= _29_)) then
-          local _ = _28_
-          local msg = _29_
+          _24_, _25_ = load(lua_code, lua_path)
+        elseif (true and (nil ~= _30_)) then
+          local _ = _29_
+          local msg = _30_
           local msg_prefix = ("\nthyme-loader: %s is found for the module %s, but failed to compile it\n\t"):format(fnl_path, module_name)
-          _23_, _24_ = nil, (msg_prefix .. msg)
+          _24_, _25_ = nil, (msg_prefix .. msg)
         else
-          _23_, _24_ = nil
+          _24_, _25_ = nil
         end
-      elseif (true and (nil ~= _26_)) then
-        local _ = _25_
-        local msg = _26_
-        _23_, _24_ = nil, ("\nthyme-loader: " .. msg)
+      elseif (true and (nil ~= _27_)) then
+        local _ = _26_
+        local msg = _27_
+        _24_, _25_ = nil, ("\nthyme-loader: " .. msg)
       else
-        _23_, _24_ = nil
+        _24_, _25_ = nil
       end
     end
-    if (nil ~= _23_) then
-      local chunk = _23_
+    if (nil ~= _24_) then
+      local chunk = _24_
       return chunk
-    elseif (true and (nil ~= _24_)) then
-      local _ = _23_
-      local error_msg = _24_
+    elseif (true and (nil ~= _25_)) then
+      local _ = _24_
+      local error_msg = _25_
       local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then

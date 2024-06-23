@@ -4,8 +4,11 @@
 
 (local {: lua-cache-prefix} (require :thyme.const))
 
-(local {: file-readable? : assert-is-file-readable : write-lua-file! &as fs}
-       (require :thyme.utils.fs))
+(local {: file-readable?
+        : assert-is-file-readable
+        : read-file
+        : write-lua-file!
+        &as fs} (require :thyme.utils.fs))
 
 (local {: gsplit} (require :thyme.utils.iterator))
 (local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
@@ -51,7 +54,9 @@ fennel.lua.
                  vim.v.shell_error "\ndump:\n" output)))
     (-> (vim.fs.dirname cached-fennel-path)
         (vim.fn.mkdir :p))
-    (fs.symlink fennel-lua-path cached-fennel-path)
+    (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
+        (restore-file! cached-fennel-path)
+        (fs.copyfile fennel-lua-path cached-fennel-path))
     (assert-is-file-readable fennel-lua-path)
     ;; Note: It must return Lua expression, i.e., read-file is unsuitable.
     ;; Note: Evaluating fennel.lua by (require :fennel) is unsuitable;
