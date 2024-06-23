@@ -82,5 +82,4 @@
  : fnl-path->dependent-map
  : fnl-path->lua-path
  : clear-module-map!
- : restore-module-map!
- : clear-dependency-log-files!}
+ : restore-module-map!}
