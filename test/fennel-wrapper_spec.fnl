@@ -1,6 +1,6 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(require :test.context.prerequisites)
+(include :test.context.prerequisites)
 
 (local fennel (require :fennel))
 (local thyme (require :thyme))
