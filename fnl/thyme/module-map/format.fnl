@@ -17,11 +17,10 @@
   (assert (and modmap.module-name modmap.fnl-path)
           (: "modmap requires 'module-name' and 'fnl-path'; got module-name: %s, fnl-path: %s"
              :format modmap.module-name modmap.fnl-path))
-  (.. modmap.module-name marker.sep ;
+  (.. (or modmap.lua-path marker.macro) marker.sep ;
+      modmap.module-name marker.sep ;
       ;; Note: the log filename represents the resolved fnl path.
-      modmap.fnl-path marker.sep ;
-      (or modmap.lua-path marker.macro) ;
-      marker.end))
+      modmap.fnl-path marker.end))
 
 (fn line->modmap [line]
   "Convert `line` into a modmap table.
@@ -29,14 +28,15 @@
 @param table"
   (let [inline-dependent-map-pattern ;
         (.. "^(.-)" marker.sep "(.-)" marker.sep "(.*)$")]
-    (case (line:match inline-dependent-map-pattern)
-      (module-name fnl-path lua-path) (match lua-path
-                                        (marker.macro) {: module-name
-                                                        : fnl-path
-                                                        :macro? true}
-                                        _ {: module-name : fnl-path : lua-path})
-      _ (error (: "Invalid format: \"%s\"" ;
-                  :format line)))))
+    (match (line:match inline-dependent-map-pattern)
+      ;; NOTE: To tell if macro or not earlier, log macro-marker/lua-path
+      ;; earlier in each line.
+      (marker.macro module-name fnl-path)
+      {:macro? true : module-name : fnl-path}
+      (lua-path module-name fnl-path)
+      {: lua-path : module-name : fnl-path}
+      _
+      (error (: "Invalid format: \"%s\"" :format line)))))
 
 (fn read-module-map-file [log-path]
   "Get a dependent-map of `dependency-fnl-path`.
