@@ -1,49 +1,45 @@
-(import-macros {: describe* : it*} :test._busted_macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(require :test.init)
+(include :test.context.prerequisites)
 
 (local fennel (require :fennel))
 (local thyme (require :thyme))
 
-(local default-fnl-opts {:correlate false})
-
 (describe* "(fennel wrapper)"
   (describe* :thyme.view
-    (describe* "convert `(+ 1 1)`"
-      (let [fnl-code "(+ 1 1)"]
-        (it* "as the same as `fennel.eval` does."
-          (assert.is_same (fennel.view fnl-code default-fnl-opts)
-                          (thyme.view fnl-code default-fnl-opts)))
-        (it* "into a fennel string."
-          (assert.is_same "\"(+ 1 1)\"" (thyme.view fnl-code default-fnl-opts)))
-        (it* "into a fennel string with correlate=true."
-          (let [fnl-opts {:correlate true}]
-            (assert.is_same "\"(+ 1 1)\"" (thyme.view fnl-code fnl-opts)))))))
+    (describe* "converts a fennel expression"
+      (describe* "as the same as `fennel.view` does;"
+        (describe* "thus, `(thyme.view (+ 1 1) {:correlate false})`"
+          (let [fnl-code "(+ 1 1)"]
+            (it* "returns as the same as `fennel.eval` does."
+              (assert.is_same (fennel.view fnl-code {:correlate false})
+                              (thyme.view fnl-code {:correlate false})))
+            (it* "returns the string \"(+ 1 1)\"."
+              (assert.is_same "\"(+ 1 1)\""
+                              (thyme.view fnl-code {:correlate false}))))))))
   (describe* :thyme.eval
-    (describe* "evaluates `(+ 1 1)`"
-      (let [fnl-code "(+ 1 1)"]
-        (it* "as the same as `fennel.eval` does."
-          (assert.is_same (fennel.eval fnl-code default-fnl-opts)
-                          (thyme.eval fnl-code default-fnl-opts)))
-        (it* "result in a number."
-          (assert.is_same 2 (thyme.eval fnl-code default-fnl-opts)))
-        (it* "result in a number with correlate=true."
-          (let [fnl-opts {:correlate true}]
-            (assert.is_same 2 (thyme.eval fnl-code fnl-opts)))))))
+    (describe* "evaluates a fennel expression"
+      (describe* "as the same as `fennel.view` does;"
+        (describe* "thus, `(thyme.eval (+ 1 1) {:correlate false})`"
+          (let [fnl-code "(+ 1 1)"]
+            (it* "returns as the same as `fennel.eval` does."
+              (assert.is_same (fennel.eval fnl-code {:correlate false})
+                              (thyme.eval fnl-code {:correlate false})))
+            (it* "returns the number `2`."
+              (assert.is_same 2 (thyme.eval fnl-code {:correlate false}))))))))
   ;; TODO: Is thyme.macrodebug theoretically impossible to test?
   ;; /usr/share/lua/5.1/luassert/assertions.lua:126: the 'same' function requires a minimum of 2 arguments, got: 1
   (describe* :thyme.compile-string
-    (describe* "compiles `(+ 1 1)`"
-      (let [fnl-code "(+ 1 1)"]
-        (it* "as the same as `fennel.compile-string` does."
-          (assert.is_same (fennel.compile-string fnl-code default-fnl-opts)
-                          (thyme.compile-string fnl-code default-fnl-opts)))
-        (it* "into lua chunk code."
+    (describe* "evaluates a fennel expression"
+      (describe* "as the same as `fennel.compile-string` does;"
+        (describe* "thus, `(thyme.compile-string (+ 1 1) {:correlate false})`"
           (let [fnl-code "(+ 1 1)"]
-            (assert.is_same "return (1 + 1)"
-                            (thyme.compile-string fnl-code default-fnl-opts))))
-        (it* "into lua chunk code with correlate=true."
-          (let [fnl-code "(+ 1 1)"
-                fnl-opts {:correlate true}]
-            (assert.is_same " return (1 + 1)"
-                            (thyme.compile-string fnl-code fnl-opts))))))))
+            (it* "returns as the same as `fennel.compile-string` does."
+              (assert.is_same (fennel.compile-string fnl-code
+                                                     {:correlate false})
+                              (thyme.compile-string fnl-code {:correlate false})))
+            (it* "returns the string of the lua chunk code \"return (1 + 1)\"."
+              (let [fnl-code "(+ 1 1)"]
+                (assert.is_same "return (1 + 1)"
+                                (thyme.compile-string fnl-code
+                                                      {:correlate false}))))))))))
