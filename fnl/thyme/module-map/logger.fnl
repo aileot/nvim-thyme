@@ -14,21 +14,16 @@
                        (tset self fnl-path modmap)
                        modmap))}))
 
-(fn log-module-map! [dependency dependent-stack]
-  "Append dependent path to dependency cache file.
-@param dependency table
-@param dependent-stack table"
+(fn log-module-map! [dependency]
+  "Log module map.
+@param dependency table"
   ;; Note: dependent-stack can be empty when `import-macros` is in cmdline.
-  (let [module-map (or (rawget module-maps dependency.fnl-path)
-                       (let [(modmap logged?) (ModuleMap.new dependency.fnl-path)]
-                         (when-not logged?
-                           (modmap:initialize-module-map! dependency))
-                         (tset module-maps dependency.fnl-path modmap)
-                         modmap))]
-    (case (last dependent-stack)
-      dependent (when-not (-> (module-map:get-dependent-maps)
-                              (. dependent.fnl-path))
-                  (module-map:add-dependent dependent)))))
+  (or (rawget module-maps dependency.fnl-path)
+      (let [(modmap logged?) (ModuleMap.new dependency.fnl-path)]
+        (when-not logged?
+          (modmap:initialize-module-map! dependency))
+        (tset module-maps dependency.fnl-path modmap)
+        modmap)))
 
 (fn fnl-path->entry-map [fnl-path]
   "Get dependency map of `fnl-path`.
