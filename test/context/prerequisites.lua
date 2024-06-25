@@ -36,7 +36,7 @@ local function bootstrap(url)
   local name = url:match(".*/(.*)$")
   local path = joinpath(pack_dir, name)
   if not uv.fs_stat(path) then
-    print("Installing " .. url)
+    print("Installing " .. url .. " to " .. path)
     local out = vim.fn.system({
       "git",
       "clone",
