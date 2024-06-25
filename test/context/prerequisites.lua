@@ -27,7 +27,7 @@ local function joinpath(...)
   return result
 end
 
-local tmp_dir = os.getenv("TEMP") or "/tmp"
+local tmp_dir = vim.fn.stdpath("cache")
 local test_dir = joinpath(tmp_dir, "thyme-tests")
 local pack_dir = joinpath(test_dir, "deps")
 vim.fn.mkdir(pack_dir, "p")
