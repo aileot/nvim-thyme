@@ -84,4 +84,4 @@ test: build $(LUA_SPECS) ## Run test
 		$(VUSTED) \
 		$(VUSTED_FLAGS) \
 		$(VUSTED_EXTRA_FLAGS) \
-		$(TEST_ROOT)
+		$(REPO_ROOT)
