@@ -17,7 +17,7 @@ VUSTED_EXTRA_FLAGS ?=
 
 REPO_ROOT:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 TEST_ROOT:=$(REPO_ROOT)/test
-TEST_CONTEXT_DIR:=$(TEST_ROOT)/.context
+TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
 
 FNL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
