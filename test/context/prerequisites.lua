@@ -27,7 +27,7 @@ local function joinpath(...)
   return result
 end
 
-local tmp_dir = os.getenv("TEMP") or "/tmp"
+local tmp_dir = vim.fn.stdpath("cache")
 local test_dir = joinpath(tmp_dir, "thyme-tests")
 local pack_dir = joinpath(test_dir, "deps")
 vim.fn.mkdir(pack_dir, "p")
@@ -36,7 +36,7 @@ local function bootstrap(url)
   local name = url:match(".*/(.*)$")
   local path = joinpath(pack_dir, name)
   if not uv.fs_stat(path) then
-    print("Installing " .. url)
+    print("Installing " .. url .. " to " .. path)
     local out = vim.fn.system({
       "git",
       "clone",
