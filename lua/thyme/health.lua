@@ -92,8 +92,8 @@ end
 local function _15_()
   report_integrations()
   report_thyme_disk_info()
-  report_thyme_config()
   report_fennel_paths()
-  return report_imported_macros()
+  report_imported_macros()
+  return report_thyme_config()
 end
 return {check = _15_}

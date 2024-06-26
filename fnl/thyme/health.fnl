@@ -78,6 +78,6 @@
 {:check (fn []
           (report-integrations)
           (report-thyme-disk-info)
-          (report-thyme-config)
           (report-fennel-paths)
-          (report-imported-macros))}
+          (report-imported-macros)
+          (report-thyme-config))}
