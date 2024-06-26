@@ -490,7 +490,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 
 ## Alternatives
 
-- [aniseed][] provides clojure-like interfaces. I've never used it.
+- [aniseed][] provides Clojure-like interfaces. I've never used it.
 - [hotpot.nvim][] loads fennel first. I've been indebted so long. Big thanks.
 - [nfnl][] compiles to the `lua/`.
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
