@@ -71,7 +71,7 @@ local function peek_module_name(log_path)
     end
   end
   local function _13_()
-    return file:read("*l"):match(("^(.-)" .. marker.sep))
+    return line__3emodmap(file:read("*l"))["module-name"]
   end
   return close_handlers_12_auto(_G.xpcall(_13_, (package.loaded.fennel or _G.debug or {}).traceback))
 end
@@ -87,7 +87,7 @@ local function peek_fnl_path(log_path)
     end
   end
   local function _15_()
-    return file:read("*l"):match(("^.-" .. marker.sep .. "(.-)" .. marker.sep))
+    return line__3emodmap(file:read("*l"))["fnl-path"]
   end
   return close_handlers_12_auto(_G.xpcall(_15_, (package.loaded.fennel or _G.debug or {}).traceback))
 end

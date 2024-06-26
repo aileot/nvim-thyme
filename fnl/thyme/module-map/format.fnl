@@ -77,7 +77,8 @@ empty table.
                            (.. "failed to read " log-path))]
     ;; Peek the first line.
     (-> (file:read :*l)
-        (: :match (.. "^(.-)" marker.sep)))))
+        (line->modmap)
+        (. :module-name))))
 
 (fn peek-fnl-path [log-path]
   "Peek the primary `fnl-path` of the module-map recorded in `log-path`.
@@ -88,7 +89,8 @@ empty table.
                            (.. "failed to read " log-path))]
     ;; Peek the first line.
     (-> (file:read :*l)
-        (: :match (.. "^.-" marker.sep "(.-)" marker.sep)))))
+        (line->modmap)
+        (. :fnl-path))))
 
 {: modmap->line
  : read-module-map-file
