@@ -51,6 +51,7 @@
     (set config.source nil)
     (set config.module-name nil)
     (set config.filename nil)
+    ;; TODO: Dump the file contents in .nvim-thyme.fnl instead?
     (report-info (.. "The current config:\n" (fennel.view config)))))
 
 (fn report-fennel-paths []
