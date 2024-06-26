@@ -8,8 +8,7 @@ local function _2_(self, fnl_path)
   return modmap
 end
 module_maps = setmetatable({}, {__index = _2_})
-local function log_module_map_21(dependency, dependent_stack)
-  local module_map
+local function log_module_map_21(dependency)
   local or_3_ = rawget(module_maps, dependency["fnl-path"])
   if not or_3_ then
     local modmap, logged_3f = ModuleMap.new(dependency["fnl-path"])
@@ -20,31 +19,20 @@ local function log_module_map_21(dependency, dependent_stack)
     module_maps[dependency["fnl-path"]] = modmap
     or_3_ = modmap
   end
-  module_map = or_3_
-  local _6_ = dependent_stack[#dependent_stack]
-  if (nil ~= _6_) then
-    local dependent = _6_
-    if not module_map["get-dependent-maps"](module_map)[dependent["fnl-path"]] then
-      return module_map["add-dependent"](module_map, dependent)
-    else
-      return nil
-    end
-  else
-    return nil
-  end
+  return or_3_
 end
 local function fnl_path__3eentry_map(fnl_path)
-  local tgt_9_ = module_maps[fnl_path]
-  return (tgt_9_)["get-entry-map"](tgt_9_)
+  local tgt_6_ = module_maps[fnl_path]
+  return (tgt_6_)["get-entry-map"](tgt_6_)
 end
 local function fnl_path__3edependent_map(fnl_path)
-  local tgt_10_ = module_maps[fnl_path]
-  return (tgt_10_)["get-dependent-maps"](tgt_10_)[fnl_path]
+  local tgt_7_ = module_maps[fnl_path]
+  return (tgt_7_)["get-dependent-maps"](tgt_7_)[fnl_path]
 end
 local function fnl_path__3elua_path(fnl_path)
-  local _11_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _11_) then
-    local modmap = _11_
+  local _8_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _8_) then
+    local modmap = _8_
     return modmap["lua-path"]
   else
     return nil
