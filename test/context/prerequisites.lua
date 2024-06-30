@@ -2,15 +2,14 @@ local deps = {
   "https://git.sr.ht/~technomancy/fennel",
 }
 
-local repo_root
-do
-  local f = debug.getinfo(1, "S").source:sub(2)
-  repo_root = vim.fn.fnamemodify(f, ":p:h:h")
-end
+-- NOTE: Because this file is supposed to be `include`d, vim.fn.fnamemodify is
+-- unsuitable.
+assert(vim.env.REPO_ROOT, "$REPO_ROOT is NOT specified.")
+local repo_root = vim.env.REPO_ROOT
 
 do -- Assert test contexts.
   local function assert_is_under_repo(path)
-    assert(path:find(repo_root, 1, true), path .. " is not under nvim-thyme repository.")
+    assert(vim.startswith(path, repo_root), path .. " is not under nvim-thyme repository.")
   end
   assert_is_under_repo(vim.fn.stdpath("config"))
   assert_is_under_repo(vim.fn.stdpath("cache"))
