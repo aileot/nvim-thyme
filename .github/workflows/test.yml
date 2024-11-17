@@ -30,4 +30,3 @@ jobs:
           version: ${{ matrix.nvim_version }}
       - name: Run tests
         run: make test
-        timeout-minutes: 5
