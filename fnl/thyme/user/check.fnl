@@ -56,7 +56,7 @@
         (restore-module-map! fnl-path)
         false))))
 
-(lambda update-module-dependencies! [fnl-path ?lua-path opts]
+(λ update-module-dependencies! [fnl-path ?lua-path opts]
   "Clear cache files of `fnl-path` and its dependent files.
 @param fnl-path string
 @param ?lua-path-to-compile string

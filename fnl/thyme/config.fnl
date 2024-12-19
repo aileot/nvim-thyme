@@ -86,7 +86,7 @@
   ;; Note: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
-(lambda get-option-value [config key]
+(λ get-option-value [config key]
   "Return the option value for `config`.
 @return any config value"
   (or (rawget config key) ;
