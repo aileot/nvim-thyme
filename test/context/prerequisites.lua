@@ -55,6 +55,8 @@ local function setup()
   vim.o.swapfile = false
   vim.o.writebackup = false
   vim.o.runtimepath = vim.env.VIMRUNTIME
+  vim.cmd("filetype off")
+  vim.cmd("filetype plugin indent off")
   for _, url in ipairs(deps) do
     bootstrap(url)
   end
