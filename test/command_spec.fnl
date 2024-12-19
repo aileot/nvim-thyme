@@ -2,7 +2,8 @@
 
 (include :test.helper.prerequisites)
 
-(local {: prepare-context-fnl-file!
+(local {: prepare-config-fnl-file!
+        : prepare-context-fnl-file!
         : prepare-context-lua-file!
         : remove-context-files!} (include :test.helper.utils))
 
@@ -20,6 +21,19 @@
                    (define-commands!)))
     (after_each (fn []
                   (remove-context-files!)))
+    (describe* "(for the files compiled by thyme)"
+      (after_each (fn []
+                    (set package.loaded.foo nil)))
+      (it* "opens a compiled lua file for current fnl file."
+        (let [path (prepare-config-fnl-file! "foo.fnl" :foo)]
+          (vim.cmd.edit path)
+          (vim.cmd "silent FnlAlternate")
+          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
+          (require :foo)
+          (vim.cmd "silent FnlAlternate")
+          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
+          (vim.cmd.bdelete path)
+          (vim.fn.delete path))))
     (describe* "(for the files not compiled by thyme)"
       (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exists."
         (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]
