@@ -58,10 +58,16 @@
     (file:read :*a)))
 
 (fn write-file! [path contents]
+  "Write `contents` into `path`.
+@param path string
+@param contents string"
   (with-open [f (assert (io.open path :w) (.. "failed to write to " path))]
     (f:write contents)))
 
 (fn append-file! [path contents]
+  "Append `contents` into `path`.
+@param path string
+@param contents string"
   (with-open [f (assert (io.open path :a) (.. "failed to append to " path))]
     (f:write contents)))
 
