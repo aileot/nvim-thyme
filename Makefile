@@ -22,6 +22,7 @@ TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
 FNL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
 TEST_DEPS:=$(wildcard $(TEST_ROOT)/*/*.fnl)
+TEST_DEPS+=$(wildcard $(TEST_ROOT)/*/*.lua)
 
 FNL_SRC_DIR=fnl
 
