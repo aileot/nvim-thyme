@@ -64,8 +64,8 @@ local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
 local function get_option_value(config, key)
-  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:88")
-  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:88")
+  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/config.fnl:89")
+  _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:89")
   return (rawget(config, key) or rawget(default_opts, key))
 end
 return {["get-main-config"] = get_main_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}
