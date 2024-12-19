@@ -74,6 +74,7 @@ build: $(LUA_RES_DIRS) $(LUA_RES)
 		$(FNL_EXTRA_FLAGS) \
 		--add-macro-path "$(REPO_MACRO_PATH);$(TEST_ROOT)/?.fnl" \
 		--compile $< > $@
+	@echo $< "	->	" $@
 
 .PHONY: test
 test: build $(LUA_SPECS) ## Run test
