@@ -11,7 +11,7 @@ constructor.
 @return boolean"
   (and (list? x) ;
        (case (. x 1 1)
-         (where (or :fn :hashfn :lambda :partial)) true)))
+         (where (or :fn :hashfn :lambda :partial :λ)) true)))
 
 (fn ->fn [...]
   (if (or (sym? ...) (function? ...))
