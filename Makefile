@@ -72,7 +72,9 @@ build: $(LUA_RES_DIRS) $(LUA_RES)
 	@$(FENNEL) \
 		$(FNL_FLAGS) \
 		$(FNL_EXTRA_FLAGS) \
-		--add-macro-path "$(REPO_MACRO_PATH);$(TEST_ROOT)/?.fnl" \
+		--add-macro-path "$(REPO_MACRO_PATH);$(REPO_ROOT)/?.fnl" \
+		--add-fennel-path "$(REPO_ROOT)/?.fnl" \
+		--add-package-path "$(REPO_ROOT)/?.lua" \
 		--compile $< > $@
 	@echo $< "	->	" $@
 
