@@ -5,6 +5,18 @@
 
 (local test-context-root (Path.join context-root "test"))
 
+(fn prepare-config-fnl-file! [filename contents]
+  "Prepare a fnl file under test context .config/ for testing. Return the full
+path to the prepared file.
+@param filename string
+@param contents string
+@return string"
+  (assert (not= "/" (filename:sub 1 1))
+          (.. "expected a filename, got fullpath " filename))
+  (let [path (Path.join vim.env.XDG_CONFIG_HOME :fnl filename)]
+    (write-fnl-file! path contents)
+    path))
+
 (fn prepare-context-fnl-file! [filename contents]
   "Prepare a fnl file for testing. Return the full path to the context file.
 @param filename string
@@ -30,6 +42,7 @@
 (fn remove-context-files! []
   (pcall vim.fn.delete test-context-root :rf))
 
-{: prepare-context-fnl-file!
+{: prepare-config-fnl-file!
+ : prepare-context-fnl-file!
  : prepare-context-lua-file!
  : remove-context-files!}
