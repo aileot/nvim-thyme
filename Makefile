@@ -65,6 +65,7 @@ lua/%.lua: $(FNL_SRC_DIR)/%.fnl
 clean:
 	@rm -rf lua/
 	@rm -f $(LUA_SPECS)
+	@rm -rf $(TEST_CONTEXT_DIR)
 
 .PHONY: build
 build: $(LUA_RES_DIRS) $(LUA_RES)
