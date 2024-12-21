@@ -48,6 +48,7 @@ local function bootstrap(url)
       error(out)
     end
   end
+  assert(uv.fs_stat(path), path .. " does not exist.")
   vim.opt.rtp:prepend(path)
 end
 
