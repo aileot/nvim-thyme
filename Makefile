@@ -21,6 +21,7 @@ TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
 
 FNL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
+LUA_ALL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.lua)
 TEST_DEPS:=$(wildcard $(TEST_ROOT)/*/*.fnl)
 TEST_DEPS+=$(wildcard $(TEST_ROOT)/*/*.lua)
 
@@ -64,7 +65,7 @@ lua/%.lua: $(FNL_SRC_DIR)/%.fnl
 .PHONY: clean
 clean:
 	@rm -rf lua/
-	@rm -f $(LUA_SPECS)
+	@rm -f $(LUA_ALL_SPECS)
 	@rm -rf $(TEST_CONTEXT_DIR)
 
 .PHONY: build
