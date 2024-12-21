@@ -121,7 +121,7 @@ end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
   if ModuleBackupManager["should-backup-module?"](ModuleBackupManager, module_name, lua_code) then
-    return ModuleBackupManager["backup-module!"](ModuleBackupManager, module_name, lua_path)
+    return ModuleBackupManager["create-module-backup!"](ModuleBackupManager, module_name, lua_path)
   else
     return nil
   end

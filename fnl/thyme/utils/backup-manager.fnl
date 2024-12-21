@@ -33,7 +33,7 @@
               (assert expected-contents
                       "expected non empty string for `expected-contents`")))))
 
-(fn BackupManager.backup-module! [self module-name path]
+(fn BackupManager.create-module-backup! [self module-name path]
   "Create a backup file of `path` for `module-name`.
 @param module-name string
 @param path string"

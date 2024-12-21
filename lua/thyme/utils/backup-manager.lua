@@ -23,7 +23,7 @@ BackupManager["should-backup-module?"] = function(self, module_name, expected_co
   local backup_path = self["module-name->backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
-BackupManager["backup-module!"] = function(self, module_name, path)
+BackupManager["create-module-backup!"] = function(self, module_name, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
   local backup_path = self["module-name->backup-path"](self, module_name)
   return assert(fs.copyfile(path, backup_path))

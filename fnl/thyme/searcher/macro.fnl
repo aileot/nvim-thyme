@@ -29,7 +29,7 @@
         (when (and (not= fnl-path backup-path)
                    (MacroBackupManager:should-backup-module? module-name
                                                              (read-file fnl-path)))
-          (MacroBackupManager:backup-module! module-name fnl-path))
+          (MacroBackupManager:create-module-backup! module-name fnl-path))
         (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
