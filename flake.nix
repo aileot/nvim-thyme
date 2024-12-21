@@ -3,8 +3,10 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     systems.url = "github:nix-systems/default";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
-  outputs = {
+  outputs = inputs @ {
     nixpkgs,
     systems,
     ...
@@ -18,11 +20,28 @@
     devShells = eachSystem ({pkgs, ...}: {
       default = pkgs.mkShellNoCC {
         name = "nvim-thyme";
-        packages = with pkgs; [
-          luajit
+        buildInputs = with pkgs; [
+          gnumake
           fennel
+          luajit
+          fennel-ls
+
+          luajitPackages.vusted
         ];
       };
     });
+    formatter = eachSystem ({pkgs, ...}:
+      inputs.treefmt-nix.lib.mkWrapper pkgs {
+        projectRootFile = "flake.nix";
+        programs = {
+          actionlint.enable = true;
+          alejandra.enable = true;
+          # fnlfmt.enable = true; # https://todo.sr.ht/~technomancy/fennel/242
+          shfmt.enable = true;
+        };
+        settings.formatter = {
+          shfmt.includes = [".githooks/*"];
+        };
+      });
   };
 }
