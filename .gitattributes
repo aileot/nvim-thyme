@@ -1,2 +1,3 @@
+**/*.lock linguist-generated
 lua/** linguist-vendored
 *.fnl diff=fennel
