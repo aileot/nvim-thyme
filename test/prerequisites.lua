@@ -65,7 +65,7 @@ local function setup()
   vim.opt.rtp:prepend(compile_dir)
   vim.opt.rtp:prepend(repo_root)
   table.insert(package.loaders, function(...)
-    require("thyme").loader(...)
+    return require("thyme").loader(...)
   end)
 end
 
