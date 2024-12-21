@@ -97,7 +97,7 @@ fennel.lua.
 
 (fn write-lua-file-with-backup! [lua-path lua-code module-name]
   (write-lua-file! lua-path lua-code)
-  (when (ModuleBackupManager:should-backup-module? module-name lua-code)
+  (when (ModuleBackupManager:should-update-backup! module-name lua-code)
     (ModuleBackupManager:create-module-backup! module-name lua-path)))
 
 (fn search-fnl-module-on-rtp! [module-name ...]

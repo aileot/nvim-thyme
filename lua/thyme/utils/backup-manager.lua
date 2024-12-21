@@ -18,7 +18,7 @@ end
 BackupManager["module-name->backup-path"] = function(self, module_name)
   return Path.join(self.root, module_name)
 end
-BackupManager["should-backup-module?"] = function(self, module_name, expected_contents)
+BackupManager["should-update-backup!"] = function(self, module_name, expected_contents)
   assert(not file_readable_3f(module_name), ("expected module-name, got path " .. module_name))
   local backup_path = self["module-name->backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))

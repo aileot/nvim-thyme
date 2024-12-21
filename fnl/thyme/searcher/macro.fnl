@@ -27,7 +27,7 @@
       (true result)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)]
         (when (and (not= fnl-path backup-path)
-                   (MacroBackupManager:should-backup-module? module-name
+                   (MacroBackupManager:should-update-backup! module-name
                                                              (read-file fnl-path)))
           (MacroBackupManager:create-module-backup! module-name fnl-path))
         (set compiler-options.env ?env)

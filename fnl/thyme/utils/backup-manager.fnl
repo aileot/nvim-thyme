@@ -24,7 +24,13 @@
 @return string backup path"
   (Path.join self.root module-name))
 
-(fn BackupManager.should-backup-module? [self module-name expected-contents]
+(fn BackupManager.should-update-backup! [self module-name expected-contents]
+  "Check if the backup of the module should be updated.
+Return `true` if the following conditions are met:
+  - `expected-contents` is different from the backed-up contents for the module.
+@param module-name string
+@param expected-contents string contents expected for the module
+@return boolean true if module should be backed up, false otherwise"
   (assert (not (file-readable? module-name))
           (.. "expected module-name, got path " module-name))
   (let [backup-path (self:module-name->backup-path module-name)]
@@ -34,7 +40,7 @@
                       "expected non empty string for `expected-contents`")))))
 
 (fn BackupManager.create-module-backup! [self module-name path]
-  "Create a backup file of `path` for `module-name`.
+  "Create a backup file of `path` as `module-name`.
 @param module-name string
 @param path string"
   ;; Note: Saving a chunk of macro module is probably impossible.
