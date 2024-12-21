@@ -48,6 +48,7 @@ local function bootstrap(url)
       error(out)
     end
   end
+  assert(uv.fs_stat(path), path .. " does not exist.")
   vim.opt.rtp:prepend(path)
 end
 
@@ -64,7 +65,7 @@ local function setup()
   vim.opt.rtp:prepend(compile_dir)
   vim.opt.rtp:prepend(repo_root)
   table.insert(package.loaders, function(...)
-    require("thyme").loader(...)
+    return require("thyme").loader(...)
   end)
 end
 

@@ -58,6 +58,7 @@ fennel.lua.
         (restore-file! cached-fennel-path)
         (fs.copyfile fennel-lua-path cached-fennel-path))
     (assert-is-file-readable fennel-lua-path)
+    (assert-is-file-readable cached-fennel-path)
     ;; Note: It must return Lua expression, i.e., read-file is unsuitable.
     ;; Note: Evaluating fennel.lua by (require :fennel) is unsuitable;
     ;; otherwise, it gets into infinite loop since this function runs as

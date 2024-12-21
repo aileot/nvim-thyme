@@ -45,6 +45,7 @@ local function compile_fennel_into_rtp_21()
     fs.copyfile(fennel_lua_path, cached_fennel_path)
   end
   assert_is_file_readable(fennel_lua_path)
+  assert_is_file_readable(cached_fennel_path)
   return assert(loadfile(cached_fennel_path))
 end
 local function initialize_module_searcher_on_rtp_21(fennel)
