@@ -34,7 +34,7 @@
                       "expected non empty string for `expected-contents`")))))
 
 (fn BackupManager.create-module-backup! [self module-name path]
-  "Create a backup file of `path` for `module-name`.
+  "Create a backup file of `path` as `module-name`.
 @param module-name string
 @param path string"
   ;; Note: Saving a chunk of macro module is probably impossible.
