@@ -27,7 +27,10 @@
 (fn BackupManager.should-update-backup! [self module-name expected-contents]
   "Check if the backup of the module should be updated.
 Return `true` if the following conditions are met:
-  - `expected-contents` is different from the backed-up contents for the module.
+
+- `expected-contents` is different from the backed-up contents for the
+  module.
+
 @param module-name string
 @param expected-contents string contents expected for the module
 @return boolean true if module should be backed up, false otherwise"
