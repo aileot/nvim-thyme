@@ -26,9 +26,7 @@ local function joinpath(...)
   return result
 end
 
-local tmp_dir = vim.fn.stdpath("cache")
-local test_dir = joinpath(tmp_dir, "thyme-tests")
-local pack_dir = joinpath(test_dir, "deps")
+local pack_dir = joinpath(vim.fn.stdpath("data"), "deps")
 vim.fn.mkdir(pack_dir, "p")
 
 local function bootstrap(url)
@@ -63,7 +61,7 @@ local function setup()
   for _, url in ipairs(deps) do
     bootstrap(url)
   end
-  local compile_dir = test_dir .. "/thyme/compile"
+  local compile_dir = joinpath(vim.fn.stdpath("cache"), "thyme", "compile")
   vim.opt.rtp:prepend(compile_dir)
   vim.opt.rtp:prepend(repo_root)
   table.insert(package.loaders, function(...)
