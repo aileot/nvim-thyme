@@ -17,6 +17,8 @@
 (local default-lua-module-path (vim.fs.joinpath default-lua-dir :foobar.lua))
 
 (describe* :loader
+  (setup* (fn []
+            (define-commands!)))
   (before-each (fn []
                  (-> (vim.fs.dirname default-fnl-module-path)
                      (vim.fn.mkdir :p))
@@ -42,8 +44,6 @@
     (assert.equals :string (type (thyme-loader :bar)))
     (assert.equals :string (type (thyme-loader :foobar))))
   (describe* "cannot load a lua file under lua/ as a module;"
-    (setup* (fn []
-              (define-commands!)))
     (it* "thus, thyme.loader returns a string for the module \"foobar\" without any error"
       (vim.cmd "silent ThymeUninstall")
       (-> default-lua-dir
@@ -54,8 +54,6 @@
       (assert.equals :string (type (thyme-loader :foobar)))
       (vim.fn.delete default-lua-module-path)))
   (describe* "can load a fnl file under fnl/ as a module by default;"
-    (setup* (fn []
-              (define-commands!)))
     (it* "thus, thyme.loader can load the module \"foobar\" without any error"
       (vim.cmd "silent ThymeUninstall")
       (-> default-fnl-dir
