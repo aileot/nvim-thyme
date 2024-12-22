@@ -15,7 +15,7 @@ FNL_EXTRA_FLAGS ?=
 VUSTED_FLAGS ?= --shuffle --output=utfTerminal
 VUSTED_EXTRA_FLAGS ?=
 
-REPO_ROOT:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+REPO_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 TEST_ROOT:=$(REPO_ROOT)/test
 TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
 
