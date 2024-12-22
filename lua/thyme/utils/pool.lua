@@ -15,7 +15,10 @@ local function path__3epool_path(path)
   return Path.join(pool_prefix, uri_encode(path))
 end
 local function hide_file_21(path)
-  return assert(fs.rename(path, path__3epool_path(path)))
+  assert(file_readable_3f(path))
+  local pool_path = path__3epool_path(path)
+  vim.fn.mkdir(vim.fs.dirname(pool_path), "p")
+  return assert(fs.rename(path, pool_path))
 end
 local function restore_file_21(path)
   vim.fn.mkdir(vim.fs.dirname(path), "p")
