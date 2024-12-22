@@ -26,6 +26,7 @@ end
 BackupManager["create-module-backup!"] = function(self, module_name, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
   local backup_path = self["module-name->backup-path"](self, module_name)
+  vim.fn.mkdir(vim.fs.dirname(backup_path), "p")
   return assert(fs.copyfile(path, backup_path))
 end
 BackupManager["get-root"] = function()
