@@ -49,6 +49,8 @@ Return `true` if the following conditions are met:
   ;; Note: Saving a chunk of macro module is probably impossible.
   (assert (file-readable? path) (.. "expected readable file, got " path))
   (let [backup-path (self:module-name->backup-path module-name)]
+    (-> (vim.fs.dirname backup-path)
+        (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))))
 
 (fn BackupManager.get-root []
