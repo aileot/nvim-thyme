@@ -19,7 +19,11 @@
 (fn hide-file! [path]
   "Move `path` to its own pool-path.
 @param path string"
-  (assert (fs.rename path (path->pool-path path))))
+  (assert (file-readable? path))
+  (let [pool-path (path->pool-path path)]
+    (-> (vim.fs.dirname pool-path)
+        (vim.fn.mkdir :p))
+    (assert (fs.rename path pool-path))))
 
 (fn restore-file! [path]
   "Move back `path` from its own pool-path.
