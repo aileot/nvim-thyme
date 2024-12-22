@@ -15,6 +15,9 @@ FNL_EXTRA_FLAGS ?=
 VUSTED_FLAGS ?= --shuffle --output=utfTerminal
 VUSTED_EXTRA_FLAGS ?=
 
+VUSTED_EXTRA_ARGS ?= "-Es"
+VUSTED_ARGS ?= "--headless --clean $(VUSTED_EXTRA_ARGS)"
+
 REPO_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 TEST_ROOT:=$(REPO_ROOT)/test
 TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
@@ -89,6 +92,7 @@ test: build $(LUA_SPECS) ## Run test
 		XDG_CACHE_HOME="$(TEST_CONTEXT_DIR)/.cache" \
 		XDG_DATA_HOME="$(TEST_CONTEXT_DIR)/.data" \
 		XDG_STATE_HOME="$(TEST_CONTEXT_DIR)/.state" \
+		VUSTED_ARGS=$(VUSTED_ARGS) \
 		$(VUSTED) \
 		$(VUSTED_FLAGS) \
 		$(VUSTED_EXTRA_FLAGS) \
