@@ -15,7 +15,7 @@ FNL_EXTRA_FLAGS ?=
 VUSTED_FLAGS ?= --shuffle --output=utfTerminal
 VUSTED_EXTRA_FLAGS ?=
 
-VUSTED_EXTRA_ARGS ?= "-Es"
+VUSTED_EXTRA_ARGS ?= -Es
 VUSTED_ARGS ?= "--headless --clean $(VUSTED_EXTRA_ARGS)"
 
 REPO_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
