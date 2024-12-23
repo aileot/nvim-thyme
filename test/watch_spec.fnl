@@ -1,6 +1,6 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include :test.prerequisites)
+(include :test.helper.prerequisites)
 
 (local {: watch-files!} (require :thyme))
 

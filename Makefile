@@ -12,12 +12,6 @@ VUSTED ?= vusted
 FNL_FLAGS ?=
 FNL_EXTRA_FLAGS ?=
 
-VUSTED_FLAGS ?= --shuffle --output=utfTerminal
-VUSTED_EXTRA_FLAGS ?=
-
-VUSTED_EXTRA_ARGS ?= -Es
-VUSTED_ARGS ?= "--headless --clean $(VUSTED_EXTRA_ARGS)"
-
 REPO_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 TEST_ROOT:=$(REPO_ROOT)/test
 TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
@@ -42,6 +36,12 @@ REPO_FNL_DIR := $(REPO_ROOT)/$(FNL_SRC_DIR)
 REPO_FNL_PATH := $(REPO_FNL_DIR)/?.fnl;$(REPO_FNL_DIR)/?/init.fnl
 REPO_MACRO_DIR := $(REPO_FNL_DIR)
 REPO_MACRO_PATH := $(REPO_MACRO_DIR)/?.fnl;$(REPO_MACRO_DIR)/?/init.fnl
+
+VUSTED_FLAGS ?= --shuffle --output=utfTerminal
+VUSTED_EXTRA_FLAGS ?=
+
+VUSTED_EXTRA_ARGS ?= -Es
+VUSTED_ARGS ?= "--headless --clean $(VUSTED_EXTRA_ARGS)"
 
 .DEFAULT_GOAL := help
 .PHONY: help

@@ -1,7 +1,7 @@
 (import-macros {: setup* : before-each : after-each : describe* : it*}
                :test.helper.busted-macros)
 
-(include :test.prerequisites)
+(include :test.helper.prerequisites)
 
 (local {: remove-context-files!} (include :test.helper.utils))
 

@@ -1,7 +1,7 @@
 (import-macros {: setup* : after-each : describe* : it*}
                :test.helper.busted-macros)
 
-(include :test.prerequisites)
+(include :test.helper.prerequisites)
 
 (local {: define-commands!} (require :thyme))
 (local {: fnl-path->lua-path} (require :thyme.module-map.logger))

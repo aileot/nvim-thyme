@@ -1,7 +1,7 @@
 (import-macros {: before-each : after-each : describe* : it*}
                :test.helper.busted-macros)
 
-(include :test.prerequisites)
+(include :test.helper.prerequisites)
 
 (local {: define-commands!} (require :thyme))
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
