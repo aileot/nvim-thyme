@@ -1,6 +1,6 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include :test.prerequisites)
+(include :test.helper.prerequisites)
 
 (local {: config-filename} (require :thyme.const))
 

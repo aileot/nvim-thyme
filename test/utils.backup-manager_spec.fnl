@@ -1,6 +1,6 @@
 (import-macros {: before-each : describe* : it*} :test.helper.busted-macros)
 
-(include :test.prerequisites)
+(include :test.helper.prerequisites)
 
 (local BackupManager (require :thyme.utils.backup-manager))
 
