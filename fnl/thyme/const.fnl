@@ -15,7 +15,8 @@
 (local cache-prefix
        (assert (or (rtp:match "([^,]+/thyme/compile[^,]-),")
                    (rtp:match "([^,]+/thyme/compile[^,]-)$"))
-               "&runtimepath must contains a unique path which literally includes `/thyme/compile`."))
+               (.. "&runtimepath must contains a unique path which literally includes `/thyme/compile`; got "
+                   (vim.inspect (vim.opt.rtp:get)))))
 
 ;; Note: No need to set `/compiled/*` because Lua `require` only search
 ;; for a file per module name unlike `:runtime!` in Vim script.
