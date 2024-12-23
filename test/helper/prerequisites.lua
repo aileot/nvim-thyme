@@ -53,9 +53,11 @@ end
 local function setup()
   vim.o.swapfile = false
   vim.o.writebackup = false
-  vim.o.runtimepath = vim.env.VIMRUNTIME
-  vim.opt.rtp:prepend(vim.fn.stdpath("config"))
   vim.o.shortmess = "WF"
+  vim.opt.runtimepath = {
+    vim.fn.stdpath("config"),
+    vim.env.VIMRUNTIME,
+  }
   vim.cmd("filetype off")
   vim.cmd("filetype plugin indent off")
   for _, url in ipairs(deps) do
