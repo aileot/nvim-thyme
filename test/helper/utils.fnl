@@ -1,9 +1,10 @@
-(local {: lua-cache-prefix} (require :thyme.const))
-
 (fn remove-context-files! []
-  ;; NOTE: Leave fennel repo in cache to avoid redundant `git-clone`s.
-  (vim.fn.delete lua-cache-prefix :rf)
-  (vim.fn.delete (vim.fn.stdpath :data) :rf)
-  (vim.fn.delete (vim.fn.stdpath :state) :rf))
+  ;; NOTE: Indiscriminately removing stdpath/data results in too many attempts
+  ;; to re-download the online test deps like fennel, parinfer, etc.
+  (let [cache-dirs [:cache :data :state]]
+    (each [_ dir (ipairs cache-dirs)]
+      (-> (vim.fn.stdpath dir)
+          (vim.fs.joinpath :thyme)
+          (vim.fn.delete :rf)))))
 
 {: remove-context-files!}
