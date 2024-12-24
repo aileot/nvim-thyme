@@ -1,5 +1,6 @@
 local deps = {
   "https://git.sr.ht/~technomancy/fennel",
+  "https://github.com/eraserhd/parinfer-rust",
 }
 
 -- NOTE: Because this file is supposed to be `include`d, vim.fn.fnamemodify is
