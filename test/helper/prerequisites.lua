@@ -39,7 +39,8 @@ local function bootstrap(spec)
   local url = type(spec) == "string" and spec or spec[1]
   local name = url:match(".*/(.*)$")
   local path = joinpath(pack_dir, name)
-  if not uv.fs_stat(path) then
+  local was_installed = uv.fs_stat(path)
+  if not was_installed then
     print("Installing " .. url .. " to " .. path)
     local out = vim.fn.system({
       "git",
@@ -53,6 +54,11 @@ local function bootstrap(spec)
       error(out)
     end
   end
+  assert(uv.fs_stat(path), path .. " does not exist.")
+  vim.opt.rtp:prepend(path)
+  if was_installed then
+    return
+  end
   if type(spec) == "table" and spec.build then
     if spec.build:sub(1, 1) == ":" then
       vim.cmd(spec.build)
@@ -60,8 +66,6 @@ local function bootstrap(spec)
       vim.fn.jobstart(spec.build, { cwd = path })
     end
   end
-  assert(uv.fs_stat(path), path .. " does not exist.")
-  vim.opt.rtp:prepend(path)
 end
 
 local function setup()
