@@ -1,5 +1,9 @@
 local deps = {
   "https://git.sr.ht/~technomancy/fennel",
+  {
+    "https://github.com/nvim-treesitter/nvim-treesitter",
+    build = ":lua require('nvim-treesitter.configs').setup({ sync_install = true, ensure_installed = { 'fennel', 'lua' } })",
+  },
   { "https://github.com/eraserhd/parinfer-rust", build = "cargo build --release" },
 }
 
