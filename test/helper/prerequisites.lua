@@ -1,6 +1,6 @@
 local deps = {
   "https://git.sr.ht/~technomancy/fennel",
-  "https://github.com/eraserhd/parinfer-rust",
+  { "https://github.com/eraserhd/parinfer-rust", build = "cargo build --release" },
 }
 
 -- NOTE: Because this file is supposed to be `include`d, vim.fn.fnamemodify is
@@ -30,7 +30,9 @@ end
 local pack_dir = joinpath(vim.fn.stdpath("data"), "deps")
 vim.fn.mkdir(pack_dir, "p")
 
-local function bootstrap(url)
+---@param spec string|table string in url or {url, build?} the format would follow a simplified spec of lazy.nvim.
+local function bootstrap(spec)
+  local url = type(spec) == "string" and spec or spec[1]
   local name = url:match(".*/(.*)$")
   local path = joinpath(pack_dir, name)
   if not uv.fs_stat(path) then
@@ -47,6 +49,9 @@ local function bootstrap(url)
       error(out)
     end
   end
+  if type(spec) == "table" and spec.build then
+    vim.fn.jobstart(spec.build, { cwd = path })
+  end
   assert(uv.fs_stat(path), path .. " does not exist.")
   vim.opt.rtp:prepend(path)
 end
@@ -61,8 +66,8 @@ local function setup()
   }
   vim.cmd("filetype off")
   vim.cmd("filetype plugin indent off")
-  for _, url in ipairs(deps) do
-    bootstrap(url)
+  for _, spec in pairs(deps) do
+    bootstrap(spec)
   end
   local compile_dir = joinpath(vim.fn.stdpath("cache"), "thyme", "compile")
   vim.opt.rtp:prepend(compile_dir)
