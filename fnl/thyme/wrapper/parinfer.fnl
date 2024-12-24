@@ -215,7 +215,7 @@
         options (if ?opts
                     (vim.tbl_extend :keep ?opts opts)
                     opts)
-        request {: text : options :mode opts.mode}
+        request {: text : options :mode (or opts.mode :smart)}
         result (cache.parinfer-loader request)]
     (if result.success
         result.text

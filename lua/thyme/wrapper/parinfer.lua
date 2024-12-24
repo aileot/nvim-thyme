@@ -80,7 +80,7 @@ local function apply_parinfer(text, _3fopts)
   else
     options = opts
   end
-  local request = {text = text, options = options, mode = opts.mode}
+  local request = {text = text, options = options, mode = (opts.mode or "smart")}
   local result = cache["parinfer-loader"](request)
   if result.success then
     return result.text
