@@ -22,6 +22,7 @@
         name = "nvim-thyme";
         buildInputs = with pkgs; [
           gnumake
+          cargo # for parinfer-rust integration tests
           fennel
           luajit
           fennel-ls
