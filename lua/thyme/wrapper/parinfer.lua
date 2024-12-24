@@ -85,7 +85,8 @@ local function apply_parinfer(text, _3fopts)
   if result.success then
     return result.text
   else
-    return error(result)
+    local msg = ("Error in applying parinfer to the text:\n%s\nPassed Options:\n%s\nParinfer Result:\n%s"):format(text, vim.inspect((_3fopts or {})), vim.inspect(result))
+    return error(msg)
   end
 end
 return {["apply-parinfer"] = apply_parinfer}
