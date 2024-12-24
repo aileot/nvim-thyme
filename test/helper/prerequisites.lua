@@ -50,7 +50,11 @@ local function bootstrap(spec)
     end
   end
   if type(spec) == "table" and spec.build then
-    vim.fn.jobstart(spec.build, { cwd = path })
+    if spec.build:sub(1, 1) == ":" then
+      vim.cmd(spec.build)
+    else
+      vim.fn.jobstart(spec.build, { cwd = path })
+    end
   end
   assert(uv.fs_stat(path), path .. " does not exist.")
   vim.opt.rtp:prepend(path)
