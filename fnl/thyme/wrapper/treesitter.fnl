@@ -89,8 +89,12 @@ by default) for `vim.api.nvim_echo`.
                    _
                    text)]
     (validate-type :table opts)
-    (case (ts.get_string_parser tmp-text base-lang)
-      lang-tree
+    (case (pcall ts.get_string_parser tmp-text base-lang)
+      (false msg)
+      (let [chunks [[text]]]
+        (vim.notify_once msg vim.log.levels.WARN)
+        chunks)
+      (true lang-tree)
       ;; Make sure to destroy
       (let [top-row0 0 ;
             top-col0 0

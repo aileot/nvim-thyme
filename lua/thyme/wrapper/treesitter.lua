@@ -91,9 +91,14 @@ local function text__3ehl_chunks(text, _3fopts)
     tmp_text = text
   end
   validate_type("table", opts)
-  local _12_ = ts.get_string_parser(tmp_text, base_lang)
-  if (nil ~= _12_) then
-    local lang_tree = _12_
+  local _12_, _13_ = pcall(ts.get_string_parser, tmp_text, base_lang)
+  if ((_12_ == false) and (nil ~= _13_)) then
+    local msg = _13_
+    local chunks = {{text}}
+    vim.notify_once(msg, vim.log.levels.WARN)
+    return chunks
+  elseif ((_12_ == true) and (nil ~= _13_)) then
+    local lang_tree = _13_
     local top_row0 = 0
     local top_col0 = 0
     local bottom_row0 = -1
@@ -102,29 +107,29 @@ local function text__3ehl_chunks(text, _3fopts)
     local whitespace_chunk = {" "}
     local hl_chunk_matrix = new_matrix(end_row, end_col, whitespace_chunk)
     local cb
-    local function _13_(ts_tree, tree)
+    local function _14_(ts_tree, tree)
       if ts_tree then
         local lang = tree:lang()
         local hl_query
-        local or_14_ = hl_cache[lang]
-        if not or_14_ then
+        local or_15_ = hl_cache[lang]
+        if not or_15_ then
           local hlq = ts.query.get(lang, "highlights")
           hl_cache[lang] = hlq
-          or_14_ = hlq
+          or_15_ = hlq
         end
-        hl_query = or_14_
+        hl_query = or_15_
         local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
         for id, node, metadata in iter do
-          local _16_ = hl_query.captures[id]
-          if ((_16_ == "spell") or (_16_ == "nospell")) then
+          local _17_ = hl_query.captures[id]
+          if ((_17_ == "spell") or (_17_ == "nospell")) then
           else
-            local and_17_ = (nil ~= _16_)
-            if and_17_ then
-              local capture = _16_
-              and_17_ = not vim.startswith(capture, "_")
+            local and_18_ = (nil ~= _17_)
+            if and_18_ then
+              local capture = _17_
+              and_18_ = not vim.startswith(capture, "_")
             end
-            if and_17_ then
-              local capture = _16_
+            if and_18_ then
+              local capture = _17_
               local txt = ts.get_node_text(node, text)
               local hl_name = ("@" .. capture)
               local row01, col01 = node:range()
@@ -138,7 +143,7 @@ local function text__3ehl_chunks(text, _3fopts)
         return nil
       end
     end
-    cb = _13_
+    cb = _14_
     initialize_priority_matrix_21(end_row, end_col)
     update_hl_chunk_matrix_21(hl_chunk_matrix, text, nil, {}, top_row0, top_col0)
     do
