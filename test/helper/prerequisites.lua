@@ -1,5 +1,10 @@
 local deps = {
   "https://git.sr.ht/~technomancy/fennel",
+  {
+    "https://github.com/nvim-treesitter/nvim-treesitter",
+    build = ":lua require('nvim-treesitter.configs').setup({ sync_install = true, ensure_installed = { 'fennel', 'lua' } })",
+  },
+  { "https://github.com/eraserhd/parinfer-rust", build = "cargo build --release" },
 }
 
 -- NOTE: Because this file is supposed to be `include`d, vim.fn.fnamemodify is
@@ -29,10 +34,13 @@ end
 local pack_dir = joinpath(vim.fn.stdpath("data"), "deps")
 vim.fn.mkdir(pack_dir, "p")
 
-local function bootstrap(url)
+---@param spec string|table string in url or {url, build?} the format would follow a simplified spec of lazy.nvim.
+local function bootstrap(spec)
+  local url = type(spec) == "string" and spec or spec[1]
   local name = url:match(".*/(.*)$")
   local path = joinpath(pack_dir, name)
-  if not uv.fs_stat(path) then
+  local was_installed = uv.fs_stat(path)
+  if not was_installed then
     print("Installing " .. url .. " to " .. path)
     local out = vim.fn.system({
       "git",
@@ -43,11 +51,33 @@ local function bootstrap(url)
       path,
     })
     if vim.v.shell_error ~= 0 then
+      vim.fn.delete(path, "rf")
       error(out)
     end
   end
   assert(uv.fs_stat(path), path .. " does not exist.")
   vim.opt.rtp:prepend(path)
+  if was_installed then
+    return
+  end
+  if type(spec) == "table" and spec.build then
+    if spec.build:sub(1, 1) == ":" then
+      vim.cmd(spec.build)
+    else
+      print(spec.build)
+      vim
+        .system(vim.split(spec.build, " "), {
+          cwd = path,
+          stdout = function(err, data)
+            if err then
+              error(err)
+            end
+            vim.print(data)
+          end,
+        })
+        :wait()
+    end
+  end
 end
 
 local function setup()
@@ -60,8 +90,8 @@ local function setup()
   }
   vim.cmd("filetype off")
   vim.cmd("filetype plugin indent off")
-  for _, url in ipairs(deps) do
-    bootstrap(url)
+  for _, spec in pairs(deps) do
+    bootstrap(spec)
   end
   local compile_dir = joinpath(vim.fn.stdpath("cache"), "thyme", "compile")
   vim.opt.rtp:prepend(compile_dir)

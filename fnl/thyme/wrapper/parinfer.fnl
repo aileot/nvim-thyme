@@ -215,10 +215,19 @@
         options (if ?opts
                     (vim.tbl_extend :keep ?opts opts)
                     opts)
-        request {: text : options :mode opts.mode}
+        request {: text : options :mode (or opts.mode :smart)}
         result (cache.parinfer-loader request)]
     (if result.success
         result.text
-        (error result))))
+        (let [msg (-> "Error in applying parinfer to the text:
+%s
+Passed Options:
+%s
+Parinfer Result:
+%s"
+                      (: :format text ;
+                         (vim.inspect (or ?opts {})) ;
+                         (vim.inspect result)))]
+          (error msg)))))
 
 {: apply-parinfer}

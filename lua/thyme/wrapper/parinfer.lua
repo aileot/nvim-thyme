@@ -80,12 +80,13 @@ local function apply_parinfer(text, _3fopts)
   else
     options = opts
   end
-  local request = {text = text, options = options, mode = opts.mode}
+  local request = {text = text, options = options, mode = (opts.mode or "smart")}
   local result = cache["parinfer-loader"](request)
   if result.success then
     return result.text
   else
-    return error(result)
+    local msg = ("Error in applying parinfer to the text:\n%s\nPassed Options:\n%s\nParinfer Result:\n%s"):format(text, vim.inspect((_3fopts or {})), vim.inspect(result))
+    return error(msg)
   end
 end
 return {["apply-parinfer"] = apply_parinfer}
