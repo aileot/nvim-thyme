@@ -51,6 +51,7 @@ local function bootstrap(spec)
       path,
     })
     if vim.v.shell_error ~= 0 then
+      vim.fn.delete(path, "rf")
       error(out)
     end
   end
