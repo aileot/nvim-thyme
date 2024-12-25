@@ -64,7 +64,18 @@ local function bootstrap(spec)
     if spec.build:sub(1, 1) == ":" then
       vim.cmd(spec.build)
     else
-      vim.fn.jobstart(spec.build, { cwd = path })
+      print(spec.build)
+      vim
+        .system(vim.split(spec.build, " "), {
+          cwd = path,
+          stdout = function(err, data)
+            if err then
+              error(err)
+            end
+            vim.print(data)
+          end,
+        })
+        :wait()
     end
   end
 end
