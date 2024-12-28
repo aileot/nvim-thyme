@@ -19,12 +19,12 @@ still need a Fennel runtime compiler.
 ## Optional Features
 
 The optional features can be enabled with few startup overhead.\
-(For the details, please read the [Installation](#Installation) guide below.)
+(For the details, please read the [Installation](#installation) guide below.)
 
 - Recompile on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
-  - implicit paren-completions on [parinfer][].
-  - colorful output on [the builtin treesitter][].
+  - Implicit paren-completions on [parinfer][].
+  - Colorful output on [the builtin treesitter][].
 
 ## Motivation
 
@@ -57,6 +57,11 @@ The project started from scratch. _Now in Beta!_
   That prevents your SSD from wearing out
   though your modern SSD and OS might have optimized the file system already.
 
+### Limitations
+
+- `nvim-thyme` only support Lua/Fennel loader like `require`;
+  it does not support Vim commands (e.g., `:source` and `:runtime`) to load your Fennel files.
+
 ## Requirements
 
 - Neovim v0.10.0+
@@ -73,7 +78,7 @@ The project started from scratch. _Now in Beta!_
 
 ### 1. Ensure to Install Plugins (3 steps)
 
-#### 1. Make sure to download, and add the path to `&runtimepath`.
+#### 1. Make sure to download, and add the path to `&runtimepath`
 
 <details>
 <summary>
@@ -272,7 +277,7 @@ For the details, please read the [Reference](./REFERENCE.md).
 
 ### Options in `.nvim-thyme.fnl`
 
-As described in the [Installation](#Installation), all the settings of
+As described in the [Installation](#installation), all the settings of
 `nvim-thyme` is set up with a config file `.nvim-thyme.fnl`;
 no conventional `setup` function is provided by `nvim-thyme`.
 
@@ -325,10 +330,10 @@ All the interfaces are provided from the "thyme" module: get them from
   creates a set of autocmds to watch files.
 - [define-keymaps!](./REFERENCE.md#define-keymaps!)
   or [define_keymaps](./REFERENCE.md#define_keymaps)
-  defines a set of keymaps in the [list](#Keymaps) below.
+  defines a set of keymaps in the [list](#keymaps) below.
 - [define-commands!](./REFERENCE.md#define-commands!)
   or [define_commands](./REFERENCE.md#define_commands)
-  defines a set of command in the [list](#Commands) below.
+  defines a set of command in the [list](#commands) below.
 
 ### Keymaps
 
@@ -388,7 +393,7 @@ require("hotpot").setup({
 ### From tangerine.nvim
 
 ```lua
-require [[tangerine]].setup {}
+require([[tangerine]]).setup({})
 ```
 
 ```fennel
@@ -400,12 +405,12 @@ require [[tangerine]].setup {}
 ### From nfnl.nvim
 
 1. Rename `lua/` at `vim.fn.stdpath('config')`,
-   like` mv lua/ lua.bk/`.\
+   like`mv lua/ lua.bk/`.\
    Otherwise, there's some chances that nvim would unquestionably
    load lua files under the `lua/` directory apart from
    `nvim-thyme`.
 2. Add codes to enable thyme's auto-compile system.
-   See the [Installation](#Installation) section above.
+   See the [Installation](#installation) section above.
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
@@ -415,7 +420,7 @@ Note: nvim-thyme only provides user commands when you call
 [`thyme.define-commands!`](./REFERENCE.md#define-commands!)
 or
 [`thyme.define_commands`](./REFERENCE.md#define_commands)
-for performance as described in [Commands](#Commands) section above.
+for performance as described in [Commands](#commands) section above.
 
 ### Evaluate expression and print the result
 
