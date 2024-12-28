@@ -12,7 +12,10 @@
                      val val
                      _ (error (.. "unexpected option detected: "
                                   (vim.inspect k)))))
-        :__newindex #(error "no option can be overridden by this table")}))
+        :__newindex (if (= :1 vim.env.THYME_DEBUG)
+                        (fn [_ k v]
+                          (tset cache.main-config k v))
+                        #(error "no option can be overridden by this table"))}))
 
 ;; Note: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
