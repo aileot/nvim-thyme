@@ -71,7 +71,7 @@
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 
-(fn get-main-config []
+(fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
   (or cache.main-config ;
@@ -92,4 +92,4 @@
   (or (rawget config key) ;
       (rawget default-opts key)))
 
-{: get-main-config : read-config : get-option-value : config-file?}
+{: get-config : read-config : get-option-value : config-file?}

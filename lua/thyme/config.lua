@@ -51,7 +51,7 @@ local function read_config(config_file_path)
   local config = vim.tbl_deep_extend("keep", config_table, default_opts)
   return config
 end
-local function get_main_config()
+local function get_config()
   local or_11_ = cache["main-config"]
   if not or_11_ then
     local main_config = read_config(config_path)
@@ -68,4 +68,4 @@ local function get_option_value(config, key)
   _G.assert((nil ~= config), "Missing argument config on fnl/thyme/config.fnl:89")
   return (rawget(config, key) or rawget(default_opts, key))
 end
-return {["get-main-config"] = get_main_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}
+return {["get-config"] = get_config, ["read-config"] = read_config, ["get-option-value"] = get_option_value, ["config-file?"] = config_file_3f}

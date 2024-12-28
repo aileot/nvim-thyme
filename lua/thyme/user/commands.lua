@@ -5,7 +5,7 @@ local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
 local _local_2_ = require("thyme.config")
-local get_main_config = _local_2_["get-main-config"]
+local get_config = _local_2_["get-config"]
 local config_file_3f = _local_2_["config-file?"]
 local _local_3_ = require("thyme.utils.fs")
 local file_readable_3f = _local_3_["file-readable?"]
@@ -274,7 +274,7 @@ local function define_commands_21(_3fopts)
       or_45_ = and_49_
     end
     if or_45_ then
-      local config = get_main_config()
+      local config = get_config()
       local fennel_options = config["compiler-options"]
       for fnl_path, lua_path in pairs(path_pairs) do
         assert(not config_file_3f(fnl_path), "Abort. Attempted to compile config file")

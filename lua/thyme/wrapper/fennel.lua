@@ -6,10 +6,10 @@ local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_lua_file_21 = _local_2_["write-lua-file!"]
 local _local_3_ = require("thyme.config")
-local get_main_config = _local_3_["get-main-config"]
+local get_config = _local_3_["get-config"]
 local config_file_3f = _local_3_["config-file?"]
 local function fnl_code__3efennel_ready(fnl_code, _3fopts)
-  local config = get_main_config()
+  local config = get_config()
   local compiler_options = (_3fopts or config["compiler-options"])
   local balanced_3f_fnl_code
   if vim.g.parinfer_loaded then
@@ -52,7 +52,7 @@ end
 local function compile_file(fnl_path, _3fopts)
   assert_is_fnl_file(fnl_path)
   local fennel0 = require("fennel")
-  local config = get_main_config()
+  local config = get_config()
   local compiler_options = (_3fopts or config["compiler-options"])
   local fnl_lines = read_file(fnl_path)
   compiler_options.filename = fnl_path

@@ -3,7 +3,7 @@ local _local_1_ = require("thyme.const")
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local config_path = _local_1_["config-path"]
 local _local_2_ = require("thyme.config")
-local get_main_config = _local_2_["get-main-config"]
+local get_config = _local_2_["get-config"]
 local _local_3_ = require("thyme.utils.iterator")
 local each_file = _local_3_["each-file"]
 local _local_4_ = require("thyme.utils.backup-manager")
@@ -61,7 +61,7 @@ local function report_thyme_disk_info()
 end
 local function report_thyme_config()
   report_start("Thyme .nvim-thyme.fnl")
-  local config = get_main_config()
+  local config = get_config()
   config.source = nil
   config["module-name"] = nil
   config.filename = nil

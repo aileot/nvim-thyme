@@ -15,7 +15,7 @@ local restore_file_21 = _local_4_["restore-file!"]
 local _local_5_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_5_["get-runtime-files"]
 local _local_6_ = require("thyme.config")
-local get_main_config = _local_6_["get-main-config"]
+local get_config = _local_6_["get-config"]
 local _local_7_ = require("thyme.module-map.callstack")
 local pcall_with_logger_21 = _local_7_["pcall-with-logger!"]
 local _local_8_ = require("thyme.searcher.macro")
@@ -71,7 +71,7 @@ local function initialize_module_searcher_on_rtp_21(fennel)
   return nil
 end
 local function update_fennel_paths_21(fennel)
-  local config = get_main_config()
+  local config = get_config()
   local base_path_cache
   local function _14_(self, key)
     rawset(self, key, get_runtime_files({key}, true))
@@ -132,8 +132,8 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
   else
     local fennel = require("fennel")
     local _let_21_ = require("thyme.config")
-    local get_main_config0 = _let_21_["get-main-config"]
-    local config = get_main_config0()
+    local get_config0 = _let_21_["get-config"]
+    local config = get_config0()
     if (nil == cache.rtp) then
       initialize_macro_searcher_on_rtp_21(fennel)
       initialize_module_searcher_on_rtp_21(fennel)

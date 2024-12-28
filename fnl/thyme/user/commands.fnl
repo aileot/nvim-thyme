@@ -6,7 +6,7 @@
 (local {: lua-cache-prefix : config-filename : config-path}
        (require :thyme.const))
 
-(local {: get-main-config : config-file?} (require :thyme.config))
+(local {: get-config : config-file?} (require :thyme.config))
 
 (local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
@@ -272,7 +272,7 @@
                                    false)))))
             (let [;; TODO: Add interface to overwrite fennel-options in this
                   ;; command?
-                  config (get-main-config)
+                  config (get-config)
                   fennel-options config.compiler-options]
               (each [fnl-path lua-path (pairs path-pairs)]
                 (assert (not (config-file? fnl-path))

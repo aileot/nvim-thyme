@@ -5,7 +5,7 @@ local read_file = _local_1_["read-file"]
 local _local_2_ = require("thyme.const")
 local lua_cache_prefix = _local_2_["lua-cache-prefix"]
 local _local_3_ = require("thyme.config")
-local get_main_config = _local_3_["get-main-config"]
+local get_config = _local_3_["get-config"]
 local _local_4_ = require("thyme.wrapper.fennel")
 local compile_file = _local_4_["compile-file"]
 local _local_5_ = require("thyme.module-map.callstack")
@@ -39,7 +39,7 @@ local function should_recompile_lua_cache_3f(fnl_path, _3flua_path)
   return (_3flua_path and (not file_readable_3f(_3flua_path) or (read_file(_3flua_path) ~= compile_file(fnl_path))))
 end
 local function recompile_21(fnl_path, lua_path, module_name)
-  local config = get_main_config()
+  local config = get_config()
   local compiler_options = config["compiler-options"]
   compiler_options["module-name"] = module_name
   clear_module_map_21(fnl_path)

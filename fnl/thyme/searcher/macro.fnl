@@ -11,8 +11,8 @@
 
 (fn macro-module->?chunk [module-name fnl-path]
   (let [fennel (require :fennel)
-        {: get-main-config} (require :thyme.config)
-        config (get-main-config)
+        {: get-config} (require :thyme.config)
+        config (get-config)
         compiler-options config.compiler-options
         ?env compiler-options.env]
     ;; Note: Macro searcher should set "env" field to "_COMPILER" to indicate
@@ -56,8 +56,8 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
       chunk chunk
       (_ error-msg)
       (let [backup-path (MacroBackupManager:module-name->backup-path module-name)
-            {: get-main-config} (require :thyme.config)
-            config (get-main-config)
+            {: get-config} (require :thyme.config)
+            config (get-config)
             rollback? config.rollback]
         (if (and rollback? (file-readable? backup-path))
             (case (macro-module->?chunk module-name backup-path)

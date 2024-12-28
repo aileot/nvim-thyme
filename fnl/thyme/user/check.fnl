@@ -4,7 +4,7 @@
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: lua-cache-prefix} (require :thyme.const))
-(local {: get-main-config} (require :thyme.config))
+(local {: get-config} (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
 (local {: fnl-path->lua-path
@@ -34,7 +34,7 @@
 @param fnl-path string
 @param lua-path string
 @return boolean return `true` if successfully recompile `fnl-path`; otherwise, return `false`."
-  (let [config (get-main-config)
+  (let [config (get-config)
         compiler-options config.compiler-options]
     ;; Note: With "module-name" option, macro-searcher can map macro
     ;; dependency.

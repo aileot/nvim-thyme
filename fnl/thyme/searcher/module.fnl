@@ -15,7 +15,7 @@
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
-(local {: get-main-config} (require :thyme.config))
+(local {: get-config} (require :thyme.config))
 
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
 
@@ -77,7 +77,7 @@ fennel.lua.
     (set fennel.path fennel-path)))
 
 (fn update-fennel-paths! [fennel]
-  (let [config (get-main-config)
+  (let [config (get-config)
         base-path-cache (setmetatable {}
                           {:__index (fn [self key]
                                       (rawset self key
@@ -112,8 +112,8 @@ cache dir.
       ;; Note: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [fennel (require :fennel)
-            {: get-main-config} (require :thyme.config)
-            config (get-main-config)]
+            {: get-config} (require :thyme.config)
+            config (get-config)]
         (when (= nil cache.rtp)
           (initialize-macro-searcher-on-rtp! fennel)
           (initialize-module-searcher-on-rtp! fennel))
