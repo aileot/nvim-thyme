@@ -90,10 +90,4 @@
   ;; Note: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
-(λ get-option-value [config key]
-  "Return the option value for `config`.
-@return any config value"
-  (or (rawget config key) ;
-      (rawget default-opts key)))
-
-{: get-config : read-config : get-option-value : config-file?}
+{: get-config : read-config : config-file?}
