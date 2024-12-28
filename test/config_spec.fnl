@@ -6,8 +6,15 @@
 
 (describe* "config interface"
   (describe* ".get-config"
-    (describe* "returns the current nvim-thyme config table"
-      (let [config (get-config)]
+    (let [default-debug? vim.env.THYME_DEBUG]
+      (var config nil)
+      (describe* "returns the current nvim-thyme config table"
+        (before_each (fn []
+                       (set vim.env.THYME_DEBUG nil)
+                       (set config (get-config))))
+        (after_each (fn []
+                      (set config nil)
+                      (set vim.env.THYME_DEBUG default-debug?)))
         (it* "so that we can get the default :macro-path value without error"
           (assert.has_no_error #config.macro-path))
         (describe* "that does not allow to set any option value for the returned table;"
