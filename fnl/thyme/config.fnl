@@ -5,6 +5,10 @@
        (require :thyme.utils.fs))
 
 (local cache {:main-config nil})
+(set cache.mt-config
+     (setmetatable {}
+       {:__index (fn [_ k]
+                   (. cache.main-config k))}))
 
 ;; Note: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
@@ -74,10 +78,10 @@
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
-  (or cache.main-config ;
-      (let [main-config (read-config config-path)]
-        (set cache.main-config main-config)
-        main-config)))
+  (when (= nil cache.main-config)
+    (let [main-config (read-config config-path)]
+      (set cache.main-config main-config)))
+  cache.mt-config)
 
 (fn config-file? [path]
   "Tell if `path` is a thyme's config file.
