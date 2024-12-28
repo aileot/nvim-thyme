@@ -1,5 +1,3 @@
-(import-macros {: when-not} :thyme.macros)
-
 (local {: config-filename : config-path} (require :thyme.const))
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
@@ -32,7 +30,7 @@
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))})
 
-(when-not (file-readable? config-path)
+(when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
   (case (vim.fn.confirm (: "Missing \"%s\" at %s... Generate and open it?"
                            :format config-filename (vim.fn.stdpath :config))
