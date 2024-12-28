@@ -8,7 +8,11 @@
 (set cache.mt-config
      (setmetatable {}
        {:__index (fn [_ k]
-                   (. cache.main-config k))}))
+                   (case (. cache.main-config k)
+                     val val
+                     _ (error (.. "unexpected option detected: "
+                                  (vim.inspect k)))))
+        :__newindex #(error "no option can be overridden by this table")}))
 
 ;; Note: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
