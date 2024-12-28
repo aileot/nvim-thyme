@@ -18,7 +18,6 @@
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
-;; fnlfmt: skip
 (local default-opts ;
        {:rollback true
         ;; TODO: Inplement :preproc and set the default value to `#$`.
