@@ -21,6 +21,7 @@
 ;; fnlfmt: skip
 (local default-opts ;
        {:rollback true
+        ;; TODO: Inplement :preproc and set the default value to `#$`.
         :preproc nil
         :compiler-options {}
         ;; Set to fennel.macro-path for macro modules.
