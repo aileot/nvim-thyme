@@ -53,6 +53,7 @@ local function bootstrap(spec)
     if vim.v.shell_error ~= 0 then
       vim.fn.delete(path, "rf")
       error(out)
+      vim.cmd.cquit(vim.v.shell_error)
     end
   end
   assert(uv.fs_stat(path), path .. " does not exist.")
