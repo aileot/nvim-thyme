@@ -50,14 +50,6 @@
             (vim.defer_fn 800)))
     _ (error "abort proceeding with nvim-thyme")))
 
-;; (fn find-config-file [path]
-;;   "Return the config path, or `nil` if not detected.
-;; @param path
-;; @return string?"
-;;   (case (vim.fs.find config-filename
-;;                      {:upward true :type :file :stop (uv.os_homedir) : path})
-;;     [project-config-path] project-config-path))
-
 (fn read-config [config-file-path]
   "Return config table of `config-file-path`.
 @param config-file string a directory path.
