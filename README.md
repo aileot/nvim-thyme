@@ -290,6 +290,7 @@ settings.
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
                     :error-pinpoint ["|>>" "<<|"]}
+ :fnl-dir "fnl"
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
