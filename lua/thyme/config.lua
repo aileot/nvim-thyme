@@ -33,11 +33,11 @@ end
 cache["mt-config"] = setmetatable({}, {__index = _3_, __newindex = _6_})
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local default_opts = {rollback = true, preproc = nil, ["compiler-options"] = {}, ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
+local default_opts = {rollback = true, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
 if not file_readable_3f(config_path) then
   local _10_ = vim.fn.confirm(("Missing \"%s\" at %s... Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_10_ == 2) then
-    local recommended_config = ";; recommended options of nvim-thyme\n{:rollback true\n :compiler-options {:correlate true\n                    ;; :compilerEnv _G\n                    :error-pinpoint [\"|>>\" \"<<|\"]}\n ;; The path patterns for fennel.macro-path to find Fennel macro module path.\n ;; Relative path markers (`.`) are internally replaced with the paths on\n ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in\n ;; `./fnl/?.fnl`.\n :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"
+    local recommended_config = ";; recommended options of nvim-thyme\n{:rollback true\n :compiler-options {:correlate true\n                    ;; :compilerEnv _G\n                    :error-pinpoint [\"|>>\" \"<<|\"]}\n ;; The directory, in which you would manage your own Fennel modules, relative\n ;; to `(stdpath :config)`. The value only affects non-macro modules.\n :fnl-dir \"fnl\"\n ;; The path patterns for fennel.macro-path to find Fennel macro module path.\n ;; Relative path markers (`.`) are internally replaced with the paths on\n ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in\n ;; `./fnl/?.fnl`.\n :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
     local function _11_()
