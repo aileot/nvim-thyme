@@ -24,6 +24,7 @@
         ;; TODO: Inplement :preproc and set the default value to `#$`.
         :preproc nil
         :compiler-options {}
+        :fnl-dir "fnl"
         ;; Set to fennel.macro-path for macro modules.
         :macro-path (-> ["./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
@@ -40,6 +41,9 @@
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
                     :error-pinpoint [\"|>>\" \"<<|\"]}
+ ;; The directory, in which you would manage your own Fennel modules, relative
+ ;; to `(stdpath :config)`. The value only affects non-macro modules.
+ :fnl-dir \"fnl\"
  ;; The path patterns for fennel.macro-path to find Fennel macro module path.
  ;; Relative path markers (`.`) are internally replaced with the paths on
  ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in

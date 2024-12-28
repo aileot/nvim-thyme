@@ -50,7 +50,8 @@ local function compile_fennel_into_rtp_21()
 end
 local function initialize_module_searcher_on_rtp_21(fennel)
   local std_config_home = vim.fn.stdpath("config")
-  local fnl_dir = "/fnl/"
+  local config = get_config()
+  local fnl_dir = string.gsub(("/" .. config["fnl-dir"] .. "/"), "//+", "/")
   local fennel_path
   local _12_
   do

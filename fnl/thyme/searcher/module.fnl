@@ -67,7 +67,9 @@ fennel.lua.
 
 (fn initialize-module-searcher-on-rtp! [fennel]
   (let [std-config-home (vim.fn.stdpath :config)
-        fnl-dir :/fnl/
+        config (get-config)
+        fnl-dir (-> (.. "/" config.fnl-dir "/")
+                    (string.gsub "//+" "/"))
         fennel-path (-> (icollect [_ suffix (ipairs [:?.fnl :?/init.fnl])]
                           (.. std-config-home fnl-dir suffix))
                         (table.concat ";"))]
