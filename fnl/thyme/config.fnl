@@ -1,4 +1,4 @@
-(import-macros {: when-not : nvim-get-option} :thyme.macros)
+(import-macros {: when-not} :thyme.macros)
 
 (local {: config-filename : config-path} (require :thyme.const))
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
