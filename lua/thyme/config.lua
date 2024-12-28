@@ -66,4 +66,4 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-return {["get-config"] = get_config, ["read-config"] = read_config, ["config-file?"] = config_file_3f}
+return {["get-config"] = get_config, ["config-file?"] = config_file_3f}

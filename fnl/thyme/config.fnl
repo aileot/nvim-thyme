@@ -82,4 +82,4 @@
   ;; Note: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
-{: get-config : read-config : config-file?}
+{: get-config : config-file?}
