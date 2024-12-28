@@ -2,7 +2,7 @@
 
 (local {: lua-cache-prefix : config-path} (require :thyme.const))
 
-(local {: get-main-config} (require :thyme.config))
+(local {: get-config} (require :thyme.config))
 (local {: each-file} (require :thyme.utils.iterator))
 (local {:get-root get-root-of-backup} (require :thyme.utils.backup-manager))
 (local {:get-root get-root-of-pool} (require :thyme.utils.pool))
@@ -47,7 +47,7 @@
 
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")
-  (let [config (get-main-config)]
+  (let [config (get-config)]
     (set config.source nil)
     (set config.module-name nil)
     (set config.filename nil)

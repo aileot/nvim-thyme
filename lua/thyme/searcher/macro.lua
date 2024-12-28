@@ -11,8 +11,8 @@ local cache = {["macro-loaded"] = {}}
 local function macro_module__3e_3fchunk(module_name, fnl_path)
   local fennel = require("fennel")
   local _let_3_ = require("thyme.config")
-  local get_main_config = _let_3_["get-main-config"]
-  local config = get_main_config()
+  local get_config = _let_3_["get-config"]
+  local config = get_config()
   local compiler_options = config["compiler-options"]
   local _3fenv = compiler_options.env
   compiler_options.env = "_COMPILER"
@@ -63,8 +63,8 @@ local function search_fnl_macro_on_rtp_21(module_name)
     local error_msg = _10_
     local backup_path = MacroBackupManager["module-name->backup-path"](MacroBackupManager, module_name)
     local _let_14_ = require("thyme.config")
-    local get_main_config = _let_14_["get-main-config"]
-    local config = get_main_config()
+    local get_config = _let_14_["get-config"]
+    local config = get_config()
     local rollback_3f = config.rollback
     if (rollback_3f and file_readable_3f(backup_path)) then
       local _15_, _16_ = macro_module__3e_3fchunk(module_name, backup_path)

@@ -1,18 +1,27 @@
-(import-macros {: when-not : nvim-get-option} :thyme.macros)
-
 (local {: config-filename : config-path} (require :thyme.const))
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
 (local cache {:main-config nil})
+(set cache.mt-config
+     (setmetatable {}
+       {:__index (fn [_ k]
+                   (case (. cache.main-config k)
+                     val val
+                     _ (error (.. "unexpected option detected: "
+                                  (vim.inspect k)))))
+        :__newindex (if (= :1 vim.env.THYME_DEBUG)
+                        (fn [_ k v]
+                          (tset cache.main-config k v))
+                        #(error "no option can be overridden by this table"))}))
 
 ;; Note: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
-;; fnlfmt: skip
 (local default-opts ;
        {:rollback true
+        ;; TODO: Inplement :preproc and set the default value to `#$`.
         :preproc nil
         :compiler-options {}
         ;; Set to fennel.macro-path for macro modules.
@@ -21,7 +30,7 @@
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))})
 
-(when-not (file-readable? config-path)
+(when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
   (case (vim.fn.confirm (: "Missing \"%s\" at %s... Generate and open it?"
                            :format config-filename (vim.fn.stdpath :config))
@@ -46,14 +55,6 @@
             (vim.defer_fn 800)))
     _ (error "abort proceeding with nvim-thyme")))
 
-;; (fn find-config-file [path]
-;;   "Return the config path, or `nil` if not detected.
-;; @param path
-;; @return string?"
-;;   (case (vim.fs.find config-filename
-;;                      {:upward true :type :file :stop (uv.os_homedir) : path})
-;;     [project-config-path] project-config-path))
-
 (fn read-config [config-file-path]
   "Return config table of `config-file-path`.
 @param config-file string a directory path.
@@ -71,13 +72,13 @@
         config (vim.tbl_deep_extend :keep config-table default-opts)]
     config))
 
-(fn get-main-config []
+(fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
-  (or cache.main-config ;
-      (let [main-config (read-config config-path)]
-        (set cache.main-config main-config)
-        main-config)))
+  (when (= nil cache.main-config)
+    (let [main-config (read-config config-path)]
+      (set cache.main-config main-config)))
+  cache.mt-config)
 
 (fn config-file? [path]
   "Tell if `path` is a thyme's config file.
@@ -86,10 +87,4 @@
   ;; Note: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
-(λ get-option-value [config key]
-  "Return the option value for `config`.
-@return any config value"
-  (or (rawget config key) ;
-      (rawget default-opts key)))
-
-{: get-main-config : read-config : get-option-value : config-file?}
+{: get-config : config-file?}
