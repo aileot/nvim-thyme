@@ -23,7 +23,7 @@ Try `:Fnl (vim.cmd.edit (.. (vim.fn.stdpath :state) "/thyme/pool")`.
 The options to be passed to `fennel` functions which takes an `options` table
 argument: `allowedGlobals`, `correlate`, `useMetadata`, and so on.
 
-See the official Fennel API documentation: https://fennel-lang.org/api
+See the official Fennel API documentation: <https://fennel-lang.org/api>
 
 ### macro-path
 
