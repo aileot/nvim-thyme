@@ -83,6 +83,7 @@ build: $(LUA_RES_DIRS) $(LUA_RES) ## Compile lua files from fnl/
 .PHONY: test
 test: build $(LUA_SPECS) ## Run test
 	@REPO_ROOT="$(REPO_ROOT)" \
+		THYME_DEBUG=1 \
 		XDG_CONFIG_HOME="$(TEST_CONTEXT_DIR)/.config" \
 		XDG_CACHE_HOME="$(TEST_CONTEXT_DIR)/.cache" \
 		XDG_DATA_HOME="$(TEST_CONTEXT_DIR)/.data" \
