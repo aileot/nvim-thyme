@@ -2,7 +2,7 @@
 
 (local Path (require :thyme.utils.path))
 
-(local {: lua-cache-prefix} (require :thyme.const))
+(local {: debug? : lua-cache-prefix} (require :thyme.const))
 
 (local {: file-readable?
         : assert-is-file-readable
@@ -116,7 +116,7 @@ cache dir.
       (let [fennel (require :fennel)
             {: get-config} (require :thyme.config)
             config (get-config)]
-        (when (= nil cache.rtp)
+        (when (or (= nil cache.rtp) debug?)
           (initialize-macro-searcher-on-rtp! fennel)
           (initialize-module-searcher-on-rtp! fennel))
         (when-not (= cache.rtp vim.o.rtp)
