@@ -1,4 +1,4 @@
-(local {: config-filename : config-path} (require :thyme.const))
+(local {: debug? : config-filename : config-path} (require :thyme.const))
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
@@ -10,7 +10,7 @@
                      val val
                      _ (error (.. "unexpected option detected: "
                                   (vim.inspect k)))))
-        :__newindex (if (= :1 vim.env.THYME_DEBUG)
+        :__newindex (if debug?
                         (fn [_ k v]
                           (tset cache.main-config k v))
                         #(error "no option can be overridden by this table"))}))

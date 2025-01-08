@@ -1,4 +1,5 @@
 local _local_1_ = require("thyme.const")
+local debug_3f = _local_1_["debug?"]
 local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
 local _local_2_ = require("thyme.utils.fs")
@@ -18,7 +19,7 @@ local function _3_(_, k)
   end
 end
 local _6_
-if ("1" == vim.env.THYME_DEBUG) then
+if debug_3f then
   local function _7_(_, k, v)
     cache["main-config"][k] = v
     return nil
