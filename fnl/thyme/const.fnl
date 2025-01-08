@@ -24,7 +24,8 @@
 (local lua-cache-prefix (-> (Path.join cache-prefix :lua)
                             (vim.fn.expand)))
 
-{: stdpath-config
+{:debug? (= :1 vim.env.THYME_DEBUG)
+ : stdpath-config
  : lua-cache-prefix
  : config-filename
  : config-path
