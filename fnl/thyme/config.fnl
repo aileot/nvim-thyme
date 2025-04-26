@@ -26,7 +26,9 @@
         :compiler-options {}
         :fnl-dir "fnl"
         ;; Set to fennel.macro-path for macro modules.
-        :macro-path (-> ["./fnl/?.fnl"
+        :macro-path (-> ["./fnl/?.fnlm"
+                         "./fnl/?/init.fnlm"
+                         "./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))})
