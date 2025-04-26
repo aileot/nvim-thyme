@@ -67,7 +67,7 @@
 
 (fn restore-module-map! [fnl-path]
   "Restore the once-cleared (or hidden) module entry-map of `fnl-path` in
-  `module-maps`.
+`module-maps`.
 @param fnl-path string"
   (let [modmap (. module-maps (uri-encode fnl-path))]
     (tset module-maps fnl-path modmap)))

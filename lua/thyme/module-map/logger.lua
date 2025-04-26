@@ -1,6 +1,12 @@
 local ModuleMap = require("thyme.module-map.unit")
 local _local_1_ = require("thyme.utils.uri")
 local uri_encode = _local_1_["uri-encode"]
+local ModuleMapLogger = {}
+ModuleMapLogger.__index = ModuleMapLogger
+ModuleMapLogger.new = function()
+  local self = setmetatable({}, ModuleMapLogger)
+  return self
+end
 local module_maps
 local function _2_(self, fnl_path)
   local modmap = ModuleMap.new(fnl_path)
