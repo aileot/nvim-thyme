@@ -291,7 +291,7 @@ settings.
                     ;; :compilerEnv _G
                     :error-pinpoint ["|>>" "<<|"]}
  :fnl-dir "fnl"
- :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
+ :macro-path "./fnl/?.fnlm;./fnl/?/init-macros.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
 For performance, you can `bootstrap` _macro_ plugins inside `.nvim-thyme.fnl`
