@@ -139,19 +139,18 @@
                 prefix (Path.join root input)
                 prefix-length (+ 2 (length root))
                 glob-pattern (Path.join prefix "*.{lua,fnl}")
-                paths (vim.fn.glob glob-pattern false true)
-                candidates (icollect [_ path (ipairs paths)]
-                             (path:sub prefix-length))]
+                candidates (vim.fn.glob glob-pattern false true)]
             (case (length candidates)
               0 (vim.notify (.. "Abort. No backup is found for " input))
               1 (vim.notify (.. "Abort. Only one backup is found for " input))
               _ (vim.ui.select candidates ;
-                               {:prompt "Select rollback module: "}
+                               {:prompt "Select rollback module: "
+                                :format_item (fn [path]
+                                               (path:sub prefix-length))}
                                (fn [?backup-path]
                                  (if ?backup-path
-                                     (let [backup-path (Path.join root
-                                                                  ?backup-path)]
-                                       (BackupManager.switch-active-backup! backup-path)
+                                     (do
+                                       (BackupManager.switch-active-backup! ?backup-path)
                                        (vim.cmd :ThymeCacheClear))
                                      (vim.notify "Abort selecting rollback target")))))))))
     (command! :ThymeUninstall

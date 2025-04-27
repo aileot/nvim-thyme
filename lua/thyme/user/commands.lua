@@ -140,38 +140,26 @@ local function define_commands_21(_3fopts)
       local prefix = Path.join(root, input)
       local prefix_length = (2 + #root)
       local glob_pattern = Path.join(prefix, "*.{lua,fnl}")
-      local paths = vim.fn.glob(glob_pattern, false, true)
-      local candidates
-      do
-        local tbl_21_auto = {}
-        local i_22_auto = 0
-        for _, path in ipairs(paths) do
-          local val_23_auto = path:sub(prefix_length)
-          if (nil ~= val_23_auto) then
-            i_22_auto = (i_22_auto + 1)
-            tbl_21_auto[i_22_auto] = val_23_auto
-          else
-          end
-        end
-        candidates = tbl_21_auto
-      end
-      local _28_ = #candidates
-      if (_28_ == 0) then
+      local candidates = vim.fn.glob(glob_pattern, false, true)
+      local _27_ = #candidates
+      if (_27_ == 0) then
         return vim.notify(("Abort. No backup is found for " .. input))
-      elseif (_28_ == 1) then
+      elseif (_27_ == 1) then
         return vim.notify(("Abort. Only one backup is found for " .. input))
       else
-        local _ = _28_
+        local _ = _27_
+        local function _28_(path)
+          return path:sub(prefix_length)
+        end
         local function _29_(_3fbackup_path)
           if _3fbackup_path then
-            local backup_path = Path.join(root, _3fbackup_path)
-            BackupManager["switch-active-backup!"](backup_path)
+            BackupManager["switch-active-backup!"](_3fbackup_path)
             return vim.cmd("ThymeCacheClear")
           else
             return vim.notify("Abort selecting rollback target")
           end
         end
-        return vim.ui.select(candidates, {prompt = "Select rollback module: "}, _29_)
+        return vim.ui.select(candidates, {prompt = "Select rollback module: ", format_item = _28_}, _29_)
       end
     end
     vim.api.nvim_create_user_command("ThymeRollback", _26_, {bar = true, nargs = 1, complete = complete_dirs, desc = "[thyme] rollback selected module in the backup"})
