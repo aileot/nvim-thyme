@@ -156,8 +156,8 @@ local function define_commands_21(_3fopts)
         end
         candidates = tbl_21_auto
       end
-      local function _29_()
-        return vim.print()
+      local function _29_(_241)
+        return BackupManager["switch-active-backup!"](_241)
       end
       return vim.ui.select(candidates, {prompt = "Select rollback module: "}, _29_)
     end

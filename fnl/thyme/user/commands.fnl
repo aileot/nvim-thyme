@@ -144,8 +144,7 @@
                              (path:sub prefix-length))]
             (vim.ui.select candidates ;
                            {:prompt "Select rollback module: "}
-                           ;; TODO: Switch to the selected backup.
-                           #(vim.print))))))
+                           #(BackupManager.switch-active-backup! $))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
