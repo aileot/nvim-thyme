@@ -51,4 +51,12 @@ end
 BackupManager["get-root"] = function()
   return backup_prefix
 end
+BackupManager["switch-current-backup!"] = function(backup_path)
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:85")
+  local dir = vim.fs.dirname(backup_path)
+  local file_extension = backup_path:match("%..-$")
+  local new_current_backup_filename = (".current" .. file_extension)
+  local new_current_backup_path = Path.join(dir, new_current_backup_filename)
+  return assert(fs.symlink(backup_path, new_current_backup_path))
+end
 return BackupManager

@@ -82,4 +82,12 @@ Return `true` if the following conditions are met:
 @return string the root path"
   backup-prefix)
 
+(λ BackupManager.switch-current-backup! [backup-path]
+  "Switch current backup to `backup-path`."
+  (let [dir (vim.fs.dirname backup-path)
+        file-extension (backup-path:match "%..-$")
+        new-current-backup-filename (.. ".current" file-extension)
+        new-current-backup-path (Path.join dir new-current-backup-filename)]
+    (assert (fs.symlink backup-path new-current-backup-path))))
+
 BackupManager
