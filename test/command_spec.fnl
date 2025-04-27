@@ -61,3 +61,62 @@
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
           (vim.cmd "silent FnlAlternate")
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl"))))))
+
+(describe* "command :ThymeRollbackSwitch"
+  (before_each (fn []
+                 (define-commands!)))
+  (after_each (fn []
+                (remove-context-files!)))
+  (describe* "for module"
+    ;; TODO: Do not hardcode `module/` backup dir.
+    (let [backup-label "module/"]
+      (it* "will NOT show ui to select if no backup exists for the module."
+        (let [ctx1 "{:foo :bar}"
+              mod :foobar
+              fnl-path (.. mod ".fnl")]
+          (prepare-config-fnl-file! fnl-path ctx1)
+          (require mod)
+          (tset package.loaded mod nil)
+          (var asked? false)
+          (let [raw-ui-select vim.ui.select]
+            (set vim.ui.select
+                 (fn [items _opts cb]
+                   (set asked? true)
+                   (cb (. items 1))))
+            (vim.cmd.ThymeRollbackSwitch (.. backup-label "tmp"))
+            (assert.is_false asked?)
+            (set vim.ui.select raw-ui-select))))
+      (it* "will NOT show ui to select if only one backup exists for the module."
+        (var asked? false)
+        (let [raw-ui-select vim.ui.select]
+          (set vim.ui.select (fn [items _opts cb]
+                               (set asked? true)
+                               (cb (. items 1))))
+          (vim.cmd.ThymeRollbackSwitch (.. backup-label "tmp"))
+          (assert.is_false asked?)
+          (set vim.ui.select raw-ui-select)))
+      (describe* "with applying `require` to a fnl module twice or more but changing its contents"
+        (let [ctx1 "{:foo :bar}"
+              ctx2 "{:foo :baz}"
+              mod :foobar
+              fnl-path (.. mod ".fnl")]
+          (before_each (fn []
+                         (prepare-config-fnl-file! fnl-path ctx1)
+                         (require mod)
+                         (tset package.loaded mod nil)
+                         (vim.cmd :ThymeCacheClear)
+                         (prepare-config-fnl-file! fnl-path ctx2)
+                         ;; Make sure the backup filename is changed.
+                         (vim.wait 1000)
+                         (require mod)
+                         (tset package.loaded mod nil)))
+          (it* "shows ui to select backup."
+            (var asked? false)
+            (let [raw-ui-select vim.ui.select]
+              (set vim.ui.select
+                   (fn [items _opts cb]
+                     (set asked? true)
+                     (cb (. items 1))))
+              (vim.cmd.ThymeRollbackSwitch (.. backup-label mod))
+              (assert.is_true asked?)
+              (set vim.ui.select raw-ui-select))))))))
