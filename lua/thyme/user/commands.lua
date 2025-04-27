@@ -138,7 +138,6 @@ local function define_commands_21(_3fopts)
       local input = _25_["args"]
       local root = BackupManager["get-root"]()
       local prefix = Path.join(root, input)
-      local prefix_length = (2 + #root)
       local glob_pattern = Path.join(prefix, "*.{lua,fnl}")
       local candidates = vim.fn.glob(glob_pattern, false, true)
       local _27_ = #candidates
@@ -153,11 +152,11 @@ local function define_commands_21(_3fopts)
         end
         table.sort(candidates, _28_)
         local function _29_(path)
-          local truncated_path = path:sub(prefix_length)
+          local basename = vim.fs.basename(path)
           if BackupManager["active-backup?"](path) then
-            return (truncated_path .. " (current)")
+            return (basename .. " (current)")
           else
-            return truncated_path
+            return basename
           end
         end
         local function _31_(_3fbackup_path)
@@ -168,7 +167,7 @@ local function define_commands_21(_3fopts)
             return vim.notify("Abort selecting rollback target")
           end
         end
-        return vim.ui.select(candidates, {prompt = "Select rollback module: ", format_item = _29_}, _31_)
+        return vim.ui.select(candidates, {prompt = ("Select rollback for %s: "):format(input), format_item = _29_}, _31_)
       end
     end
     vim.api.nvim_create_user_command("ThymeRollback", _26_, {bar = true, nargs = 1, complete = complete_dirs, desc = "[thyme] rollback selected module in the backup"})

@@ -137,7 +137,6 @@
         (fn [{:args input}]
           (let [root (BackupManager.get-root)
                 prefix (Path.join root input)
-                prefix-length (+ 2 (length root))
                 glob-pattern (Path.join prefix "*.{lua,fnl}")
                 candidates (vim.fn.glob glob-pattern false true)]
             (case (length candidates)
@@ -146,13 +145,14 @@
               _ (do
                   (table.sort candidates #(< $2 $1))
                   (vim.ui.select candidates ;
-                                 {:prompt "Select rollback module: "
+                                 {:prompt (-> "Select rollback for %s: "
+                                              (: :format input))
                                   :format_item (fn [path]
-                                                 (let [truncated-path (path:sub prefix-length)]
+                                                 (let [basename (vim.fs.basename path)]
                                                    (if (BackupManager.active-backup? path)
-                                                       (.. truncated-path
+                                                       (.. basename
                                                            " (current)")
-                                                       truncated-path)))}
+                                                       basename)))}
                                  (fn [?backup-path]
                                    (if ?backup-path
                                        (do
