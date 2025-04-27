@@ -142,9 +142,12 @@
                 paths (vim.fn.glob glob-pattern false true)
                 candidates (icollect [_ path (ipairs paths)]
                              (path:sub prefix-length))]
-            (vim.ui.select candidates ;
-                           {:prompt "Select rollback module: "}
-                           #(BackupManager.switch-active-backup! $))))))
+            (case (length candidates)
+              0 (vim.notify (.. "Abort. No backup is found for " ?input))
+              1 (vim.notify (.. "Abort. Only one backup is found for " ?input))
+              _ (vim.ui.select candidates ;
+                               {:prompt "Select rollback module: "}
+                               #(BackupManager.switch-active-backup! $)))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
