@@ -1,7 +1,8 @@
 (import-macros {: when-not : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
+(local {: file-readable? : assert-is-file-readable : read-file &as fs}
+       (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
@@ -84,6 +85,7 @@ Return `true` if the following conditions are met:
 
 (λ BackupManager.switch-active-backup! [backup-path]
   "Switch active backup to `backup-path`."
+  (assert-is-file-readable backup-path)
   (let [dir (vim.fs.dirname backup-path)
         file-extension (backup-path:match "%..-$")
         new-active-backup-filename (.. ".active" file-extension)

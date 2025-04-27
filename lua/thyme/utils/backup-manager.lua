@@ -1,6 +1,7 @@
 local Path = require("thyme.utils.path")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
+local assert_is_file_readable = _local_1_["assert-is-file-readable"]
 local read_file = _local_1_["read-file"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
@@ -9,8 +10,8 @@ local backup_prefix = Path.join(state_prefix, "backup")
 local BackupManager = {}
 BackupManager.__index = BackupManager
 BackupManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:14")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:14")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:15")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:15")
   local self = setmetatable({}, BackupManager)
   local root = Path.join(backup_prefix, label)
   vim.fn.mkdir(root, "p")
@@ -52,7 +53,8 @@ BackupManager["get-root"] = function()
   return backup_prefix
 end
 BackupManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:85")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:86")
+  assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local file_extension = backup_path:match("%..-$")
   local new_active_backup_filename = (".active" .. file_extension)
