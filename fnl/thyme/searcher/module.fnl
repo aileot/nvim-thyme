@@ -22,7 +22,7 @@
 (local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro))
 
 (local BackupManager (require :thyme.utils.backup-manager))
-(local ModuleBackupManager (BackupManager.new :module))
+(local ModuleBackupManager (BackupManager.new :module ".lua"))
 
 ;; NOTE: To initialize fennel.path and fennel.macro-path, cache.rtp must not
 ;; start with vim.o.rtp.

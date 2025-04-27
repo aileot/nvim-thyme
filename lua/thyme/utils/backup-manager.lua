@@ -9,11 +9,15 @@ local state_prefix = _local_2_["state-prefix"]
 local backup_prefix = Path.join(state_prefix, "backup")
 local BackupManager = {}
 BackupManager.__index = BackupManager
-BackupManager.new = function(label)
+BackupManager.new = function(label, file_extension)
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:15")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:15")
   local self = setmetatable({}, BackupManager)
   local root = Path.join(backup_prefix, label)
   vim.fn.mkdir(root, "p")
   self.root = root
+  assert(("." == file_extension:sub(1, 1)), "file-extension must start with `.`")
+  self["file-extension"] = file_extension
   return self
 end
 BackupManager["module-name->backup-dir"] = function(self, module_name)

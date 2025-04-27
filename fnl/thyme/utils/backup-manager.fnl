@@ -12,11 +12,14 @@
 
 (set BackupManager.__index BackupManager)
 
-(fn BackupManager.new [label]
+(λ BackupManager.new [label file-extension]
   (let [self (setmetatable {} BackupManager)
         root (Path.join backup-prefix label)]
     (vim.fn.mkdir root :p)
     (set self.root root)
+    (assert (= "." (file-extension:sub 1 1))
+            "file-extension must start with `.`")
+    (set self.file-extension file-extension)
     self))
 
 (fn BackupManager.module-name->backup-dir [self module-name]
