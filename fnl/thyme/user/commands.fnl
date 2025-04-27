@@ -134,7 +134,13 @@
          :complete complete-dirs
          :desc "[thyme] rollback selected module in the backup"}
         (fn [{:fargs [?input]}]
-          (let [candidates (complete-dirs (or ?input ""))]
+          (let [root (BackupManager.get-root)
+                prefix (Path.join root ?input)
+                prefix-length (+ 2 (length root))
+                glob-pattern (Path.join prefix "*.{lua,fnl}")
+                paths (vim.fn.glob glob-pattern false true)
+                candidates (icollect [_ path (ipairs paths)]
+                             (path:sub prefix-length))]
             (vim.ui.select candidates ;
                            {:prompt "Select rollback module: "}
                            ;; TODO: Switch to the selected backup.
