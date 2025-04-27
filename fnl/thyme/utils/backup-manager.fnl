@@ -104,4 +104,15 @@ Return `true` if the following conditions are met:
         new-active-backup-path (Path.join dir new-active-backup-filename)]
     (symlink! backup-path new-active-backup-path)))
 
+(fn BackupManager.active-backup? [backup-path]
+  "Tell if given `backup-path` is an active backup.
+@param backup-path string
+@return boolean"
+  (assert-is-file-readable backup-path)
+  (let [dir (vim.fs.dirname backup-path)
+        file-extension (backup-path:match "%.[^/\\]-$")
+        active-backup-filename (.. ".active" file-extension)
+        active-backup-path (Path.join dir active-backup-filename)]
+    (= backup-path (fs.readlink active-backup-path))))
+
 BackupManager

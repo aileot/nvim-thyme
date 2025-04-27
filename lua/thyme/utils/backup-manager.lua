@@ -87,4 +87,12 @@ BackupManager["switch-active-backup!"] = function(backup_path)
   local new_active_backup_path = Path.join(dir, new_active_backup_filename)
   return symlink_21(backup_path, new_active_backup_path)
 end
+BackupManager["active-backup?"] = function(backup_path)
+  assert_is_file_readable(backup_path)
+  local dir = vim.fs.dirname(backup_path)
+  local file_extension = backup_path:match("%.[^/\\]-$")
+  local active_backup_filename = (".active" .. file_extension)
+  local active_backup_path = Path.join(dir, active_backup_filename)
+  return (backup_path == fs.readlink(active_backup_path))
+end
 return BackupManager
