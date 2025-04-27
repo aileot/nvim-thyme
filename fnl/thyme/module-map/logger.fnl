@@ -9,7 +9,8 @@
 (λ fnl-path->module-map [fnl-path]
   (or (rawget module-maps fnl-path)
       (let [modmap (ModuleMap.new fnl-path)]
-        (tset module-maps fnl-path modmap)
+        (when (modmap:logged?)
+          (tset module-maps fnl-path modmap))
         modmap)))
 
 (fn log-module-map! [dependency]
@@ -17,8 +18,8 @@
 @param dependency table"
   ;; Note: dependent-stack can be empty when `import-macros` is in cmdline.
   (or (rawget module-maps dependency.fnl-path)
-      (let [(modmap logged?) (ModuleMap.new dependency.fnl-path)]
-        (when-not logged?
+      (let [modmap (ModuleMap.new dependency.fnl-path)]
+        (when-not (modmap:logged?)
           (modmap:initialize-module-map! dependency))
         (tset module-maps dependency.fnl-path modmap)
         modmap)))

@@ -7,36 +7,39 @@ local function fnl_path__3emodule_map(fnl_path)
   local or_2_ = rawget(module_maps, fnl_path)
   if not or_2_ then
     local modmap = ModuleMap.new(fnl_path)
-    module_maps[fnl_path] = modmap
+    if modmap["logged?"](modmap) then
+      module_maps[fnl_path] = modmap
+    else
+    end
     or_2_ = modmap
   end
   return or_2_
 end
 local function log_module_map_21(dependency)
-  local or_4_ = rawget(module_maps, dependency["fnl-path"])
-  if not or_4_ then
-    local modmap, logged_3f = ModuleMap.new(dependency["fnl-path"])
-    if not logged_3f then
+  local or_5_ = rawget(module_maps, dependency["fnl-path"])
+  if not or_5_ then
+    local modmap = ModuleMap.new(dependency["fnl-path"])
+    if not modmap["logged?"](modmap) then
       modmap["initialize-module-map!"](modmap, dependency)
     else
     end
     module_maps[dependency["fnl-path"]] = modmap
-    or_4_ = modmap
+    or_5_ = modmap
   end
-  return or_4_
+  return or_5_
 end
 local function fnl_path__3eentry_map(fnl_path)
-  local tgt_7_ = fnl_path__3emodule_map(fnl_path)
-  return (tgt_7_)["get-entry-map"](tgt_7_)
+  local tgt_8_ = fnl_path__3emodule_map(fnl_path)
+  return (tgt_8_)["get-entry-map"](tgt_8_)
 end
 local function fnl_path__3edependent_map(fnl_path)
-  local tgt_8_ = fnl_path__3emodule_map(fnl_path)
-  return (tgt_8_)["get-dependent-maps"](tgt_8_)[fnl_path]
+  local tgt_9_ = fnl_path__3emodule_map(fnl_path)
+  return (tgt_9_)["get-dependent-maps"](tgt_9_)[fnl_path]
 end
 local function fnl_path__3elua_path(fnl_path)
-  local _9_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _9_) then
-    local modmap = _9_
+  local _10_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _10_) then
+    local modmap = _10_
     return modmap["lua-path"]
   else
     return nil
