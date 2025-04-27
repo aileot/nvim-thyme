@@ -1,57 +1,55 @@
 local ModuleMap = require("thyme.module-map.unit")
 local _local_1_ = require("thyme.utils.uri")
 local uri_encode = _local_1_["uri-encode"]
-local ModuleMapLogger = {}
-ModuleMapLogger.__index = ModuleMapLogger
-ModuleMapLogger.new = function()
-  local self = setmetatable({}, ModuleMapLogger)
-  return self
+local module_maps = {}
+local function fnl_path__3emodule_map(fnl_path)
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/module-map/logger.fnl:9")
+  local or_2_ = rawget(module_maps, fnl_path)
+  if not or_2_ then
+    local modmap = ModuleMap.new(fnl_path)
+    module_maps[fnl_path] = modmap
+    or_2_ = modmap
+  end
+  return or_2_
 end
-local module_maps
-local function _2_(self, fnl_path)
-  local modmap = ModuleMap.new(fnl_path)
-  self[fnl_path] = modmap
-  return modmap
-end
-module_maps = setmetatable({}, {__index = _2_})
 local function log_module_map_21(dependency)
-  local or_3_ = rawget(module_maps, dependency["fnl-path"])
-  if not or_3_ then
+  local or_4_ = rawget(module_maps, dependency["fnl-path"])
+  if not or_4_ then
     local modmap, logged_3f = ModuleMap.new(dependency["fnl-path"])
     if not logged_3f then
       modmap["initialize-module-map!"](modmap, dependency)
     else
     end
     module_maps[dependency["fnl-path"]] = modmap
-    or_3_ = modmap
+    or_4_ = modmap
   end
-  return or_3_
+  return or_4_
 end
 local function fnl_path__3eentry_map(fnl_path)
-  local tgt_6_ = module_maps[fnl_path]
-  return (tgt_6_)["get-entry-map"](tgt_6_)
+  local tgt_7_ = fnl_path__3emodule_map(fnl_path)
+  return (tgt_7_)["get-entry-map"](tgt_7_)
 end
 local function fnl_path__3edependent_map(fnl_path)
-  local tgt_7_ = module_maps[fnl_path]
-  return (tgt_7_)["get-dependent-maps"](tgt_7_)[fnl_path]
+  local tgt_8_ = fnl_path__3emodule_map(fnl_path)
+  return (tgt_8_)["get-dependent-maps"](tgt_8_)[fnl_path]
 end
 local function fnl_path__3elua_path(fnl_path)
-  local _8_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _8_) then
-    local modmap = _8_
+  local _9_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _9_) then
+    local modmap = _9_
     return modmap["lua-path"]
   else
     return nil
   end
 end
 local function clear_module_map_21(fnl_path)
-  local modmap = module_maps[fnl_path]
+  local modmap = fnl_path__3emodule_map(fnl_path)
   module_maps[uri_encode(fnl_path)] = modmap
   module_maps[fnl_path] = nil
   return nil
 end
 local function restore_module_map_21(fnl_path)
-  local modmap = module_maps[uri_encode(fnl_path)]
+  local modmap = fnl_path__3emodule_map(uri_encode(fnl_path))
   module_maps[fnl_path] = modmap
   return nil
 end

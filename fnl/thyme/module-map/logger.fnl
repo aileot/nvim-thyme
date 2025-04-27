@@ -4,15 +4,13 @@
 
 (local {: uri-encode} (require :thyme.utils.uri))
 
-;; TODO: Replace the metatable on __index with a general function. The
-;; metatable is for `get-entry-map` and `get-dependent-map`; never for
-;; `log-module-map!`
-(local module-maps ;
-       (setmetatable {}
-         {:__index (fn [self fnl-path]
-                     (let [modmap (ModuleMap.new fnl-path)]
-                       (tset self fnl-path modmap)
-                       modmap))}))
+(local module-maps {})
+
+(λ fnl-path->module-map [fnl-path]
+  (or (rawget module-maps fnl-path)
+      (let [modmap (ModuleMap.new fnl-path)]
+        (tset module-maps fnl-path modmap)
+        modmap)))
 
 (fn log-module-map! [dependency]
   "Log module map.
@@ -31,7 +29,7 @@
 @return table"
   ;; Note: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
-  (-> (. module-maps fnl-path)
+  (-> (fnl-path->module-map fnl-path)
       (: :get-entry-map)))
 
 (fn fnl-path->dependent-map [fnl-path]
@@ -40,7 +38,7 @@
 @return table"
   ;; Note: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
-  (-> (. module-maps fnl-path)
+  (-> (fnl-path->module-map fnl-path)
       (: :get-dependent-maps)
       (. fnl-path)))
 
@@ -58,7 +56,7 @@
 (fn clear-module-map! [fnl-path]
   "Clear module entry-map of `fnl-path` stored in `module-maps`.
 @param fnl-path string"
-  (let [modmap (. module-maps fnl-path)]
+  (let [modmap (fnl-path->module-map fnl-path)]
     ;; Note: Because `log-module-map!` determine to initialize the modmap for
     ;; `fnl-path` by whether `module-maps` stores any table at `fnl-path`,
     ;; escaping the modmap is necessary.
@@ -69,7 +67,7 @@
   "Restore the once-cleared (or hidden) module entry-map of `fnl-path` in
 `module-maps`.
 @param fnl-path string"
-  (let [modmap (. module-maps (uri-encode fnl-path))]
+  (let [modmap (fnl-path->module-map (uri-encode fnl-path))]
     (tset module-maps fnl-path modmap)))
 
 {: log-module-map!
