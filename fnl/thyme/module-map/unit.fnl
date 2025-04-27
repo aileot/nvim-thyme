@@ -60,6 +60,8 @@
                                        :lua-path _lua-path
                                        :macro? _macro?
                                        &as modmap}]
+  ;; TODO: Re-design ModuleMap method dropping logged? check to
+  ;; call initialize-module-map!
   ;; Note: fnl-path should be managed in resolved path as described in the
   ;; `new` method.
   (set modmap.fnl-path (vim.fn.resolve fnl-path))
