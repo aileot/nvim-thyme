@@ -134,7 +134,12 @@
          :nargs "?"
          : complete
          :desc "[thyme] rollback selected module in the backup"}
-        (fn [{:args module-relpath}])))
+        (fn [{:fargs [?input]}]
+          (let [candidates (complete (or ?input ""))]
+            (vim.ui.select candidates ;
+                           {:prompt "Select rollback module: "}
+                           ;; TODO: Switch to the selected backup.
+                           #(vim.print))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
