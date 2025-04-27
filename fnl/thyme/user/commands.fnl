@@ -131,20 +131,20 @@
                               (path:sub prefix-length -2))))]
       (command! :ThymeRollback
         {:bar true
-         :nargs "?"
+         :nargs 1
          :complete complete-dirs
          :desc "[thyme] rollback selected module in the backup"}
-        (fn [{:fargs [?input]}]
+        (fn [{:args input}]
           (let [root (BackupManager.get-root)
-                prefix (Path.join root ?input)
+                prefix (Path.join root input)
                 prefix-length (+ 2 (length root))
                 glob-pattern (Path.join prefix "*.{lua,fnl}")
                 paths (vim.fn.glob glob-pattern false true)
                 candidates (icollect [_ path (ipairs paths)]
                              (path:sub prefix-length))]
             (case (length candidates)
-              0 (vim.notify (.. "Abort. No backup is found for " ?input))
-              1 (vim.notify (.. "Abort. Only one backup is found for " ?input))
+              0 (vim.notify (.. "Abort. No backup is found for " input))
+              1 (vim.notify (.. "Abort. Only one backup is found for " input))
               _ (vim.ui.select candidates ;
                                {:prompt "Select rollback module: "}
                                #(BackupManager.switch-active-backup! $)))))))
