@@ -6,11 +6,23 @@
 
 (local {: state-prefix} (require :thyme.const))
 
+(local {: hide-file! : has-hidden-file? : restore-file!}
+       (require :thyme.utils.pool))
+
 (local backup-prefix (Path.join state-prefix :backup))
 
 (local BackupManager {})
 
 (set BackupManager.__index BackupManager)
+
+(fn symlink! [path new-path ...]
+  "Force create symbolic link from `path` to `new-path`."
+  (when (file-readable? new-path)
+    (hide-file! new-path))
+  (case (pcall (assert #(vim.uv.fs_symlink path new-path)))
+    (false msg) (when (has-hidden-file? new-path)
+                  (restore-file! new-path)
+                  (vim.notify msg vim.log.levels.ERROR))))
 
 (λ BackupManager.new [label file-extension]
   (let [self (setmetatable {} BackupManager)
@@ -76,7 +88,7 @@ Return `true` if the following conditions are met:
     (-> (vim.fs.dirname active-backup-path)
         (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))
-    (assert (fs.symlink backup-path active-backup-path))))
+    (symlink! backup-path active-backup-path)))
 
 (fn BackupManager.get-root []
   "Return the root directory of backup files.
@@ -90,6 +102,6 @@ Return `true` if the following conditions are met:
         file-extension (backup-path:match "%..-$")
         new-active-backup-filename (.. ".active" file-extension)
         new-active-backup-path (Path.join dir new-active-backup-filename)]
-    (assert (fs.symlink backup-path new-active-backup-path))))
+    (symlink! backup-path new-active-backup-path)))
 
 BackupManager
