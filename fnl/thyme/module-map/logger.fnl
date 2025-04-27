@@ -16,7 +16,7 @@
 (fn log-module-map! [dependency]
   "Log module map.
 @param dependency table"
-  ;; Note: dependent-stack can be empty when `import-macros` is in cmdline.
+  ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
   (or (rawget module-maps dependency.fnl-path)
       (let [modmap (ModuleMap.new dependency.fnl-path)]
         (when-not (modmap:logged?)
@@ -28,7 +28,7 @@
   "Get dependency map of `fnl-path`.
 @param fnl-path string
 @return table"
-  ;; Note: This function is not intended to be used in this module itself, but
+  ;; NOTE: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
   (-> (fnl-path->module-map fnl-path)
       (: :get-entry-map)))
@@ -37,7 +37,7 @@
   "Get dependent map of `fnl-path`.
 @param fnl-path string
 @return table"
-  ;; Note: This function is not intended to be used in this module itself, but
+  ;; NOTE: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
   (-> (fnl-path->module-map fnl-path)
       (: :get-dependent-maps)
@@ -58,7 +58,7 @@
   "Clear module entry-map of `fnl-path` stored in `module-maps`.
 @param fnl-path string"
   (let [modmap (fnl-path->module-map fnl-path)]
-    ;; Note: Because `log-module-map!` determine to initialize the modmap for
+    ;; NOTE: Because `log-module-map!` determine to initialize the modmap for
     ;; `fnl-path` by whether `module-maps` stores any table at `fnl-path`,
     ;; escaping the modmap is necessary.
     (tset module-maps (uri-encode fnl-path) modmap)

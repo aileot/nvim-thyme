@@ -36,7 +36,7 @@
   "Move all the files and links in the `dir-path` to their pool-paths
 respectively.
 @param dir-path string"
-  ;; Note: Hiding directories only add extra management costs on restoring
+  ;; NOTE: Hiding directories only add extra management costs on restoring
   ;; files later.
   (each-file hide-file! dir-path))
 

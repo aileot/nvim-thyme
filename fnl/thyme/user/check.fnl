@@ -36,11 +36,11 @@
 @return boolean return `true` if successfully recompile `fnl-path`; otherwise, return `false`."
   (let [config (get-config)
         compiler-options config.compiler-options]
-    ;; Note: With "module-name" option, macro-searcher can map macro
+    ;; NOTE: With "module-name" option, macro-searcher can map macro
     ;; dependency.
     ;; TODO: Clear lua cache if necessary.
     (set compiler-options.module-name module-name)
-    ;; Note: module-map must be cleared before logging, but after getting
+    ;; NOTE: module-map must be cleared before logging, but after getting
     ;; its maps.
     (clear-module-map! fnl-path)
     (case (pcall-with-logger! fennel.compile-string fnl-path lua-path

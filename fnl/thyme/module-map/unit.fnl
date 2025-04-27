@@ -31,7 +31,7 @@
     (Path.join modmap-prefix (.. log-id :.log))))
 
 (fn ModuleMap.new [raw-fnl-path]
-  ;; Note: fnl-path should be managed in resolved path. Symbolic links are
+  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
   ;; unlikely to be either re-set to another file or replaced with a general
   ;; file. Even in such cases, just executing :CacheClear would be the simple
   ;; answer. The symbolic link issue does not belong to dependent-map, but
@@ -62,7 +62,7 @@
                                        &as modmap}]
   ;; TODO: Re-design ModuleMap method dropping logged? check to
   ;; call initialize-module-map!
-  ;; Note: fnl-path should be managed in resolved path as described in the
+  ;; NOTE: fnl-path should be managed in resolved path as described in the
   ;; `new` method.
   (set modmap.fnl-path (vim.fn.resolve fnl-path))
   (let [modmap-line (modmap->line modmap)
@@ -91,7 +91,7 @@
   self._entry-map.lua-path)
 
 (fn ModuleMap.macro? [self]
-  ;; Note: It would be more complicated to prepare another dir for macro
+  ;; NOTE: It would be more complicated to prepare another dir for macro
   ;; files; log-path could not be determined in "new" method on a simple
   ;; logic.
   (and self._entry-map self._entry-map.macro?))
@@ -127,7 +127,7 @@
 
 (fn ModuleMap.clear-module-map-files! []
   "Clear all the module-map log files managed by nvim-thyme."
-  ;; Note: hide-dir! instead also move modmap dir wastefully.
+  ;; NOTE: hide-dir! instead also move modmap dir wastefully.
   (each-file hide-file! modmap-prefix))
 
 (fn ModuleMap.get-root []

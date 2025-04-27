@@ -5,10 +5,10 @@
 @param module-name string
 @param ?opts.notifier false|function
 @param ?opts.live-reload boolean|table"
-  ;; Note: If they are nil, `require` will search the module file again.
-  ;; Note: There is an issue that module local state variable will be
+  ;; NOTE: If they are nil, `require` will search the module file again.
+  ;; NOTE: There is an issue that module local state variable will be
   ;; reset.
-  ;; Note: reloading modules only matters on &rtp.
+  ;; NOTE: reloading modules only matters on &rtp.
   (let [fennel (require :fennel)
         opts (or ?opts {:notifier {} :live-reload false})
         notify! (or opts.notifier.reload do-nothing)
@@ -20,7 +20,7 @@
       (do
         (tset package.loaded module-name nil)
         ;; Testing module if safe to update.
-        ;; Note: `require` updates package.loaded[module-name] if nil.
+        ;; NOTE: `require` updates package.loaded[module-name] if nil.
         (case (xpcall #(require module-name) fennel.traceback)
           (true _) (if live-reload?
                        (notify! (.. module-name
@@ -30,17 +30,17 @@
                         ;; Restore the saved module loader.
                         (tset package.loaded module-name mod)
                         (error msg))))
-      ;; Note: fennel.macro-loaded is only used by import-macros,
+      ;; NOTE: fennel.macro-loaded is only used by import-macros,
       ;; require-macros, and `require` within the default compiler scope.
       ;; Ref: src/fennel/specials.fnl @1108
-      ;; Note: macro-loaded would only be loaded in a nvim session where
+      ;; NOTE: macro-loaded would only be loaded in a nvim session where
       ;; compile is required.
       nil
       (case (. fennel.macro-loaded module-name)
         mod (let [{: search-fnl-macro-on-rtp} (require :thyme.searcher.macro)]
               (tset fennel.macro-loaded module-name nil)
               ;; Testing module if safe to update.
-              ;; Note: `require` is unsuitable here because it does not run in
+              ;; NOTE: `require` is unsuitable here because it does not run in
               ;; compiler sandbox.
               (case (xpcall #(search-fnl-macro-on-rtp module-name)
                             fennel.traceback)

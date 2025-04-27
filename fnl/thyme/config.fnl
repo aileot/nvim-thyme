@@ -15,7 +15,7 @@
                           (tset cache.main-config k v))
                         #(error "no option can be overridden by this table"))}))
 
-;; Note: Please keep this security check simple.
+;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
@@ -66,7 +66,7 @@
 @param config-file string a directory path.
 @return table"
   (assert-is-fnl-file config-file-path)
-  ;; Note: fennel is likely to get into loop or previous error.
+  ;; NOTE: fennel is likely to get into loop or previous error.
   (let [fennel (require :fennel)
         config-code (if secure-nvim-env?
                         (read-file config-file-path)
@@ -90,7 +90,7 @@
   "Tell if `path` is a thyme's config file.
 @param path string
 @return boolean"
-  ;; Note: Just in case, do not compare in full path.
+  ;; NOTE: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
 {: get-config : config-file?}

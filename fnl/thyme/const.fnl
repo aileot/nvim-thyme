@@ -8,7 +8,7 @@
 
 (local rtp (nvim-get-option :rtp))
 
-;; Note: In case config is managed over symbolic link or something else,
+;; NOTE: In case config is managed over symbolic link or something else,
 ;; compare it with a each project config later.
 (local config-path (vim.fn.resolve (Path.join stdpath-config config-filename)))
 
@@ -18,7 +18,7 @@
                (.. "&runtimepath must contains a unique path which literally includes `/thyme/compile`; got "
                    (vim.inspect (vim.opt.rtp:get)))))
 
-;; Note: No need to set `/compiled/*` because Lua `require` only search
+;; NOTE: No need to set `/compiled/*` because Lua `require` only search
 ;; for a file per module name unlike `:runtime!` in Vim script.
 ;; PERF: All the double-underscored options must be set here and treated
 (local lua-cache-prefix (-> (Path.join cache-prefix :lua)

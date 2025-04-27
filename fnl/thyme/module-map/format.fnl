@@ -4,7 +4,7 @@
 
 (local {: gsplit} (require :thyme.utils.iterator))
 
-;; Note: lua cannot handle \0 in pattern properly.
+;; NOTE: lua cannot handle \0 in pattern properly.
 (local marker {:sep "\t" :macro "\v" :end "\n"})
 
 (fn modmap->line [modmap]
@@ -14,14 +14,14 @@
 @param modmap.fnl-path string
 @param modmap.lua-path string?
 @return string"
-  ;; Note: The modmap log files would not store file size, which significantly
+  ;; NOTE: The modmap log files would not store file size, which significantly
   ;; reduces the reusability of log files in the pool.
   (assert (and modmap.module-name modmap.fnl-path)
           (: "modmap requires 'module-name' and 'fnl-path'; got module-name: %s, fnl-path: %s"
              :format modmap.module-name modmap.fnl-path))
   (.. (or modmap.lua-path marker.macro) marker.sep ;
       modmap.module-name marker.sep ;
-      ;; Note: the log filename represents the resolved fnl path.
+      ;; NOTE: the log filename represents the resolved fnl path.
       modmap.fnl-path marker.end))
 
 (fn line->modmap [line]

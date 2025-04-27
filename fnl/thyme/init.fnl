@@ -1,8 +1,8 @@
-;; Note: This module is likely to get into loop: loop or previous error.
+;; NOTE: This module is likely to get into loop: loop or previous error.
 ;; This is because the modules that depends on `eval` of the "fennel"
 ;; module. Load such modules inside the function after the check whether
 ;; loading module is "fennel" or not.
-;; Note: This module is only for nvim main-config, never for project.
+;; NOTE: This module is only for nvim main-config, never for project.
 (import-macros {: require-with-key : lazy-require-with-key} :thyme.macros)
 
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))

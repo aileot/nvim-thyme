@@ -11,7 +11,7 @@
   "Determine `lua-path` from `module-name`
 @param module-name string
 @return string"
-  ;; Note: For macro modules, the lua-path does not matter; otherwise for
+  ;; NOTE: For macro modules, the lua-path does not matter; otherwise for
   ;; general modules, each module is converted to its own unique lua-path by
   ;; its nature.
   (let [lua-module-path (.. (module-name:gsub "%." Path.sep) :.lua)]
@@ -20,7 +20,7 @@
 (fn clear-cache! []
   "Clear lua cache files and other related state files.
 @return boolean return `true` when all the lua caches are cleared; otherwise, return `false`."
-  ;; Note: glob is unavailable in vim.fs.find.
+  ;; NOTE: glob is unavailable in vim.fs.find.
   (case (vim.fs.find #(= :.lua ($:sub -4)) {:type :file :path lua-cache-prefix})
     [nil] false
     _ (do

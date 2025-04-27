@@ -11,7 +11,7 @@
 (local M {})
 
 (fn M.define-keymaps! [?opts]
-  ;; Note: &operatorfunc does not work on v:lua.require('foo')['bar'] format
+  ;; NOTE: &operatorfunc does not work on v:lua.require('foo')['bar'] format
   ;; instead of v:lua.require'foo'.bar: both `()` and `[]` do matter, avoid
   ;; "-" in names.
   (let [module-name :thyme.user.keymaps
@@ -40,7 +40,7 @@
                                                operator-callback-name)
                 lhs (: "<Plug>(thyme-operator-%s)" :format keymap-suffix)
                 ;; TODO: What implementation is the best for linewise operator?
-                ;; Note: In Vim script expression, avoid double quotes.
+                ;; NOTE: In Vim script expression, avoid double quotes.
                 rhs/n (: "<Cmd>set operatorfunc=v:lua.%s<CR>g@" ;
                          :format operator-callback-in-string)
                 rhs/x (: ":lua %s('<','>')<CR>" ;

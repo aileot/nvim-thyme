@@ -46,7 +46,7 @@ Return `true` if the following conditions are met:
   "Create a backup file of `path` as `module-name`.
 @param module-name string
 @param path string"
-  ;; Note: Saving a chunk of macro module is probably impossible.
+  ;; NOTE: Saving a chunk of macro module is probably impossible.
   (assert (file-readable? path) (.. "expected readable file, got " path))
   (let [backup-path (self:module-name->backup-path module-name)]
     (-> (vim.fs.dirname backup-path)

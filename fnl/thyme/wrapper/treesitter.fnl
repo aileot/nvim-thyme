@@ -74,7 +74,7 @@ by default) for `vim.api.nvim_echo`.
 @param ?opts.lang (default: \"fennel\") treesitter parser language
 @return table[] a sequence of `[text hl-group]` for `vim.api.nvim_echo`."
   ;; TODO: Extract iterator, or map function.
-  ;; Note: trailing whitespaces in each line are ignored, i.e., padding each
+  ;; NOTE: trailing whitespaces in each line are ignored, i.e., padding each
   ;; line to vim.go.columns here does not make sense.
   (let [opts (or ?opts {})
         base-lang (or opts.lang :fennel)
@@ -94,7 +94,7 @@ by default) for `vim.api.nvim_echo`.
       ;; Make sure to destroy
       (let [top-row0 0 ;
             top-col0 0
-            ;; Note: bottom-row0, i.e., end-row0, is excluded by the vim.treesitter
+            ;; NOTE: bottom-row0, i.e., end-row0, is excluded by the vim.treesitter
             ;; object method Query:iter_captures.
             bottom-row0 -1
             end-row (-> text
@@ -113,12 +113,12 @@ by default) for `vim.api.nvim_echo`.
                          iter (hl-query:iter_captures (ts-tree:root) text
                                                       top-row0 bottom-row0)]
                      (each [(id node metadata) iter]
-                       ;; Note: Apply metadata.conceal?
+                       ;; NOTE: Apply metadata.conceal?
                        (case (. hl-query.captures id)
                          (where (or :spell :nospell))
                          nil
                          (where capture (not (vim.startswith capture "_")))
-                         ;; Note: underscored capture should not be for
+                         ;; NOTE: underscored capture should not be for
                          ;; highlights, but only for internal use.
                          (let [txt (ts.get_node_text node text)
                                hl-name (.. "@" capture)
@@ -134,7 +134,7 @@ by default) for `vim.api.nvim_echo`.
           (for [i 1 end-row]
             (for [j 1 end-col]
               (table.insert hl-chunks (. hl-chunk-matrix i j))))
-          ;; Note: nvim_echo results are displayed as if newline is inserted at
+          ;; NOTE: nvim_echo results are displayed as if newline is inserted at
           ;; the end when the last char reaches vim.go.columns.
           (when (= whitespace-chunk (last hl-chunks))
             (table.remove hl-chunks))

@@ -1,8 +1,8 @@
-;; Note: URI encoder/decoder are based on those of vim/uri.lua (RFC 2396).
+;; NOTE: URI encoder/decoder are based on those of vim/uri.lua (RFC 2396).
 
 (import-macros {: inc : dec} :thyme.macros)
 
-;; Note: "bit" module is embedded in nvim>=0.9.0.
+;; NOTE: "bit" module is embedded in nvim>=0.9.0.
 (local {: tohex} (require :bit))
 
 (local Path (require :thyme.utils.path))

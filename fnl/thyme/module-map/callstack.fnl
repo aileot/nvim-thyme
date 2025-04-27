@@ -3,7 +3,7 @@
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: log-module-map!} (require :thyme.module-map.logger))
 
-;; Note: The Callstack instance is shared by all the modmap instances.
+;; NOTE: The Callstack instance is shared by all the modmap instances.
 (local Callstack (Stack.new))
 
 (local cache {:stackframes {}})
@@ -27,7 +27,7 @@
     (Callstack:push! stackframe)
     (set compiler-options.module-name module-name)
     (set compiler-options.filename fnl-path)
-    ;; Note: callback only expects fennel.compile-string or fennel.eval.
+    ;; NOTE: callback only expects fennel.compile-string or fennel.eval.
     (let [(ok? result) (xpcall #(callback fnl-code compiler-options module-name)
                                fennel.traceback)]
       (Callstack:pop!)

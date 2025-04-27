@@ -40,7 +40,7 @@
 
 (fn nvim [name ...]
   "Generate `(vim.api.nvim_foobar ...)`."
-  ;; Note: Define dedicated wrapper macros for arbitrarily nilable params.
+  ;; NOTE: Define dedicated wrapper macros for arbitrarily nilable params.
   (let [snake-cased (name:gsub "%-" "_")]
     `((. vim.api ,(.. :nvim_ snake-cased)) ,...)))
 

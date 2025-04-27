@@ -24,7 +24,7 @@
 (local BackupManager (require :thyme.utils.backup-manager))
 (local ModuleBackupManager (BackupManager.new :module-rollback))
 
-;; Note: To initialize fennel.path and fennel.macro-path, cache.rtp must not
+;; NOTE: To initialize fennel.path and fennel.macro-path, cache.rtp must not
 ;; start with vim.o.rtp.
 (local cache {:rtp nil})
 
@@ -43,7 +43,7 @@ fennel.lua.
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
         fennel-lua-path (Path.join fennel-src-root fennel-lua-file)
-        ;; Note: As long as the args of vim.fn.system is a list instead of a
+        ;; NOTE: As long as the args of vim.fn.system is a list instead of a
         ;; string the process is independent from vim.o.shell. The
         ;; independence from shell also means that shell specific keywords
         ;; like `|`, `&&`, etc., would be interpreted as `make` arg.
@@ -59,8 +59,8 @@ fennel.lua.
         (fs.copyfile fennel-lua-path cached-fennel-path))
     (assert-is-file-readable fennel-lua-path)
     (assert-is-file-readable cached-fennel-path)
-    ;; Note: It must return Lua expression, i.e., read-file is unsuitable.
-    ;; Note: Evaluating fennel.lua by (require :fennel) is unsuitable;
+    ;; NOTE: It must return Lua expression, i.e., read-file is unsuitable.
+    ;; NOTE: Evaluating fennel.lua by (require :fennel) is unsuitable;
     ;; otherwise, it gets into infinite loop since this function runs as
     ;; a loader of `require`.
     (assert (loadfile cached-fennel-path))))
@@ -73,7 +73,7 @@ fennel.lua.
         fennel-path (-> (icollect [_ suffix (ipairs [:?.fnl :?/init.fnl])]
                           (.. std-config-home fnl-dir suffix))
                         (table.concat ";"))]
-    ;; Note: Overwriting fennel.{path,macro-path} considering &rtp is at least
+    ;; NOTE: Overwriting fennel.{path,macro-path} considering &rtp is at least
     ;; necessary to make `include` work on &rtp. It will also affect the
     ;; behaviors of other Fennel functions, for better or worse.
     (set fennel.path fennel-path)))
@@ -108,10 +108,10 @@ cache dir.
 @param module-name string
 @return string|function a lua chunk in function, or a string to tell why failed to load module."
   (if (= :fennel module-name)
-      ;; Note: The searchers must not be initialized here because this
+      ;; NOTE: The searchers must not be initialized here because this
       ;; searcher only receives "fennel" when the cache is cleared.
       (compile-fennel-into-rtp!)
-      ;; Note: `thyme.compiler` depends on the module `fennel` so that
+      ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [fennel (require :fennel)
             {: get-config} (require :thyme.config)

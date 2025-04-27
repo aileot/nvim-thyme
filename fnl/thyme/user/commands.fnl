@@ -71,7 +71,7 @@
         (case (length results)
           0 (tts.print :nil {: lang})
           last-idx (each [i ?text (ipairs results) ;
-                          ;; Note: Some function like fennel.compile-string returns
+                          ;; NOTE: Some function like fennel.compile-string returns
                           ;; additional table at last. That is usually unintended
                           ;; information for users.
                           &until (and discard-last? (<= last-idx i))]
@@ -104,11 +104,11 @@
     (command! :ThymeCacheOpen
       {:desc "[thyme] open the cache root directory"}
       (fn []
-        ;; Note: Filer plugin like oil.nvim usually modifies the buffer name
+        ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
         ;; so that `:tab drop` is unlikely to work expectedly.
         (vim.cmd (.. "tab drop " lua-cache-prefix))))
     (command! :ThymeCacheClear
-      ;; Note: No args will be allowed because handling module-map would
+      ;; NOTE: No args will be allowed because handling module-map would
       ;; be a bit complicated.
       {:bar true
        :bang true
@@ -169,7 +169,7 @@
         (let [fnl-code (let [full-path (-> (or ?path "%:p")
                                            (vim.fn.expand)
                                            (vim.fn.fnamemodify ":p"))]
-                         ;; Note: fs.read-file returns the contents in
+                         ;; NOTE: fs.read-file returns the contents in
                          ;; a string while vim.fn.readfile returns in
                          ;; a list.
                          (-> (vim.fn.readfile full-path "" line2)
@@ -240,7 +240,7 @@
        :bang true
        :complete :file
        :desc "Compile given fnl files, or current fnl buffer"}
-      ;; Note: mods.confirm to confirm any files; without `bang` to confirm to
+      ;; NOTE: mods.confirm to confirm any files; without `bang` to confirm to
       ;; overwrite existing file.
       (fn [{:fargs glob-paths :bang force-compile?}]
         (let [fnl-paths (if (= 0 (length glob-paths))
@@ -268,7 +268,7 @@
                                2 true
                                _ (do
                                    (vim.notify :Abort)
-                                   ;; Note: Just in case, thought vim.notify returns nil.
+                                   ;; NOTE: Just in case, thought vim.notify returns nil.
                                    false)))))
             (let [;; TODO: Add interface to overwrite fennel-options in this
                   ;; command?

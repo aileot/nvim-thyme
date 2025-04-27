@@ -33,7 +33,7 @@ of vim.api.nvim_buf_get_mark.
                                                             (values start end)
                                                             (values end start)))
         end-row (first end)
-        ;; Note: vim.fn.getregtype only get updated in Operator-pending mode:
+        ;; NOTE: vim.fn.getregtype only get updated in Operator-pending mode:
         ;; it does not always make sense in Visual mode. This line length
         ;; comparison at the end-row is a workaround to tell if this function
         ;; is called in Visual mode or not.

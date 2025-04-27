@@ -3,7 +3,7 @@
 @param pats string[]
 @param all? boolean whether to return all matches or only the first
 @return string[]"
-  ;; Note: This function is defined since nvim__get_runtime is a private
+  ;; NOTE: This function is defined since nvim__get_runtime is a private
   ;; interface.
   (let [files []]
     (if all?

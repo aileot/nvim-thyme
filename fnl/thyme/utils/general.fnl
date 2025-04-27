@@ -2,7 +2,7 @@
 
 (fn do-nothing []
   "A dummy function to be used as a callback function."
-  ;; Note: Return nil, or it will return the docstring.
+  ;; NOTE: Return nil, or it will return the docstring.
   nil)
 
 (fn contains? [xs ?a]

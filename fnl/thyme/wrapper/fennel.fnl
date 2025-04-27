@@ -18,12 +18,12 @@
                                (apply-parinfer fnl-code)
                                fnl-code)]
     (when (= nil compiler-options.filename)
-      ;; Note: fennel.eval resets .filename to nil at the end.
+      ;; NOTE: fennel.eval resets .filename to nil at the end.
       ;; Ref: src/fennel.fnl @60
       (set compiler-options.filename :fennel-in-thyme))
     (values balanced?-fnl-code compiler-options)))
 
-;; Note: Do not carelessly wrap with xpcall.
+;; NOTE: Do not carelessly wrap with xpcall.
 
 (fn view [fnl-code ?opts]
   "Evaluate `(fennel.view fnl-code)` on &rtp.
@@ -31,7 +31,7 @@
 @param ?opts table? otherwise, main-config's compiler-options are applied.
 @return any"
   ;; TODO: Add an interface to `(require-macros <optional>)` at runtime.
-  ;; Note: Make sure to insert macro searcher.
+  ;; NOTE: Make sure to insert macro searcher.
   (let [(new-fnl-code compiler-options) (fnl-code->fennel-ready fnl-code ?opts)]
     (fennel.view new-fnl-code compiler-options)))
 
@@ -41,7 +41,7 @@
 @param ?opts table? otherwise, main-config's compiler-options are applied.
 @return any"
   ;; TODO: Add an interface to `(require-macros <optional>)` at runtime.
-  ;; Note: Make sure to insert macro searcher.
+  ;; NOTE: Make sure to insert macro searcher.
   (let [(new-fnl-code compiler-options) (fnl-code->fennel-ready fnl-code ?opts)]
     (fennel.eval new-fnl-code compiler-options)))
 
@@ -51,7 +51,7 @@
 @param ?opts table? otherwise, main-config's compiler-options are applied.
 @return any"
   ;; TODO: Add an interface to `(require-macros <optional>)` at runtime.
-  ;; Note: Make sure to insert macro searcher.
+  ;; NOTE: Make sure to insert macro searcher.
   (-> (.. "(eval-compiler " fnl-code ")")
       (eval ?opts)))
 
@@ -61,7 +61,7 @@
 @param ?opts table? otherwise, main-config's compiler-options are applied.
 @return any"
   ;; TODO: Add an interface to `(require-macros <optional>)` at runtime.
-  ;; Note: Make sure to insert macro searcher.
+  ;; NOTE: Make sure to insert macro searcher.
   (-> (.. "(macrodebug " fnl-code ")")
       (eval ?opts)))
 
@@ -71,7 +71,7 @@
 @param ?opts table? otherwise, main-config's compiler-options are applied.
 @return string the compiled lua code"
   ;; TODO: Add an interface to `(require-macros <optional>)` at runtime.
-  ;; Note: Make sure to insert macro searcher.
+  ;; NOTE: Make sure to insert macro searcher.
   (let [(new-fnl-code compiler-options) (fnl-code->fennel-ready fnl-code ?opts)]
     (fennel.compile-string new-fnl-code compiler-options)))
 
@@ -80,7 +80,7 @@
 It does not affect file system.
 @param bufnr number
 @return string compiled lua code"
-  ;; Note: Do not by-pass parinfer completion just in case.
+  ;; NOTE: Do not by-pass parinfer completion just in case.
   (assert-is-fnl-file bufnr)
   (let [buf-lines (vim.api.nvim_buf_get_lines bufnr 0 -1 true)
         (new-fnl-code compiler-options) (fnl-code->fennel-ready buf-lines ?opts)
@@ -92,7 +92,7 @@ It does not affect file system.
   "Compile `fnl-path` into lua string lines. It does not affect file system.
 @param fnl-path string
 @return string compiled lua code"
-  ;; Note: Do not by-pass parinfer completion just in case.
+  ;; NOTE: Do not by-pass parinfer completion just in case.
   (assert-is-fnl-file fnl-path)
   (let [fennel (require :fennel)
         config (get-config)

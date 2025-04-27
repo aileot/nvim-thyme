@@ -29,7 +29,7 @@
                      report-ok)]
     (reporter (.. "vim.g.parinfer_loaded = " (tostring vim.g.parinfer_loaded))))
   (let [dependency-files [:parser/fennel.so]]
-    ;; Note: The files "parser-info/*.revision" should only belong to
+    ;; NOTE: The files "parser-info/*.revision" should only belong to
     ;; https://github.com/nvim-treesitter/nvim-treesitter.
     (each [_ file (ipairs dependency-files)]
       (case (get-runtime-files [file] false)

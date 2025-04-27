@@ -15,7 +15,7 @@
         config (get-config)
         compiler-options config.compiler-options
         ?env compiler-options.env]
-    ;; Note: Macro searcher should set "env" field to "_COMPILER" to indicate
+    ;; NOTE: Macro searcher should set "env" field to "_COMPILER" to indicate
     ;; that the module is a macro definition module. In other words, _COMPILER
     ;; indicates the macro module should be evaluated in a compiler environment,
     ;; which provides the functions, `list?`, `sym?`, etc., on which ordinary
@@ -36,7 +36,7 @@
 thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment
 \t" :format fnl-path module-name)]
                 (set compiler-options.env ?env)
-                ;; Note: Unlike Lua's package.loaders, Fennel macro-searcher
+                ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
                 ;; is supposed to return a function which must returns a table;
                 ;; otherwise when the searhcer fails to find a macro module,
                 ;; it must return nil. See the implementation of
@@ -47,7 +47,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
   "Search macro on &rtp.
   @param module-name string
   @return fun(): table a lua chunk, but only expects a macro table as its end."
-  ;; Note: In spite of __index, it is redundant to filter out the module named
+  ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
   (let [fennel (require :fennel)]
     (case (case (fennel.search-module module-name fennel.macro-path)
@@ -77,10 +77,10 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
     mt (setmetatable cache-table mt))
   (setmetatable original-table
     {:__newindex (fn [self module-name val]
-                   ;; Note: In spite of __index, it is redundant to filter out
+                   ;; NOTE: In spite of __index, it is redundant to filter out
                    ;; the module named :fennel.macros, which will never be set
                    ;; to fennel.macro-loaded.
-                   ;; Note: The value at fennel.macro-loaded cannot be reset
+                   ;; NOTE: The value at fennel.macro-loaded cannot be reset
                    ;; in __index.
                    (if (is-logged? module-name)
                        (do
@@ -88,7 +88,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
                          (tset cache-table module-name val))
                        (rawset self module-name val)))
      :__index (fn [_ module-name]
-                ;; Note: __index runs after __newindex runs.
+                ;; NOTE: __index runs after __newindex runs.
                 (case (. cache-table module-name)
                   cached (do
                            (log-again! module-name)
@@ -96,7 +96,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
   ;; Ref: src/fennel/specials.fnl @1276
-  ;; Note: In the original, the first is fennel-macro-searcher to search
+  ;; NOTE: In the original, the first is fennel-macro-searcher to search
   ;; through fennel.macro-path; the second is lua-macro-searcher through
   ;; package.path.
   (table.insert fennel.macro-searchers 1 search-fnl-macro-on-rtp!)
