@@ -146,7 +146,11 @@
               _ (vim.ui.select candidates ;
                                {:prompt "Select rollback module: "
                                 :format_item (fn [path]
-                                               (path:sub prefix-length))}
+                                               (let [truncated-path (path:sub prefix-length)]
+                                                 (if (BackupManager.active-backup? path)
+                                                     (.. truncated-path
+                                                         " (current)")
+                                                     truncated-path)))}
                                (fn [?backup-path]
                                  (if ?backup-path
                                      (do
