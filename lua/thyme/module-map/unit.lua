@@ -39,7 +39,11 @@ ModuleMap.new = function(raw_fnl_path)
   self["_entry-map"] = modmap[fnl_path]
   modmap[fnl_path] = nil
   self["_dep-map"] = modmap
+  self["_logged?"] = logged_3f
   return self, logged_3f
+end
+ModuleMap["logged?"] = function(self)
+  return self["_logged?"]
 end
 ModuleMap["initialize-module-map!"] = function(self, _8_)
   local module_name = _8_["module-name"]

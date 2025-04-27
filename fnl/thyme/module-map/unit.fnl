@@ -47,7 +47,12 @@
     (set self._entry-map (. modmap fnl-path))
     (tset modmap fnl-path nil)
     (set self._dep-map modmap)
+    (set self._logged? logged?)
     (values self logged?)))
+
+(fn ModuleMap.logged? [self]
+  "Tell if module has been logged in cache."
+  self._logged?)
 
 (fn ModuleMap.initialize-module-map! [self
                                       {: module-name
