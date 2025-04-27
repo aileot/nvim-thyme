@@ -22,7 +22,7 @@ local pcall_with_logger_21 = _local_7_["pcall-with-logger!"]
 local _local_8_ = require("thyme.searcher.macro")
 local initialize_macro_searcher_on_rtp_21 = _local_8_["initialize-macro-searcher-on-rtp!"]
 local BackupManager = require("thyme.utils.backup-manager")
-local ModuleBackupManager = BackupManager.new("module-rollback")
+local ModuleBackupManager = BackupManager.new("module")
 local cache = {rtp = nil}
 local function compile_fennel_into_rtp_21()
   local rtp = vim.api.nvim_get_option_value("rtp", {})
