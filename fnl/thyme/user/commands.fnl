@@ -118,6 +118,13 @@
         (if (clear-cache!)
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
+    (command! :ThymeCacheRollback
+      {:bar true
+       :nargs 1
+       :complete (fn [a]
+                   a)
+       :desc "[thyme] rollback selected module in the backup"}
+      (fn [{:args module-relpath}]))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
