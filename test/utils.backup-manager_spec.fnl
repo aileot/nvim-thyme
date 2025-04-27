@@ -12,13 +12,13 @@
                  (clear-backup-files!)))
   (it* ".new creates a backup directory."
     (let [label "foo"]
-      (BackupManager.new label)
+      (BackupManager.new label ".foobar")
       (->> (vim.fn.isdirectory (BackupManager.get-root))
            (assert.is_same 1))))
   (it* ".create-module-backup! creates a backup file."
     (let [label "foo"
           module-name "foobar"
-          bm (BackupManager.new label)
+          bm (BackupManager.new label ".fnl")
           stored-path (bm:module-name->current-backup-path module-name)
           filename (.. module-name ".fnl")
           original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]

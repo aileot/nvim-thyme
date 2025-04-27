@@ -34,16 +34,17 @@
 @param module-name string
 @return string the module backup path"
   (let [rollback-id (os.date "%Y-%m-%d_%H-%M-%S")
+        backup-filename (.. rollback-id self.file-extension)
         backup-dir (self:module-name->backup-dir module-name)]
     (vim.fn.mkdir backup-dir :p)
-    (Path.join backup-dir rollback-id)))
+    (Path.join backup-dir backup-filename)))
 
 (fn BackupManager.module-name->current-backup-path [self module-name]
   "Return module the current backed up path.
 @param module-name string
 @return string? the module backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
-        current-backup-filename ".current"]
+        current-backup-filename (.. ".current" self.file-extension)]
     (Path.join backup-dir current-backup-filename)))
 
 (fn BackupManager.should-update-backup? [self module-name expected-contents]

@@ -26,13 +26,14 @@ BackupManager["module-name->backup-dir"] = function(self, module_name)
 end
 BackupManager["module-name->new-backup-path"] = function(self, module_name)
   local rollback_id = os.date("%Y-%m-%d_%H-%M-%S")
+  local backup_filename = (rollback_id .. self["file-extension"])
   local backup_dir = self["module-name->backup-dir"](self, module_name)
   vim.fn.mkdir(backup_dir, "p")
-  return Path.join(backup_dir, rollback_id)
+  return Path.join(backup_dir, backup_filename)
 end
 BackupManager["module-name->current-backup-path"] = function(self, module_name)
   local backup_dir = self["module-name->backup-dir"](self, module_name)
-  local current_backup_filename = ".current"
+  local current_backup_filename = (".current" .. self["file-extension"])
   return Path.join(backup_dir, current_backup_filename)
 end
 BackupManager["should-update-backup?"] = function(self, module_name, expected_contents)
