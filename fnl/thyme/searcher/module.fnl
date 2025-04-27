@@ -99,7 +99,7 @@ fennel.lua.
 
 (fn write-lua-file-with-backup! [lua-path lua-code module-name]
   (write-lua-file! lua-path lua-code)
-  (when (ModuleBackupManager:should-update-backup! module-name lua-code)
+  (when (ModuleBackupManager:should-update-backup? module-name lua-code)
     (ModuleBackupManager:create-module-backup! module-name lua-path)))
 
 (fn search-fnl-module-on-rtp! [module-name ...]
@@ -146,7 +146,7 @@ thyme-loader: %s is found for the module %s, but failed to compile it
                 (_ msg) (values nil (.. "\nthyme-loader: " msg)))
           chunk chunk
           (_ error-msg)
-          (let [backup-path (ModuleBackupManager:module-name->backup-path module-name)
+          (let [backup-path (ModuleBackupManager:module-name->?current-backup-path module-name)
                 rollback? config.rollback]
             (if (and rollback? (file-readable? backup-path))
                 (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"

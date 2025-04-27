@@ -19,8 +19,8 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   local _4_, _5_ = pcall_with_logger_21(fennel.eval, fnl_path, nil, compiler_options, module_name)
   if ((_4_ == true) and (nil ~= _5_)) then
     local result = _5_
-    local backup_path = MacroBackupManager["module-name->backup-path"](MacroBackupManager, module_name)
-    if ((fnl_path ~= backup_path) and MacroBackupManager["should-update-backup!"](MacroBackupManager, module_name, read_file(fnl_path))) then
+    local backup_path = MacroBackupManager["module-name->?current-backup-path"](MacroBackupManager, module_name)
+    if ((fnl_path ~= backup_path) and MacroBackupManager["should-update-backup?"](MacroBackupManager, module_name, read_file(fnl_path))) then
       MacroBackupManager["create-module-backup!"](MacroBackupManager, module_name, fnl_path)
     else
     end
@@ -61,7 +61,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
   elseif (true and (nil ~= _10_)) then
     local _ = _9_
     local error_msg = _10_
-    local backup_path = MacroBackupManager["module-name->backup-path"](MacroBackupManager, module_name)
+    local backup_path = MacroBackupManager["module-name->?current-backup-path"](MacroBackupManager, module_name)
     local _let_14_ = require("thyme.config")
     local get_config = _let_14_["get-config"]
     local config = get_config()

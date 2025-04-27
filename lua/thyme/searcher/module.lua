@@ -122,7 +122,7 @@ local function update_fennel_paths_21(fennel)
 end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
-  if ModuleBackupManager["should-update-backup!"](ModuleBackupManager, module_name, lua_code) then
+  if ModuleBackupManager["should-update-backup?"](ModuleBackupManager, module_name, lua_code) then
     return ModuleBackupManager["create-module-backup!"](ModuleBackupManager, module_name, lua_path)
   else
     return nil
@@ -186,7 +186,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     elseif (true and (nil ~= _25_)) then
       local _ = _24_
       local error_msg = _25_
-      local backup_path = ModuleBackupManager["module-name->backup-path"](ModuleBackupManager, module_name)
+      local backup_path = ModuleBackupManager["module-name->?current-backup-path"](ModuleBackupManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then
         local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)

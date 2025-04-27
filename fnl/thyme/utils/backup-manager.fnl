@@ -1,7 +1,8 @@
-(import-macros {: when-not} :thyme.macros)
+(import-macros {: when-not : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
+(local {: directory? : file-readable? : read-file &as fs}
+       (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
@@ -18,13 +19,35 @@
     (set self.root root)
     self))
 
-(fn BackupManager.module-name->backup-path [self module-name]
-  "Return module backed up path.
+(fn BackupManager.module-name->backup-dir [self module-name]
+  "Return module backed up directory.
 @param module-name string
-@return string backup path"
-  (Path.join self.root module-name))
+@return string backup directory for the module"
+  (let [dir (Path.join self.root module-name)]
+    dir))
 
-(fn BackupManager.should-update-backup! [self module-name expected-contents]
+(fn BackupManager.module-name->new-backup-path [self module-name]
+  "Return module new backed up path for `module-name`.
+@param module-name string
+@return string the module backup path"
+  (let [rollback-id (os.date "%Y-%m-%d_%H-%M-%S")
+        backup-dir (self:module-name->backup-dir module-name)]
+    (vim.fn.mkdir backup-dir :p)
+    (Path.join backup-dir rollback-id)))
+
+(fn BackupManager.module-name->?current-backup-path [self module-name]
+  "Return module the current backed up path.
+@param module-name string
+@return string? the module backup path, or nil if not found"
+  (let [backup-dir (self:module-name->backup-dir module-name)]
+    (when (directory? backup-dir)
+      (let [files (vim.fn.readdir backup-dir)
+            rollback-id (last files)
+            backup-path (Path.join backup-dir rollback-id)]
+        (when (file-readable? backup-path)
+          backup-path)))))
+
+(fn BackupManager.should-update-backup? [self module-name expected-contents]
   "Check if the backup of the module should be updated.
 Return `true` if the following conditions are met:
 
@@ -36,11 +59,11 @@ Return `true` if the following conditions are met:
 @return boolean true if module should be backed up, false otherwise"
   (assert (not (file-readable? module-name))
           (.. "expected module-name, got path " module-name))
-  (let [backup-path (self:module-name->backup-path module-name)]
-    (or (not (file-readable? backup-path))
-        (not= (read-file backup-path)
-              (assert expected-contents
-                      "expected non empty string for `expected-contents`")))))
+  (case (self:module-name->?current-backup-path module-name)
+    nil true
+    backup-path (not= (read-file backup-path)
+                      (assert expected-contents
+                              "expected non empty string for `expected-contents`"))))
 
 (fn BackupManager.create-module-backup! [self module-name path]
   "Create a backup file of `path` as `module-name`.
@@ -48,7 +71,7 @@ Return `true` if the following conditions are met:
 @param path string"
   ;; NOTE: Saving a chunk of macro module is probably impossible.
   (assert (file-readable? path) (.. "expected readable file, got " path))
-  (let [backup-path (self:module-name->backup-path module-name)]
+  (let [backup-path (self:module-name->new-backup-path module-name)]
     (-> (vim.fs.dirname backup-path)
         (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))))
