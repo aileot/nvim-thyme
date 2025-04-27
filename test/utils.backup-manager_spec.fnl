@@ -19,7 +19,7 @@
     (let [label "foo"
           module-name "foobar"
           bm (BackupManager.new label ".fnl")
-          stored-path (bm:module-name->current-backup-path module-name)
+          stored-path (bm:module-name->active-backup-path module-name)
           filename (.. module-name ".fnl")
           original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]
       (-> (vim.fs.dirname original-path)

@@ -38,13 +38,13 @@
     (vim.fn.mkdir backup-dir :p)
     (Path.join backup-dir backup-filename)))
 
-(fn BackupManager.module-name->current-backup-path [self module-name]
-  "Return module the current backed up path.
+(fn BackupManager.module-name->active-backup-path [self module-name]
+  "Return module the active backed up path.
 @param module-name string
 @return string? the module backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
-        current-backup-filename (.. ".current" self.file-extension)]
-    (Path.join backup-dir current-backup-filename)))
+        active-backup-filename (.. ".active" self.file-extension)]
+    (Path.join backup-dir active-backup-filename)))
 
 (fn BackupManager.should-update-backup? [self module-name expected-contents]
   "Check if the backup of the module should be updated.
@@ -58,7 +58,7 @@ Return `true` if the following conditions are met:
 @return boolean true if module should be backed up, false otherwise"
   (assert (not (file-readable? module-name))
           (.. "expected module-name, got path " module-name))
-  (let [backup-path (self:module-name->current-backup-path module-name)]
+  (let [backup-path (self:module-name->active-backup-path module-name)]
     (or (not (file-readable? backup-path))
         (not= (read-file backup-path)
               (assert expected-contents
@@ -71,23 +71,23 @@ Return `true` if the following conditions are met:
   ;; NOTE: Saving a chunk of macro module is probably impossible.
   (assert (file-readable? path) (.. "expected readable file, got " path))
   (let [backup-path (self:module-name->new-backup-path module-name)
-        current-backup-path (self:module-name->current-backup-path module-name)]
-    (-> (vim.fs.dirname current-backup-path)
+        active-backup-path (self:module-name->active-backup-path module-name)]
+    (-> (vim.fs.dirname active-backup-path)
         (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))
-    (assert (fs.symlink backup-path current-backup-path))))
+    (assert (fs.symlink backup-path active-backup-path))))
 
 (fn BackupManager.get-root []
   "Return the root directory of backup files.
 @return string the root path"
   backup-prefix)
 
-(λ BackupManager.switch-current-backup! [backup-path]
-  "Switch current backup to `backup-path`."
+(λ BackupManager.switch-active-backup! [backup-path]
+  "Switch active backup to `backup-path`."
   (let [dir (vim.fs.dirname backup-path)
         file-extension (backup-path:match "%..-$")
-        new-current-backup-filename (.. ".current" file-extension)
-        new-current-backup-path (Path.join dir new-current-backup-filename)]
-    (assert (fs.symlink backup-path new-current-backup-path))))
+        new-active-backup-filename (.. ".active" file-extension)
+        new-active-backup-path (Path.join dir new-active-backup-filename)]
+    (assert (fs.symlink backup-path new-active-backup-path))))
 
 BackupManager

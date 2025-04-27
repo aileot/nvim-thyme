@@ -146,7 +146,7 @@ thyme-loader: %s is found for the module %s, but failed to compile it
                 (_ msg) (values nil (.. "\nthyme-loader: " msg)))
           chunk chunk
           (_ error-msg)
-          (let [backup-path (ModuleBackupManager:module-name->current-backup-path module-name)
+          (let [backup-path (ModuleBackupManager:module-name->active-backup-path module-name)
                 rollback? config.rollback]
             (if (and rollback? (file-readable? backup-path))
                 (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
