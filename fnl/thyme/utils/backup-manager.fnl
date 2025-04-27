@@ -35,17 +35,13 @@
     (vim.fn.mkdir backup-dir :p)
     (Path.join backup-dir rollback-id)))
 
-(fn BackupManager.module-name->?current-backup-path [self module-name]
+(fn BackupManager.module-name->current-backup-path [self module-name]
   "Return module the current backed up path.
 @param module-name string
 @return string? the module backup path, or nil if not found"
-  (let [backup-dir (self:module-name->backup-dir module-name)]
-    (when (directory? backup-dir)
-      (let [files (vim.fn.readdir backup-dir)
-            rollback-id (last files)
-            backup-path (Path.join backup-dir rollback-id)]
-        (when (file-readable? backup-path)
-          backup-path)))))
+  (let [backup-dir (self:module-name->backup-dir module-name)
+        current-backup-filename ".current"]
+    (Path.join backup-dir current-backup-filename)))
 
 (fn BackupManager.should-update-backup? [self module-name expected-contents]
   "Check if the backup of the module should be updated.
@@ -59,11 +55,11 @@ Return `true` if the following conditions are met:
 @return boolean true if module should be backed up, false otherwise"
   (assert (not (file-readable? module-name))
           (.. "expected module-name, got path " module-name))
-  (case (self:module-name->?current-backup-path module-name)
-    nil true
-    backup-path (not= (read-file backup-path)
-                      (assert expected-contents
-                              "expected non empty string for `expected-contents`"))))
+  (let [backup-path (self:module-name->current-backup-path module-name)]
+    (or (not (file-readable? backup-path))
+        (not= (read-file backup-path)
+              (assert expected-contents
+                      "expected non empty string for `expected-contents`")))))
 
 (fn BackupManager.create-module-backup! [self module-name path]
   "Create a backup file of `path` as `module-name`.
@@ -71,10 +67,12 @@ Return `true` if the following conditions are met:
 @param path string"
   ;; NOTE: Saving a chunk of macro module is probably impossible.
   (assert (file-readable? path) (.. "expected readable file, got " path))
-  (let [backup-path (self:module-name->new-backup-path module-name)]
-    (-> (vim.fs.dirname backup-path)
+  (let [backup-path (self:module-name->new-backup-path module-name)
+        current-backup-path (self:module-name->current-backup-path module-name)]
+    (-> (vim.fs.dirname current-backup-path)
         (vim.fn.mkdir :p))
-    (assert (fs.copyfile path backup-path))))
+    (assert (fs.copyfile path backup-path))
+    (assert (fs.symlink backup-path current-backup-path))))
 
 (fn BackupManager.get-root []
   "Return the root directory of backup files.

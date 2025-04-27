@@ -25,7 +25,7 @@
     (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
                               module-name)
       (true result)
-      (let [backup-path (MacroBackupManager:module-name->?current-backup-path module-name)]
+      (let [backup-path (MacroBackupManager:module-name->current-backup-path module-name)]
         (when (and (not= fnl-path backup-path)
                    (MacroBackupManager:should-update-backup? module-name
                                                              (read-file fnl-path)))
@@ -55,7 +55,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
             (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
       chunk chunk
       (_ error-msg)
-      (let [backup-path (MacroBackupManager:module-name->?current-backup-path module-name)
+      (let [backup-path (MacroBackupManager:module-name->current-backup-path module-name)
             {: get-config} (require :thyme.config)
             config (get-config)
             rollback? config.rollback]

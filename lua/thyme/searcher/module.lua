@@ -186,7 +186,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     elseif (true and (nil ~= _25_)) then
       local _ = _24_
       local error_msg = _25_
-      local backup_path = ModuleBackupManager["module-name->?current-backup-path"](ModuleBackupManager, module_name)
+      local backup_path = ModuleBackupManager["module-name->current-backup-path"](ModuleBackupManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then
         local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
