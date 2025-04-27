@@ -119,7 +119,7 @@ local function define_commands_21(_3fopts)
     local function _23_(arg_lead, _cmdline, _cursorpos)
       local root = BackupManager["get-root"]()
       local prefix_length = (2 + #root)
-      local glob_pattern = Path.join(root, (arg_lead .. "**/*.{lua,fnl}"))
+      local glob_pattern = Path.join(root, (arg_lead .. "**/"))
       local paths = vim.fn.glob(glob_pattern, false, true)
       local tbl_21_auto = {}
       local i_22_auto = 0

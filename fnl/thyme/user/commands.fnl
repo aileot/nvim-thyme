@@ -123,9 +123,7 @@
     (let [complete (fn [arg-lead _cmdline _cursorpos]
                      (let [root (BackupManager.get-root)
                            prefix-length (+ 2 (length root))
-                           glob-pattern (Path.join root
-                                                   (.. arg-lead
-                                                       "**/*.{lua,fnl}"))
+                           glob-pattern (Path.join root (.. arg-lead "**/"))
                            paths (vim.fn.glob glob-pattern false true)]
                        (icollect [_ path (ipairs paths)]
                          (path:sub prefix-length))))]
