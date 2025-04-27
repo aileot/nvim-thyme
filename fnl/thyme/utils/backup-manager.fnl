@@ -99,7 +99,7 @@ Return `true` if the following conditions are met:
   "Switch active backup to `backup-path`."
   (assert-is-file-readable backup-path)
   (let [dir (vim.fs.dirname backup-path)
-        file-extension (backup-path:match "%..-$")
+        file-extension (backup-path:match "%.[^/\\]-$")
         new-active-backup-filename (.. ".active" file-extension)
         new-active-backup-path (Path.join dir new-active-backup-filename)]
     (symlink! backup-path new-active-backup-path)))
