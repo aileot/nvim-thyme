@@ -121,13 +121,14 @@
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
-                         (let [root (BackupManager.get-root)
-                               prefix-length (+ 2 (length root))
-                               glob-pattern (Path.join root (.. arg-lead "**/"))
-                               paths (vim.fn.glob glob-pattern false true)]
-                           (icollect [_ path (ipairs paths)]
-                             ;; Trim root prefix and trailing `/`.
-                             (path:sub prefix-length -2))))]
+                          (let [root (BackupManager.get-root)
+                                prefix-length (+ 2 (length root))
+                                glob-pattern (Path.join root
+                                                        (.. arg-lead "**/"))
+                                paths (vim.fn.glob glob-pattern false true)]
+                            (icollect [_ path (ipairs paths)]
+                              ;; Trim root prefix and trailing `/`.
+                              (path:sub prefix-length -2))))]
       (command! :ThymeCacheRollback
         {:bar true
          :nargs "?"
