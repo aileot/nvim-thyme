@@ -34,7 +34,9 @@ the same.
                      (if (= config-path resolved-path)
                          (when (clear-cache!)
                            (vim.notify (.. "Cleared cache: " lua-cache-prefix)))
-                         (check-to-update! resolved-path opts))
+                         (case (pcall check-to-update! resolved-path opts)
+                           (false msg) (vim.notify_once msg
+                                                        vim.log.levels.ERROR)))
                      ;; Prevent not to destroy the autocmd.
                      nil))]
     (set ?group group)

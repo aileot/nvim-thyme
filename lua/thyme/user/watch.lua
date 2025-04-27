@@ -26,7 +26,12 @@ local function watch_to_update_21(_3fopts)
       else
       end
     else
-      check_to_update_21(resolved_path, opts)
+      local _8_, _9_ = pcall(check_to_update_21, resolved_path, opts)
+      if ((_8_ == false) and (nil ~= _9_)) then
+        local msg = _9_
+        vim.notify_once(msg, vim.log.levels.ERROR)
+      else
+      end
     end
     return nil
   end
