@@ -1,5 +1,7 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
+(include :test.helper.prerequisites)
+
 (local Path (require :thyme.utils.path))
 
 (local uv (or vim.uv vim.loop))
