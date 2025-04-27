@@ -27,6 +27,10 @@ end
 local function hide_files_in_dir_21(dir_path)
   return each_file(hide_file_21, dir_path)
 end
+local function has_hidden_file_3f(path)
+  local pool_path = path__3epool_path(path)
+  return file_readable_3f(pool_path)
+end
 local function can_restore_file_3f(path, expected_contents)
   local pool_path = path__3epool_path(path)
   return (file_readable_3f(pool_path) and (read_file(pool_path) == assert(expected_contents, "expected non empty string for `expected-contents`")))
@@ -34,4 +38,4 @@ end
 local function get_root()
   return pool_prefix
 end
-return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["hide-files-in-dir!"] = hide_files_in_dir_21, ["can-restore-file?"] = can_restore_file_3f, ["get-root"] = get_root}
+return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["hide-files-in-dir!"] = hide_files_in_dir_21, ["has-hidden-file?"] = has_hidden_file_3f, ["can-restore-file?"] = can_restore_file_3f, ["get-root"] = get_root}
