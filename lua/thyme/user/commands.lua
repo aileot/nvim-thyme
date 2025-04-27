@@ -164,7 +164,8 @@ local function define_commands_21(_3fopts)
         local _ = _28_
         local function _29_(_3fbackup_path)
           if _3fbackup_path then
-            return BackupManager["switch-active-backup!"](_3fbackup_path)
+            BackupManager["switch-active-backup!"](_3fbackup_path)
+            return vim.cmd("ThymeCacheClear")
           else
             return vim.notify("Abort selecting rollback target")
           end
