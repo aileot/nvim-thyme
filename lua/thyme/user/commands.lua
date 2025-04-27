@@ -169,7 +169,7 @@ local function define_commands_21(_3fopts)
         return vim.ui.select(candidates, {prompt = "Select rollback module: "}, _30_)
       end
     end
-    vim.api.nvim_create_user_command("ThymeCacheRollback", _27_, {bar = true, nargs = "?", complete = complete_dirs, desc = "[thyme] rollback selected module in the backup"})
+    vim.api.nvim_create_user_command("ThymeRollback", _27_, {bar = true, nargs = "?", complete = complete_dirs, desc = "[thyme] rollback selected module in the backup"})
   end
   local function _32_()
     local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}
