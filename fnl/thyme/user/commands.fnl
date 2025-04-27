@@ -11,6 +11,8 @@
 (local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
+(local BackupManager (require :thyme.utils.backup-manager))
+
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 (local {: clear-cache!} (require :thyme.compiler.cache))
@@ -118,13 +120,21 @@
         (if (clear-cache!)
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
-    (command! :ThymeCacheRollback
-      {:bar true
-       :nargs 1
-       :complete (fn [a]
-                   a)
-       :desc "[thyme] rollback selected module in the backup"}
-      (fn [{:args module-relpath}]))
+    (let [complete (fn [arg-lead _cmdline _cursorpos]
+                     (let [root (BackupManager.get-root)
+                           prefix-length (+ 2 (length root))
+                           glob-pattern (Path.join root
+                                                   (.. arg-lead
+                                                       "**/*.{lua,fnl}"))
+                           paths (vim.fn.glob glob-pattern false true)]
+                       (icollect [_ path (ipairs paths)]
+                         (path:sub prefix-length))))]
+      (command! :ThymeCacheRollback
+        {:bar true
+         :nargs "?"
+         : complete
+         :desc "[thyme] rollback selected module in the backup"}
+        (fn [{:args module-relpath}])))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []

@@ -12,6 +12,7 @@ local file_readable_3f = _local_3_["file-readable?"]
 local directory_3f = _local_3_["directory?"]
 local read_file = _local_3_["read-file"]
 local write_lua_file_21 = _local_3_["write-lua-file!"]
+local BackupManager = require("thyme.utils.backup-manager")
 local fennel_wrapper = require("thyme.wrapper.fennel")
 local _local_4_ = require("thyme.wrapper.parinfer")
 local apply_parinfer = _local_4_["apply-parinfer"]
@@ -113,23 +114,50 @@ local function define_commands_21(_3fopts)
     end
   end
   vim.api.nvim_create_user_command("ThymeCacheClear", _21_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
-  local function _24_(_23_)
-    local module_relpath = _23_["args"]
+  do
+    local complete
+    local function _23_(arg_lead, _cmdline, _cursorpos)
+      local root = BackupManager["get-root"]()
+      local prefix_length = (2 + #root)
+      local glob_pattern = Path.join(root, (arg_lead .. "**/*.{lua,fnl}"))
+      local paths = vim.fn.glob(glob_pattern, false, true)
+      local tbl_21_auto = {}
+      local i_22_auto = 0
+      for _, path in ipairs(paths) do
+        local val_23_auto = path:sub(prefix_length)
+        if (nil ~= val_23_auto) then
+          i_22_auto = (i_22_auto + 1)
+          tbl_21_auto[i_22_auto] = val_23_auto
+        else
+        end
+      end
+      return tbl_21_auto
+    end
+    complete = _23_
+    local function _27_(_25_)
+      local _arg_26_ = _25_["fargs"]
+      local _3frelpath = _arg_26_[1]
+      if _3frelpath then
+        return vim.print(_3frelpath)
+      else
+        local function _28_(_241)
+          return vim.print(_241)
+        end
+        return vim.ui.input({prompt = "Select rollback module", completion = complete}, _28_)
+      end
+    end
+    vim.api.nvim_create_user_command("ThymeCacheRollback", _27_, {bar = true, nargs = "?", complete = complete, desc = "[thyme] rollback selected module in the backup"})
   end
-  local function _25_(a)
-    return a
-  end
-  vim.api.nvim_create_user_command("ThymeCacheRollback", _24_, {bar = true, nargs = 1, complete = _25_, desc = "[thyme] rollback selected module in the backup"})
-  local function _26_()
+  local function _30_()
     local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}
     for _, path in ipairs(files) do
       assert_is_file_of_thyme(path)
       if directory_3f(path) then
-        local _27_ = vim.fn.delete(path, "rf")
-        if (_27_ == 0) then
+        local _31_ = vim.fn.delete(path, "rf")
+        if (_31_ == 0) then
           vim.notify(("[thyme] successfully deleted " .. path))
         else
-          local _0 = _27_
+          local _0 = _31_
           error(("[thyme] failed to delete " .. path))
         end
       else
@@ -137,19 +165,19 @@ local function define_commands_21(_3fopts)
     end
     return vim.notify("[thyme] successfully uninstalled")
   end
-  vim.api.nvim_create_user_command("ThymeUninstall", _26_, {desc = "[thyme] delete all the thyme's cache, state, and data files"})
+  vim.api.nvim_create_user_command("ThymeUninstall", _30_, {desc = "[thyme] delete all the thyme's cache, state, and data files"})
   if not ("" == fnl_cmd_prefix) then
     vim.api.nvim_create_user_command(fnl_cmd_prefix, wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   else
   end
   vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Eval"), wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileString"), wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f}), {nargs = "*", desc = "[thyme] display the compiled lua results of the following fennel expression"})
-  local function _33_(_31_)
-    local _arg_32_ = _31_["fargs"]
-    local _3fpath = _arg_32_[1]
-    local line1 = _31_["line1"]
-    local line2 = _31_["line2"]
-    local a = _31_
+  local function _37_(_35_)
+    local _arg_36_ = _35_["fargs"]
+    local _3fpath = _arg_36_[1]
+    local line1 = _35_["line1"]
+    local line2 = _35_["line2"]
+    local a = _35_
     local fnl_code
     do
       local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
@@ -159,28 +187,7 @@ local function define_commands_21(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "EvalFile"), _33_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
-  local function _36_(_34_)
-    local _arg_35_ = _34_["fargs"]
-    local _3fpath = _arg_35_[1]
-    local line1 = _34_["line1"]
-    local line2 = _34_["line2"]
-    local a = _34_
-    local fnl_code
-    do
-      local bufnr
-      if _3fpath then
-        bufnr = vim.fn.bufnr(_3fpath)
-      else
-        bufnr = 0
-      end
-      fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
-    end
-    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f})
-    a.args = fnl_code
-    return callback(a)
-  end
-  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "EvalBuffer"), _36_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "EvalFile"), _37_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
   local function _40_(_38_)
     local _arg_39_ = _38_["fargs"]
     local _3fpath = _arg_39_[1]
@@ -197,19 +204,40 @@ local function define_commands_21(_3fopts)
       end
       fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
     end
+    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f})
+    a.args = fnl_code
+    return callback(a)
+  end
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "EvalBuffer"), _40_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  local function _44_(_42_)
+    local _arg_43_ = _42_["fargs"]
+    local _3fpath = _arg_43_[1]
+    local line1 = _42_["line1"]
+    local line2 = _42_["line2"]
+    local a = _42_
+    local fnl_code
+    do
+      local bufnr
+      if _3fpath then
+        bufnr = vim.fn.bufnr(_3fpath)
+      else
+        bufnr = 0
+      end
+      fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
+    end
     local callback = wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["overwrite-cmd-history?"] = overwrite_cmd_history_3f, ["omit-trailing-parens?"] = omit_trailing_parens_3f})
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileBuffer"), _40_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
-  local function _43_(_42_)
-    local glob_paths = _42_["fargs"]
-    local force_compile_3f = _42_["bang"]
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileBuffer"), _44_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
+  local function _47_(_46_)
+    local glob_paths = _46_["fargs"]
+    local force_compile_3f = _46_["bang"]
     local fnl_paths
     if (0 == #glob_paths) then
       fnl_paths = {vim.api.nvim_buf_get_name(0)}
     else
-      local _44_
+      local _48_
       do
         local tbl_21_auto = {}
         local i_22_auto = 0
@@ -221,9 +249,9 @@ local function define_commands_21(_3fopts)
           else
           end
         end
-        _44_ = tbl_21_auto
+        _48_ = tbl_21_auto
       end
-      fnl_paths = vim.fn.flatten(_44_, 1)
+      fnl_paths = vim.fn.flatten(_48_, 1)
     end
     local path_pairs
     do
@@ -242,9 +270,9 @@ local function define_commands_21(_3fopts)
       path_pairs = tbl_16_auto
     end
     local existing_lua_files = {}
-    local or_48_ = force_compile_3f
-    if not or_48_ then
-      local _49_
+    local or_52_ = force_compile_3f
+    if not or_52_ then
+      local _53_
       do
         local tbl_21_auto = {}
         local i_22_auto = 0
@@ -261,26 +289,26 @@ local function define_commands_21(_3fopts)
           else
           end
         end
-        _49_ = tbl_21_auto
+        _53_ = tbl_21_auto
       end
-      local and_52_ = _49_
-      if and_52_ then
+      local and_56_ = _53_
+      if and_56_ then
         if (0 < #existing_lua_files) then
-          local _53_ = vim.fn.confirm(("The following files have already existed:\n" .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
-          if (_53_ == 2) then
-            and_52_ = true
+          local _57_ = vim.fn.confirm(("The following files have already existed:\n" .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
+          if (_57_ == 2) then
+            and_56_ = true
           else
-            local _ = _53_
+            local _ = _57_
             vim.notify("Abort")
-            and_52_ = false
+            and_56_ = false
           end
         else
-          and_52_ = nil
+          and_56_ = nil
         end
       end
-      or_48_ = and_52_
+      or_52_ = and_56_
     end
-    if or_48_ then
+    if or_52_ then
       local config = get_config()
       local fennel_options = config["compiler-options"]
       for fnl_path, lua_path in pairs(path_pairs) do
@@ -299,25 +327,25 @@ local function define_commands_21(_3fopts)
       return nil
     end
   end
-  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileFile"), _43_, {nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl buffer"})
-  local function _63_(_61_)
-    local _arg_62_ = _61_["fargs"]
-    local _3fpath = _arg_62_[1]
-    local mods = _61_["smods"]
+  vim.api.nvim_create_user_command((fnl_cmd_prefix .. "CompileFile"), _47_, {nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl buffer"})
+  local function _67_(_65_)
+    local _arg_66_ = _65_["fargs"]
+    local _3fpath = _arg_66_[1]
+    local mods = _65_["smods"]
     local input_path = vim.fn.expand((_3fpath or "%:p"))
     local output_path
     do
-      local _64_ = input_path:sub(-4)
-      if (_64_ == ".fnl") then
-        local _65_ = fnl_path__3elua_path(input_path)
-        if (nil ~= _65_) then
-          local lua_path = _65_
+      local _68_ = input_path:sub(-4)
+      if (_68_ == ".fnl") then
+        local _69_ = fnl_path__3elua_path(input_path)
+        if (nil ~= _69_) then
+          local lua_path = _69_
           output_path = lua_path
         else
-          local _ = _65_
-          local _66_ = (input_path:sub(1, -4) .. "lua")
-          if (nil ~= _66_) then
-            local lua_path = _66_
+          local _ = _69_
+          local _70_ = (input_path:sub(1, -4) .. "lua")
+          if (nil ~= _70_) then
+            local lua_path = _70_
             if file_readable_3f(lua_path) then
               output_path = lua_path
             else
@@ -327,14 +355,14 @@ local function define_commands_21(_3fopts)
             output_path = nil
           end
         end
-      elseif (_64_ == ".lua") then
+      elseif (_68_ == ".lua") then
         if vim.startswith(input_path, lua_cache_prefix) then
           output_path = vim.api.nvim_get_runtime_file(input_path:sub(#lua_cache_prefix):gsub("%.lua$", ".fnl"):gsub("^", "*"), false)[1]
         else
           output_path = vim.fn.glob(input_path:gsub("/lua/", "/*/"):gsub("%.lua$", ".fnl"), false)
         end
       else
-        local _ = _64_
+        local _ = _68_
         output_path = error("expected a fnl or lua file, got", input_path)
       end
     end
@@ -348,6 +376,6 @@ local function define_commands_21(_3fopts)
       end
     end
   end
-  return vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Alternate"), _63_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
+  return vim.api.nvim_create_user_command((fnl_cmd_prefix .. "Alternate"), _67_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
 end
 return {["define-commands!"] = define_commands_21}
