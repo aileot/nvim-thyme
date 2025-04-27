@@ -149,8 +149,9 @@
                                {:prompt "Select rollback module: "}
                                (fn [?backup-path]
                                  (if ?backup-path
-                                     (do
-                                       (BackupManager.switch-active-backup! ?backup-path)
+                                     (let [backup-path (Path.join root
+                                                                  ?backup-path)]
+                                       (BackupManager.switch-active-backup! backup-path)
                                        (vim.cmd :ThymeCacheClear))
                                      (vim.notify "Abort selecting rollback target")))))))))
     (command! :ThymeUninstall
