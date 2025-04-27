@@ -115,7 +115,7 @@ local function define_commands_21(_3fopts)
   end
   vim.api.nvim_create_user_command("ThymeCacheClear", _21_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
   do
-    local complete
+    local complete_dirs
     local function _23_(arg_lead, _cmdline, _cursorpos)
       local root = BackupManager["get-root"]()
       local prefix_length = (2 + #root)
@@ -133,17 +133,17 @@ local function define_commands_21(_3fopts)
       end
       return tbl_21_auto
     end
-    complete = _23_
+    complete_dirs = _23_
     local function _27_(_25_)
       local _arg_26_ = _25_["fargs"]
       local _3finput = _arg_26_[1]
-      local candidates = complete((_3finput or ""))
+      local candidates = complete_dirs((_3finput or ""))
       local function _28_()
         return vim.print()
       end
       return vim.ui.select(candidates, {prompt = "Select rollback module: "}, _28_)
     end
-    vim.api.nvim_create_user_command("ThymeCacheRollback", _27_, {bar = true, nargs = "?", complete = complete, desc = "[thyme] rollback selected module in the backup"})
+    vim.api.nvim_create_user_command("ThymeCacheRollback", _27_, {bar = true, nargs = "?", complete = complete_dirs, desc = "[thyme] rollback selected module in the backup"})
   end
   local function _29_()
     local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}

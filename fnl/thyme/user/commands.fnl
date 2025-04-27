@@ -120,20 +120,20 @@
         (if (clear-cache!)
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
-    (let [complete (fn [arg-lead _cmdline _cursorpos]
-                     (let [root (BackupManager.get-root)
-                           prefix-length (+ 2 (length root))
-                           glob-pattern (Path.join root (.. arg-lead "**/"))
-                           paths (vim.fn.glob glob-pattern false true)]
-                       (icollect [_ path (ipairs paths)]
-                         (path:sub prefix-length))))]
+    (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
+                         (let [root (BackupManager.get-root)
+                               prefix-length (+ 2 (length root))
+                               glob-pattern (Path.join root (.. arg-lead "**/"))
+                               paths (vim.fn.glob glob-pattern false true)]
+                           (icollect [_ path (ipairs paths)]
+                             (path:sub prefix-length))))]
       (command! :ThymeCacheRollback
         {:bar true
          :nargs "?"
-         : complete
+         :complete complete-dirs
          :desc "[thyme] rollback selected module in the backup"}
         (fn [{:fargs [?input]}]
-          (let [candidates (complete (or ?input ""))]
+          (let [candidates (complete-dirs (or ?input ""))]
             (vim.ui.select candidates ;
                            {:prompt "Select rollback module: "}
                            ;; TODO: Switch to the selected backup.
