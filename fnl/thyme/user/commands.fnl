@@ -143,20 +143,22 @@
             (case (length candidates)
               0 (vim.notify (.. "Abort. No backup is found for " input))
               1 (vim.notify (.. "Abort. Only one backup is found for " input))
-              _ (vim.ui.select candidates ;
-                               {:prompt "Select rollback module: "
-                                :format_item (fn [path]
-                                               (let [truncated-path (path:sub prefix-length)]
-                                                 (if (BackupManager.active-backup? path)
-                                                     (.. truncated-path
-                                                         " (current)")
-                                                     truncated-path)))}
-                               (fn [?backup-path]
-                                 (if ?backup-path
-                                     (do
-                                       (BackupManager.switch-active-backup! ?backup-path)
-                                       (vim.cmd :ThymeCacheClear))
-                                     (vim.notify "Abort selecting rollback target")))))))))
+              _ (do
+                  (table.sort candidates #(< $2 $1))
+                  (vim.ui.select candidates ;
+                                 {:prompt "Select rollback module: "
+                                  :format_item (fn [path]
+                                                 (let [truncated-path (path:sub prefix-length)]
+                                                   (if (BackupManager.active-backup? path)
+                                                       (.. truncated-path
+                                                           " (current)")
+                                                       truncated-path)))}
+                                 (fn [?backup-path]
+                                   (if ?backup-path
+                                       (do
+                                         (BackupManager.switch-active-backup! ?backup-path)
+                                         (vim.cmd :ThymeCacheClear))
+                                       (vim.notify "Abort selecting rollback target"))))))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
