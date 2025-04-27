@@ -126,7 +126,8 @@
                                glob-pattern (Path.join root (.. arg-lead "**/"))
                                paths (vim.fn.glob glob-pattern false true)]
                            (icollect [_ path (ipairs paths)]
-                             (path:sub prefix-length))))]
+                             ;; Trim root prefix and trailing `/`.
+                             (path:sub prefix-length -2))))]
       (command! :ThymeCacheRollback
         {:bar true
          :nargs "?"

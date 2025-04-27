@@ -124,7 +124,7 @@ local function define_commands_21(_3fopts)
       local tbl_21_auto = {}
       local i_22_auto = 0
       for _, path in ipairs(paths) do
-        local val_23_auto = path:sub(prefix_length)
+        local val_23_auto = path:sub(prefix_length, -2)
         if (nil ~= val_23_auto) then
           i_22_auto = (i_22_auto + 1)
           tbl_21_auto[i_22_auto] = val_23_auto
