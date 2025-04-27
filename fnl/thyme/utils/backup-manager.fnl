@@ -1,8 +1,7 @@
 (import-macros {: when-not : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: directory? : file-readable? : read-file &as fs}
-       (require :thyme.utils.fs))
+(local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
