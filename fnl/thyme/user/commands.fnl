@@ -183,9 +183,11 @@
         (fn [{:args input}]
           (let [root (BackupManager.get-root)
                 dir (Path.join root input)]
-            (if (BackupManager.unpin-backup! dir)
-                (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)
-                (vim.notify (.. "failed to pin " dir) vim.log.levels.WARN))))))
+            (case (pcall BackupManager.unpin-backup! dir)
+              (false msg) (vim.notify (-> "failed to pin %s:\n%s"
+                                          (: :format dir msg))
+                                      vim.log.levels.WARN)
+              _ (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
