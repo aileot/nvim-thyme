@@ -169,7 +169,9 @@
         (fn [{:args input}]
           (let [root (BackupManager.get-root)
                 dir (Path.join root input)]
-            (BackupManager.pin-backup! dir))))
+            (if (BackupManager.pin-backup! dir)
+                (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)
+                (vim.notify (.. "failed to pin " dir) vim.log.levels.WARN)))))
       (command! :ThymeRollbackUnpin
         ;; TODO: Detect bang to unpin all the pinned backups.
         {:bar true
@@ -181,7 +183,9 @@
         (fn [{:args input}]
           (let [root (BackupManager.get-root)
                 dir (Path.join root input)]
-            (BackupManager.unpin-backup! dir)))))
+            (if (BackupManager.unpin-backup! dir)
+                (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)
+                (vim.notify (.. "failed to pin " dir) vim.log.levels.WARN))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
