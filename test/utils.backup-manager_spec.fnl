@@ -2,23 +2,23 @@
 
 (include :test.helper.prerequisites)
 
-(local BackupManager (require :thyme.utils.rollback))
+(local RollbackManager (require :thyme.utils.rollback))
 
 (fn clear-backup-files! []
-  (vim.fn.delete (BackupManager.get-root) :rf))
+  (vim.fn.delete (RollbackManager.get-root) :rf))
 
 (describe* "rollback"
   (before-each (fn []
                  (clear-backup-files!)))
   (it* ".new creates a backup directory."
     (let [label "foo"]
-      (BackupManager.new label ".foobar")
-      (->> (vim.fn.isdirectory (BackupManager.get-root))
+      (RollbackManager.new label ".foobar")
+      (->> (vim.fn.isdirectory (RollbackManager.get-root))
            (assert.is_same 1))))
   (it* ".create-module-backup! creates a backup file."
     (let [label "foo"
           module-name "foobar"
-          bm (BackupManager.new label ".fnl")
+          bm (RollbackManager.new label ".fnl")
           stored-path (bm:module-name->active-backup-path module-name)
           filename (.. module-name ".fnl")
           original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]

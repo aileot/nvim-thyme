@@ -1,7 +1,7 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local BackupManager (require :thyme.utils.rollback))
-(local MacroBackupManager (BackupManager.new :macro ".fnl"))
+(local RollbackManager (require :thyme.utils.rollback))
+(local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: pcall-with-logger! : is-logged? : log-again!}
@@ -25,11 +25,11 @@
     (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
                               module-name)
       (true result)
-      (let [backup-path (MacroBackupManager:module-name->active-backup-path module-name)]
+      (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)]
         (when (and (not= fnl-path backup-path)
-                   (MacroBackupManager:should-update-backup? module-name
+                   (MacroRollbackManager:should-update-backup? module-name
                                                              (read-file fnl-path)))
-          (MacroBackupManager:create-module-backup! module-name fnl-path))
+          (MacroRollbackManager:create-module-backup! module-name fnl-path))
         (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
@@ -55,7 +55,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
             (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
       chunk chunk
       (_ error-msg)
-      (let [backup-path (MacroBackupManager:module-name->active-backup-path module-name)
+      (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)
             {: get-config} (require :thyme.config)
             config (get-config)
             rollback? config.rollback]

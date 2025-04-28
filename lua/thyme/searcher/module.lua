@@ -21,8 +21,8 @@ local _local_7_ = require("thyme.module-map.callstack")
 local pcall_with_logger_21 = _local_7_["pcall-with-logger!"]
 local _local_8_ = require("thyme.searcher.macro")
 local initialize_macro_searcher_on_rtp_21 = _local_8_["initialize-macro-searcher-on-rtp!"]
-local BackupManager = require("thyme.utils.rollback")
-local ModuleBackupManager = BackupManager.new("module", ".lua")
+local RollbackManager = require("thyme.utils.rollback")
+local ModuleRollbackManager = RollbackManager.new("module", ".lua")
 local cache = {rtp = nil}
 local function compile_fennel_into_rtp_21()
   local rtp = vim.api.nvim_get_option_value("rtp", {})
@@ -122,8 +122,8 @@ local function update_fennel_paths_21(fennel)
 end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
-  if ModuleBackupManager["should-update-backup?"](ModuleBackupManager, module_name, lua_code) then
-    return ModuleBackupManager["create-module-backup!"](ModuleBackupManager, module_name, lua_path)
+  if ModuleRollbackManager["should-update-backup?"](ModuleRollbackManager, module_name, lua_code) then
+    return ModuleRollbackManager["create-module-backup!"](ModuleRollbackManager, module_name, lua_path)
   else
     return nil
   end
@@ -186,7 +186,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     elseif (true and (nil ~= _25_)) then
       local _ = _24_
       local error_msg = _25_
-      local backup_path = ModuleBackupManager["module-name->active-backup-path"](ModuleBackupManager, module_name)
+      local backup_path = ModuleRollbackManager["module-name->active-backup-path"](ModuleRollbackManager, module_name)
       local rollback_3f = config.rollback
       if (rollback_3f and file_readable_3f(backup_path)) then
         local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)

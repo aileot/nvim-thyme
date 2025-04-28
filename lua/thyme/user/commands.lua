@@ -12,7 +12,7 @@ local file_readable_3f = _local_3_["file-readable?"]
 local directory_3f = _local_3_["directory?"]
 local read_file = _local_3_["read-file"]
 local write_lua_file_21 = _local_3_["write-lua-file!"]
-local BackupManager = require("thyme.utils.rollback")
+local RollbackManager = require("thyme.utils.rollback")
 local fennel_wrapper = require("thyme.wrapper.fennel")
 local _local_4_ = require("thyme.wrapper.parinfer")
 local apply_parinfer = _local_4_["apply-parinfer"]
@@ -117,7 +117,7 @@ local function define_commands_21(_3fopts)
   do
     local complete_dirs
     local function _23_(arg_lead, _cmdline, _cursorpos)
-      local root = BackupManager["get-root"]()
+      local root = RollbackManager["get-root"]()
       local prefix_length = (2 + #root)
       local glob_pattern = Path.join(root, (arg_lead .. "**/"))
       local paths = vim.fn.glob(glob_pattern, false, true)
@@ -136,7 +136,7 @@ local function define_commands_21(_3fopts)
     complete_dirs = _23_
     local function _26_(_25_)
       local input = _25_["args"]
-      local root = BackupManager["get-root"]()
+      local root = RollbackManager["get-root"]()
       local prefix = Path.join(root, input)
       local glob_pattern = Path.join(prefix, "*.{lua,fnl}")
       local candidates = vim.fn.glob(glob_pattern, false, true)
@@ -153,7 +153,7 @@ local function define_commands_21(_3fopts)
         table.sort(candidates, _28_)
         local function _29_(path)
           local basename = vim.fs.basename(path)
-          if BackupManager["active-backup?"](path) then
+          if RollbackManager["active-backup?"](path) then
             return (basename .. " (current)")
           else
             return basename
@@ -161,7 +161,7 @@ local function define_commands_21(_3fopts)
         end
         local function _31_(_3fbackup_path)
           if _3fbackup_path then
-            BackupManager["switch-active-backup!"](_3fbackup_path)
+            RollbackManager["switch-active-backup!"](_3fbackup_path)
             return vim.cmd("ThymeCacheClear")
           else
             return vim.notify("Abort selecting rollback target")
@@ -173,9 +173,9 @@ local function define_commands_21(_3fopts)
     vim.api.nvim_create_user_command("ThymeRollbackSwitch", _26_, {bar = true, nargs = 1, complete = complete_dirs, desc = "[thyme] Prompt to select rollback for compile error"})
     local function _35_(_34_)
       local input = _34_["args"]
-      local root = BackupManager["get-root"]()
+      local root = RollbackManager["get-root"]()
       local dir = Path.join(root, input)
-      if BackupManager["pin-backup!"](dir) then
+      if RollbackManager["pin-backup!"](dir) then
         return vim.notify(("successfully pinned " .. dir), vim.log.levels.INFO)
       else
         return vim.notify(("failed to pin " .. dir), vim.log.levels.WARN)
@@ -184,9 +184,9 @@ local function define_commands_21(_3fopts)
     vim.api.nvim_create_user_command("ThymeRollbackPin", _35_, {bar = true, bang = true, nargs = "?", complete = complete_dirs, desc = "[thyme] Pin currently active backup"})
     local function _38_(_37_)
       local input = _37_["args"]
-      local root = BackupManager["get-root"]()
+      local root = RollbackManager["get-root"]()
       local dir = Path.join(root, input)
-      local _39_, _40_ = pcall(BackupManager["unpin-backup!"], dir)
+      local _39_, _40_ = pcall(RollbackManager["unpin-backup!"], dir)
       if ((_39_ == false) and (nil ~= _40_)) then
         local msg = _40_
         return vim.notify(("failed to pin %s:\n%s"):format(dir, msg), vim.log.levels.WARN)
