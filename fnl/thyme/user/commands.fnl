@@ -11,6 +11,8 @@
 (local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
+(local BackupManager (require :thyme.utils.backup-manager))
+
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 (local {: clear-cache!} (require :thyme.compiler.cache))
@@ -118,6 +120,45 @@
         (if (clear-cache!)
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
+    (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
+                          (let [root (BackupManager.get-root)
+                                prefix-length (+ 2 (length root))
+                                glob-pattern (Path.join root
+                                                        (.. arg-lead "**/"))
+                                paths (vim.fn.glob glob-pattern false true)]
+                            (icollect [_ path (ipairs paths)]
+                              ;; Trim root prefix and trailing `/`.
+                              (path:sub prefix-length -2))))]
+      (command! :ThymeRollbackSwitch
+        {:bar true
+         :nargs 1
+         :complete complete-dirs
+         :desc "[thyme] Prompt to select rollback for compile error"}
+        (fn [{:args input}]
+          (let [root (BackupManager.get-root)
+                prefix (Path.join root input)
+                glob-pattern (Path.join prefix "*.{lua,fnl}")
+                candidates (vim.fn.glob glob-pattern false true)]
+            (case (length candidates)
+              0 (vim.notify (.. "Abort. No backup is found for " input))
+              1 (vim.notify (.. "Abort. Only one backup is found for " input))
+              _ (do
+                  (table.sort candidates #(< $2 $1))
+                  (vim.ui.select candidates ;
+                                 {:prompt (-> "Select rollback for %s: "
+                                              (: :format input))
+                                  :format_item (fn [path]
+                                                 (let [basename (vim.fs.basename path)]
+                                                   (if (BackupManager.active-backup? path)
+                                                       (.. basename
+                                                           " (current)")
+                                                       basename)))}
+                                 (fn [?backup-path]
+                                   (if ?backup-path
+                                       (do
+                                         (BackupManager.switch-active-backup! ?backup-path)
+                                         (vim.cmd :ThymeCacheClear))
+                                       (vim.notify "Abort selecting rollback target"))))))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
