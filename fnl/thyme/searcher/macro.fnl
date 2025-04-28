@@ -1,6 +1,6 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local BackupManager (require :thyme.utils.backup-manager))
+(local BackupManager (require :thyme.utils.rollback))
 (local MacroBackupManager (BackupManager.new :macro ".fnl"))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))

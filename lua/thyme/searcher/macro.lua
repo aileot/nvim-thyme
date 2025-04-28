@@ -1,4 +1,4 @@
-local BackupManager = require("thyme.utils.backup-manager")
+local BackupManager = require("thyme.utils.rollback")
 local MacroBackupManager = BackupManager.new("macro", ".fnl")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]

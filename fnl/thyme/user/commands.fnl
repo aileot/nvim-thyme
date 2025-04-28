@@ -11,7 +11,7 @@
 (local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
-(local BackupManager (require :thyme.utils.backup-manager))
+(local BackupManager (require :thyme.utils.rollback))
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))

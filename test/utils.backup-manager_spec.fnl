@@ -2,12 +2,12 @@
 
 (include :test.helper.prerequisites)
 
-(local BackupManager (require :thyme.utils.backup-manager))
+(local BackupManager (require :thyme.utils.rollback))
 
 (fn clear-backup-files! []
   (vim.fn.delete (BackupManager.get-root) :rf))
 
-(describe* "utils.backup-manager"
+(describe* "rollback"
   (before-each (fn []
                  (clear-backup-files!)))
   (it* ".new creates a backup directory."

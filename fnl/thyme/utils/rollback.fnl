@@ -14,10 +14,10 @@
 
 (local backup-prefix (Path.join state-prefix :backup))
 
-(local BackupManager {:_active-backup-filename ".active"
-                      :_pinned-backup-filename ".pinned"})
+(local Rollback {:_active-backup-filename ".active"
+                 :_pinned-backup-filename ".pinned"})
 
-(set BackupManager.__index BackupManager)
+(set Rollback.__index Rollback)
 
 (fn symlink! [path new-path ...]
   "Force create symbolic link from `path` to `new-path`.
@@ -35,8 +35,8 @@
                       false))
     _ true))
 
-(λ BackupManager.new [label file-extension]
-  (let [self (setmetatable {} BackupManager)
+(λ Rollback.new [label file-extension]
+  (let [self (setmetatable {} Rollback)
         root (Path.join backup-prefix label)]
     (vim.fn.mkdir root :p)
     (set self.root root)
@@ -45,14 +45,14 @@
     (set self.file-extension file-extension)
     self))
 
-(fn BackupManager.module-name->backup-dir [self module-name]
+(fn Rollback.module-name->backup-dir [self module-name]
   "Return module backed up directory.
 @param module-name string
 @return string backup directory for the module"
   (let [dir (Path.join self.root module-name)]
     dir))
 
-(fn BackupManager.module-name->new-backup-path [self module-name]
+(fn Rollback.module-name->new-backup-path [self module-name]
   "Return module new backed up path for `module-name`.
 @param module-name string
 @return string the module backup path"
@@ -62,15 +62,15 @@
     (vim.fn.mkdir backup-dir :p)
     (Path.join backup-dir backup-filename)))
 
-(fn BackupManager.module-name->active-backup-path [self module-name]
+(fn Rollback.module-name->active-backup-path [self module-name]
   "Return module the active backed up path.
 @param module-name string
 @return string? the module backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
-        active-backup-filename BackupManager._active-backup-filename]
+        active-backup-filename Rollback._active-backup-filename]
     (Path.join backup-dir active-backup-filename)))
 
-(fn BackupManager.should-update-backup? [self module-name expected-contents]
+(fn Rollback.should-update-backup? [self module-name expected-contents]
   "Check if the backup of the module should be updated.
 Return `true` if the following conditions are met:
 
@@ -88,7 +88,7 @@ Return `true` if the following conditions are met:
               (assert expected-contents
                       "expected non empty string for `expected-contents`")))))
 
-(fn BackupManager.create-module-backup! [self module-name path]
+(fn Rollback.create-module-backup! [self module-name path]
   "Create a backup file of `path` as `module-name`.
 @param module-name string
 @param path string"
@@ -101,44 +101,44 @@ Return `true` if the following conditions are met:
     (assert (fs.copyfile path backup-path))
     (symlink! backup-path active-backup-path)))
 
-(fn BackupManager.get-root []
+(fn Rollback.get-root []
   "Return the root directory of backup files.
 @return string the root path"
   backup-prefix)
 
-(λ BackupManager.switch-active-backup! [backup-path]
+(λ Rollback.switch-active-backup! [backup-path]
   "Switch active backup to `backup-path`."
   (assert-is-file-readable backup-path)
   (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir BackupManager._active-backup-filename)]
+        active-backup-path (Path.join dir Rollback._active-backup-filename)]
     (symlink! backup-path active-backup-path)))
 
-(fn BackupManager.active-backup? [backup-path]
+(fn Rollback.active-backup? [backup-path]
   "Tell if given `backup-path` is an active backup.
 @param backup-path string
 @return boolean"
   (assert-is-file-readable backup-path)
   (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir BackupManager._active-backup-filename)]
+        active-backup-path (Path.join dir Rollback._active-backup-filename)]
     (= backup-path (fs.readlink active-backup-path))))
 
-(fn BackupManager.pin-backup! [backup-dir]
+(fn Rollback.pin-backup! [backup-dir]
   "Pin currently active backup for `backup-dir`.
 @param backup-dir string"
   (assert-is-directory backup-dir)
   (let [active-backup-path (Path.join backup-dir
-                                      BackupManager._active-backup-filename)
+                                      Rollback._active-backup-filename)
         pinned-backup-path (Path.join backup-dir
-                                      BackupManager._pinned-backup-filename)]
+                                      Rollback._pinned-backup-filename)]
     (symlink! active-backup-path pinned-backup-path)))
 
-(fn BackupManager.unpin-backup! [backup-dir]
+(fn Rollback.unpin-backup! [backup-dir]
   "Unpin previously pinned backup for `backup-dir`.
 @param backup-dir string"
   (assert-is-directory backup-dir)
   (let [pinned-backup-path (Path.join backup-dir
-                                      BackupManager._pinned-backup-prefix)]
+                                      Rollback._pinned-backup-prefix)]
     (assert-is-file-readable pinned-backup-path)
     (assert (fs.unlink pinned-backup-path))))
 
-BackupManager
+Rollback
