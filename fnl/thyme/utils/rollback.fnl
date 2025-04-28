@@ -100,7 +100,6 @@ Return `true` if the following conditions are met:
 @return string"
   (let [loader-path-for-mounted-backups (Path.join self.root "?"
                                                    self._mounted-backup-filename)]
-    (assert-is-file-readable self.root)
     (assert (not (old-loader-path:find loader-path-for-mounted-backups 1 true))
             "rollback path is already injected")
     (.. loader-path-for-mounted-backups ";" old-loader-path)))
