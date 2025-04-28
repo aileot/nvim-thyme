@@ -129,7 +129,7 @@
                             (icollect [_ path (ipairs paths)]
                               ;; Trim root prefix and trailing `/`.
                               (path:sub prefix-length -2))))]
-      (command! :ThymeRollback
+      (command! :ThymeRollbackSwitch
         {:bar true
          :nargs 1
          :complete complete-dirs
