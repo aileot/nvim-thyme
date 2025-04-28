@@ -11,7 +11,7 @@ local _local_3_ = require("thyme.utils.pool")
 local hide_file_21 = _local_3_["hide-file!"]
 local has_hidden_file_3f = _local_3_["has-hidden-file?"]
 local restore_file_21 = _local_3_["restore-file!"]
-local backup_prefix = Path.join(state_prefix, "backup")
+local backup_prefix = Path.join(state_prefix, "rollbacks")
 local Rollback = {["_active-backup-filename"] = ".active", ["_pinned-backup-filename"] = ".pinned"}
 Rollback.__index = Rollback
 local function symlink_21(path, new_path, ...)

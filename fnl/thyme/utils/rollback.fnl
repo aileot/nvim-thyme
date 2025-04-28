@@ -12,7 +12,7 @@
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
 
-(local backup-prefix (Path.join state-prefix :backup))
+(local backup-prefix (Path.join state-prefix :rollbacks))
 
 (local Rollback {:_active-backup-filename ".active"
                  :_pinned-backup-filename ".pinned"})
