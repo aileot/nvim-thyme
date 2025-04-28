@@ -12,7 +12,7 @@ local hide_file_21 = _local_3_["hide-file!"]
 local has_hidden_file_3f = _local_3_["has-hidden-file?"]
 local restore_file_21 = _local_3_["restore-file!"]
 local backup_prefix = Path.join(state_prefix, "backup")
-local BackupManager = {}
+local BackupManager = {["_active-backup-filename"] = ".active", ["_pinned-backup-filename"] = ".pinned"}
 BackupManager.__index = BackupManager
 local function symlink_21(path, new_path, ...)
   if file_readable_3f(new_path) then
@@ -39,8 +39,8 @@ local function symlink_21(path, new_path, ...)
   end
 end
 BackupManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:37")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:37")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:38")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:38")
   local self = setmetatable({}, BackupManager)
   local root = Path.join(backup_prefix, label)
   vim.fn.mkdir(root, "p")
@@ -62,7 +62,7 @@ BackupManager["module-name->new-backup-path"] = function(self, module_name)
 end
 BackupManager["module-name->active-backup-path"] = function(self, module_name)
   local backup_dir = self["module-name->backup-dir"](self, module_name)
-  local active_backup_filename = (".active" .. self["file-extension"])
+  local active_backup_filename = BackupManager["_active-backup-filename"]
   return Path.join(backup_dir, active_backup_filename)
 end
 BackupManager["should-update-backup?"] = function(self, module_name, expected_contents)
@@ -82,39 +82,28 @@ BackupManager["get-root"] = function()
   return backup_prefix
 end
 BackupManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:108")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:109")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
-  local file_extension = backup_path:match("%.[^/\\]-$")
-  local active_backup_filename = (".active" .. file_extension)
-  local active_backup_path = Path.join(dir, active_backup_filename)
+  local active_backup_path = Path.join(dir, BackupManager["_active-backup-filename"])
   return symlink_21(backup_path, active_backup_path)
 end
 BackupManager["active-backup?"] = function(backup_path)
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
-  local file_extension = backup_path:match("%.[^/\\]-$")
-  local active_backup_filename = (".active" .. file_extension)
-  local active_backup_path = Path.join(dir, active_backup_filename)
+  local active_backup_path = Path.join(dir, BackupManager["_active-backup-filename"])
   return (backup_path == fs.readlink(active_backup_path))
 end
 BackupManager["pin-backup!"] = function(backup_dir)
   assert_is_directory(backup_dir)
-  local active_backup_prefix = ".active"
-  local active_backup_path = vim.fn.glob((backup_dir .. "/" .. active_backup_prefix .. ".*"), false, false)
-  local file_extension = active_backup_path:match("%.[^/\\]-$")
-  local pinned_backup_filename = (".pinned" .. file_extension)
-  local pinned_backup_path = Path.join(backup_dir, pinned_backup_filename)
+  local active_backup_path = Path.join(backup_dir, BackupManager["_active-backup-filename"])
+  local pinned_backup_path = Path.join(backup_dir, BackupManager["_pinned-backup-filename"])
   return symlink_21(active_backup_path, pinned_backup_path)
 end
 BackupManager["unpin-backup!"] = function(backup_dir)
   assert_is_directory(backup_dir)
-  local pinned_backup_prefix = ".pinned"
-  local pinned_backup_path = vim.fn.glob((backup_dir .. "/" .. pinned_backup_prefix .. ".*"))
-  if ("" == pinned_backup_path) then
-    return error(("no backup is pinned for " .. backup_dir))
-  else
-    return assert(fs.unlink(pinned_backup_path))
-  end
+  local pinned_backup_path = Path.join(backup_dir, BackupManager["_pinned-backup-prefix"])
+  assert_is_file_readable(pinned_backup_path)
+  return assert(fs.unlink(pinned_backup_path))
 end
 return BackupManager
