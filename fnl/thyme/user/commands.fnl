@@ -187,7 +187,32 @@
               (false msg) (vim.notify (-> "failed to pin %s:\n%s"
                                           (: :format dir msg))
                                       vim.log.levels.WARN)
-              _ (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO))))))
+              _ (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)))))
+      (command! :ThymeRollbackMount
+        {:bar true
+         :nargs 1
+         :complete complete-dirs
+         :desc "[thyme] Mount currently active backup"}
+        (fn [{:args input}]
+          (let [root (RollbackManager.get-root)
+                dir (Path.join root input)]
+            (if (RollbackManager.mount-backup! dir)
+                (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO)
+                (vim.notify (.. "failed to mount " dir) vim.log.levels.WARN)))))
+      (command! :ThymeRollbackUnmount
+        {:bar true
+         :nargs "?"
+         ;; TODO: Complete only mounted backups.
+         :complete complete-dirs
+         :desc "[thyme] Unmount mounted backup"}
+        (fn [{:args input}]
+          (let [root (RollbackManager.get-root)
+                dir (Path.join root input)]
+            (case (pcall RollbackManager.unmount-backup! dir)
+              (false msg) (vim.notify (-> "failed to mount %s:\n%s"
+                                          (: :format dir msg))
+                                      vim.log.levels.WARN)
+              _ (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
