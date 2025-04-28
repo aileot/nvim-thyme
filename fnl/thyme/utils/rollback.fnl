@@ -36,6 +36,8 @@
                       false))
     _ true))
 
+;;; Class Methods
+
 (fn RollbackManager.module-name->backup-dir [self module-name]
   "Return module backed up directory.
 @param module-name string
@@ -91,6 +93,8 @@ Return `true` if the following conditions are met:
         (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))
     (symlink! backup-path active-backup-path)))
+
+;;; Static Methods
 
 (λ RollbackManager.new [label file-extension]
   (let [self (setmetatable {} RollbackManager)
