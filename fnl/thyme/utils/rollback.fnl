@@ -144,4 +144,23 @@ Return `true` if the following conditions are met:
     (assert-is-file-readable pinned-backup-path)
     (assert (fs.unlink pinned-backup-path))))
 
+(fn RollbackManager.mount-backup! [backup-dir]
+  "Mount currently active backup for `backup-dir`.
+@param backup-dir string"
+  (assert-is-directory backup-dir)
+  (let [active-backup-path (Path.join backup-dir
+                                      RollbackManager._active-backup-filename)
+        mountned-backup-path (Path.join backup-dir
+                                        RollbackManager._mountned-backup-filename)]
+    (symlink! active-backup-path mountned-backup-path)))
+
+(fn RollbackManager.unmount-backup! [backup-dir]
+  "Unmount previously mountned backup for `backup-dir`.
+@param backup-dir string"
+  (assert-is-directory backup-dir)
+  (let [mountned-backup-path (Path.join backup-dir
+                                        RollbackManager._mountned-backup-prefix)]
+    (assert-is-file-readable mountned-backup-path)
+    (assert (fs.unlink mountned-backup-path))))
+
 RollbackManager

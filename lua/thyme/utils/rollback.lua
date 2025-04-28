@@ -105,4 +105,16 @@ RollbackManager["unpin-backup!"] = function(backup_dir)
   assert_is_file_readable(pinned_backup_path)
   return assert(fs.unlink(pinned_backup_path))
 end
+RollbackManager["mount-backup!"] = function(backup_dir)
+  assert_is_directory(backup_dir)
+  local active_backup_path = Path.join(backup_dir, RollbackManager["_active-backup-filename"])
+  local mountned_backup_path = Path.join(backup_dir, RollbackManager["_mountned-backup-filename"])
+  return symlink_21(active_backup_path, mountned_backup_path)
+end
+RollbackManager["unmount-backup!"] = function(backup_dir)
+  assert_is_directory(backup_dir)
+  local mountned_backup_path = Path.join(backup_dir, RollbackManager["_mountned-backup-prefix"])
+  assert_is_file_readable(mountned_backup_path)
+  return assert(fs.unlink(mountned_backup_path))
+end
 return RollbackManager
