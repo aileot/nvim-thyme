@@ -41,6 +41,8 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
 end
 local function search_fnl_macro_on_rtp_21(module_name)
   local fennel = require("fennel")
+  local macro_path = MacroRollbackManager["arrange-loader-path"](MacroRollbackManager, fennel["macro-path"])
+  fennel["macro-path"] = macro_path
   local _9_, _10_ = nil, nil
   do
     local _11_, _12_ = fennel["search-module"](module_name, fennel["macro-path"])

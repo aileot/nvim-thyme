@@ -115,7 +115,10 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [fennel (require :fennel)
             {: get-config} (require :thyme.config)
-            config (get-config)]
+            config (get-config)
+            loader-path (ModuleRollbackManager:arrange-loader-path package.path)]
+        ;; NOTE: Other plugins could also override package.path.
+        (set package.path loader-path)
         (when (or (= nil cache.rtp) debug?)
           (initialize-macro-searcher-on-rtp! fennel)
           (initialize-module-searcher-on-rtp! fennel))
