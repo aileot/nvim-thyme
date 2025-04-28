@@ -63,8 +63,8 @@
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl"))))))
 
 (describe* "command :ThymeRollbackSwitch"
-  (before_each (fn []
-                 (define-commands!)))
+  (setup (fn []
+           (define-commands!)))
   (after_each (fn []
                 (remove-context-files!)))
   (describe* "for module"
