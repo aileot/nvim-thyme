@@ -27,18 +27,20 @@ local function symlink_21(path, new_path, ...)
   if ((_5_ == false) and (nil ~= _6_)) then
     local msg = _6_
     if has_hidden_file_3f(new_path) then
-      restore_file_21(new_path)
-      return vim.notify(msg, vim.log.levels.ERROR)
+      return true
     else
-      return nil
+      restore_file_21(new_path)
+      vim.notify(msg, vim.log.levels.ERROR)
+      return false
     end
   else
-    return nil
+    local _ = _5_
+    return true
   end
 end
 BackupManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:30")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:30")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:37")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:37")
   local self = setmetatable({}, BackupManager)
   local root = Path.join(backup_prefix, label)
   vim.fn.mkdir(root, "p")
@@ -80,7 +82,7 @@ BackupManager["get-root"] = function()
   return backup_prefix
 end
 BackupManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:101")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:108")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local file_extension = backup_path:match("%.[^/\\]-$")

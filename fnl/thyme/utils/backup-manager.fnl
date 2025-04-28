@@ -19,13 +19,20 @@
 (set BackupManager.__index BackupManager)
 
 (fn symlink! [path new-path ...]
-  "Force create symbolic link from `path` to `new-path`."
+  "Force create symbolic link from `path` to `new-path`.
+@param path string
+@param new-path string
+@return boolean true if symlink is successfully created, or false"
   (when (file-readable? new-path)
     (hide-file! new-path))
   (case (pcall (assert #(vim.uv.fs_symlink path new-path)))
-    (false msg) (when (has-hidden-file? new-path)
-                  (restore-file! new-path)
-                  (vim.notify msg vim.log.levels.ERROR))))
+    (false msg) (if (has-hidden-file? new-path)
+                    true
+                    (do
+                      (restore-file! new-path)
+                      (vim.notify msg vim.log.levels.ERROR)
+                      false))
+    _ true))
 
 (λ BackupManager.new [label file-extension]
   (let [self (setmetatable {} BackupManager)
