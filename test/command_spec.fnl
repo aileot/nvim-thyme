@@ -120,3 +120,23 @@
               (vim.cmd.ThymeRollbackSwitch (.. backup-label mod))
               (assert.is_true asked?)
               (set vim.ui.select raw-ui-select))))))))
+
+(describe* "command :ThymeRollbackMount"
+  (setup (fn []
+           (define-commands!)))
+  (after_each (fn []
+                (remove-context-files!)))
+  (describe* "for module"
+    (it* "will force `require` to load module from the mounted backup."
+      (let [mod :foobar
+            fnl-path (.. mod ".fnl")
+            ctx1 "1"
+            ctx2 "2"]
+        (prepare-config-fnl-file! fnl-path ctx1)
+        (assert.equals (tonumber ctx1) (require mod))
+        (tset package.loaded mod nil)
+        (prepare-config-fnl-file! fnl-path ctx2)
+        (vim.cmd.ThymeRollbackMount mod)
+        (vim.cmd :ThymeCacheClear)
+        (assert.equals (tonumber ctx2) (require mod))
+        (vim.cmd.ThymeRollbackUnmount mod)))))
