@@ -2,6 +2,7 @@ local Path = require("thyme.utils.path")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
 local assert_is_file_readable = _local_1_["assert-is-file-readable"]
+local assert_is_directory = _local_1_["assert-is-directory"]
 local read_file = _local_1_["read-file"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
@@ -36,8 +37,8 @@ local function symlink_21(path, new_path, ...)
   end
 end
 BackupManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:27")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:27")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/backup-manager.fnl:30")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/backup-manager.fnl:30")
   local self = setmetatable({}, BackupManager)
   local root = Path.join(backup_prefix, label)
   vim.fn.mkdir(root, "p")
@@ -79,7 +80,7 @@ BackupManager["get-root"] = function()
   return backup_prefix
 end
 BackupManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:98")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/backup-manager.fnl:101")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local file_extension = backup_path:match("%.[^/\\]-$")
@@ -95,22 +96,20 @@ BackupManager["active-backup?"] = function(backup_path)
   local active_backup_path = Path.join(dir, active_backup_filename)
   return (backup_path == fs.readlink(active_backup_path))
 end
-BackupManager["pin-backup!"] = function(backup_path)
-  assert_is_file_readable(backup_path)
-  local dir = vim.fs.dirname(backup_path)
-  local file_extension = backup_path:match("%.[^/\\]-$")
+BackupManager["pin-backup!"] = function(backup_dir)
+  assert_is_directory(backup_dir)
+  local file_extension = backup_dir:match("%.[^/\\]-$")
   local active_backup_filename = (".active" .. file_extension)
-  local active_backup_path = Path.join(dir, active_backup_filename)
+  local active_backup_path = Path.join(backup_dir, active_backup_filename)
   local pinned_backup_filename = (".pinned" .. file_extension)
-  local pinned_backup_path = Path.join(dir, pinned_backup_filename)
+  local pinned_backup_path = Path.join(backup_dir, pinned_backup_filename)
   return symlink_21(active_backup_path, pinned_backup_path)
 end
-BackupManager["unpin-backup!"] = function(backup_path)
-  assert_is_file_readable(backup_path)
-  local dir = vim.fs.dirname(backup_path)
-  local file_extension = backup_path:match("%.[^/\\]-$")
+BackupManager["unpin-backup!"] = function(backup_dir)
+  assert_is_directory(backup_dir)
+  local file_extension = backup_dir:match("%.[^/\\]-$")
   local pinned_backup_filename = (".pinned" .. file_extension)
-  local pinned_backup_path = Path.join(dir, pinned_backup_filename)
+  local pinned_backup_path = Path.join(backup_dir, pinned_backup_filename)
   return fs.unlink(pinned_backup_path)
 end
 return BackupManager

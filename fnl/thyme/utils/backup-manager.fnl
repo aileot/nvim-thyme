@@ -1,8 +1,11 @@
 (import-macros {: when-not : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable? : assert-is-file-readable : read-file &as fs}
-       (require :thyme.utils.fs))
+(local {: file-readable?
+        : assert-is-file-readable
+        : assert-is-directory
+        : read-file
+        &as fs} (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
@@ -115,27 +118,25 @@ Return `true` if the following conditions are met:
         active-backup-path (Path.join dir active-backup-filename)]
     (= backup-path (fs.readlink active-backup-path))))
 
-(fn BackupManager.pin-backup! [backup-path]
+(fn BackupManager.pin-backup! [backup-dir]
   "Pin currently active backup for `module-name`.
-@param module-name string"
-  (assert-is-file-readable backup-path)
-  (let [dir (vim.fs.dirname backup-path)
-        file-extension (backup-path:match "%.[^/\\]-$")
+@param backup-dir string"
+  (assert-is-directory backup-dir)
+  (let [file-extension (backup-dir:match "%.[^/\\]-$")
         ;; TODO: Determine active backup filename and path only on a method.
         active-backup-filename (.. ".active" file-extension)
-        active-backup-path (Path.join dir active-backup-filename)
+        active-backup-path (Path.join backup-dir active-backup-filename)
         pinned-backup-filename (.. ".pinned" file-extension)
-        pinned-backup-path (Path.join dir pinned-backup-filename)]
+        pinned-backup-path (Path.join backup-dir pinned-backup-filename)]
     (symlink! active-backup-path pinned-backup-path)))
 
-(fn BackupManager.unpin-backup! [backup-path]
+(fn BackupManager.unpin-backup! [backup-dir]
   "Unpin previously pinned backup for `module-name`.
-@param module-name string"
-  (assert-is-file-readable backup-path)
-  (let [dir (vim.fs.dirname backup-path)
-        file-extension (backup-path:match "%.[^/\\]-$")
+@param backup-dir string"
+  (assert-is-directory backup-dir)
+  (let [file-extension (backup-dir:match "%.[^/\\]-$")
         pinned-backup-filename (.. ".pinned" file-extension)
-        pinned-backup-path (Path.join dir pinned-backup-filename)]
+        pinned-backup-path (Path.join backup-dir pinned-backup-filename)]
     (fs.unlink pinned-backup-path)))
 
 BackupManager
