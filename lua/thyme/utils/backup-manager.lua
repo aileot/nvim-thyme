@@ -112,6 +112,6 @@ BackupManager["unpin-backup!"] = function(backup_dir)
   local file_extension = backup_dir:match("%.[^/\\]-$")
   local pinned_backup_filename = (".pinned" .. file_extension)
   local pinned_backup_path = Path.join(backup_dir, pinned_backup_filename)
-  return fs.unlink(pinned_backup_path)
+  return assert(fs.unlink(pinned_backup_path))
 end
 return BackupManager

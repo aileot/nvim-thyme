@@ -144,6 +144,6 @@ Return `true` if the following conditions are met:
   (let [file-extension (backup-dir:match "%.[^/\\]-$")
         pinned-backup-filename (.. ".pinned" file-extension)
         pinned-backup-path (Path.join backup-dir pinned-backup-filename)]
-    (fs.unlink pinned-backup-path)))
+    (assert (fs.unlink pinned-backup-path))))
 
 BackupManager
