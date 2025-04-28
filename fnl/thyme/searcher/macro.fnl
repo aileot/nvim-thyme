@@ -28,7 +28,7 @@
       (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)]
         (when (and (not= fnl-path backup-path)
                    (MacroRollbackManager:should-update-backup? module-name
-                                                             (read-file fnl-path)))
+                                                               (read-file fnl-path)))
           (MacroRollbackManager:create-module-backup! module-name fnl-path))
         (set compiler-options.env ?env)
         #result)
