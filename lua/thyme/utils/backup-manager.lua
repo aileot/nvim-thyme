@@ -95,4 +95,22 @@ BackupManager["active-backup?"] = function(backup_path)
   local active_backup_path = Path.join(dir, active_backup_filename)
   return (backup_path == fs.readlink(active_backup_path))
 end
+BackupManager["pin-backup!"] = function(backup_path)
+  assert_is_file_readable(backup_path)
+  local dir = vim.fs.dirname(backup_path)
+  local file_extension = backup_path:match("%.[^/\\]-$")
+  local active_backup_filename = (".active" .. file_extension)
+  local active_backup_path = Path.join(dir, active_backup_filename)
+  local pinned_backup_filename = (".pinned" .. file_extension)
+  local pinned_backup_path = Path.join(dir, pinned_backup_filename)
+  return symlink_21(active_backup_path, pinned_backup_path)
+end
+BackupManager["unpin-backup!"] = function(backup_path)
+  assert_is_file_readable(backup_path)
+  local dir = vim.fs.dirname(backup_path)
+  local file_extension = backup_path:match("%.[^/\\]-$")
+  local pinned_backup_filename = (".pinned" .. file_extension)
+  local pinned_backup_path = Path.join(dir, pinned_backup_filename)
+  return fs.unlink(pinned_backup_path)
+end
 return BackupManager

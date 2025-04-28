@@ -115,4 +115,27 @@ Return `true` if the following conditions are met:
         active-backup-path (Path.join dir active-backup-filename)]
     (= backup-path (fs.readlink active-backup-path))))
 
+(fn BackupManager.pin-backup! [backup-path]
+  "Pin currently active backup for `module-name`.
+@param module-name string"
+  (assert-is-file-readable backup-path)
+  (let [dir (vim.fs.dirname backup-path)
+        file-extension (backup-path:match "%.[^/\\]-$")
+        ;; TODO: Determine active backup filename and path only on a method.
+        active-backup-filename (.. ".active" file-extension)
+        active-backup-path (Path.join dir active-backup-filename)
+        pinned-backup-filename (.. ".pinned" file-extension)
+        pinned-backup-path (Path.join dir pinned-backup-filename)]
+    (symlink! active-backup-path pinned-backup-path)))
+
+(fn BackupManager.unpin-backup! [backup-path]
+  "Unpin previously pinned backup for `module-name`.
+@param module-name string"
+  (assert-is-file-readable backup-path)
+  (let [dir (vim.fs.dirname backup-path)
+        file-extension (backup-path:match "%.[^/\\]-$")
+        pinned-backup-filename (.. ".pinned" file-extension)
+        pinned-backup-path (Path.join dir pinned-backup-filename)]
+    (fs.unlink pinned-backup-path)))
+
 BackupManager
