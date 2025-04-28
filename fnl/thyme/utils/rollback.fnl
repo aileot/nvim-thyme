@@ -36,16 +36,6 @@
                       false))
     _ true))
 
-(λ RollbackManager.new [label file-extension]
-  (let [self (setmetatable {} RollbackManager)
-        root (Path.join RollbackManager._backup-dir label)]
-    (vim.fn.mkdir root :p)
-    (set self.root root)
-    (assert (= "." (file-extension:sub 1 1))
-            "file-extension must start with `.`")
-    (set self.file-extension file-extension)
-    self))
-
 (fn RollbackManager.module-name->backup-dir [self module-name]
   "Return module backed up directory.
 @param module-name string
@@ -101,6 +91,16 @@ Return `true` if the following conditions are met:
         (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))
     (symlink! backup-path active-backup-path)))
+
+(λ RollbackManager.new [label file-extension]
+  (let [self (setmetatable {} RollbackManager)
+        root (Path.join RollbackManager._backup-dir label)]
+    (vim.fn.mkdir root :p)
+    (set self.root root)
+    (assert (= "." (file-extension:sub 1 1))
+            "file-extension must start with `.`")
+    (set self.file-extension file-extension)
+    self))
 
 (fn RollbackManager.get-root []
   "Return the root directory of backup files.

@@ -37,17 +37,6 @@ local function symlink_21(path, new_path, ...)
     return true
   end
 end
-RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:39")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:39")
-  local self = setmetatable({}, RollbackManager)
-  local root = Path.join(RollbackManager["_backup-dir"], label)
-  vim.fn.mkdir(root, "p")
-  self.root = root
-  assert(("." == file_extension:sub(1, 1)), "file-extension must start with `.`")
-  self["file-extension"] = file_extension
-  return self
-end
 RollbackManager["module-name->backup-dir"] = function(self, module_name)
   local dir = Path.join(self.root, module_name)
   return dir
@@ -76,6 +65,17 @@ RollbackManager["create-module-backup!"] = function(self, module_name, path)
   vim.fn.mkdir(vim.fs.dirname(active_backup_path), "p")
   assert(fs.copyfile(path, backup_path))
   return symlink_21(backup_path, active_backup_path)
+end
+RollbackManager.new = function(label, file_extension)
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:95")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:95")
+  local self = setmetatable({}, RollbackManager)
+  local root = Path.join(RollbackManager["_backup-dir"], label)
+  vim.fn.mkdir(root, "p")
+  self.root = root
+  assert(("." == file_extension:sub(1, 1)), "file-extension must start with `.`")
+  self["file-extension"] = file_extension
+  return self
 end
 RollbackManager["get-root"] = function()
   return RollbackManager["_backup-dir"]
