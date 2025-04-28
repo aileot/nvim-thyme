@@ -12,9 +12,8 @@
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
 
-(local backup-prefix (Path.join state-prefix :rollbacks))
-
-(local Rollback {:_active-backup-filename ".active"
+(local Rollback {:_backup-dir (Path.join state-prefix :rollbacks)
+                 :_active-backup-filename ".active"
                  :_pinned-backup-filename ".pinned"})
 
 (set Rollback.__index Rollback)
@@ -37,7 +36,7 @@
 
 (λ Rollback.new [label file-extension]
   (let [self (setmetatable {} Rollback)
-        root (Path.join backup-prefix label)]
+        root (Path.join Rollback._backup-dir label)]
     (vim.fn.mkdir root :p)
     (set self.root root)
     (assert (= "." (file-extension:sub 1 1))
@@ -104,7 +103,7 @@ Return `true` if the following conditions are met:
 (fn Rollback.get-root []
   "Return the root directory of backup files.
 @return string the root path"
-  backup-prefix)
+  Rollback._backup-dir)
 
 (λ Rollback.switch-active-backup! [backup-path]
   "Switch active backup to `backup-path`."
@@ -136,8 +135,7 @@ Return `true` if the following conditions are met:
   "Unpin previously pinned backup for `backup-dir`.
 @param backup-dir string"
   (assert-is-directory backup-dir)
-  (let [pinned-backup-path (Path.join backup-dir
-                                      Rollback._pinned-backup-prefix)]
+  (let [pinned-backup-path (Path.join backup-dir Rollback._pinned-backup-prefix)]
     (assert-is-file-readable pinned-backup-path)
     (assert (fs.unlink pinned-backup-path))))
 

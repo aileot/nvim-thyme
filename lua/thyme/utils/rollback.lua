@@ -11,8 +11,7 @@ local _local_3_ = require("thyme.utils.pool")
 local hide_file_21 = _local_3_["hide-file!"]
 local has_hidden_file_3f = _local_3_["has-hidden-file?"]
 local restore_file_21 = _local_3_["restore-file!"]
-local backup_prefix = Path.join(state_prefix, "rollbacks")
-local Rollback = {["_active-backup-filename"] = ".active", ["_pinned-backup-filename"] = ".pinned"}
+local Rollback = {["_backup-dir"] = Path.join(state_prefix, "rollbacks"), ["_active-backup-filename"] = ".active", ["_pinned-backup-filename"] = ".pinned"}
 Rollback.__index = Rollback
 local function symlink_21(path, new_path, ...)
   if file_readable_3f(new_path) then
@@ -39,10 +38,10 @@ local function symlink_21(path, new_path, ...)
   end
 end
 Rollback.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:38")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:38")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:37")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:37")
   local self = setmetatable({}, Rollback)
-  local root = Path.join(backup_prefix, label)
+  local root = Path.join(Rollback["_backup-dir"], label)
   vim.fn.mkdir(root, "p")
   self.root = root
   assert(("." == file_extension:sub(1, 1)), "file-extension must start with `.`")
@@ -79,10 +78,10 @@ Rollback["create-module-backup!"] = function(self, module_name, path)
   return symlink_21(backup_path, active_backup_path)
 end
 Rollback["get-root"] = function()
-  return backup_prefix
+  return Rollback["_backup-dir"]
 end
 Rollback["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:109")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:108")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, Rollback["_active-backup-filename"])
