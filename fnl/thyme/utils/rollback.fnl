@@ -14,7 +14,8 @@
 
 (local RollbackManager {:_backup-dir (Path.join state-prefix :rollbacks)
                         :_active-backup-filename ".active"
-                        :_pinned-backup-filename ".pinned"})
+                        :_pinned-backup-filename ".pinned"
+                        :_mounted-backup-filename ".mounted"})
 
 (set RollbackManager.__index RollbackManager)
 
