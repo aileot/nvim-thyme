@@ -12,10 +12,11 @@
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
 
-(local RollbackManager {:_backup-dir (Path.join state-prefix :rollbacks)
-                        :_active-backup-filename ".active"
-                        :_pinned-backup-filename ".pinned"
-                        :_mounted-backup-filename ".mounted"})
+(local RollbackManager
+       {:_backup-dir (Path.join state-prefix :rollbacks)
+        :_active-backup-filename ".active"
+        :_pinned-backup-filename ".pinned"
+        :_mounted-backup-filename ".mounted"})
 
 (set RollbackManager.__index RollbackManager)
 
@@ -110,7 +111,8 @@ Return `true` if the following conditions are met:
   "Switch active backup to `backup-path`."
   (assert-is-file-readable backup-path)
   (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir RollbackManager._active-backup-filename)]
+        active-backup-path (Path.join dir
+                                      RollbackManager._active-backup-filename)]
     (symlink! backup-path active-backup-path)))
 
 (fn RollbackManager.active-backup? [backup-path]
@@ -119,7 +121,8 @@ Return `true` if the following conditions are met:
 @return boolean"
   (assert-is-file-readable backup-path)
   (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir RollbackManager._active-backup-filename)]
+        active-backup-path (Path.join dir
+                                      RollbackManager._active-backup-filename)]
     (= backup-path (fs.readlink active-backup-path))))
 
 (fn RollbackManager.pin-backup! [backup-dir]
@@ -136,7 +139,8 @@ Return `true` if the following conditions are met:
   "Unpin previously pinned backup for `backup-dir`.
 @param backup-dir string"
   (assert-is-directory backup-dir)
-  (let [pinned-backup-path (Path.join backup-dir RollbackManager._pinned-backup-prefix)]
+  (let [pinned-backup-path (Path.join backup-dir
+                                      RollbackManager._pinned-backup-prefix)]
     (assert-is-file-readable pinned-backup-path)
     (assert (fs.unlink pinned-backup-path))))
 
