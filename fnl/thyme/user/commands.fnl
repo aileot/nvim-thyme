@@ -133,7 +133,7 @@
         {:bar true
          :nargs 1
          :complete complete-dirs
-         :desc "[thyme] rollback selected module in the backup"}
+         :desc "[thyme] Prompt to select rollback for compile error"}
         (fn [{:args input}]
           (let [root (BackupManager.get-root)
                 prefix (Path.join root input)
