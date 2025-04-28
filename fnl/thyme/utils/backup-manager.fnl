@@ -126,24 +126,28 @@ Return `true` if the following conditions are met:
     (= backup-path (fs.readlink active-backup-path))))
 
 (fn BackupManager.pin-backup! [backup-dir]
-  "Pin currently active backup for `module-name`.
+  "Pin currently active backup for `backup-dir`.
 @param backup-dir string"
   (assert-is-directory backup-dir)
-  (let [file-extension (backup-dir:match "%.[^/\\]-$")
-        ;; TODO: Determine active backup filename and path only on a method.
-        active-backup-filename (.. ".active" file-extension)
-        active-backup-path (Path.join backup-dir active-backup-filename)
+  ;; TODO: Determine active backup filename and path only on a method.
+  (let [active-backup-prefix ".active"
+        active-backup-path (vim.fn.glob (.. backup-dir "/" ;
+                                            active-backup-prefix ".*")
+                                        false false)
+        file-extension (active-backup-path:match "%.[^/\\]-$")
         pinned-backup-filename (.. ".pinned" file-extension)
         pinned-backup-path (Path.join backup-dir pinned-backup-filename)]
     (symlink! active-backup-path pinned-backup-path)))
 
 (fn BackupManager.unpin-backup! [backup-dir]
-  "Unpin previously pinned backup for `module-name`.
+  "Unpin previously pinned backup for `backup-dir`.
 @param backup-dir string"
   (assert-is-directory backup-dir)
-  (let [file-extension (backup-dir:match "%.[^/\\]-$")
-        pinned-backup-filename (.. ".pinned" file-extension)
-        pinned-backup-path (Path.join backup-dir pinned-backup-filename)]
-    (assert (fs.unlink pinned-backup-path))))
+  (let [pinned-backup-prefix ".pinned"
+        pinned-backup-path (vim.fn.glob (.. backup-dir "/" ;
+                                            pinned-backup-prefix ".*"))]
+    (if (= "" pinned-backup-path)
+        (error (.. "no backup is pinned for " backup-dir))
+        (assert (fs.unlink pinned-backup-path)))))
 
 BackupManager

@@ -100,18 +100,21 @@ BackupManager["active-backup?"] = function(backup_path)
 end
 BackupManager["pin-backup!"] = function(backup_dir)
   assert_is_directory(backup_dir)
-  local file_extension = backup_dir:match("%.[^/\\]-$")
-  local active_backup_filename = (".active" .. file_extension)
-  local active_backup_path = Path.join(backup_dir, active_backup_filename)
+  local active_backup_prefix = ".active"
+  local active_backup_path = vim.fn.glob((backup_dir .. "/" .. active_backup_prefix .. ".*"), false, false)
+  local file_extension = active_backup_path:match("%.[^/\\]-$")
   local pinned_backup_filename = (".pinned" .. file_extension)
   local pinned_backup_path = Path.join(backup_dir, pinned_backup_filename)
   return symlink_21(active_backup_path, pinned_backup_path)
 end
 BackupManager["unpin-backup!"] = function(backup_dir)
   assert_is_directory(backup_dir)
-  local file_extension = backup_dir:match("%.[^/\\]-$")
-  local pinned_backup_filename = (".pinned" .. file_extension)
-  local pinned_backup_path = Path.join(backup_dir, pinned_backup_filename)
-  return assert(fs.unlink(pinned_backup_path))
+  local pinned_backup_prefix = ".pinned"
+  local pinned_backup_path = vim.fn.glob((backup_dir .. "/" .. pinned_backup_prefix .. ".*"))
+  if ("" == pinned_backup_path) then
+    return error(("no backup is pinned for " .. backup_dir))
+  else
+    return assert(fs.unlink(pinned_backup_path))
+  end
 end
 return BackupManager
