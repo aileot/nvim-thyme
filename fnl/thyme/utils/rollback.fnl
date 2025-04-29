@@ -166,17 +166,22 @@ Please execute `:ThymeRollbackUnmount %s` to load your runtime %s on &rtp."
 @param searchers function[]"
   ;; TODO: Add option to avoid injecting searcher more than once in case where
   ;; some other plugin injects other searchers only to fall into infinite loop.
-  (if (not self._searcher-injected?)
+  (if (not self._injected-searcher)
       (do
-        (table.insert searchers 1 self.search-module-from-mounted-backups)
-        (set self._searcher-injected? true))
-      (not= (first searchers) self.search-module-from-mounted-backups)
+        (set self._injected-searcher
+             ;; NOTE: Otherwise, i.e., directly injecting
+             ;; self.search-module-from-mounted-backups will fail to get `self`
+             ;; as the first argument, but only get module-name as the first
+             ;; argument and `nil` as the second argument.
+             (partial self.search-module-from-mounted-backups self))
+        (table.insert searchers 1 self._injected-searcher))
+      (not= (first searchers) self._injected-searcher)
       (do
         (faccumulate [dropped? false i 1 (length searchers) &until dropped?]
-          (if (= (. searchers i) self.search-module-from-mounted-backups)
+          (if (= (. searchers i) self._injected-searcher)
               (table.remove searchers i)
               false))
-        (table.insert searchers 1 self.search-module-from-mounted-backups))))
+        (table.insert searchers 1 self._injected-searcher))))
 
 ;;; Static Methods
 
