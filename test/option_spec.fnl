@@ -12,6 +12,8 @@
 ;; TODO: Avoid hardcoding params to use ModuleRollbackManager methods.
 (local ModuleRollbackManager (RollbackManager.new :module ".lua"))
 
+(local {: define-commands!} (require :thyme))
+
 (describe* "option fnl-dir"
   (let [default-fnl-dir config.fnl-dir]
     (after_each (fn []
@@ -74,6 +76,7 @@
 (describe* "option max-rollbacks"
   (let [default-max-rollbacks config.max-rollbacks]
     (before_each (fn []
+                   (define-commands!)
                    (set config.max-rollbacks 3)))
     (after_each (fn []
                   (set config.max-rollbacks default-max-rollbacks)
