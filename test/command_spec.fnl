@@ -109,7 +109,7 @@
                          (vim.cmd :ThymeCacheClear)
                          (prepare-config-fnl-file! fnl-path ctx2)
                          ;; Make sure the backup filename is changed.
-                         (vim.wait 1000)
+                         (vim.wait 1)
                          (require mod)
                          (tset package.loaded mod nil)))
           (it* "shows ui to select backup."
