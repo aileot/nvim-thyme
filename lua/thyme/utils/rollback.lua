@@ -2,7 +2,6 @@ local Path = require("thyme.utils.path")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
 local assert_is_file_readable = _local_1_["assert-is-file-readable"]
-local assert_is_directory = _local_1_["assert-is-directory"]
 local read_file = _local_1_["read-file"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
@@ -84,8 +83,8 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:115")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:115")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:112")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:112")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager["_backup-dir"], label)
   vim.fn.mkdir(root, "p")
@@ -98,7 +97,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager["_backup-dir"]
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:130")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:127")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
