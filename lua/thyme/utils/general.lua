@@ -40,4 +40,7 @@ local function warn_21(raw_msg)
   local msg = ("[thyme] " .. raw_msg)
   return vim.notify(msg, vim.log.levels.WARN)
 end
-return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["warn!"] = warn_21}
+local function sorter_2ffiles_to_oldest_by_birthtime(file1, file2)
+  return (vim.uv.fs_stat(file2).birthtime.sec < vim.uv.fs_stat(file1).birthtime.sec)
+end
+return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["warn!"] = warn_21, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}

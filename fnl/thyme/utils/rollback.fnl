@@ -6,7 +6,8 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-(local {: validate-type} (require :thyme.utils.general))
+(local {: validate-type : sorter/files-to-oldest-by-birthtime}
+       (require :thyme.utils.general))
 
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
@@ -98,11 +99,7 @@ Return `true` if the following conditions are met:
     (validate-type :number max-rollbacks)
     (let [threshold (inc max-rollbacks)
           backup-files (self:module-name->backup-files module-name)]
-      (table.sort backup-files
-                  (fn [file1 file2]
-                    "Sort files to oldest."
-                    (< (-> (fs.stat file2) (. :birthtime :sec))
-                       (-> (fs.stat file1) (. :birthtime :sec)))))
+      (table.sort backup-files sorter/files-to-oldest-by-birthtime)
       (for [i threshold (length backup-files)]
         (let [path (. backup-files i)]
           (assert fs.unlink path))))))

@@ -8,6 +8,7 @@ local _local_2_ = require("thyme.const")
 local state_prefix = _local_2_["state-prefix"]
 local _local_3_ = require("thyme.utils.general")
 local validate_type = _local_3_["validate-type"]
+local sorter_2ffiles_to_oldest_by_birthtime = _local_3_["sorter/files-to-oldest-by-birthtime"]
 local _local_4_ = require("thyme.utils.pool")
 local hide_file_21 = _local_4_["hide-file!"]
 local has_hidden_file_3f = _local_4_["has-hidden-file?"]
@@ -71,10 +72,7 @@ RollbackManager["cleanup-old-backups!"] = function(self, module_name)
   validate_type("number", max_rollbacks)
   local threshold = (max_rollbacks + 1)
   local backup_files = self["module-name->backup-files"](self, module_name)
-  local function _12_(file1, file2)
-    return (fs.stat(file2).birthtime.sec < fs.stat(file1).birthtime.sec)
-  end
-  table.sort(backup_files, _12_)
+  table.sort(backup_files, sorter_2ffiles_to_oldest_by_birthtime)
   for i = threshold, #backup_files do
     local path = backup_files[i]
     assert(fs.unlink, path)
@@ -92,14 +90,14 @@ end
 RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   local loader_path_for_mounted_backups = Path.join(self.root, "?", self["_mounted-backup-filename"])
   local loader_prefix = (loader_path_for_mounted_backups .. ";")
-  local _13_, _14_ = old_loader_path:find(loader_path_for_mounted_backups, 1, true)
-  if (_13_ == 1) then
+  local _12_, _13_ = old_loader_path:find(loader_path_for_mounted_backups, 1, true)
+  if (_12_ == 1) then
     return old_loader_path
-  elseif (_13_ == nil) then
+  elseif (_12_ == nil) then
     return (loader_prefix .. old_loader_path)
-  elseif ((nil ~= _13_) and (nil ~= _14_)) then
-    local idx_start = _13_
-    local idx_end = _14_
+  elseif ((nil ~= _12_) and (nil ~= _13_)) then
+    local idx_start = _12_
+    local idx_end = _13_
     local tmp_loader_path = (old_loader_path:sub(1, idx_start) .. old_loader_path:sub(idx_end))
     return (loader_prefix .. tmp_loader_path)
   else
@@ -107,8 +105,8 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:141")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:141")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:138")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:138")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager["_backup-dir"], label)
   vim.fn.mkdir(root, "p")
@@ -121,7 +119,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager["_backup-dir"]
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:156")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:153")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
@@ -158,9 +156,9 @@ RollbackManager["get-mounted-rollbacks"] = function()
 end
 RollbackManager["unmount-backup-all!"] = function()
   do
-    local _16_ = RollbackManager["get-mounted-rollbacks"]()
-    if (nil ~= _16_) then
-      local mounted_backup_paths = _16_
+    local _15_ = RollbackManager["get-mounted-rollbacks"]()
+    if (nil ~= _15_) then
+      local mounted_backup_paths = _15_
       for _, path in ipairs(mounted_backup_paths) do
         assert(fs.unlink(path))
       end
