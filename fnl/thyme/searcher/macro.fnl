@@ -47,7 +47,8 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
 (fn search-fnl-macro-on-rtp! [module-name]
   "Search macro on &rtp.
   @param module-name string
-  @return fun(): table a lua chunk, but only expects a macro table as its end."
+  @return (fun(): table)|nil a lua chunk, but only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value.
+  @return nil|string: nil, or an error message."
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
   (let [fennel (require :fennel)]
