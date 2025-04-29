@@ -189,7 +189,8 @@ Return `true` if the following conditions are met:
   "Unmount all the mounted backups.
 @return boolean true if all the mounted backups are successfully unmounted, or no backup has been mounted; false otherwise"
   (case (RollbackManager.get-mounted-rollbacks)
-    [nil] true
-    mounted-backup-paths (assert (fs.unlink mounted-backup-paths))))
+    mounted-backup-paths (each [_ path (ipairs mounted-backup-paths)]
+                           (assert (fs.unlink path))))
+  true)
 
 RollbackManager
