@@ -1,11 +1,8 @@
 (import-macros {: when-not : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable?
-        : assert-is-file-readable
-        : assert-is-directory
-        : read-file
-        &as fs} (require :thyme.utils.fs))
+(local {: file-readable? : assert-is-file-readable : read-file &as fs}
+       (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
@@ -167,16 +164,33 @@ Return `true` if the following conditions are met:
 @param backup-dir string"
   (let [active-backup-path (Path.join backup-dir
                                       RollbackManager._active-backup-filename)
-        mountned-backup-path (Path.join backup-dir
-                                        RollbackManager._mountned-backup-filename)]
-    (symlink! active-backup-path mountned-backup-path)))
+        mounted-backup-path (Path.join backup-dir
+                                       RollbackManager._mounted-backup-filename)]
+    (symlink! active-backup-path mounted-backup-path)))
 
 (fn RollbackManager.unmount-backup! [backup-dir]
-  "Unmount previously mountned backup for `backup-dir`.
+  "Unmount previously mounted backup for `backup-dir`.
 @param backup-dir string"
-  (let [mountned-backup-path (Path.join backup-dir
-                                        RollbackManager._mountned-backup-prefix)]
-    (assert-is-file-readable mountned-backup-path)
-    (assert (fs.unlink mountned-backup-path))))
+  (let [mounted-backup-path (Path.join backup-dir
+                                       RollbackManager._mounted-backup-filename)]
+    (assert-is-file-readable mounted-backup-path)
+    (assert (fs.unlink mounted-backup-path))))
+
+(fn RollbackManager.get-mounted-rollbacks []
+  "Return all the mounted rollbacks.
+@return string[] the list of mounted rollbacks"
+  (-> (Path.join RollbackManager._backup-dir ;
+                 "*" ; for rollback label
+                 "*" ; for module
+                 RollbackManager._mounted-backup-filename)
+      (vim.fn.glob false true)))
+
+(fn RollbackManager.unmount-backup-all! []
+  "Unmount all the mounted backups.
+@return boolean true if all the mounted backups are successfully unmounted, or no backup has been mounted; false otherwise"
+  (case (RollbackManager.get-mounted-rollbacks)
+    mounted-backup-paths (each [_ path (ipairs mounted-backup-paths)]
+                           (assert (fs.unlink path))))
+  true)
 
 RollbackManager

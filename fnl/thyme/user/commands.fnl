@@ -212,7 +212,17 @@
               (false msg) (vim.notify (-> "failed to mount %s:\n%s"
                                           (: :format dir msg))
                                       vim.log.levels.WARN)
-              _ (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO))))))
+              _ (vim.notify (.. "successfully mounted " dir)
+                            vim.log.levels.INFO)))))
+      (command! :ThymeRollbackUnmountAll
+        {:bar true :nargs 0 :desc "[thyme] Unmount all the mounted backups"}
+        (fn []
+          (case (pcall RollbackManager.unmount-backup-all!)
+            (false msg) (vim.notify (-> "failed to mount backups:\n%s"
+                                        (: :format msg))
+                                    vim.log.levels.WARN)
+            _ (vim.notify (.. "successfully mounted backups")
+                          vim.log.levels.INFO)))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []

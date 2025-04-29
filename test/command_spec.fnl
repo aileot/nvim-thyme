@@ -9,6 +9,8 @@
 
 (local {: define-commands!} (require :thyme))
 
+(local RollbackManager (require :thyme.utils.rollback))
+
 (describe* "#command"
   (it* "thyme.define-commands! defines :ThymeCacheClear"
     (define-commands!)
@@ -127,16 +129,42 @@
   (after_each (fn []
                 (remove-context-files!)))
   (describe* "for module"
-    (it* "will force `require` to load module from the mounted backup."
-      (let [mod :foobar
-            fnl-path (.. mod ".fnl")
-            ctx1 "1"
-            ctx2 "2"]
-        (prepare-config-fnl-file! fnl-path ctx1)
-        (assert.equals (tonumber ctx1) (require mod))
-        (tset package.loaded mod nil)
-        (prepare-config-fnl-file! fnl-path ctx2)
-        (vim.cmd.ThymeRollbackMount mod)
-        (vim.cmd :ThymeCacheClear)
-        (assert.equals (tonumber ctx2) (require mod))
-        (vim.cmd.ThymeRollbackUnmount mod)))))
+    ;; TODO: Do not hardcode `module/` backup dir.
+    (let [backup-label "module/"]
+      (it* "will force `require` to load module from the mounted backup."
+        (let [mod :foobar
+              fnl-path (.. mod ".fnl")
+              ctx1 "1"
+              ctx2 "2"]
+          (prepare-config-fnl-file! fnl-path ctx1)
+          (assert.equals (tonumber ctx1) (require mod))
+          (tset package.loaded mod nil)
+          (prepare-config-fnl-file! fnl-path ctx2)
+          (vim.cmd.ThymeRollbackMount (.. backup-label mod))
+          (vim.cmd :ThymeCacheClear)
+          (assert.equals (tonumber ctx1) (require mod))
+          (tset package.loaded mod nil)
+          (vim.cmd.ThymeRollbackUnmountAll)
+          (vim.cmd :ThymeCacheClear)
+          (assert.equals (tonumber ctx2) (require mod))
+          (tset package.loaded mod nil))))))
+
+(describe* "command :ThymeRollbackUnmountAll"
+  (setup (fn []
+           (define-commands!)))
+  (after_each (fn []
+                (remove-context-files!)))
+  (describe* "for module"
+    ;; TODO: Do not hardcode `module/` backup dir.
+    (let [backup-label "module/"]
+      (it* "removes all mounted rollbacks."
+        (let [mod :foobar
+              fnl-path (.. mod ".fnl")
+              ctx1 "1"]
+          (prepare-config-fnl-file! fnl-path ctx1)
+          (require mod)
+          (tset package.loaded mod nil)
+          (vim.cmd.ThymeRollbackMount (.. backup-label mod))
+          (assert.not_equals 0 (length (RollbackManager.get-mounted-rollbacks)))
+          (vim.cmd.ThymeRollbackUnmountAll)
+          (assert.equals 0 (length (RollbackManager.get-mounted-rollbacks))))))))
