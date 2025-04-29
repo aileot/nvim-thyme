@@ -9,6 +9,8 @@
 
 (local {: define-commands!} (require :thyme))
 
+(local RollbackManager (require :thyme.utils.rollback))
+
 (describe* "#command"
   (it* "thyme.define-commands! defines :ThymeCacheClear"
     (define-commands!)
@@ -140,3 +142,21 @@
         (vim.cmd :ThymeCacheClear)
         (assert.equals (tonumber ctx2) (require mod))
         (vim.cmd.ThymeRollbackUnmount mod)))))
+
+(describe* "command :ThymeRollbackUnmountAll"
+  (setup (fn []
+           (define-commands!)))
+  (after_each (fn []
+                (remove-context-files!)))
+  (describe* "for module"
+    (it* "removes all mounted rollbacks."
+      (let [mod :foobar
+            fnl-path (.. mod ".fnl")
+            ctx1 "1"]
+        (prepare-config-fnl-file! fnl-path ctx1)
+        (require mod)
+        (tset package.loaded mod nil)
+        (vim.cmd.ThymeRollbackMount mod)
+        (assert.not_equals 0 (length (RollbackManager.get-mounted-rollbacks)))
+        (vim.cmd.ThymeRollbackUnmountAll)
+        (assert.equals 0 (length (RollbackManager.get-mounted-rollbacks)))))))
