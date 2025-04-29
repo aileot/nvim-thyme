@@ -98,6 +98,11 @@ fennel.lua.
     (set fennel.macro-path macro-path)))
 
 (fn write-lua-file-with-backup! [lua-path lua-code module-name]
+  "Write `lua-path` with `lua-code` creating backup.
+@param lua-path string
+@param lua-code string
+@param module-name string
+@return undefined"
   (write-lua-file! lua-path lua-code)
   (when (ModuleRollbackManager:should-update-backup? module-name lua-code)
     (ModuleRollbackManager:create-module-backup! module-name lua-path)))
