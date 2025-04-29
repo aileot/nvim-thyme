@@ -142,9 +142,11 @@ cache dir.
                                                (if (can-restore-file? lua-path
                                                                       lua-code)
                                                    (restore-file! lua-path)
-                                                   (write-lua-file-with-backup! lua-path
-                                                                                lua-code
-                                                                                module-name))
+                                                   (do
+                                                     (write-lua-file-with-backup! lua-path
+                                                                                  lua-code
+                                                                                  module-name)
+                                                     (ModuleRollbackManager:cleanup-old-backups! module-name)))
                                                (load lua-code lua-path))
                              (_ msg) (let [msg-prefix (: "
 thyme-loader: %s is found for the module %s, but failed to compile it

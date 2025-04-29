@@ -164,6 +164,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
             restore_file_21(lua_path)
           else
             write_lua_file_with_backup_21(lua_path, lua_code, module_name)
+            ModuleRollbackManager["cleanup-old-backups!"](ModuleRollbackManager, module_name)
           end
           _24_, _25_ = load(lua_code, lua_path)
         elseif (true and (nil ~= _30_)) then

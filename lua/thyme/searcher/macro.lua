@@ -22,6 +22,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     local backup_path = MacroRollbackManager["module-name->active-backup-path"](MacroRollbackManager, module_name)
     if ((fnl_path ~= backup_path) and MacroRollbackManager["should-update-backup?"](MacroRollbackManager, module_name, read_file(fnl_path))) then
       MacroRollbackManager["create-module-backup!"](MacroRollbackManager, module_name, fnl_path)
+      MacroRollbackManager["cleanup-old-backups!"](MacroRollbackManager, module_name)
     else
     end
     compiler_options.env = _3fenv
