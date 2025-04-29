@@ -1,7 +1,7 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local BackupManager (require :thyme.utils.backup-manager))
-(local MacroBackupManager (BackupManager.new :macro ".fnl"))
+(local RollbackManager (require :thyme.utils.rollback))
+(local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: pcall-with-logger! : is-logged? : log-again!}
@@ -25,11 +25,11 @@
     (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
                               module-name)
       (true result)
-      (let [backup-path (MacroBackupManager:module-name->active-backup-path module-name)]
+      (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)]
         (when (and (not= fnl-path backup-path)
-                   (MacroBackupManager:should-update-backup? module-name
-                                                             (read-file fnl-path)))
-          (MacroBackupManager:create-module-backup! module-name fnl-path))
+                   (MacroRollbackManager:should-update-backup? module-name
+                                                               (read-file fnl-path)))
+          (MacroRollbackManager:create-module-backup! module-name fnl-path))
         (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
@@ -49,13 +49,16 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
   @return fun(): table a lua chunk, but only expects a macro table as its end."
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
-  (let [fennel (require :fennel)]
+  (let [fennel (require :fennel)
+        macro-path (MacroRollbackManager:arrange-loader-path fennel.macro-path)]
+    ;; NOTE: Other plugins could also override fennel.macro-path.
+    (set fennel.macro-path macro-path)
     (case (case (fennel.search-module module-name fennel.macro-path)
             fnl-path (macro-module->?chunk module-name fnl-path)
             (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
       chunk chunk
       (_ error-msg)
-      (let [backup-path (MacroBackupManager:module-name->active-backup-path module-name)
+      (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)
             {: get-config} (require :thyme.config)
             config (get-config)
             rollback? config.rollback]

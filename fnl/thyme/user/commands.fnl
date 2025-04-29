@@ -11,7 +11,7 @@
 (local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
-(local BackupManager (require :thyme.utils.backup-manager))
+(local RollbackManager (require :thyme.utils.rollback))
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
@@ -121,7 +121,7 @@
             (vim.notify (.. "Cleared cache: " lua-cache-prefix))
             (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
-                          (let [root (BackupManager.get-root)
+                          (let [root (RollbackManager.get-root)
                                 prefix-length (+ 2 (length root))
                                 glob-pattern (Path.join root
                                                         (.. arg-lead "**/"))
@@ -135,7 +135,7 @@
          :complete complete-dirs
          :desc "[thyme] Prompt to select rollback for compile error"}
         (fn [{:args input}]
-          (let [root (BackupManager.get-root)
+          (let [root (RollbackManager.get-root)
                 prefix (Path.join root input)
                 glob-pattern (Path.join prefix "*.{lua,fnl}")
                 candidates (vim.fn.glob glob-pattern false true)]
@@ -149,16 +149,70 @@
                                               (: :format input))
                                   :format_item (fn [path]
                                                  (let [basename (vim.fs.basename path)]
-                                                   (if (BackupManager.active-backup? path)
+                                                   (if (RollbackManager.active-backup? path)
                                                        (.. basename
                                                            " (current)")
                                                        basename)))}
                                  (fn [?backup-path]
                                    (if ?backup-path
                                        (do
-                                         (BackupManager.switch-active-backup! ?backup-path)
+                                         (RollbackManager.switch-active-backup! ?backup-path)
                                          (vim.cmd :ThymeCacheClear))
-                                       (vim.notify "Abort selecting rollback target"))))))))))
+                                       (vim.notify "Abort selecting rollback target")))))))))
+      (command! :ThymeRollbackPin
+        ;; TODO: Detect bang to pin all the active backups.
+        {:bar true
+         :bang true
+         :nargs "?"
+         :complete complete-dirs
+         :desc "[thyme] Pin currently active backup"}
+        (fn [{:args input}]
+          (let [root (RollbackManager.get-root)
+                dir (Path.join root input)]
+            (if (RollbackManager.pin-backup! dir)
+                (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)
+                (vim.notify (.. "failed to pin " dir) vim.log.levels.WARN)))))
+      (command! :ThymeRollbackUnpin
+        ;; TODO: Detect bang to unpin all the pinned backups.
+        {:bar true
+         :bang true
+         :nargs "?"
+         ;; TODO: Complete only pinned backups.
+         :complete complete-dirs
+         :desc "[thyme] Unpin pinned backup"}
+        (fn [{:args input}]
+          (let [root (RollbackManager.get-root)
+                dir (Path.join root input)]
+            (case (pcall RollbackManager.unpin-backup! dir)
+              (false msg) (vim.notify (-> "failed to pin %s:\n%s"
+                                          (: :format dir msg))
+                                      vim.log.levels.WARN)
+              _ (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)))))
+      (command! :ThymeRollbackMount
+        {:bar true
+         :nargs 1
+         :complete complete-dirs
+         :desc "[thyme] Mount currently active backup"}
+        (fn [{:args input}]
+          (let [root (RollbackManager.get-root)
+                dir (Path.join root input)]
+            (if (RollbackManager.mount-backup! dir)
+                (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO)
+                (vim.notify (.. "failed to mount " dir) vim.log.levels.WARN)))))
+      (command! :ThymeRollbackUnmount
+        {:bar true
+         :nargs "?"
+         ;; TODO: Complete only mounted backups.
+         :complete complete-dirs
+         :desc "[thyme] Unmount mounted backup"}
+        (fn [{:args input}]
+          (let [root (RollbackManager.get-root)
+                dir (Path.join root input)]
+            (case (pcall RollbackManager.unmount-backup! dir)
+              (false msg) (vim.notify (-> "failed to mount %s:\n%s"
+                                          (: :format dir msg))
+                                      vim.log.levels.WARN)
+              _ (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO))))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []

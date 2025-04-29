@@ -21,8 +21,8 @@
 
 (local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro))
 
-(local BackupManager (require :thyme.utils.backup-manager))
-(local ModuleBackupManager (BackupManager.new :module ".lua"))
+(local RollbackManager (require :thyme.utils.rollback))
+(local ModuleRollbackManager (RollbackManager.new :module ".lua"))
 
 ;; NOTE: To initialize fennel.path and fennel.macro-path, cache.rtp must not
 ;; start with vim.o.rtp.
@@ -99,8 +99,8 @@ fennel.lua.
 
 (fn write-lua-file-with-backup! [lua-path lua-code module-name]
   (write-lua-file! lua-path lua-code)
-  (when (ModuleBackupManager:should-update-backup? module-name lua-code)
-    (ModuleBackupManager:create-module-backup! module-name lua-path)))
+  (when (ModuleRollbackManager:should-update-backup? module-name lua-code)
+    (ModuleRollbackManager:create-module-backup! module-name lua-path)))
 
 (fn search-fnl-module-on-rtp! [module-name ...]
   "Search for fennel source file to compile into lua and save in nvim-thyme
@@ -115,7 +115,10 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [fennel (require :fennel)
             {: get-config} (require :thyme.config)
-            config (get-config)]
+            config (get-config)
+            loader-path (ModuleRollbackManager:arrange-loader-path package.path)]
+        ;; NOTE: Other plugins could also override package.path.
+        (set package.path loader-path)
         (when (or (= nil cache.rtp) debug?)
           (initialize-macro-searcher-on-rtp! fennel)
           (initialize-module-searcher-on-rtp! fennel))
@@ -146,7 +149,7 @@ thyme-loader: %s is found for the module %s, but failed to compile it
                 (_ msg) (values nil (.. "\nthyme-loader: " msg)))
           chunk chunk
           (_ error-msg)
-          (let [backup-path (ModuleBackupManager:module-name->active-backup-path module-name)
+          (let [backup-path (ModuleRollbackManager:module-name->active-backup-path module-name)
                 rollback? config.rollback]
             (if (and rollback? (file-readable? backup-path))
                 (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
