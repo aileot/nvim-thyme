@@ -129,8 +129,11 @@ RollbackManager["unmount-backup!"] = function(backup_dir)
   assert_is_file_readable(mountned_backup_path)
   return assert(fs.unlink(mountned_backup_path))
 end
+RollbackManager["get-mounted-rollbacks"] = function()
+  return vim.fn.glob(Path.join(RollbackManager["_backup-dir"], "*", RollbackManager["_mountned-backup-prefix"]), false, true)
+end
 RollbackManager["unmount-backup-all!"] = function()
-  local _13_ = vim.fn.glob(Path.join(RollbackManager["_backup-dir"], "*", RollbackManager["_mountned-backup-prefix"]), false, true)
+  local _13_ = RollbackManager["get-mounted-rollbacks"]()
   if ((_G.type(_13_) == "table") and (_13_[1] == nil)) then
     return true
   elseif (nil ~= _13_) then

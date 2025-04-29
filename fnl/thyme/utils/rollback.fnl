@@ -176,12 +176,17 @@ Return `true` if the following conditions are met:
     (assert-is-file-readable mountned-backup-path)
     (assert (fs.unlink mountned-backup-path))))
 
+(fn RollbackManager.get-mounted-rollbacks []
+  "Return all the mounted rollbacks.
+@return string[] the list of mounted rollbacks"
+  (-> (Path.join RollbackManager._backup-dir "*"
+                 RollbackManager._mountned-backup-prefix)
+      (vim.fn.glob false true)))
+
 (fn RollbackManager.unmount-backup-all! []
   "Unmount all the mounted backups.
 @return boolean true if all the mounted backups are successfully unmounted, or no backup has been mounted; false otherwise"
-  (case (-> (Path.join RollbackManager._backup-dir "*"
-                       RollbackManager._mountned-backup-prefix)
-            (vim.fn.glob false true))
+  (case (RollbackManager.get-mounted-rollbacks)
     [nil] true
     mountned-backup-paths (assert (fs.unlink mountned-backup-paths))))
 
