@@ -162,7 +162,10 @@ Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to loa
           (loadfile resolved-path))
         (let [error-msg (-> "%s: no mounted backup is found for module %s"
                             (: :format loader-name module-name))]
-          error-msg))))
+          (if (= self._label "macro")
+              ;; TODO: Better implementation independent of `self._label`.
+              (values nil error-msg)
+              error-msg)))))
 
 (fn RollbackManager.inject-mounted-backup-searcher! [self searchers]
   "Inject mounted backup searcher into `searchers` in the highest priority.

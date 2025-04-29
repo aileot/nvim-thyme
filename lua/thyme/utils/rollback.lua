@@ -120,15 +120,19 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
     return loadfile(resolved_path)
   else
     local error_msg = ("%s: no mounted backup is found for module %s"):format(loader_name, module_name)
-    return error_msg
+    if (self._label == "macro") then
+      return nil, error_msg
+    else
+      return error_msg
+    end
   end
 end
 RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   if not self["_injected-searcher"] then
-    local function _16_(...)
+    local function _17_(...)
       return self["search-module-from-mounted-backups"](self, ...)
     end
-    self["_injected-searcher"] = _16_
+    self["_injected-searcher"] = _17_
     return table.insert(searchers, 1, self["_injected-searcher"])
   elseif (searchers[1] ~= self["_injected-searcher"]) then
     do
@@ -148,8 +152,8 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:191")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:191")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:194")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:194")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, label)
   vim.fn.mkdir(root, "p")
@@ -163,7 +167,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:207")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:210")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
@@ -200,9 +204,9 @@ RollbackManager["get-mounted-rollbacks"] = function()
 end
 RollbackManager["unmount-backup-all!"] = function()
   do
-    local _19_ = RollbackManager["get-mounted-rollbacks"]()
-    if (nil ~= _19_) then
-      local mounted_backup_paths = _19_
+    local _20_ = RollbackManager["get-mounted-rollbacks"]()
+    if (nil ~= _20_) then
+      local mounted_backup_paths = _20_
       for _, path in ipairs(mounted_backup_paths) do
         assert(fs.unlink(path))
       end
