@@ -136,8 +136,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     local _let_21_ = require("thyme.config")
     local get_config0 = _let_21_["get-config"]
     local config = get_config0()
-    local loader_path = ModuleRollbackManager["arrange-loader-path"](ModuleRollbackManager, package.path)
-    package.path = loader_path
+    ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders)
     if ((nil == cache.rtp) or debug_3f) then
       initialize_macro_searcher_on_rtp_21(fennel)
       initialize_module_searcher_on_rtp_21(fennel)

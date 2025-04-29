@@ -1,4 +1,4 @@
-(import-macros {: when-not : inc : last} :thyme.macros)
+(import-macros {: when-not : inc : first : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
@@ -71,8 +71,16 @@ and `.mounted` are ignored.
 @param module-name string
 @return string? the module backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
-        active-backup-filename RollbackManager._active-backup-filename]
-    (Path.join backup-dir active-backup-filename)))
+        filename RollbackManager._active-backup-filename]
+    (Path.join backup-dir filename)))
+
+(fn RollbackManager.module-name->mounted-backup-path [self module-name]
+  "Return module the mounted backed up path.
+@param module-name string
+@return string? the module backup path, or nil if not found"
+  (let [backup-dir (self:module-name->backup-dir module-name)
+        filename RollbackManager._mounted-backup-filename]
+    (Path.join backup-dir filename)))
 
 (fn RollbackManager.should-update-backup? [self module-name expected-contents]
   "Check if the backup of the module should be updated.
@@ -135,12 +143,61 @@ Return `true` if the following conditions are met:
                                                     (old-loader-path:sub idx-end))]
                             (.. loader-prefix tmp-loader-path)))))
 
+(fn RollbackManager.search-module-from-mounted-backups [self module-name]
+  "Search for `module-name` in mounted rollbacks.
+@param module-name string
+@return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
+@return nil|string: nil, or (only for macro searcher) an error message."
+  (let [rollback-path (self:module-name->mounted-backup-path module-name)
+        loader-name (-> "thyme-mounted-rollback-%s-loader"
+                        (: :format self._label))]
+    (if (file-readable? rollback-path)
+        (let [resolved-path (fs.readlink rollback-path)
+              unmount-arg (Path.join self._label module-name)
+              msg (-> "%s: rollback to mounted backup for %s %s
+Note that this loader is intended to help you fix the module reducing its annoying errors.
+Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
+                      (: :format loader-name self._label module-name unmount-arg
+                         module-name))]
+          (vim.notify_once msg vim.log.levels.WARN)
+          ;; TODO: Is it redundant to resolve path for error message?
+          (loadfile resolved-path))
+        (let [error-msg (-> "%s: no mounted backup is found for %s %s"
+                            (: :format loader-name self._label module-name))]
+          (if (= self._label "macro")
+              ;; TODO: Better implementation independent of `self._label`.
+              (values nil error-msg)
+              error-msg)))))
+
+(fn RollbackManager.inject-mounted-backup-searcher! [self searchers]
+  "Inject mounted backup searcher into `searchers` in the highest priority.
+@param searchers function[]"
+  ;; TODO: Add option to avoid injecting searcher more than once in case where
+  ;; some other plugin injects other searchers only to fall into infinite loop.
+  (if (not self._injected-searcher)
+      (do
+        (set self._injected-searcher
+             ;; NOTE: Otherwise, i.e., directly injecting
+             ;; self.search-module-from-mounted-backups will fail to get `self`
+             ;; as the first argument, but only get module-name as the first
+             ;; argument and `nil` as the second argument.
+             (partial self.search-module-from-mounted-backups self))
+        (table.insert searchers 1 self._injected-searcher))
+      (not= (first searchers) self._injected-searcher)
+      (do
+        (faccumulate [dropped? false i 1 (length searchers) &until dropped?]
+          (if (= (. searchers i) self._injected-searcher)
+              (table.remove searchers i)
+              false))
+        (table.insert searchers 1 self._injected-searcher))))
+
 ;;; Static Methods
 
 (λ RollbackManager.new [label file-extension]
   (let [self (setmetatable {} RollbackManager)
         root (Path.join RollbackManager._root label)]
     (vim.fn.mkdir root :p)
+    (set self._label label)
     (set self._labeled-root root)
     (assert (= "." (file-extension:sub 1 1))
             "file-extension must start with `.`")
