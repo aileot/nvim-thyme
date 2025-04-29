@@ -11,9 +11,9 @@
   (it* "sorts files newest first"
     ;; TODO: Run tests asynchronously.
     (let [a (prepare-context-fnl-file! "a.fnl" "foo")
-          _ (vim.wait 1000)
+          _ (vim.wait 10)
           b (prepare-context-fnl-file! "b.fnl" "bar")
-          _ (vim.wait 1000)
+          _ (vim.wait 10)
           c (prepare-context-fnl-file! "c.fnl" "baz")
           files [b a c]]
       (table.sort files sorter/files-to-oldest-by-birthtime)
