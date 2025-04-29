@@ -56,8 +56,8 @@ RollbackManager["module-name->new-backup-path"] = function(self, module_name)
 end
 RollbackManager["module-name->active-backup-path"] = function(self, module_name)
   local backup_dir = self["module-name->backup-dir"](self, module_name)
-  local active_backup_filename = RollbackManager["_active-backup-filename"]
-  return Path.join(backup_dir, active_backup_filename)
+  local filename = RollbackManager["_active-backup-filename"]
+  return Path.join(backup_dir, filename)
 end
 RollbackManager["module-name->mounted-backup-path"] = function(self, module_name)
   local backup_dir = self["module-name->backup-dir"](self, module_name)
