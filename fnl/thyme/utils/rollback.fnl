@@ -164,17 +164,17 @@ Return `true` if the following conditions are met:
 @param backup-dir string"
   (let [active-backup-path (Path.join backup-dir
                                       RollbackManager._active-backup-filename)
-        mountned-backup-path (Path.join backup-dir
-                                        RollbackManager._mountned-backup-filename)]
-    (symlink! active-backup-path mountned-backup-path)))
+        mounted-backup-path (Path.join backup-dir
+                                       RollbackManager._mounted-backup-filename)]
+    (symlink! active-backup-path mounted-backup-path)))
 
 (fn RollbackManager.unmount-backup! [backup-dir]
   "Unmount previously mounted backup for `backup-dir`.
 @param backup-dir string"
-  (let [mountned-backup-path (Path.join backup-dir
-                                        RollbackManager._mountned-backup-filename)]
-    (assert-is-file-readable mountned-backup-path)
-    (assert (fs.unlink mountned-backup-path))))
+  (let [mounted-backup-path (Path.join backup-dir
+                                       RollbackManager._mounted-backup-filename)]
+    (assert-is-file-readable mounted-backup-path)
+    (assert (fs.unlink mounted-backup-path))))
 
 (fn RollbackManager.get-mounted-rollbacks []
   "Return all the mounted rollbacks.
@@ -182,7 +182,7 @@ Return `true` if the following conditions are met:
   (-> (Path.join RollbackManager._backup-dir ;
                  "*" ; for rollback label
                  "*" ; for module
-                 RollbackManager._mountned-backup-filename)
+                 RollbackManager._mounted-backup-filename)
       (vim.fn.glob false true)))
 
 (fn RollbackManager.unmount-backup-all! []
@@ -190,6 +190,6 @@ Return `true` if the following conditions are met:
 @return boolean true if all the mounted backups are successfully unmounted, or no backup has been mounted; false otherwise"
   (case (RollbackManager.get-mounted-rollbacks)
     [nil] true
-    mountned-backup-paths (assert (fs.unlink mountned-backup-paths))))
+    mounted-backup-paths (assert (fs.unlink mounted-backup-paths))))
 
 RollbackManager
