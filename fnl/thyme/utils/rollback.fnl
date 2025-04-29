@@ -146,7 +146,8 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.search-module-from-mounted-backups [self module-name]
   "Search for `module-name` in mounted rollbacks.
 @param module-name string
-@return string|function a lua chunk in function, or a string to tell why failed to load module."
+@return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
+@return nil|string: nil, or (only for macro searcher) an error message."
   (let [rollback-path (self:module-name->mounted-backup-path module-name)
         loader-name (-> "thyme-mounted-rollback-%s-loader"
                         (: :format self._label))]
