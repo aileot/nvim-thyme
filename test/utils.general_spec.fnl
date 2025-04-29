@@ -1,0 +1,20 @@
+(import-macros {: describe* : it*} :test.helper.busted-macros)
+
+(local {: prepare-context-fnl-file! : remove-context-files!}
+       (include :test.helper.utils))
+
+(local {: sorter/files-to-oldest-by-birthtime} (require :thyme.utils.general))
+
+(describe* "sorter/files-to-oldest-by-birthtime"
+  (after_each (fn []
+                (remove-context-files!)))
+  (it* "sorts files newest first"
+    ;; TODO: Run tests asynchronously.
+    (let [a (prepare-context-fnl-file! "a.fnl" "foo")
+          _ (vim.wait 1000)
+          b (prepare-context-fnl-file! "b.fnl" "bar")
+          _ (vim.wait 1000)
+          c (prepare-context-fnl-file! "c.fnl" "baz")
+          files [b a c]]
+      (table.sort files sorter/files-to-oldest-by-birthtime)
+      (assert.is_same [c b a] files))))
