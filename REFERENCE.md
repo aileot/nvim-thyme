@@ -52,7 +52,7 @@ Enable rollback for compile error. Set `false` to disable it.
 
 Note: Unlike the rollback system for compile error, `nvim-thyme` does
 _**not** provide any rollback system for nvim **runtime** error._
-Such a feature should be achieved independently of a runtime compiler plugin.
+Such a feature should be realized independently of a runtime compiler plugin.
 
 ## Functions
 
