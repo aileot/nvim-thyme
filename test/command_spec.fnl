@@ -142,8 +142,12 @@
           (prepare-config-fnl-file! fnl-path ctx2)
           (vim.cmd.ThymeRollbackMount (.. backup-label mod))
           (vim.cmd :ThymeCacheClear)
+          (assert.equals (tonumber ctx1) (require mod))
+          (tset package.loaded mod nil)
+          (vim.cmd.ThymeRollbackUnmountAll)
+          (vim.cmd :ThymeCacheClear)
           (assert.equals (tonumber ctx2) (require mod))
-          (vim.cmd.ThymeRollbackUnmount mod))))))
+          (tset package.loaded mod nil))))))
 
 (describe* "command :ThymeRollbackUnmountAll"
   (setup (fn []
