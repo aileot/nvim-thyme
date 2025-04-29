@@ -159,35 +159,6 @@
                                          (RollbackManager.switch-active-backup! ?backup-path)
                                          (vim.cmd :ThymeCacheClear))
                                        (vim.notify "Abort selecting rollback target")))))))))
-      (command! :ThymeRollbackPin
-        ;; TODO: Detect bang to pin all the active backups.
-        {:bar true
-         :bang true
-         :nargs "?"
-         :complete complete-dirs
-         :desc "[thyme] Pin currently active backup"}
-        (fn [{:args input}]
-          (let [root (RollbackManager.get-root)
-                dir (Path.join root input)]
-            (if (RollbackManager.pin-backup! dir)
-                (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)
-                (vim.notify (.. "failed to pin " dir) vim.log.levels.WARN)))))
-      (command! :ThymeRollbackUnpin
-        ;; TODO: Detect bang to unpin all the pinned backups.
-        {:bar true
-         :bang true
-         :nargs "?"
-         ;; TODO: Complete only pinned backups.
-         :complete complete-dirs
-         :desc "[thyme] Unpin pinned backup"}
-        (fn [{:args input}]
-          (let [root (RollbackManager.get-root)
-                dir (Path.join root input)]
-            (case (pcall RollbackManager.unpin-backup! dir)
-              (false msg) (vim.notify (-> "failed to pin %s:\n%s"
-                                          (: :format dir msg))
-                                      vim.log.levels.WARN)
-              _ (vim.notify (.. "successfully pinned " dir) vim.log.levels.INFO)))))
       (command! :ThymeRollbackMount
         {:bar true
          :nargs 1

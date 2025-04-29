@@ -15,7 +15,6 @@
 (local RollbackManager
        {:_root (Path.join state-prefix :rollbacks)
         :_active-backup-filename ".active"
-        :_pinned-backup-filename ".pinned"
         :_mounted-backup-filename ".mounted"})
 
 (set RollbackManager.__index RollbackManager)
@@ -226,23 +225,6 @@ Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to loa
         active-backup-path (Path.join dir
                                       RollbackManager._active-backup-filename)]
     (= backup-path (fs.readlink active-backup-path))))
-
-(fn RollbackManager.pin-backup! [backup-dir]
-  "Pin currently active backup for `backup-dir`.
-@param backup-dir string"
-  (let [active-backup-path (Path.join backup-dir
-                                      RollbackManager._active-backup-filename)
-        pinned-backup-path (Path.join backup-dir
-                                      RollbackManager._pinned-backup-filename)]
-    (symlink! active-backup-path pinned-backup-path)))
-
-(fn RollbackManager.unpin-backup! [backup-dir]
-  "Unpin previously pinned backup for `backup-dir`.
-@param backup-dir string"
-  (let [pinned-backup-path (Path.join backup-dir
-                                      RollbackManager._pinned-backup-prefix)]
-    (assert-is-file-readable pinned-backup-path)
-    (assert (fs.unlink pinned-backup-path))))
 
 (fn RollbackManager.mount-backup! [backup-dir]
   "Mount currently active backup for `backup-dir`.

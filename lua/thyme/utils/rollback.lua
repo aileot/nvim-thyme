@@ -13,7 +13,7 @@ local _local_4_ = require("thyme.utils.pool")
 local hide_file_21 = _local_4_["hide-file!"]
 local has_hidden_file_3f = _local_4_["has-hidden-file?"]
 local restore_file_21 = _local_4_["restore-file!"]
-local RollbackManager = {_root = Path.join(state_prefix, "rollbacks"), ["_active-backup-filename"] = ".active", ["_pinned-backup-filename"] = ".pinned", ["_mounted-backup-filename"] = ".mounted"}
+local RollbackManager = {_root = Path.join(state_prefix, "rollbacks"), ["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
 RollbackManager.__index = RollbackManager
 local function symlink_21(path, new_path, ...)
   if file_readable_3f(new_path) then
@@ -152,8 +152,8 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:196")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:196")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:195")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:195")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, label)
   vim.fn.mkdir(root, "p")
@@ -167,7 +167,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:212")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:211")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
@@ -178,16 +178,6 @@ RollbackManager["active-backup?"] = function(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
   return (backup_path == fs.readlink(active_backup_path))
-end
-RollbackManager["pin-backup!"] = function(backup_dir)
-  local active_backup_path = Path.join(backup_dir, RollbackManager["_active-backup-filename"])
-  local pinned_backup_path = Path.join(backup_dir, RollbackManager["_pinned-backup-filename"])
-  return symlink_21(active_backup_path, pinned_backup_path)
-end
-RollbackManager["unpin-backup!"] = function(backup_dir)
-  local pinned_backup_path = Path.join(backup_dir, RollbackManager["_pinned-backup-prefix"])
-  assert_is_file_readable(pinned_backup_path)
-  return assert(fs.unlink(pinned_backup_path))
 end
 RollbackManager["mount-backup!"] = function(backup_dir)
   local active_backup_path = Path.join(backup_dir, RollbackManager["_active-backup-filename"])
