@@ -29,7 +29,8 @@
         (when (and (not= fnl-path backup-path)
                    (MacroRollbackManager:should-update-backup? module-name
                                                                (read-file fnl-path)))
-          (MacroRollbackManager:create-module-backup! module-name fnl-path))
+          (MacroRollbackManager:create-module-backup! module-name fnl-path)
+          (MacroRollbackManager:cleanup-old-backups! module-name))
         (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
@@ -61,8 +62,9 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
       (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)
             {: get-config} (require :thyme.config)
             config (get-config)
-            rollback? config.rollback]
-        (if (and rollback? (file-readable? backup-path))
+            max-rollbacks config.max-rollbacks
+            rollback-enabled? (< 0 max-rollbacks)]
+        (if (and rollback-enabled? (file-readable? backup-path))
             (case (macro-module->?chunk module-name backup-path)
               chunk
               ;; TODO: As described in the error message below, append

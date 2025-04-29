@@ -20,7 +20,7 @@
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
 (local default-opts ;
-       {:rollback true
+       {:max-rollback 10
         ;; TODO: Inplement :preproc and set the default value to `#$`.
         :preproc nil
         :compiler-options {}
@@ -39,7 +39,7 @@
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
     2 (let [recommended-config ";; recommended options of nvim-thyme
-{:rollback true
+{:max-rollbacks 10
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
                     :error-pinpoint [\"|>>\" \"<<|\"]}

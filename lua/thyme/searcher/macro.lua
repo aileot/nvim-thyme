@@ -22,6 +22,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     local backup_path = MacroRollbackManager["module-name->active-backup-path"](MacroRollbackManager, module_name)
     if ((fnl_path ~= backup_path) and MacroRollbackManager["should-update-backup?"](MacroRollbackManager, module_name, read_file(fnl_path))) then
       MacroRollbackManager["create-module-backup!"](MacroRollbackManager, module_name, fnl_path)
+      MacroRollbackManager["cleanup-old-backups!"](MacroRollbackManager, module_name)
     else
     end
     compiler_options.env = _3fenv
@@ -67,8 +68,9 @@ local function search_fnl_macro_on_rtp_21(module_name)
     local _let_14_ = require("thyme.config")
     local get_config = _let_14_["get-config"]
     local config = get_config()
-    local rollback_3f = config.rollback
-    if (rollback_3f and file_readable_3f(backup_path)) then
+    local max_rollbacks = config["max-rollbacks"]
+    local rollback_enabled_3f = (0 < max_rollbacks)
+    if (rollback_enabled_3f and file_readable_3f(backup_path)) then
       local _15_, _16_ = macro_module__3e_3fchunk(module_name, backup_path)
       if (nil ~= _15_) then
         local chunk = _15_

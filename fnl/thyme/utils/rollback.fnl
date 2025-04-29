@@ -1,10 +1,13 @@
-(import-macros {: when-not : last} :thyme.macros)
+(import-macros {: when-not : inc : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
        (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
+
+(local {: validate-type : sorter/files-to-oldest-by-birthtime}
+       (require :thyme.utils.general))
 
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
@@ -42,11 +45,22 @@
   (let [dir (Path.join self.root module-name)]
     dir))
 
+(fn RollbackManager.module-name->backup-files [self module-name]
+  "Return backup files for the `module-name`. The special files like `.active`
+and `.mounted` are ignored.
+@param module-name string
+@return string[] backup files"
+  (let [backup-dir (self:module-name->backup-dir module-name)]
+    (-> (Path.join backup-dir "*")
+        (vim.fn.glob false true))))
+
 (fn RollbackManager.module-name->new-backup-path [self module-name]
   "Return module new backed up path for `module-name`.
 @param module-name string
 @return string the module backup path"
-  (let [rollback-id (os.date "%Y-%m-%d_%H-%M-%S")
+  (let [rollback-id (-> (os.date "%Y-%m-%d_%H-%M-%S")
+                        ;; NOTE: os.date does not interpret `%N` for nanoseconds.
+                        (.. "_" (vim.uv.hrtime)))
         backup-filename (.. rollback-id self.file-extension)
         backup-dir (self:module-name->backup-dir module-name)]
     (vim.fn.mkdir backup-dir :p)
@@ -77,6 +91,20 @@ Return `true` if the following conditions are met:
         (not= (read-file backup-path)
               (assert expected-contents
                       "expected non empty string for `expected-contents`")))))
+
+(fn RollbackManager.cleanup-old-backups! [self module-name]
+  "Remove old backups more than the value of `max-rollbacks` option.
+@param module-name string"
+  (let [{: get-config} (require :thyme.config)
+        config (get-config)
+        max-rollbacks config.max-rollbacks]
+    (validate-type :number max-rollbacks)
+    (let [threshold (inc max-rollbacks)
+          backup-files (self:module-name->backup-files module-name)]
+      (table.sort backup-files sorter/files-to-oldest-by-birthtime)
+      (for [i threshold (length backup-files)]
+        (let [path (. backup-files i)]
+          (assert (fs.unlink path)))))))
 
 (fn RollbackManager.create-module-backup! [self module-name path]
   "Create a backup file of `path` as `module-name`.

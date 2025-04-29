@@ -41,4 +41,17 @@
   (let [msg (.. "[thyme] " raw-msg)]
     (vim.notify msg vim.log.levels.WARN)))
 
-{: do-nothing : contains? : validate-type : new-matrix : warn!}
+(fn sorter/files-to-oldest-by-birthtime [file1 file2]
+  "Sort files to oldest."
+  (let [{:sec sec1 :nsec nsec1} (-> (vim.uv.fs_stat file1) (. :birthtime))
+        {:sec sec2 :nsec nsec2} (-> (vim.uv.fs_stat file2) (. :birthtime))]
+    (or (< sec2 sec1) ;
+        (and (= sec2 sec1) ;
+             (< nsec2 nsec1)))))
+
+{: do-nothing
+ : contains?
+ : validate-type
+ : new-matrix
+ : warn!
+ : sorter/files-to-oldest-by-birthtime}

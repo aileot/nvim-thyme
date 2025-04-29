@@ -44,15 +44,15 @@ only designed to search through the path:
 `./fnl/?.fnl;./fnl/?/init.fnl` where each `.` prefix represents the result
 path of `(vim.fn.stdpath :config)`.
 
-### rollback
+### max-rollbacks
 
-(default: `true`)
+(default: `10`)
 
-Enable rollback for compile error. Set `false` to disable it.
+Keep the number of backups for rollback at most. Set `0` to disable it.
 
 Note: Unlike the rollback system for compile error, `nvim-thyme` does
 _**not** provide any rollback system for nvim **runtime** error._
-Such a feature should be achieved independently of a runtime compiler plugin.
+Such a feature should be realized independently of a runtime compiler plugin.
 
 ## Functions
 

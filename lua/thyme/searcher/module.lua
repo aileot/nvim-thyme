@@ -164,6 +164,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
             restore_file_21(lua_path)
           else
             write_lua_file_with_backup_21(lua_path, lua_code, module_name)
+            ModuleRollbackManager["cleanup-old-backups!"](ModuleRollbackManager, module_name)
           end
           _24_, _25_ = load(lua_code, lua_path)
         elseif (true and (nil ~= _30_)) then
@@ -189,8 +190,9 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       local _ = _24_
       local error_msg = _25_
       local backup_path = ModuleRollbackManager["module-name->active-backup-path"](ModuleRollbackManager, module_name)
-      local rollback_3f = config.rollback
-      if (rollback_3f and file_readable_3f(backup_path)) then
+      local max_rollbacks = config["max-rollbacks"]
+      local rollback_enabled_3f = (0 < max_rollbacks)
+      if (rollback_enabled_3f and file_readable_3f(backup_path)) then
         local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
         vim.notify_once(msg, vim.log.levels.WARN)
         return loadfile(backup_path)
