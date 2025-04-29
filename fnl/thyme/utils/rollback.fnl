@@ -148,7 +148,6 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.pin-backup! [backup-dir]
   "Pin currently active backup for `backup-dir`.
 @param backup-dir string"
-  (assert-is-directory backup-dir)
   (let [active-backup-path (Path.join backup-dir
                                       RollbackManager._active-backup-filename)
         pinned-backup-path (Path.join backup-dir
@@ -158,7 +157,6 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.unpin-backup! [backup-dir]
   "Unpin previously pinned backup for `backup-dir`.
 @param backup-dir string"
-  (assert-is-directory backup-dir)
   (let [pinned-backup-path (Path.join backup-dir
                                       RollbackManager._pinned-backup-prefix)]
     (assert-is-file-readable pinned-backup-path)
@@ -167,7 +165,6 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.mount-backup! [backup-dir]
   "Mount currently active backup for `backup-dir`.
 @param backup-dir string"
-  (assert-is-directory backup-dir)
   (let [active-backup-path (Path.join backup-dir
                                       RollbackManager._active-backup-filename)
         mountned-backup-path (Path.join backup-dir
@@ -177,7 +174,6 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.unmount-backup! [backup-dir]
   "Unmount previously mountned backup for `backup-dir`.
 @param backup-dir string"
-  (assert-is-directory backup-dir)
   (let [mountned-backup-path (Path.join backup-dir
                                         RollbackManager._mountned-backup-prefix)]
     (assert-is-file-readable mountned-backup-path)
