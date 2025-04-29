@@ -172,7 +172,7 @@ Return `true` if the following conditions are met:
     (symlink! active-backup-path mountned-backup-path)))
 
 (fn RollbackManager.unmount-backup! [backup-dir]
-  "Unmount previously mountned backup for `backup-dir`.
+  "Unmount previously mounted backup for `backup-dir`.
 @param backup-dir string"
   (let [mountned-backup-path (Path.join backup-dir
                                         RollbackManager._mountned-backup-prefix)]
