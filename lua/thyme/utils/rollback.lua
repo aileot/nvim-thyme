@@ -48,7 +48,7 @@ RollbackManager["module-name->backup-files"] = function(self, module_name)
   return vim.fn.glob(Path.join(backup_dir, "*"), false, true)
 end
 RollbackManager["module-name->new-backup-path"] = function(self, module_name)
-  local rollback_id = os.date("%Y-%m-%d_%H-%M-%S")
+  local rollback_id = (os.date("%Y-%m-%d_%H-%M-%S") .. "_" .. vim.uv.hrtime())
   local backup_filename = (rollback_id .. self["file-extension"])
   local backup_dir = self["module-name->backup-dir"](self, module_name)
   vim.fn.mkdir(backup_dir, "p")
@@ -105,8 +105,8 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:138")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:138")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:140")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:140")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager["_backup-dir"], label)
   vim.fn.mkdir(root, "p")
@@ -119,7 +119,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager["_backup-dir"]
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:153")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:155")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])

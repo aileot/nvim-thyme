@@ -58,7 +58,9 @@ and `.mounted` are ignored.
   "Return module new backed up path for `module-name`.
 @param module-name string
 @return string the module backup path"
-  (let [rollback-id (os.date "%Y-%m-%d_%H-%M-%S")
+  (let [rollback-id (-> (os.date "%Y-%m-%d_%H-%M-%S")
+                        ;; NOTE: os.date does not interpret `%N` for nanoseconds.
+                        (.. "_" (vim.uv.hrtime)))
         backup-filename (.. rollback-id self.file-extension)
         backup-dir (self:module-name->backup-dir module-name)]
     (vim.fn.mkdir backup-dir :p)
