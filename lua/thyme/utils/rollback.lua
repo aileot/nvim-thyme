@@ -75,7 +75,7 @@ RollbackManager["cleanup-old-backups!"] = function(self, module_name)
   table.sort(backup_files, sorter_2ffiles_to_oldest_by_birthtime)
   for i = threshold, #backup_files do
     local path = backup_files[i]
-    assert(fs.unlink, path)
+    assert(fs.unlink(path))
   end
   return nil
 end

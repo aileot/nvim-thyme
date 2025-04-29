@@ -104,7 +104,7 @@ Return `true` if the following conditions are met:
       (table.sort backup-files sorter/files-to-oldest-by-birthtime)
       (for [i threshold (length backup-files)]
         (let [path (. backup-files i)]
-          (assert fs.unlink path))))))
+          (assert (fs.unlink path)))))))
 
 (fn RollbackManager.create-module-backup! [self module-name path]
   "Create a backup file of `path` as `module-name`.
