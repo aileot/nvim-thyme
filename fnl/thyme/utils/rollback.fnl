@@ -74,6 +74,14 @@ and `.mounted` are ignored.
         active-backup-filename RollbackManager._active-backup-filename]
     (Path.join backup-dir active-backup-filename)))
 
+(fn RollbackManager.module-name->mounted-backup-path [self module-name]
+  "Return module the mounted backed up path.
+@param module-name string
+@return string? the module backup path, or nil if not found"
+  (let [backup-dir (self:module-name->backup-dir module-name)
+        filename RollbackManager._mounted-backup-filename]
+    (Path.join backup-dir filename)))
+
 (fn RollbackManager.should-update-backup? [self module-name expected-contents]
   "Check if the backup of the module should be updated.
 Return `true` if the following conditions are met:
@@ -139,9 +147,7 @@ Return `true` if the following conditions are met:
   "Search for `module-name` in mounted rollbacks.
 @param module-name string
 @return string|function a lua chunk in function, or a string to tell why failed to load module."
-  (let [backup-dir (self:module-name->backup-dir)
-        filename RollbackManager._mounted-backup-filename
-        rollback-path (Path.join backup-dir module-name filename)]
+  (let [rollback-path (self:module-name->mounted-backup-path)]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               unmount-arg (Path.join self._label module-name)
