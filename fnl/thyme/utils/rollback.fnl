@@ -154,16 +154,16 @@ Return `true` if the following conditions are met:
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               unmount-arg (Path.join self._label module-name)
-              msg (-> "%s: rollback to mounted backup for module %s
+              msg (-> "%s: rollback to mounted backup for %s %s
 Note that this loader is intended to help you fix the module reducing its annoying errors.
 Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
-                      (: :format loader-name module-name unmount-arg
+                      (: :format loader-name self._label module-name unmount-arg
                          module-name))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
-        (let [error-msg (-> "%s: no mounted backup is found for module %s"
-                            (: :format loader-name module-name))]
+        (let [error-msg (-> "%s: no mounted backup is found for %s %s"
+                            (: :format loader-name self._label module-name))]
           (if (= self._label "macro")
               ;; TODO: Better implementation independent of `self._label`.
               (values nil error-msg)
