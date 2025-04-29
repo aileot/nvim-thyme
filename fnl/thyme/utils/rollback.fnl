@@ -167,7 +167,9 @@ Please execute `:ThymeRollbackUnmount %s` to load your runtime %s on &rtp."
   ;; TODO: Add option to avoid injecting searcher more than once in case where
   ;; some other plugin injects other searchers only to fall into infinite loop.
   (if (not self._searcher-injected?)
-      (table.insert searchers 1 self.search-module-from-mounted-backups)
+      (do
+        (table.insert searchers 1 self.search-module-from-mounted-backups)
+        (set self._searcher-injected? true))
       (not= (first searchers) self.search-module-from-mounted-backups)
       (do
         (faccumulate [dropped? false i 1 (length searchers) &until dropped?]
