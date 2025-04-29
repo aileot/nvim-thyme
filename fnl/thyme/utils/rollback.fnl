@@ -13,7 +13,7 @@
        (require :thyme.utils.pool))
 
 (local RollbackManager
-       {:_backup-dir (Path.join state-prefix :rollbacks)
+       {:_root (Path.join state-prefix :rollbacks)
         :_active-backup-filename ".active"
         :_pinned-backup-filename ".pinned"
         :_mounted-backup-filename ".mounted"})
@@ -42,7 +42,7 @@
   "Return module backed up directory.
 @param module-name string
 @return string backup directory for the module"
-  (let [dir (Path.join self.root module-name)]
+  (let [dir (Path.join self._labeled-root module-name)]
     dir))
 
 (fn RollbackManager.module-name->backup-files [self module-name]
@@ -123,7 +123,7 @@ Return `true` if the following conditions are met:
   "Return loader path updated for mounted rollback feature.
 @param old-loader-path string
 @return string"
-  (let [loader-path-for-mounted-backups (Path.join self.root "?"
+  (let [loader-path-for-mounted-backups (Path.join self._labeled-root "?"
                                                    self._mounted-backup-filename)
         loader-prefix (.. loader-path-for-mounted-backups ";")]
     ;; Keep mounted backup loader path at the beginning of loader path.
@@ -139,9 +139,9 @@ Return `true` if the following conditions are met:
 
 (λ RollbackManager.new [label file-extension]
   (let [self (setmetatable {} RollbackManager)
-        root (Path.join RollbackManager._backup-dir label)]
+        root (Path.join RollbackManager._root label)]
     (vim.fn.mkdir root :p)
-    (set self.root root)
+    (set self._labeled-root root)
     (assert (= "." (file-extension:sub 1 1))
             "file-extension must start with `.`")
     (set self.file-extension file-extension)
@@ -150,7 +150,7 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.get-root []
   "Return the root directory of backup files.
 @return string the root path"
-  RollbackManager._backup-dir)
+  RollbackManager._root)
 
 (λ RollbackManager.switch-active-backup! [backup-path]
   "Switch active backup to `backup-path`."
@@ -207,7 +207,7 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.get-mounted-rollbacks []
   "Return all the mounted rollbacks.
 @return string[] the list of mounted rollbacks"
-  (-> (Path.join RollbackManager._backup-dir ;
+  (-> (Path.join RollbackManager._root ;
                  "*" ; for rollback label
                  "*" ; for module
                  RollbackManager._mounted-backup-filename)
