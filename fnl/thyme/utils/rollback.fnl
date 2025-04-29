@@ -141,6 +141,7 @@ Return `true` if the following conditions are met:
   (let [self (setmetatable {} RollbackManager)
         root (Path.join RollbackManager._root label)]
     (vim.fn.mkdir root :p)
+    (set self._label label)
     (set self._labeled-root root)
     (assert (= "." (file-extension:sub 1 1))
             "file-extension must start with `.`")

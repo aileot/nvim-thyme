@@ -110,6 +110,7 @@ RollbackManager.new = function(label, file_extension)
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, label)
   vim.fn.mkdir(root, "p")
+  self._label = label
   self["_labeled-root"] = root
   assert(("." == file_extension:sub(1, 1)), "file-extension must start with `.`")
   self["file-extension"] = file_extension
@@ -119,7 +120,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:155")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:156")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
