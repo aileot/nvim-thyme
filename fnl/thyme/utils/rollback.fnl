@@ -147,7 +147,7 @@ Return `true` if the following conditions are met:
   "Search for `module-name` in mounted rollbacks.
 @param module-name string
 @return string|function a lua chunk in function, or a string to tell why failed to load module."
-  (let [rollback-path (self:module-name->mounted-backup-path)]
+  (let [rollback-path (self:module-name->mounted-backup-path module-name)]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               unmount-arg (Path.join self._label module-name)

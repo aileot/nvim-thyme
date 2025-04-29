@@ -110,7 +110,7 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   end
 end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
-  local rollback_path = self["module-name->mounted-backup-path"](self)
+  local rollback_path = self["module-name->mounted-backup-path"](self, module_name)
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
     local unmount_arg = Path.join(self._label, module_name)
