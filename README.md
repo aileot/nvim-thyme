@@ -50,7 +50,7 @@ The project started from scratch. _Now in Beta!_
   represent the dependencies of the modules as is. No `fennel.plugins`
   dependency!
 - Clearing caches on `:FnlCacheClear!` does not actually delete cache files;
-  instead, it _hides_ files to the [pool](./REFERENCE.md#Pool)
+  instead, it _hides_ files to the [pool](./docs/reference.md#Pool)
   directory, and tries to restore the corresponding file in the pool if no
   contents are updated.
   This pool system is adopted here and there in this project.
@@ -273,7 +273,7 @@ you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 ## Interfaces
 
 This section lists out the interfaces with a summary.
-For the details, please read the [Reference](./REFERENCE.md).
+For the details, please read the [Reference](./docs/REFERENCE.md).
 
 ### Options in `.nvim-thyme.fnl`
 
@@ -324,16 +324,16 @@ loaded once a session of nvim. For example,
 All the interfaces are provided from the "thyme" module: get them from
 `require("thyme")`.
 
-- [loader](./REFERENCE.md#loader)
+- [loader](./docs/reference.md#loader)
   is to be appended to `package.loaders`.
-- [watch-files!](./REFERENCE.md#watch-files!)
-  or [watch_files](./REFERENCE.md#watch_files)
+- [watch-files!](./docs/reference.md#watch-files!)
+  or [watch_files](./docs/reference.md#watch_files)
   creates a set of autocmds to watch files.
-- [define-keymaps!](./REFERENCE.md#define-keymaps!)
-  or [define_keymaps](./REFERENCE.md#define_keymaps)
+- [define-keymaps!](./docs/reference.md#define-keymaps!)
+  or [define_keymaps](./docs/reference.md#define_keymaps)
   defines a set of keymaps in the [list](#keymaps) below.
-- [define-commands!](./REFERENCE.md#define-commands!)
-  or [define_commands](./REFERENCE.md#define_commands)
+- [define-commands!](./docs/reference.md#define-commands!)
+  or [define_commands](./docs/reference.md#define_commands)
   defines a set of command in the [list](#commands) below.
 
 ### Keymaps
@@ -418,9 +418,9 @@ require([[tangerine]]).setup({})
 ## Ex Command Comparisons
 
 Note: nvim-thyme only provides user commands when you call
-[`thyme.define-commands!`](./REFERENCE.md#define-commands!)
+[`thyme.define-commands!`](./docs/reference.md#define-commands!)
 or
-[`thyme.define_commands`](./REFERENCE.md#define_commands)
+[`thyme.define_commands`](./docs/reference.md#define_commands)
 for performance as described in [Commands](#commands) section above.
 
 ### Evaluate expression and print the result
