@@ -99,10 +99,16 @@ Return `true` if the following conditions are met:
 @param old-loader-path string
 @return string"
   (let [loader-path-for-mounted-backups (Path.join self.root "?"
-                                                   self._mounted-backup-filename)]
-    (assert (not (old-loader-path:find loader-path-for-mounted-backups 1 true))
-            "rollback path is already injected")
-    (.. loader-path-for-mounted-backups ";" old-loader-path)))
+                                                   self._mounted-backup-filename)
+        loader-prefix (.. loader-path-for-mounted-backups ";")]
+    ;; Keep mounted backup loader path at the beginning of loader path.
+    (case (old-loader-path:find loader-path-for-mounted-backups 1 true)
+      1 old-loader-path
+      nil (.. loader-prefix old-loader-path)
+      (idx-start idx-end) (let [tmp-loader-path (.. (old-loader-path:sub 1
+                                                                         idx-start)
+                                                    (old-loader-path:sub idx-end))]
+                            (.. loader-prefix tmp-loader-path)))))
 
 ;;; Static Methods
 
