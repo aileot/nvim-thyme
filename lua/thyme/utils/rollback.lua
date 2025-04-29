@@ -125,12 +125,12 @@ RollbackManager["mount-backup!"] = function(backup_dir)
   return symlink_21(active_backup_path, mountned_backup_path)
 end
 RollbackManager["unmount-backup!"] = function(backup_dir)
-  local mountned_backup_path = Path.join(backup_dir, RollbackManager["_mountned-backup-prefix"])
+  local mountned_backup_path = Path.join(backup_dir, RollbackManager["_mountned-backup-filename"])
   assert_is_file_readable(mountned_backup_path)
   return assert(fs.unlink(mountned_backup_path))
 end
 RollbackManager["get-mounted-rollbacks"] = function()
-  return vim.fn.glob(Path.join(RollbackManager["_backup-dir"], "*", "*", RollbackManager["_mountned-backup-prefix"]), false, true)
+  return vim.fn.glob(Path.join(RollbackManager["_backup-dir"], "*", "*", RollbackManager["_mountned-backup-filename"]), false, true)
 end
 RollbackManager["unmount-backup-all!"] = function()
   local _13_ = RollbackManager["get-mounted-rollbacks"]()

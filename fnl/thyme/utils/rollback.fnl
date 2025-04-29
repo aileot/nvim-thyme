@@ -172,7 +172,7 @@ Return `true` if the following conditions are met:
   "Unmount previously mounted backup for `backup-dir`.
 @param backup-dir string"
   (let [mountned-backup-path (Path.join backup-dir
-                                        RollbackManager._mountned-backup-prefix)]
+                                        RollbackManager._mountned-backup-filename)]
     (assert-is-file-readable mountned-backup-path)
     (assert (fs.unlink mountned-backup-path))))
 
@@ -182,7 +182,7 @@ Return `true` if the following conditions are met:
   (-> (Path.join RollbackManager._backup-dir ;
                  "*" ; for rollback label
                  "*" ; for module
-                 RollbackManager._mountned-backup-prefix)
+                 RollbackManager._mountned-backup-filename)
       (vim.fn.glob false true)))
 
 (fn RollbackManager.unmount-backup-all! []
