@@ -50,10 +50,8 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
   @return fun(): table a lua chunk, but only expects a macro table as its end."
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
-  (let [fennel (require :fennel)
-        macro-path (MacroRollbackManager:arrange-loader-path fennel.macro-path)]
-    ;; NOTE: Other plugins could also override fennel.macro-path.
-    (set fennel.macro-path macro-path)
+  (let [fennel (require :fennel)]
+    (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers)
     (case (case (fennel.search-module module-name fennel.macro-path)
             fnl-path (macro-module->?chunk module-name fnl-path)
             (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
