@@ -1,4 +1,4 @@
-(import-macros {: when-not : inc : last} :thyme.macros)
+(import-macros {: when-not : inc : first : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
@@ -160,6 +160,21 @@ Please execute `:ThymeRollbackUnmount %s` to load your runtime %s on &rtp."
         (let [error-msg (-> "thyme-mounted-rollback-loader: no mounted backup is found for module %s"
                             (: :format module-name))]
           error-msg))))
+
+(fn RollbackManager.inject-mounted-backup-searcher! [self searchers]
+  "Inject mounted backup searcher into `searchers` in the highest priority.
+@param searchers function[]"
+  ;; TODO: Add option to avoid injecting searcher more than once in case where
+  ;; some other plugin injects other searchers only to fall into infinite loop.
+  (if (not self._searcher-injected?)
+      (table.insert searchers 1 self.search-module-from-mounted-backups)
+      (not= (first searchers) self.search-module-from-mounted-backups)
+      (do
+        (faccumulate [dropped? false i 1 (length searchers) &until dropped?]
+          (if (= (. searchers i) self.search-module-from-mounted-backups)
+              (table.remove searchers i)
+              false))
+        (table.insert searchers 1 self.search-module-from-mounted-backups))))
 
 ;;; Static Methods
 
