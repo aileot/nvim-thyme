@@ -179,7 +179,9 @@ Return `true` if the following conditions are met:
 (fn RollbackManager.get-mounted-rollbacks []
   "Return all the mounted rollbacks.
 @return string[] the list of mounted rollbacks"
-  (-> (Path.join RollbackManager._backup-dir "*"
+  (-> (Path.join RollbackManager._backup-dir ;
+                 "*" ; for rollback label
+                 "*" ; for module
                  RollbackManager._mountned-backup-prefix)
       (vim.fn.glob false true)))
 
