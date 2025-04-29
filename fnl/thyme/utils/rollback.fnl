@@ -155,6 +155,7 @@ Return `true` if the following conditions are met:
         (let [resolved-path (fs.readlink rollback-path)
               unmount-arg (Path.join self._label module-name)
               msg (-> "%s: rollback to mounted backup for module %s
+Note that this loader is intended to help you fix the module reducing its annoying errors.
 Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
                       (: :format loader-name module-name unmount-arg
                          module-name))]

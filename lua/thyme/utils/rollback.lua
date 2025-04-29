@@ -115,7 +115,7 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
     local unmount_arg = Path.join(self._label, module_name)
-    local msg = ("%s: rollback to mounted backup for module %s\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(loader_name, module_name, unmount_arg, module_name)
+    local msg = ("%s: rollback to mounted backup for module %s\nNote that this loader is intended to help you fix the module reducing its annoying errors.\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(loader_name, module_name, unmount_arg, module_name)
     vim.notify_once(msg, vim.log.levels.WARN)
     return loadfile(resolved_path)
   else
@@ -152,8 +152,8 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:195")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:195")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:196")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:196")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, label)
   vim.fn.mkdir(root, "p")
@@ -167,7 +167,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:211")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:212")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
