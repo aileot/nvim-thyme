@@ -147,18 +147,20 @@ Return `true` if the following conditions are met:
   "Search for `module-name` in mounted rollbacks.
 @param module-name string
 @return string|function a lua chunk in function, or a string to tell why failed to load module."
-  (let [rollback-path (self:module-name->mounted-backup-path module-name)]
+  (let [rollback-path (self:module-name->mounted-backup-path module-name)
+        loader-name "thyme-mounted-rollback-loader"]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               unmount-arg (Path.join self._label module-name)
-              msg (-> "thyme-mounted-rollback-loader: rollback to mounted backup for module %s
+              msg (-> "%s: rollback to mounted backup for module %s
 Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
-                      (: :format module-name unmount-arg module-name))]
+                      (: :format loader-name module-name unmount-arg
+                         module-name))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
-        (let [error-msg (-> "thyme-mounted-rollback-loader: no mounted backup is found for module %s"
-                            (: :format module-name))]
+        (let [error-msg (-> "%s: no mounted backup is found for module %s"
+                            (: :format loader-name module-name))]
           error-msg))))
 
 (fn RollbackManager.inject-mounted-backup-searcher! [self searchers]

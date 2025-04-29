@@ -111,14 +111,15 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
 end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
   local rollback_path = self["module-name->mounted-backup-path"](self, module_name)
+  local loader_name = "thyme-mounted-rollback-loader"
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
     local unmount_arg = Path.join(self._label, module_name)
-    local msg = ("thyme-mounted-rollback-loader: rollback to mounted backup for module %s\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(module_name, unmount_arg, module_name)
+    local msg = ("%s: rollback to mounted backup for module %s\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(loader_name, module_name, unmount_arg, module_name)
     vim.notify_once(msg, vim.log.levels.WARN)
     return loadfile(resolved_path)
   else
-    local error_msg = ("thyme-mounted-rollback-loader: no mounted backup is found for module %s"):format(module_name)
+    local error_msg = ("%s: no mounted backup is found for module %s"):format(loader_name, module_name)
     return error_msg
   end
 end
@@ -147,8 +148,8 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   end
 end
 RollbackManager.new = function(label, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:188")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:188")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/utils/rollback.fnl:190")
+  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/utils/rollback.fnl:190")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, label)
   vim.fn.mkdir(root, "p")
@@ -162,7 +163,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:204")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/utils/rollback.fnl:206")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
