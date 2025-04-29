@@ -98,6 +98,11 @@ Return `true` if the following conditions are met:
     (validate-type :number max-rollbacks)
     (let [threshold (inc max-rollbacks)
           backup-files (self:module-name->backup-files module-name)]
+      (table.sort backup-files
+                  (fn [file1 file2]
+                    "Sort files to oldest."
+                    (< (-> (fs.stat file2) (. :birthtime :sec))
+                       (-> (fs.stat file1) (. :birthtime :sec)))))
       (for [i threshold (length backup-files)]
         (let [path (. backup-files i)]
           (assert fs.unlink path))))))
