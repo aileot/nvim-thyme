@@ -114,7 +114,7 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
     local unmount_arg = Path.join(self._label, module_name)
-    local msg = ("thyme-mounted-rollback-loader: rollback to mounted backup for module %s\nPlease execute `:ThymeRollbackUnmount %s` to load your runtime %s on &rtp."):format(module_name, unmount_arg, module_name)
+    local msg = ("thyme-mounted-rollback-loader: rollback to mounted backup for module %s\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(module_name, unmount_arg, module_name)
     vim.notify_once(msg, vim.log.levels.WARN)
     return loadfile(resolved_path)
   else

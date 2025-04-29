@@ -152,7 +152,7 @@ Return `true` if the following conditions are met:
         (let [resolved-path (fs.readlink rollback-path)
               unmount-arg (Path.join self._label module-name)
               msg (-> "thyme-mounted-rollback-loader: rollback to mounted backup for module %s
-Please execute `:ThymeRollbackUnmount %s` to load your runtime %s on &rtp."
+Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
                       (: :format module-name unmount-arg module-name))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
