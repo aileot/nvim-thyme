@@ -5,7 +5,11 @@
                     :error-pinpoint ["|>>" "<<|"]}
  ;; The directory, in which you would manage your own Fennel modules, relative
  ;; to `(stdpath :config)`. The value only affects non-macro modules.
- :fnl-dir "fnl"
+ :fnl-dir (if (-> (vim.fn.stdpath :config)
+                  (.. "/fnl")
+                  (vim.uv.fs_stat))
+              "fnl"
+              "lua")
  ;; The path patterns for fennel.macro-path to find Fennel macro module path.
  ;; Relative path markers (`.`) are internally replaced with the paths on
  ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in
