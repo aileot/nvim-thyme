@@ -38,6 +38,16 @@ local function _12_(...)
   return require("thyme.user.commands")["define-commands!"](...)
 end
 M = {loader = search_fnl_module_on_rtp_21, view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_, ["watch-files!"] = _10_, ["define-keymaps!"] = _11_, ["define-commands!"] = _12_}
+M.setup = function(_3fopts)
+  assert(((nil == _3fopts) or (nil == next(_3fopts))), "Please call `thyme.setup` without any args, or with an empty table.")
+  local config = require("thyme.config")
+  local watch = require("thyme.user.watch")
+  local keymaps = require("thyme.user.keymaps")
+  local commands = require("thyme.user.commands")
+  watch["watch-files"](config.watch)
+  keymaps["define-keymaps!"](config)
+  return commands["define-commands!"](config)
+end
 for k, v in pairs(M) do
   if k:find("[^-!]") then
     local new_key = k:gsub("!", ""):gsub("%-", "_")
