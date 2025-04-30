@@ -10,4 +10,4 @@
  ;; Relative path markers (`.`) are internally replaced with the paths on
  ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in
  ;; `./fnl/?.fnl`.
- :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
+ :macro-path "./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
