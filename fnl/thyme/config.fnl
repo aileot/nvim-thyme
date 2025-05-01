@@ -20,7 +20,7 @@
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
 (local default-opts ;
-       {:max-rollback 10
+       {:max-rollbacks 10
         ;; TODO: Inplement :preproc and set the default value to `#$`.
         :preproc nil
         :compiler-options {}

@@ -34,7 +34,7 @@ end
 cache["mt-config"] = setmetatable({}, {__index = _3_, __newindex = _6_})
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local default_opts = {["max-rollback"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
+local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
 if not file_readable_3f(config_path) then
   local _10_ = vim.fn.confirm(("Missing \"%s\" at %s... Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_10_ == 2) then
