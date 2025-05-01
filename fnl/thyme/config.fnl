@@ -34,7 +34,12 @@
         :__newindex (if debug?
                         (fn [self k v]
                           (rawset self k v))
-                        #(error "no option can be overridden by this table"))}))
+                        (fn [self k v]
+                          (case (rawget default-opts k)
+                            nil (error "no option can be overridden by this table")
+                            _ (do
+                                (rawset self k v)
+                                v))))}))
 
 (when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
