@@ -73,10 +73,8 @@
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
-        ?config (fennel.eval config-code compiler-options)
-        config-table (or ?config {})
-        config (vim.tbl_deep_extend :keep config-table default-opts)]
-    config))
+        ?config (fennel.eval config-code compiler-options)]
+    (or ?config {})))
 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.

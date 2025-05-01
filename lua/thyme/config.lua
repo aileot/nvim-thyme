@@ -76,9 +76,7 @@ local function read_config(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
   local _3fconfig = fennel.eval(config_code, compiler_options)
-  local config_table = (_3fconfig or {})
-  local config = vim.tbl_deep_extend("keep", config_table, default_opts)
-  return config
+  return (_3fconfig or {})
 end
 local function get_config()
   if (nil == next(cache["main-config"])) then
