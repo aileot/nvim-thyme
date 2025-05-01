@@ -119,7 +119,6 @@ cache dir.
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [fennel (require :fennel)
-            {: get-config} (require :thyme.config)
             config (get-config)]
         (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
         (when (or (= nil cache.rtp) debug?)
