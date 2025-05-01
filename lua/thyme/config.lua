@@ -7,22 +7,25 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local cache = {["main-config"] = nil}
-local function _3_(_, k)
-  local _4_ = cache["main-config"][k]
+local nvim_appname = vim.env.NVIM_APPNAME
+local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
+local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
+local cache = {}
+local function _3_(self, k)
+  local _4_ = rawget(default_opts, k)
   if (nil ~= _4_) then
     local val = _4_
+    rawset(self, k, val)
     return val
   else
-    local _0 = _4_
+    local _ = _4_
     return error(("unexpected option detected: " .. vim.inspect(k)))
   end
 end
 local _6_
 if debug_3f then
-  local function _7_(_, k, v)
-    cache["main-config"][k] = v
-    return nil
+  local function _7_(self, k, v)
+    return rawset(self, k, v)
   end
   _6_ = _7_
 else
@@ -31,10 +34,7 @@ else
   end
   _6_ = _8_
 end
-cache["mt-config"] = setmetatable({}, {__index = _3_, __newindex = _6_})
-local nvim_appname = vim.env.NVIM_APPNAME
-local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
+cache["main-config"] = setmetatable({}, {__index = _3_, __newindex = _6_})
 if not file_readable_3f(config_path) then
   local _10_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_10_ == 2) then
@@ -81,12 +81,12 @@ local function read_config(config_file_path)
   return config
 end
 local function get_config()
-  if (nil == cache["main-config"]) then
+  if (nil == next(cache["main-config"])) then
     local main_config = read_config(config_path)
     cache["main-config"] = main_config
   else
   end
-  return cache["mt-config"]
+  return cache["main-config"]
 end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
