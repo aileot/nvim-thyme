@@ -80,8 +80,9 @@
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
   (when (= nil (next cache.main-config))
-    (let [main-config (read-config config-path)]
-      (set cache.main-config main-config)))
+    (let [user-config (read-config config-path)]
+      (each [k v (pairs user-config)]
+        (tset cache.main-config k v))))
   cache.main-config)
 
 (fn config-file? [path]

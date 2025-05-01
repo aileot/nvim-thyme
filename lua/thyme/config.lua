@@ -80,8 +80,10 @@ local function read_config(config_file_path)
 end
 local function get_config()
   if (nil == next(cache["main-config"])) then
-    local main_config = read_config(config_path)
-    cache["main-config"] = main_config
+    local user_config = read_config(config_path)
+    for k, v in pairs(user_config) do
+      cache["main-config"][k] = v
+    end
   else
   end
   return cache["main-config"]
