@@ -33,8 +33,8 @@ if debug_3f then
   end
   _7_ = _8_
 else
-  local function _9_()
-    return error("no option can be overridden by this table")
+  local function _9_(_, k)
+    return error(("unexpected option detected: " .. vim.inspect(k)))
   end
   _7_ = _9_
 end
