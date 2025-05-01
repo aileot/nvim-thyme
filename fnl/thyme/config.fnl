@@ -82,7 +82,10 @@
   (when (= nil (next cache.main-config))
     (let [user-config (read-config config-path)]
       (each [k v (pairs user-config)]
-        (tset cache.main-config k v))))
+        ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
+        ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be
+        ;; overridden by the other locations than here.
+        (rawset cache.main-config k v))))
   cache.main-config)
 
 (fn config-file? [path]

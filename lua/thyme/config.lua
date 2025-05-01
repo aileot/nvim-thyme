@@ -82,7 +82,7 @@ local function get_config()
   if (nil == next(cache["main-config"])) then
     local user_config = read_config(config_path)
     for k, v in pairs(user_config) do
-      cache["main-config"][k] = v
+      rawset(cache["main-config"], k, v)
     end
   else
   end
