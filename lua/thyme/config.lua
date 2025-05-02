@@ -96,6 +96,11 @@ local function read_config_with_backup_21(config_file_path)
       else
       end
       _3fconfig = result
+    elseif (true and (nil ~= _21_)) then
+      local _0 = _20_
+      local err_msg = _21_
+      local msg = ("failed to evaluating %s with the error message:\n%s"):format(config_filename, err_msg)
+      _3fconfig = vim.notify_once(msg, vim.log.levels.ERROR)
     else
       _3fconfig = nil
     end

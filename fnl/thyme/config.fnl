@@ -89,7 +89,10 @@
                                     (ConfigRollbackManager:create-module-backup! backup-name
                                                                                  config-file-path)
                                     (ConfigRollbackManager:cleanup-old-backups! backup-name))
-                                  result))
+                                  result)
+                  (_ err-msg) (let [msg (-> "failed to evaluating %s with the error message:\n%s"
+                                            (: :format config-filename err-msg))]
+                                (vim.notify_once msg vim.log.levels.ERROR)))
         _ (set cache.evaluating? false)]
     (or ?config {})))
 
