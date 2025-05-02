@@ -69,7 +69,7 @@
             (vim.defer_fn 800)))
     _ (error "abort proceeding with nvim-thyme")))
 
-(fn read-config [config-file-path]
+(fn read-config-with-backup! [config-file-path]
   "Return config table of `config-file-path`.
 @param config-file string a directory path.
 @return table"
@@ -101,7 +101,7 @@
       {:?error-msg (.. "recursion detected in evaluating " config-filename)}
       (next cache.main-config)
       cache.main-config
-      (let [user-config (read-config config-path)]
+      (let [user-config (read-config-with-backup! config-path)]
         (each [k v (pairs user-config)]
           ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
           ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be

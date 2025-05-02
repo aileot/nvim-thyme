@@ -71,7 +71,7 @@ if not file_readable_3f(config_path) then
   end
 else
 end
-local function read_config(config_file_path)
+local function read_config_with_backup_21(config_file_path)
   assert_is_fnl_file(config_file_path)
   local fennel = require("fennel")
   local config_code
@@ -111,7 +111,7 @@ local function get_config()
   elseif next(cache["main-config"]) then
     return cache["main-config"]
   else
-    local user_config = read_config(config_path)
+    local user_config = read_config_with_backup_21(config_path)
     for k, v in pairs(user_config) do
       rawset(cache["main-config"], k, v)
     end
