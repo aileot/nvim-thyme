@@ -100,10 +100,10 @@ local function read_config_with_backup_21(config_file_path)
       local _0 = _20_
       local error_msg = _21_
       local backup_path = ConfigRollbackManager["module-name->active-backup-path"](ConfigRollbackManager, backup_name)
-      local msg = ("Failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
+      local msg = ("[thyme] failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
       vim.notify_once(msg, vim.log.levels.ERROR)
       if file_readable_3f(backup_path) then
-        local msg0 = "Temporarily restore config from backup."
+        local msg0 = "[thyme] temporarily restore config from backup."
         vim.notify_once(msg0, vim.log.levels.WARN)
         _3fconfig = fennel.dofile(backup_path, compiler_options)
       else

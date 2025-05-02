@@ -93,11 +93,11 @@
                                   result)
                   (_ error-msg)
                   (let [backup-path (ConfigRollbackManager:module-name->active-backup-path backup-name)
-                        msg (-> "Failed to evaluating %s with the following error:\n%s"
+                        msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
                                 (: :format config-filename error-msg))]
                     (vim.notify_once msg vim.log.levels.ERROR)
                     (when (file-readable? backup-path)
-                      (let [msg (-> "Temporarily restore config from backup.")]
+                      (let [msg (-> "[thyme] temporarily restore config from backup.")]
                         (vim.notify_once msg vim.log.levels.WARN)
                         ;; Return the backup.
                         (fennel.dofile backup-path compiler-options)))))
