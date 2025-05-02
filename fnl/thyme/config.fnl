@@ -2,6 +2,9 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
+(local RollbackManager (require :thyme.utils.rollback))
+(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
+
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
@@ -79,7 +82,14 @@
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
         _ (set cache.evaluating? true)
-        ?config (fennel.eval config-code compiler-options)
+        ?config (case (pcall fennel.eval config-code compiler-options)
+                  (true result) (let [backup-name "default"]
+                                  (when (ConfigRollbackManager:should-update-backup? backup-name
+                                                                                     config-code)
+                                    (ConfigRollbackManager:create-module-backup! backup-name
+                                                                                 config-file-path)
+                                    (ConfigRollbackManager:cleanup-old-backups! backup-name))
+                                  result))
         _ (set cache.evaluating? false)]
     (or ?config {})))
 

@@ -7,6 +7,8 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
+local RollbackManager = require("thyme.utils.rollback")
+local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
@@ -82,7 +84,22 @@ local function read_config(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
-  local _3fconfig = fennel.eval(config_code, compiler_options)
+  local _3fconfig
+  do
+    local _20_, _21_ = pcall(fennel.eval, config_code, compiler_options)
+    if ((_20_ == true) and (nil ~= _21_)) then
+      local result = _21_
+      local backup_name = "default"
+      if ConfigRollbackManager["should-update-backup?"](ConfigRollbackManager, backup_name, config_code) then
+        ConfigRollbackManager["create-module-backup!"](ConfigRollbackManager, backup_name, config_file_path)
+        ConfigRollbackManager["cleanup-old-backups!"](ConfigRollbackManager, backup_name)
+      else
+      end
+      _3fconfig = result
+    else
+      _3fconfig = nil
+    end
+  end
   local _0
   cache["evaluating?"] = false
   _0 = nil
