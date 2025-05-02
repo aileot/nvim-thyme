@@ -46,9 +46,9 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
 
 (fn search-fnl-macro-on-rtp! [module-name]
   "Search macro on &rtp.
-  @param module-name string
-  @return (fun(): table)|nil a lua chunk, but only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value.
-  @return nil|string: nil, or an error message."
+@param module-name string
+@return (fun(): table)|nil a lua chunk, but only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value.
+@return nil|string: nil, or an error message."
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
   (let [fennel (require :fennel)]
@@ -60,21 +60,23 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
       (_ error-msg)
       (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)
             {: get-config} (require :thyme.config)
-            config (get-config)
-            max-rollbacks config.max-rollbacks
-            rollback-enabled? (< 0 max-rollbacks)]
-        (if (and rollback-enabled? (file-readable? backup-path))
-            (case (macro-module->?chunk module-name backup-path)
-              chunk
-              ;; TODO: As described in the error message below, append
-              ;; thyme-backup-loader independently to fennel.macro-searchers?
-              (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
-                           :format module-name error-msg)]
-                (vim.notify_once msg vim.log.levels.WARN)
-                chunk)
-              (_ msg)
-              (values nil msg))
-            (values nil error-msg))))))
+            config (get-config)]
+        (case config.?error-msg
+          msg (values nil msg)
+          _ (let [max-rollbacks config.max-rollbacks
+                  rollback-enabled? (< 0 max-rollbacks)]
+              (if (and rollback-enabled? (file-readable? backup-path))
+                  (case (macro-module->?chunk module-name backup-path)
+                    chunk
+                    ;; TODO: As described in the error message below, append
+                    ;; thyme-backup-loader independently to fennel.macro-searchers?
+                    (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
+                                 :format module-name error-msg)]
+                      (vim.notify_once msg vim.log.levels.WARN)
+                      chunk)
+                    (_ msg)
+                    (values nil msg))
+                  (values nil error-msg))))))))
 
 (fn overwrite-metatable! [original-table cache-table]
   (case (getmetatable original-table)

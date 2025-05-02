@@ -2,19 +2,6 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
-(local cache {:main-config nil})
-(set cache.mt-config
-     (setmetatable {}
-       {:__index (fn [_ k]
-                   (case (. cache.main-config k)
-                     val val
-                     _ (error (.. "unexpected option detected: "
-                                  (vim.inspect k)))))
-        :__newindex (if debug?
-                        (fn [_ k v]
-                          (tset cache.main-config k v))
-                        #(error "no option can be overridden by this table"))}))
-
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
@@ -32,6 +19,27 @@
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))})
+
+(local cache {})
+
+(set cache.main-config
+     (setmetatable {}
+       {:__index (fn [self k]
+                   (if (= k "?error-msg")
+                       ;; As a placeholder.
+                       nil
+                       (case (rawget default-opts k)
+                         val (do
+                               (rawset self k val)
+                               val)
+                         _ (error (.. "unexpected option detected: "
+                                      (vim.inspect k))))))
+        :__newindex (if debug?
+                        (fn [self k v]
+                          (rawset self k v))
+                        (fn [_ k]
+                          (error (.. "unexpected option detected: "
+                                     (vim.inspect k)))))}))
 
 (when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
@@ -70,18 +78,26 @@
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
+        _ (set cache.evaluating? true)
         ?config (fennel.eval config-code compiler-options)
-        config-table (or ?config {})
-        config (vim.tbl_deep_extend :keep config-table default-opts)]
-    config))
+        _ (set cache.evaluating? false)]
+    (or ?config {})))
 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
-  (when (= nil cache.main-config)
-    (let [main-config (read-config config-path)]
-      (set cache.main-config main-config)))
-  cache.mt-config)
+  (if cache.evaluating?
+      ;; NOTE: This expects `(pcall require missing-mdodule)` in .nvim-thyme.fnl.
+      {:?error-msg (.. "recursion detected in evaluating " config-filename)}
+      (next cache.main-config)
+      cache.main-config
+      (let [user-config (read-config config-path)]
+        (each [k v (pairs user-config)]
+          ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
+          ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be
+          ;; overridden by the other locations than here.
+          (rawset cache.main-config k v))
+        cache.main-config)))
 
 (fn config-file? [path]
   "Tell if `path` is a thyme's config file.
