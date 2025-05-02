@@ -91,9 +91,16 @@
                                                                                  config-file-path)
                                     (ConfigRollbackManager:cleanup-old-backups! backup-name))
                                   result)
-                  (_ err-msg) (let [msg (-> "failed to evaluating %s with the error message:\n%s"
-                                            (: :format config-filename err-msg))]
-                                (vim.notify_once msg vim.log.levels.ERROR)))
+                  (_ error-msg)
+                  (let [backup-path (ConfigRollbackManager:module-name->active-backup-path backup-name)
+                        msg (-> "Failed to evaluating %s with the following error:\n%s"
+                                (: :format config-filename error-msg))]
+                    (vim.notify_once msg vim.log.levels.ERROR)
+                    (when (file-readable? backup-path)
+                      (let [msg (-> "Temporarily restore config from backup.")]
+                        (vim.notify_once msg vim.log.levels.WARN)
+                        ;; Return the backup.
+                        (fennel.dofile backup-path compiler-options)))))
         _ (set cache.evaluating? false)]
     (or ?config {})))
 
