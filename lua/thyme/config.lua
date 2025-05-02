@@ -85,38 +85,31 @@ local function read_config_with_backup_21(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
-  local _3fconfig
-  do
-    local _20_, _21_ = pcall(fennel.eval, config_code, compiler_options)
-    if ((_20_ == true) and (nil ~= _21_)) then
-      local result = _21_
-      if ConfigRollbackManager["should-update-backup?"](ConfigRollbackManager, backup_name, config_code) then
-        ConfigRollbackManager["create-module-backup!"](ConfigRollbackManager, backup_name, config_file_path)
-        ConfigRollbackManager["cleanup-old-backups!"](ConfigRollbackManager, backup_name)
-      else
-      end
-      _3fconfig = result
-    elseif (true and (nil ~= _21_)) then
-      local _0 = _20_
-      local error_msg = _21_
-      local backup_path = ConfigRollbackManager["module-name->active-backup-path"](ConfigRollbackManager, backup_name)
-      local msg = ("[thyme] failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
-      vim.notify_once(msg, vim.log.levels.ERROR)
-      if file_readable_3f(backup_path) then
-        local msg0 = "[thyme] temporarily restore config from backup."
-        vim.notify_once(msg0, vim.log.levels.WARN)
-        _3fconfig = fennel.dofile(backup_path, compiler_options)
-      else
-        _3fconfig = nil
-      end
-    else
-      _3fconfig = nil
-    end
-  end
+  local ok_3f, _3fresult = pcall(fennel.eval, config_code, compiler_options)
   local _0
   cache["evaluating?"] = false
   _0 = nil
-  return (_3fconfig or {})
+  if ok_3f then
+    local _3fconfig = _3fresult
+    if ConfigRollbackManager["should-update-backup?"](ConfigRollbackManager, backup_name, config_code) then
+      ConfigRollbackManager["create-module-backup!"](ConfigRollbackManager, backup_name, config_file_path)
+      ConfigRollbackManager["cleanup-old-backups!"](ConfigRollbackManager, backup_name)
+    else
+    end
+    return (_3fconfig or {})
+  else
+    local backup_path = ConfigRollbackManager["module-name->active-backup-path"](ConfigRollbackManager, backup_name)
+    local error_msg = _3fresult
+    local msg = ("[thyme] failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
+    vim.notify_once(msg, vim.log.levels.ERROR)
+    if file_readable_3f(backup_path) then
+      local msg0 = "[thyme] temporarily restore config from backup."
+      vim.notify_once(msg0, vim.log.levels.WARN)
+      return fennel.dofile(backup_path, compiler_options)
+    else
+      return nil
+    end
+  end
 end
 local function get_config()
   if cache["evaluating?"] then

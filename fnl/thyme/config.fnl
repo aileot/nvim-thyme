@@ -83,26 +83,27 @@
                           :filename config-file-path}
         backup-name (or vim.env.NVIM_APPNAME "nvim")
         _ (set cache.evaluating? true)
-        ?config (case (pcall fennel.eval config-code compiler-options)
-                  (true result) (do
-                                  (when (ConfigRollbackManager:should-update-backup? backup-name
-                                                                                     config-code)
-                                    (ConfigRollbackManager:create-module-backup! backup-name
-                                                                                 config-file-path)
-                                    (ConfigRollbackManager:cleanup-old-backups! backup-name))
-                                  result)
-                  (_ error-msg)
-                  (let [backup-path (ConfigRollbackManager:module-name->active-backup-path backup-name)
-                        msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
-                                (: :format config-filename error-msg))]
-                    (vim.notify_once msg vim.log.levels.ERROR)
-                    (when (file-readable? backup-path)
-                      (let [msg (-> "[thyme] temporarily restore config from backup.")]
-                        (vim.notify_once msg vim.log.levels.WARN)
-                        ;; Return the backup.
-                        (fennel.dofile backup-path compiler-options)))))
+        (ok? ?result) (pcall fennel.eval config-code compiler-options)
         _ (set cache.evaluating? false)]
-    (or ?config {})))
+    ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
+    (if ok?
+        (let [?config ?result]
+          (when (ConfigRollbackManager:should-update-backup? backup-name
+                                                             config-code)
+            (ConfigRollbackManager:create-module-backup! backup-name
+                                                         config-file-path)
+            (ConfigRollbackManager:cleanup-old-backups! backup-name))
+          (or ?config {}))
+        (let [backup-path (ConfigRollbackManager:module-name->active-backup-path backup-name)
+              error-msg ?result
+              msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
+                      (: :format config-filename error-msg))]
+          (vim.notify_once msg vim.log.levels.ERROR)
+          (when (file-readable? backup-path)
+            (let [msg (-> "[thyme] temporarily restore config from backup.")]
+              (vim.notify_once msg vim.log.levels.WARN)
+              ;; Return the backup.
+              (fennel.dofile backup-path compiler-options)))))))
 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
