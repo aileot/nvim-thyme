@@ -35,7 +35,7 @@
 
 (when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
-  (case (vim.fn.confirm (: "Missing \"%s\" at %s... Generate and open it?"
+  (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
     2 (let [recommended-config ";; recommended options of nvim-thyme
