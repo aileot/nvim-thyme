@@ -38,19 +38,16 @@
   (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
-    2 (let [recommended-config ";; recommended options of nvim-thyme
-{:max-rollbacks 10
- :compiler-options {:correlate true
-                    ;; :compilerEnv _G
-                    :error-pinpoint [\"|>>\" \"<<|\"]}
- ;; The directory, in which you would manage your own Fennel modules, relative
- ;; to `(stdpath :config)`. The value only affects non-macro modules.
- :fnl-dir \"fnl\"
- ;; The path patterns for fennel.macro-path to find Fennel macro module path.
- ;; Relative path markers (`.`) are internally replaced with the paths on
- ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in
- ;; `./fnl/?.fnl`.
- :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"]
+    2 (let [this-dir (-> (debug.getinfo 1 "S")
+                         (. :source)
+                         (: :sub 2)
+                         (vim.fs.dirname))
+            example-config-filename (.. config-filename ".example")
+            [example-config-path] (vim.fs.find example-config-filename
+                                               {:upward true
+                                                :type "file"
+                                                :path this-dir})
+            recommended-config (read-file example-config-path)]
         (write-fnl-file! config-path recommended-config)
         (vim.cmd.tabedit config-path)
         (-> #(when (= config-path (vim.api.nvim_buf_get_name 0))

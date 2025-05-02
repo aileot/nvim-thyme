@@ -38,23 +38,27 @@ local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"
 if not file_readable_3f(config_path) then
   local _10_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_10_ == 2) then
-    local recommended_config = ";; recommended options of nvim-thyme\n{:max-rollbacks 10\n :compiler-options {:correlate true\n                    ;; :compilerEnv _G\n                    :error-pinpoint [\"|>>\" \"<<|\"]}\n ;; The directory, in which you would manage your own Fennel modules, relative\n ;; to `(stdpath :config)`. The value only affects non-macro modules.\n :fnl-dir \"fnl\"\n ;; The path patterns for fennel.macro-path to find Fennel macro module path.\n ;; Relative path markers (`.`) are internally replaced with the paths on\n ;; &runtimepath filtered by the directories suffixed by `?`, e.g., `fnl/` in\n ;; `./fnl/?.fnl`.\n :macro-path \"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl\"}"
+    local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
+    local example_config_filename = (config_filename .. ".example")
+    local _let_11_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
+    local example_config_path = _let_11_[1]
+    local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
-    local function _11_()
+    local function _12_()
       if (config_path == vim.api.nvim_buf_get_name(0)) then
-        local _12_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-        if (_12_ == 2) then
+        local _13_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+        if (_13_ == 2) then
           return error(("abort trusting " .. config_path))
         else
-          local _ = _12_
+          local _ = _13_
           return vim.cmd.trust()
         end
       else
         return nil
       end
     end
-    vim.defer_fn(_11_, 800)
+    vim.defer_fn(_12_, 800)
   else
     local _ = _10_
     error("abort proceeding with nvim-thyme")

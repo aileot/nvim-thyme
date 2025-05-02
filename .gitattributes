@@ -1,3 +1,4 @@
 **/*.lock linguist-generated
 lua/** linguist-vendored
 *.fnl diff=fennel
+*.fnl.example linguist-language=Fennel

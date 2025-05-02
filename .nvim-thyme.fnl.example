@@ -1,0 +1,24 @@
+;; Example options for nvim-thyme; some of the values are different from the default ones.
+{:max-rollbacks 10
+ :compiler-options {:correlate true
+                    ;; Comment out below to enable `vim` APIs and any others in
+                    ;; compile time.
+                    ;; :compilerEnv _G
+                    :error-pinpoint ["|>>" "<<|"]}
+ ;; The directory relative to `(stdpath :config)` to manage your Fennel modules
+ ;; like you manage Lua modules under lua/. The value only affects non-macro
+ ;; modules; for Fennel macros, arrange `macro-path` option instead.
+ :fnl-dir (if (-> (vim.fn.stdpath :config)
+                  (.. "/fnl")
+                  (vim.uv.fs_stat))
+              "fnl"
+              ;; You can manage Fennel modules alongside Lua modules under
+              ;; lua/. In this case, if a Fennel module and a Lua module have
+              ;; conflicting names, the Lua module will be always loaded
+              ;; instead of the Fennel module.
+              "lua")
+ ;; The path patterns for `fennel.macro-path` to find Fennel macro module
+ ;; path. Relative path markers (`.`) are internally replaced with the paths on
+ ;; &runtimepath filtered by the directories preceded by `?`, for example, in
+ ;; `./fnl/?.fnl`.
+ :macro-path "./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
