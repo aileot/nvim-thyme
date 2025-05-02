@@ -81,9 +81,10 @@
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
+        backup-name (or vim.env.NVIM_APPNAME "nvim")
         _ (set cache.evaluating? true)
         ?config (case (pcall fennel.eval config-code compiler-options)
-                  (true result) (let [backup-name "default"]
+                  (true result) (do
                                   (when (ConfigRollbackManager:should-update-backup? backup-name
                                                                                      config-code)
                                     (ConfigRollbackManager:create-module-backup! backup-name

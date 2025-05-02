@@ -81,6 +81,7 @@ local function read_config_with_backup_21(config_file_path)
     config_code = vim.secure.read(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
+  local backup_name = (vim.env.NVIM_APPNAME or "nvim")
   local _
   cache["evaluating?"] = true
   _ = nil
@@ -89,7 +90,6 @@ local function read_config_with_backup_21(config_file_path)
     local _20_, _21_ = pcall(fennel.eval, config_code, compiler_options)
     if ((_20_ == true) and (nil ~= _21_)) then
       local result = _21_
-      local backup_name = "default"
       if ConfigRollbackManager["should-update-backup?"](ConfigRollbackManager, backup_name, config_code) then
         ConfigRollbackManager["create-module-backup!"](ConfigRollbackManager, backup_name, config_file_path)
         ConfigRollbackManager["cleanup-old-backups!"](ConfigRollbackManager, backup_name)
