@@ -67,24 +67,31 @@ local function search_fnl_macro_on_rtp_21(module_name)
     local _let_14_ = require("thyme.config")
     local get_config = _let_14_["get-config"]
     local config = get_config()
-    local max_rollbacks = config["max-rollbacks"]
-    local rollback_enabled_3f = (0 < max_rollbacks)
-    if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-      local _15_, _16_ = macro_module__3e_3fchunk(module_name, backup_path)
-      if (nil ~= _15_) then
-        local chunk = _15_
-        local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
-        vim.notify_once(msg, vim.log.levels.WARN)
-        return chunk
-      elseif (true and (nil ~= _16_)) then
-        local _0 = _15_
-        local msg = _16_
-        return nil, msg
-      else
-        return nil
-      end
+    local _15_ = config["?error-msg"]
+    if (nil ~= _15_) then
+      local msg = _15_
+      return nil, msg
     else
-      return nil, error_msg
+      local _0 = _15_
+      local max_rollbacks = config["max-rollbacks"]
+      local rollback_enabled_3f = (0 < max_rollbacks)
+      if (rollback_enabled_3f and file_readable_3f(backup_path)) then
+        local _16_, _17_ = macro_module__3e_3fchunk(module_name, backup_path)
+        if (nil ~= _16_) then
+          local chunk = _16_
+          local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
+          vim.notify_once(msg, vim.log.levels.WARN)
+          return chunk
+        elseif (true and (nil ~= _17_)) then
+          local _1 = _16_
+          local msg = _17_
+          return nil, msg
+        else
+          return nil
+        end
+      else
+        return nil, error_msg
+      end
     end
   else
     return nil
@@ -92,14 +99,14 @@ local function search_fnl_macro_on_rtp_21(module_name)
 end
 local function overwrite_metatable_21(original_table, cache_table)
   do
-    local _20_ = getmetatable(original_table)
-    if (nil ~= _20_) then
-      local mt = _20_
+    local _22_ = getmetatable(original_table)
+    if (nil ~= _22_) then
+      local mt = _22_
       setmetatable(cache_table, mt)
     else
     end
   end
-  local function _22_(self, module_name, val)
+  local function _24_(self, module_name, val)
     if is_logged_3f(module_name) then
       rawset(self, module_name, nil)
       cache_table[module_name] = val
@@ -108,34 +115,34 @@ local function overwrite_metatable_21(original_table, cache_table)
       return rawset(self, module_name, val)
     end
   end
-  local function _24_(_, module_name)
-    local _25_ = cache_table[module_name]
-    if (nil ~= _25_) then
-      local cached = _25_
+  local function _26_(_, module_name)
+    local _27_ = cache_table[module_name]
+    if (nil ~= _27_) then
+      local cached = _27_
       log_again_21(module_name)
       return cached
     else
       return nil
     end
   end
-  return setmetatable(original_table, {__newindex = _22_, __index = _24_})
+  return setmetatable(original_table, {__newindex = _24_, __index = _26_})
 end
 local function initialize_macro_searcher_on_rtp_21(fennel)
   table.insert(fennel["macro-searchers"], 1, search_fnl_macro_on_rtp_21)
-  local function _27_(...)
-    local _28_, _29_ = search_fnl_macro_on_rtp_21(...)
-    if (nil ~= _28_) then
-      local chunk = _28_
+  local function _29_(...)
+    local _30_, _31_ = search_fnl_macro_on_rtp_21(...)
+    if (nil ~= _30_) then
+      local chunk = _30_
       return chunk
-    elseif (true and (nil ~= _29_)) then
-      local _ = _28_
-      local msg = _29_
+    elseif (true and (nil ~= _31_)) then
+      local _ = _30_
+      local msg = _31_
       return msg
     else
       return nil
     end
   end
-  table.insert(package.loaders, _27_)
+  table.insert(package.loaders, _29_)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 return {["initialize-macro-searcher-on-rtp!"] = initialize_macro_searcher_on_rtp_21, ["search-fnl-macro-on-rtp!"] = search_fnl_macro_on_rtp_21}

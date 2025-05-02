@@ -25,12 +25,15 @@
 (set cache.main-config
      (setmetatable {}
        {:__index (fn [self k]
-                   (case (rawget default-opts k)
-                     val (do
-                           (rawset self k val)
-                           val)
-                     _ (error (.. "unexpected option detected: "
-                                  (vim.inspect k)))))
+                   (if (= k "?error-msg")
+                       ;; As a placeholder.
+                       nil
+                       (case (rawget default-opts k)
+                         val (do
+                               (rawset self k val)
+                               val)
+                         _ (error (.. "unexpected option detected: "
+                                      (vim.inspect k))))))
         :__newindex (if debug?
                         (fn [self k v]
                           (rawset self k v))
@@ -73,20 +76,26 @@
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
-        ?config (fennel.eval config-code compiler-options)]
+        _ (set cache.evaluating? true)
+        ?config (fennel.eval config-code compiler-options)
+        _ (set cache.evaluating? false)]
     (or ?config {})))
 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
-  (when (= nil (next cache.main-config))
-    (let [user-config (read-config config-path)]
-      (each [k v (pairs user-config)]
-        ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
-        ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be
-        ;; overridden by the other locations than here.
-        (rawset cache.main-config k v))))
-  cache.main-config)
+  (if cache.evaluating?
+      ;; NOTE: This expects `(pcall require missing-mdodule)` in .nvim-thyme.fnl.
+      {:?error-msg (.. "recursion detected in evaluating " config-filename)}
+      (next cache.main-config)
+      cache.main-config
+      (let [user-config (read-config config-path)]
+        (each [k v (pairs user-config)]
+          ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
+          ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be
+          ;; overridden by the other locations than here.
+          (rawset cache.main-config k v))
+        cache.main-config)))
 
 (fn config-file? [path]
   "Tell if `path` is a thyme's config file.

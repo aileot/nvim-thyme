@@ -120,47 +120,50 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [fennel (require :fennel)
             config (get-config)]
-        (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
-        (when (or (= nil cache.rtp) debug?)
-          (initialize-macro-searcher-on-rtp! fennel)
-          (initialize-module-searcher-on-rtp! fennel))
-        (when-not (= cache.rtp vim.o.rtp)
-          (set cache.rtp vim.o.rtp)
-          (update-fennel-paths! fennel))
-        (case (case (fennel.search-module module-name fennel.path)
-                fnl-path (let [{: module-name->lua-path} (require :thyme.compiler.cache)
-                               lua-path (module-name->lua-path module-name)
-                               compiler-options config.compiler-options]
-                           (case (pcall-with-logger! fennel.compile-string
-                                                     fnl-path lua-path
-                                                     compiler-options
-                                                     module-name)
-                             (true lua-code) (do
-                                               (if (can-restore-file? lua-path
-                                                                      lua-code)
-                                                   (restore-file! lua-path)
-                                                   (do
-                                                     (write-lua-file-with-backup! lua-path
-                                                                                  lua-code
-                                                                                  module-name)
-                                                     (ModuleRollbackManager:cleanup-old-backups! module-name)))
-                                               (load lua-code lua-path))
-                             (_ msg) (let [msg-prefix (: "
-thyme-loader: %s is found for the module %s, but failed to compile it
-\t" :format fnl-path
-                                                         module-name)]
-                                       (values nil (.. msg-prefix msg)))))
-                (_ msg) (values nil (.. "\nthyme-loader: " msg)))
-          chunk chunk
-          (_ error-msg)
-          (let [backup-path (ModuleRollbackManager:module-name->active-backup-path module-name)
-                max-rollbacks config.max-rollbacks
-                rollback-enabled? (< 0 max-rollbacks)]
-            (if (and rollback-enabled? (file-readable? backup-path))
-                (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
-                             :format module-name error-msg)]
-                  (vim.notify_once msg vim.log.levels.WARN)
-                  (loadfile backup-path))
-                error-msg))))))
+        (or config.?error-msg
+            (do
+              (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
+              (when (or (= nil cache.rtp) debug?)
+                (initialize-macro-searcher-on-rtp! fennel)
+                (initialize-module-searcher-on-rtp! fennel))
+              (when-not (= cache.rtp vim.o.rtp)
+                (set cache.rtp vim.o.rtp)
+                (update-fennel-paths! fennel))
+              (case (case (fennel.search-module module-name fennel.path)
+                      fnl-path (let [{: module-name->lua-path} (require :thyme.compiler.cache)
+                                     lua-path (module-name->lua-path module-name)
+                                     compiler-options config.compiler-options]
+                                 (case (pcall-with-logger! fennel.compile-string
+                                                           fnl-path lua-path
+                                                           compiler-options
+                                                           module-name)
+                                   (true lua-code) (do
+                                                     (if (can-restore-file? lua-path
+                                                                            lua-code)
+                                                         (restore-file! lua-path)
+                                                         (do
+                                                           (write-lua-file-with-backup! lua-path
+                                                                                        lua-code
+                                                                                        module-name)
+                                                           (ModuleRollbackManager:cleanup-old-backups! module-name)))
+                                                     (load lua-code lua-path))
+                                   (_ msg) (let [msg-prefix (: "
+    thyme-loader: %s is found for the module %s, but failed to compile it
+    \t" :format
+                                                               fnl-path
+                                                               module-name)]
+                                             (values nil (.. msg-prefix msg)))))
+                      (_ msg) (values nil (.. "\nthyme-loader: " msg)))
+                chunk chunk
+                (_ error-msg)
+                (let [backup-path (ModuleRollbackManager:module-name->active-backup-path module-name)
+                      max-rollbacks config.max-rollbacks
+                      rollback-enabled? (< 0 max-rollbacks)]
+                  (if (and rollback-enabled? (file-readable? backup-path))
+                      (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
+                                   :format module-name error-msg)]
+                        (vim.notify_once msg vim.log.levels.WARN)
+                        (loadfile backup-path))
+                      error-msg))))))))
 
 {: search-fnl-module-on-rtp! : write-lua-file-with-backup!}
