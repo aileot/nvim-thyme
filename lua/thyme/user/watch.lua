@@ -6,7 +6,7 @@ local clear_cache_21 = _local_2_["clear-cache!"]
 local _local_3_ = require("thyme.user.check")
 local check_to_update_21 = _local_3_["check-to-update!"]
 local _3fgroup = nil
-local function watch_to_update_21(_3fopts)
+local function watch_files_21(_3fopts)
   local group
   local or_4_ = _3fgroup
   if not or_4_ then
@@ -39,4 +39,4 @@ local function watch_to_update_21(_3fopts)
   _3fgroup = group
   return vim.api.nvim_create_autocmd(event, {group = group, pattern = pattern, callback = callback})
 end
-return {["watch-to-update!"] = watch_to_update_21}
+return {["watch-files!"] = watch_files_21}

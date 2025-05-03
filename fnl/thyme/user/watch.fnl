@@ -14,7 +14,7 @@
 (macro autocmd! [...]
   `(vim.api.nvim_create_autocmd ,...))
 
-(fn watch-to-update! [?opts]
+(fn watch-files! [?opts]
   "Add an autocmd in augroup named `ThymeWatch` to watch fennel files.
 It overrides the previously defined `autocmd`s if both event and pattern are
 the same.
@@ -42,4 +42,4 @@ the same.
     (set ?group group)
     (autocmd! event {: group : pattern : callback})))
 
-{: watch-to-update!}
+{: watch-files!}
