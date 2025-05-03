@@ -100,7 +100,7 @@ local function define_commands_21(_3fopts)
   else
     opts = config.command
   end
-  local fnl_cmd_prefix = (opts["fnl-cmd-prefix"] or "Fnl")
+  local fnl_cmd_prefix = opts["fnl-cmd-prefix"]
   local compiler_options = opts["compiler-options"]
   local overwrite_cmd_history_3f = (opts["overwrite-cmd-history?"] or true)
   local omit_trailing_parens_3f = (opts["omit-trailing-parens?"] or true)

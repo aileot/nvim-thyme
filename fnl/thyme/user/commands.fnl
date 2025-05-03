@@ -98,7 +98,7 @@
         opts (if ?opts
                  (vim.tbl_deep_extend :force config.command ?opts)
                  config.command)
-        fnl-cmd-prefix (or opts.fnl-cmd-prefix :Fnl)
+        fnl-cmd-prefix opts.fnl-cmd-prefix
         compiler-options opts.compiler-options
         overwrite-cmd-history? (or opts.overwrite-cmd-history? true)
         omit-trailing-parens? (or opts.omit-trailing-parens? true)]
