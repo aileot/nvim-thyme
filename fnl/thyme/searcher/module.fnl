@@ -160,7 +160,9 @@ cache dir.
                       max-rollbacks config.max-rollbacks
                       rollback-enabled? (< 0 max-rollbacks)]
                   (if (and rollback-enabled? (file-readable? backup-path))
-                      (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s"
+                      (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
+To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                    :format module-name
                                    (ModuleRollbackManager:module-name->active-backup-birthtime module-name)
                                    error-msg)]

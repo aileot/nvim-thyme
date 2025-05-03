@@ -109,7 +109,9 @@ the active backup, if available.
                       (: :format config-filename error-msg))]
           (vim.notify_once msg vim.log.levels.ERROR)
           (if (file-readable? backup-path)
-              (let [msg (-> "[thyme] temporarily restore config from backup created at %s"
+              (let [msg (-> "[thyme] temporarily restore config from backup created at %s
+HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
+To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                             (: :format
                                (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
                 (vim.notify_once msg vim.log.levels.WARN)

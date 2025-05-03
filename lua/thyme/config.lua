@@ -108,7 +108,7 @@ local function read_config_with_backup_21(config_file_path)
     local msg = ("[thyme] failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
     vim.notify_once(msg, vim.log.levels.ERROR)
     if file_readable_3f(backup_path) then
-      local msg0 = ("[thyme] temporarily restore config from backup created at %s"):format(ConfigRollbackManager["module-name->active-backup-birthtime"](ConfigRollbackManager, backup_name))
+      local msg0 = ("[thyme] temporarily restore config from backup created at %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(ConfigRollbackManager["module-name->active-backup-birthtime"](ConfigRollbackManager, backup_name))
       vim.notify_once(msg0, vim.log.levels.WARN)
       return fennel.dofile(backup_path, compiler_options)
     else
