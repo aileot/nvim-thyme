@@ -41,7 +41,7 @@
   "Return backup directory for `module-name`.
 @param module-name string
 @return string the backup directory"
-  (let [dir (Path.join self._labeled-root module-name)]
+  (let [dir (Path.join self._kind-dir module-name)]
     dir))
 
 (fn RollbackManager.module-name->backup-files [self module-name]
@@ -142,7 +142,7 @@ Return `true` if the following conditions are met:
   "Return loader path updated for mounted rollback feature.
 @param old-loader-path string
 @return string"
-  (let [loader-path-for-mounted-backups (Path.join self._labeled-root "?"
+  (let [loader-path-for-mounted-backups (Path.join self._kind-dir "?"
                                                    self._mounted-backup-filename)
         loader-prefix (.. loader-path-for-mounted-backups ";")]
     ;; Keep mounted backup loader path at the beginning of loader path.
@@ -161,22 +161,22 @@ Return `true` if the following conditions are met:
 @return nil|string: nil, or (only for macro searcher) an error message."
   (let [rollback-path (self:module-name->mounted-backup-path module-name)
         loader-name (-> "thyme-mounted-rollback-%s-loader"
-                        (: :format self._label))]
+                        (: :format self._kind))]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
-              unmount-arg (Path.join self._label module-name)
+              unmount-arg (Path.join self._kind module-name)
               msg (-> "%s: rollback to mounted backup for %s %s
 Note that this loader is intended to help you fix the module reducing its annoying errors.
 Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
-                      (: :format loader-name self._label module-name
+                      (: :format loader-name self._kind module-name
                          unmount-arg module-name))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
         (let [error-msg (-> "%s: no mounted backup is found for %s %s"
-                            (: :format loader-name self._label module-name))]
-          (if (= self._label "macro")
-              ;; TODO: Better implementation independent of `self._label`.
+                            (: :format loader-name self._kind module-name))]
+          (if (= self._kind "macro")
+              ;; TODO: Better implementation independent of `self._kind`.
               (values nil error-msg)
               error-msg)))))
 
@@ -204,12 +204,12 @@ Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to loa
 
 ;;; Static Methods
 
-(λ RollbackManager.new [label file-extension]
+(λ RollbackManager.new [kind file-extension]
   (let [self (setmetatable {} RollbackManager)
-        root (Path.join RollbackManager._root label)]
+        root (Path.join RollbackManager._root kind)]
     (vim.fn.mkdir root :p)
-    (set self._label label)
-    (set self._labeled-root root)
+    (set self._kind kind)
+    (set self._kind-dir root)
     (assert (= "." (file-extension:sub 1 1))
             "file-extension must start with `.`")
     (set self.file-extension file-extension)
@@ -259,7 +259,7 @@ Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to loa
   "Return all the mounted rollbacks.
 @return string[] the list of mounted rollbacks"
   (-> (Path.join RollbackManager._root ;
-                 "*" ; for rollback label
+                 "*" ; for rollback kind
                  "*" ; for module
                  RollbackManager._mounted-backup-filename)
       (vim.fn.glob false true)))

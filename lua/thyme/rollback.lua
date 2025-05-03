@@ -40,7 +40,7 @@ local function symlink_21(path, new_path, ...)
   end
 end
 RollbackManager["module-name->backup-dir"] = function(self, module_name)
-  local dir = Path.join(self["_labeled-root"], module_name)
+  local dir = Path.join(self["_kind-dir"], module_name)
   return dir
 end
 RollbackManager["module-name->backup-files"] = function(self, module_name)
@@ -115,7 +115,7 @@ RollbackManager["create-module-backup!"] = function(self, module_name, path)
   return symlink_21(backup_path, active_backup_path)
 end
 RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
-  local loader_path_for_mounted_backups = Path.join(self["_labeled-root"], "?", self["_mounted-backup-filename"])
+  local loader_path_for_mounted_backups = Path.join(self["_kind-dir"], "?", self["_mounted-backup-filename"])
   local loader_prefix = (loader_path_for_mounted_backups .. ";")
   local _16_, _17_ = old_loader_path:find(loader_path_for_mounted_backups, 1, true)
   if (_16_ == 1) then
@@ -133,16 +133,16 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
 end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
   local rollback_path = self["module-name->mounted-backup-path"](self, module_name)
-  local loader_name = ("thyme-mounted-rollback-%s-loader"):format(self._label)
+  local loader_name = ("thyme-mounted-rollback-%s-loader"):format(self._kind)
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
-    local unmount_arg = Path.join(self._label, module_name)
-    local msg = ("%s: rollback to mounted backup for %s %s\nNote that this loader is intended to help you fix the module reducing its annoying errors.\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(loader_name, self._label, module_name, unmount_arg, module_name)
+    local unmount_arg = Path.join(self._kind, module_name)
+    local msg = ("%s: rollback to mounted backup for %s %s\nNote that this loader is intended to help you fix the module reducing its annoying errors.\nPlease execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."):format(loader_name, self._kind, module_name, unmount_arg, module_name)
     vim.notify_once(msg, vim.log.levels.WARN)
     return loadfile(resolved_path)
   else
-    local error_msg = ("%s: no mounted backup is found for %s %s"):format(loader_name, self._label, module_name)
-    if (self._label == "macro") then
+    local error_msg = ("%s: no mounted backup is found for %s %s"):format(loader_name, self._kind, module_name)
+    if (self._kind == "macro") then
       return nil, error_msg
     else
       return error_msg
@@ -173,14 +173,14 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
     return nil
   end
 end
-RollbackManager.new = function(label, file_extension)
+RollbackManager.new = function(kind, file_extension)
   _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback.fnl:207")
-  _G.assert((nil ~= label), "Missing argument label on fnl/thyme/rollback.fnl:207")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback.fnl:207")
   local self = setmetatable({}, RollbackManager)
-  local root = Path.join(RollbackManager._root, label)
+  local root = Path.join(RollbackManager._root, kind)
   vim.fn.mkdir(root, "p")
-  self._label = label
-  self["_labeled-root"] = root
+  self._kind = kind
+  self["_kind-dir"] = root
   assert(("." == file_extension:sub(1, 1)), "file-extension must start with `.`")
   self["file-extension"] = file_extension
   return self
