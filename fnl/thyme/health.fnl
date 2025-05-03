@@ -4,7 +4,7 @@
 
 (local {: get-config} (require :thyme.config))
 (local {: each-file} (require :thyme.utils.iterator))
-(local {:get-root get-root-of-backup} (require :thyme.utils.rollback))
+(local {:get-root get-root-of-backup} (require :thyme.rollback))
 (local {:get-root get-root-of-pool} (require :thyme.utils.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 (local {: macro-recorded? : peek-module-name : peek-fnl-path}

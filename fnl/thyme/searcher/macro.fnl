@@ -1,6 +1,6 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local RollbackManager (require :thyme.utils.rollback))
+(local RollbackManager (require :thyme.rollback))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))

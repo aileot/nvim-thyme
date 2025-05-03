@@ -7,7 +7,7 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local RollbackManager = require("thyme.utils.rollback")
+local RollbackManager = require("thyme.rollback")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))

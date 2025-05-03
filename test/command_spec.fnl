@@ -9,7 +9,7 @@
 
 (local {: define-commands!} (require :thyme))
 
-(local RollbackManager (require :thyme.utils.rollback))
+(local RollbackManager (require :thyme.rollback))
 
 (describe* "#command"
   (it* "thyme.define-commands! defines :ThymeCacheClear"

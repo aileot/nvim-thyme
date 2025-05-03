@@ -1,4 +1,4 @@
-local RollbackManager = require("thyme.utils.rollback")
+local RollbackManager = require("thyme.rollback")
 local MacroRollbackManager = RollbackManager.new("macro", ".fnl")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
