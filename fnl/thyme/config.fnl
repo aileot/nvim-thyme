@@ -40,9 +40,11 @@
         :__newindex (if debug?
                         (fn [self k v]
                           (rawset self k v))
-                        (fn [_ k]
-                          (error (.. "unexpected option detected: "
-                                     (vim.inspect k)))))}))
+                        (fn [self k v]
+                          (if (= nil (rawget default-opts k))
+                              (error (.. "unexpected option detected: "
+                                         (vim.inspect k)))
+                              (rawset self k v))))}))
 
 (when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.

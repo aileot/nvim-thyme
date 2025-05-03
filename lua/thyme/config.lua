@@ -35,38 +35,42 @@ if debug_3f then
   end
   _7_ = _8_
 else
-  local function _9_(_, k)
-    return error(("unexpected option detected: " .. vim.inspect(k)))
+  local function _9_(self, k, v)
+    if (nil == rawget(default_opts, k)) then
+      return error(("unexpected option detected: " .. vim.inspect(k)))
+    else
+      return rawset(self, k, v)
+    end
   end
   _7_ = _9_
 end
 cache["main-config"] = setmetatable({}, {__index = _3_, __newindex = _7_})
 if not file_readable_3f(config_path) then
-  local _11_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-  if (_11_ == 2) then
+  local _12_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  if (_12_ == 2) then
     local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
     local example_config_filename = (config_filename .. ".example")
-    local _let_12_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
-    local example_config_path = _let_12_[1]
+    local _let_13_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
+    local example_config_path = _let_13_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
-    local function _13_()
+    local function _14_()
       if (config_path == vim.api.nvim_buf_get_name(0)) then
-        local _14_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-        if (_14_ == 2) then
+        local _15_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+        if (_15_ == 2) then
           return error(("abort trusting " .. config_path))
         else
-          local _ = _14_
+          local _ = _15_
           return vim.cmd.trust()
         end
       else
         return nil
       end
     end
-    vim.defer_fn(_13_, 800)
+    vim.defer_fn(_14_, 800)
   else
-    local _ = _11_
+    local _ = _12_
     error("abort proceeding with nvim-thyme")
   end
 else
