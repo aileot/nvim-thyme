@@ -15,7 +15,7 @@
   `(vim.api.nvim_create_autocmd ,...))
 
 (fn watch-to-update! [?opts]
-  "Add an autocmd in augroup \"Thyme\" to watch fennel files.
+  "Add an autocmd in augroup named `ThymeWatch` to watch fennel files.
 It overrides the previously defined `autocmd`s if both event and pattern are
 the same.
 @param ?opts.verbose boolean (default: false) notify if successfully compiled file.
