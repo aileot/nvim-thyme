@@ -168,7 +168,8 @@
           (let [root (RollbackManager.get-root)
                 dir (Path.join root input)]
             (if (RollbackManager.mount-backup! dir)
-                (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO)
+                (vim.notify (.. "successfully mounted " dir)
+                            vim.log.levels.INFO)
                 (vim.notify (.. "failed to mount " dir) vim.log.levels.WARN)))))
       (command! :ThymeRollbackUnmount
         {:bar true
