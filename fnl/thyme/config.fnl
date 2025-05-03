@@ -81,7 +81,11 @@ the active backup, if available.
         backup-name "default"
         mounted-backup-path (ConfigRollbackManager:module-name->mounted-backup-path backup-name)
         config-code (if (file-readable? mounted-backup-path)
-                        (read-file mounted-backup-path)
+                        (let [msg (-> "[thyme] rollback config to mounted backup (created at %s)"
+                                      (: :format
+                                         (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
+                          (vim.notify_once msg vim.log.levels.WARN)
+                          (read-file mounted-backup-path))
                         secure-nvim-env?
                         (read-file config-file-path)
                         (vim.secure.read config-file-path))

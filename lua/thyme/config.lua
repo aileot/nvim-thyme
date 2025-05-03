@@ -78,6 +78,8 @@ local function read_config_with_backup_21(config_file_path)
   local mounted_backup_path = ConfigRollbackManager["module-name->mounted-backup-path"](ConfigRollbackManager, backup_name)
   local config_code
   if file_readable_3f(mounted_backup_path) then
+    local msg = ("[thyme] rollback config to mounted backup (created at %s)"):format(ConfigRollbackManager["module-name->active-backup-birthtime"](ConfigRollbackManager, backup_name))
+    vim.notify_once(msg, vim.log.levels.WARN)
     config_code = read_file(mounted_backup_path)
   elseif secure_nvim_env_3f then
     config_code = read_file(config_file_path)
