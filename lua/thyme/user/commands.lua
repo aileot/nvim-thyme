@@ -52,7 +52,7 @@ local function edit_cmd_history_21(new_fnl_code, opts)
   local function _12_(new_fnl_code0)
     local trimmed_new_fnl_code = new_fnl_code0:gsub("[%]}%)]$", "")
     local last_cmd = vim.fn.histget(":", -1)
-    local _13_, _14_ = string.find(last_cmd, trimmed_new_fnl_code, 1, true)
+    local _13_, _14_ = last_cmd:find(trimmed_new_fnl_code, 1, true)
     if ((nil ~= _13_) and (nil ~= _14_)) then
       local idx_start = _13_
       local idx_end = _14_

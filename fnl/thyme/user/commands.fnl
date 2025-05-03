@@ -56,8 +56,7 @@
                        (let [trimmed-new-fnl-code (new-fnl-code:gsub "[%]}%)]$"
                                                                      "")
                              last-cmd (vim.fn.histget ":" -1)]
-                         (case (string.find last-cmd trimmed-new-fnl-code 1
-                                            true)
+                         (case (last-cmd:find trimmed-new-fnl-code 1 true)
                            (idx-start idx-end) (let [prefix (last-cmd:sub 1
                                                                           (dec idx-start))
                                                      suffix (last-cmd:sub (inc idx-end))
