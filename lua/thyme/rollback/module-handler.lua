@@ -33,10 +33,11 @@ local function symlink_21(path, new_path, ...)
     return true
   end
 end
-RollbackModuleHandler.new = function(root_dir, module_name)
+RollbackModuleHandler.new = function(root_dir, file_extension, module_name)
   local attrs = {["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
   local self = setmetatable(attrs, RollbackModuleHandler)
   self["_root-dir"] = root_dir
+  self["_file-extension"] = file_extension
   self["_module-name"] = module_name
   return self
 end
@@ -50,7 +51,7 @@ RollbackModuleHandler["module-name->backup-files"] = function(self)
 end
 RollbackModuleHandler["module-name->new-backup-path"] = function(self)
   local rollback_id = (os.date("%Y-%m-%d_%H-%M-%S") .. "_" .. vim.uv.hrtime())
-  local backup_filename = (rollback_id .. self["file-extension"])
+  local backup_filename = (rollback_id .. self["_file-extension"])
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
   vim.fn.mkdir(backup_dir, "p")
   return Path.join(backup_dir, backup_filename)

@@ -25,11 +25,12 @@
                       false))
     _ true))
 
-(fn RollbackModuleHandler.new [root-dir module-name]
+(fn RollbackModuleHandler.new [root-dir file-extension module-name]
   (let [attrs {:_active-backup-filename ".active"
                :_mounted-backup-filename ".mounted"}
         self (setmetatable attrs RollbackModuleHandler)]
     (set self._root-dir root-dir)
+    (set self._file-extension file-extension)
     (set self._module-name module-name)
     self))
 
@@ -54,7 +55,7 @@ path by itself.
   (let [rollback-id (-> (os.date "%Y-%m-%d_%H-%M-%S")
                         ;; NOTE: os.date does not interpret `%N` for nanoseconds.
                         (.. "_" (vim.uv.hrtime)))
-        backup-filename (.. rollback-id self.file-extension)
+        backup-filename (.. rollback-id self._file-extension)
         backup-dir (self:module-name->backup-dir self._module-name)]
     (vim.fn.mkdir backup-dir :p)
     (Path.join backup-dir backup-filename)))

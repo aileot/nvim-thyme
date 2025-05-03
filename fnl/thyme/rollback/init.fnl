@@ -43,7 +43,7 @@
   "Create a rollback handler for `module-name`
 @param module-name string
 @return RollbackModuleHandler"
-  (RollbackModuleHandler.new self._kind-dir module-name))
+  (RollbackModuleHandler.new self._kind-dir self.file-extension module-name))
 
 (fn RollbackManager.module-name->backup-dir [self module-name]
   "Return backup directory for `module-name`.
