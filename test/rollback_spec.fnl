@@ -18,14 +18,14 @@
   (before-each (fn []
                  (clear-backup-files!)))
   (it* ".new creates a backup directory."
-    (let [label "foo"]
-      (TestRollbackManager.new label ".foobar")
+    (let [kind "foo"]
+      (TestRollbackManager.new kind ".foobar")
       (->> (vim.fn.isdirectory (TestRollbackManager.get-root))
            (assert.is_same 1))))
   (it* ".create-module-backup! creates a backup file."
-    (let [label "foo"
+    (let [kind "foo"
           module-name "foobar"
-          bm (TestRollbackManager.new label ".fnl")
+          bm (TestRollbackManager.new kind ".fnl")
           stored-path (bm:module-name->active-backup-path module-name)
           filename (.. module-name ".fnl")
           original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]
