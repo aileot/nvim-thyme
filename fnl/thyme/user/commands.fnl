@@ -118,8 +118,7 @@
                           &until (and discard-last? (<= last-idx i))]
                      (let [text (if (= lang :lua) ?text ;
                                     (fennel.view ?text compiler-options))]
-                       (tts.print text {: lang})))))
-      (when cmd-history-opts
+                       (tts.print text {: lang}))))
         (-> #(edit-cmd-history! new-fnl-code cmd-history-opts)
             (vim.schedule))))))
 
