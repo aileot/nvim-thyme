@@ -70,8 +70,10 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
                     chunk
                     ;; TODO: As described in the error message below, append
                     ;; thyme-backup-loader independently to fennel.macro-searchers?
-                    (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
-                                 :format module-name error-msg)]
+                    (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s"
+                                 :format module-name
+                                 (MacroRollbackManager:module-name->active-backup-birthtime module-name)
+                                 error-msg)]
                       (vim.notify_once msg vim.log.levels.WARN)
                       chunk)
                     (_ msg)

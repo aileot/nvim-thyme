@@ -83,7 +83,7 @@ the active backup, if available.
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
-        backup-name (or vim.env.NVIM_APPNAME "nvim")
+        backup-name "default"
         _ (set cache.evaluating? true)
         (ok? ?result) (pcall fennel.eval config-code compiler-options)
         _ (set cache.evaluating? false)]
@@ -102,7 +102,9 @@ the active backup, if available.
                       (: :format config-filename error-msg))]
           (vim.notify_once msg vim.log.levels.ERROR)
           (if (file-readable? backup-path)
-              (let [msg (-> "[thyme] temporarily restore config from backup.")]
+              (let [msg (-> "[thyme] temporarily restore config from backup created at %s"
+                            (: :format
+                               (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
                 (vim.notify_once msg vim.log.levels.WARN)
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))

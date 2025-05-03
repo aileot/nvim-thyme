@@ -38,15 +38,15 @@
 ;;; Class Methods
 
 (fn RollbackManager.module-name->backup-dir [self module-name]
-  "Return module backed up directory.
+  "Return backup directory for `module-name`.
 @param module-name string
-@return string backup directory for the module"
+@return string the backup directory"
   (let [dir (Path.join self._labeled-root module-name)]
     dir))
 
 (fn RollbackManager.module-name->backup-files [self module-name]
-  "Return backup files for the `module-name`. The special files like `.active`
-and `.mounted` are ignored.
+  "Return backup files for `module-name`. The special files like `.active` and
+`.mounted` are ignored.
 @param module-name string
 @return string[] backup files"
   (let [backup-dir (self:module-name->backup-dir module-name)]
@@ -54,9 +54,10 @@ and `.mounted` are ignored.
         (vim.fn.glob false true))))
 
 (fn RollbackManager.module-name->new-backup-path [self module-name]
-  "Return module new backed up path for `module-name`.
+  "Suggest a new backup path for `module-name`. This method does not create the
+path by itself.
 @param module-name string
-@return string the module backup path"
+@return string a new backup path"
   (let [rollback-id (-> (os.date "%Y-%m-%d_%H-%M-%S")
                         ;; NOTE: os.date does not interpret `%N` for nanoseconds.
                         (.. "_" (vim.uv.hrtime)))
@@ -66,19 +67,28 @@ and `.mounted` are ignored.
     (Path.join backup-dir backup-filename)))
 
 (fn RollbackManager.module-name->active-backup-path [self module-name]
-  "Return module the active backed up path.
+  "Return the active backup path for `module-name`.
 @param module-name string
-@return string? the module backup path, or nil if not found"
+@return string? the active backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
         filename RollbackManager._active-backup-filename]
     (Path.join backup-dir filename)))
 
+(fn RollbackManager.module-name->active-backup-birthtime [self module-name]
+  "Return the active backup creation time for `module-name`.
+@param module-name string
+@return string? the birthtime of the active backup, or nil if not found"
+  (case (-?> (self:module-name->active-backup-path module-name)
+             (fs.stat)
+             (. :birthtime :sec))
+    time (os.date "%c" time)))
+
 (fn RollbackManager.module-name->mounted-backup-path [self module-name]
-  "Return module the mounted backed up path.
+  "Return the mounted backupup path for `module-name`.
 Note that mounted backup is linked to an active backup so that the contents are
 always the same.
 @param module-name string
-@return string? the module backup path, or nil if not found"
+@return string? the mounted backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
         filename RollbackManager._mounted-backup-filename]
     (Path.join backup-dir filename)))
@@ -158,8 +168,8 @@ Return `true` if the following conditions are met:
               msg (-> "%s: rollback to mounted backup for %s %s
 Note that this loader is intended to help you fix the module reducing its annoying errors.
 Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
-                      (: :format loader-name self._label module-name unmount-arg
-                         module-name))]
+                      (: :format loader-name self._label module-name
+                         unmount-arg module-name))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))

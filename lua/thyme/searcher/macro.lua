@@ -79,7 +79,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
         local _16_, _17_ = macro_module__3e_3fchunk(module_name, backup_path)
         if (nil ~= _16_) then
           local chunk = _16_
-          local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"):format(module_name, error_msg)
+          local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s"):format(module_name, MacroRollbackManager["module-name->active-backup-birthtime"](MacroRollbackManager, module_name), error_msg)
           vim.notify_once(msg, vim.log.levels.WARN)
           return chunk
         elseif (true and (nil ~= _17_)) then
