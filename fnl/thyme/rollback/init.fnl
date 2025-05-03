@@ -1,13 +1,10 @@
 (import-macros {: when-not : inc : first : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable? : assert-is-file-readable : read-file &as fs}
+(local {: file-readable? : assert-is-file-readable &as fs}
        (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
-
-(local {: validate-type : sorter/files-to-oldest-by-birthtime}
-       (require :thyme.utils.general))
 
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
