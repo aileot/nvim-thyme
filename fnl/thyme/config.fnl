@@ -80,11 +80,11 @@ the active backup, if available.
   (let [fennel (require :fennel)
         backup-name "default"
         backup-handler (ConfigRollbackManager:backupHandlerOf backup-name)
-        mounted-backup-path (backup-handler:module-name->mounted-backup-path)
+        mounted-backup-path (backup-handler:determine-mounted-backup-path)
         config-code (if (file-readable? mounted-backup-path)
                         (let [msg (-> "[thyme] rollback config to mounted backup (created at %s)"
                                       (: :format
-                                         (backup-handler:module-name->active-backup-birthtime)))]
+                                         (backup-handler:determine-active-backup-birthtime)))]
                           (vim.notify_once msg vim.log.levels.WARN)
                           (read-file mounted-backup-path))
                         secure-nvim-env?
@@ -99,10 +99,10 @@ the active backup, if available.
     (if ok?
         (let [?config ?result]
           (when (backup-handler:should-update-backup? config-code)
-            (backup-handler:create-module-backup! config-file-path)
+            (backup-handler:write-backup! config-file-path)
             (backup-handler:cleanup-old-backups!))
           (or ?config {}))
-        (let [backup-path (backup-handler:module-name->active-backup-path)
+        (let [backup-path (backup-handler:determine-active-backup-path)
               error-msg ?result
               msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
                       (: :format config-filename error-msg))]
@@ -112,7 +112,7 @@ the active backup, if available.
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                             (: :format
-                               (backup-handler:module-name->active-backup-birthtime)))]
+                               (backup-handler:determine-active-backup-birthtime)))]
                 (vim.notify_once msg vim.log.levels.WARN)
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))

@@ -44,30 +44,30 @@ BackupHandler.new = function(root_dir, file_extension, module_name)
   self["_module-name"] = module_name
   return self
 end
-BackupHandler["module-name->backup-dir"] = function(self)
+BackupHandler["determine-backup-dir"] = function(self)
   local dir = Path.join(self["_root-dir"], self["_module-name"])
   return dir
 end
-BackupHandler["module-name->backup-files"] = function(self)
-  local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
+BackupHandler["list-backup-files"] = function(self)
+  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
   return vim.fn.glob(Path.join(backup_dir, "*"), false, true)
 end
-BackupHandler["module-name->new-backup-path"] = function(self)
+BackupHandler["suggest-new-backup-path"] = function(self)
   local rollback_id = (os.date("%Y-%m-%d_%H-%M-%S") .. "_" .. vim.uv.hrtime())
   local backup_filename = (rollback_id .. self["_file-extension"])
-  local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
+  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
   vim.fn.mkdir(backup_dir, "p")
   return Path.join(backup_dir, backup_filename)
 end
-BackupHandler["module-name->active-backup-path"] = function(self)
-  local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
+BackupHandler["determine-active-backup-path"] = function(self)
+  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
   local filename = self["_active-backup-filename"]
   return Path.join(backup_dir, filename)
 end
-BackupHandler["module-name->active-backup-birthtime"] = function(self)
+BackupHandler["determine-active-backup-birthtime"] = function(self)
   local _10_
   do
-    local tmp_3_auto = self["module-name->active-backup-path"](self, self["_module-name"])
+    local tmp_3_auto = self["determine-active-backup-path"](self, self["_module-name"])
     if (nil ~= tmp_3_auto) then
       local tmp_3_auto0 = fs.stat(tmp_3_auto)
       if (nil ~= tmp_3_auto0) then
@@ -86,15 +86,15 @@ BackupHandler["module-name->active-backup-birthtime"] = function(self)
     return nil
   end
 end
-BackupHandler["module-name->mounted-backup-path"] = function(self)
-  local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
+BackupHandler["determine-mounted-backup-path"] = function(self)
+  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
   local filename = self["_mounted-backup-filename"]
   return Path.join(backup_dir, filename)
 end
 BackupHandler["should-update-backup?"] = function(self, expected_contents)
   local module_name = self["_module-name"]
   assert(not file_readable_3f(module_name), ("expected module-name, got path " .. module_name))
-  local backup_path = self["module-name->active-backup-path"](self, module_name)
+  local backup_path = self["determine-active-backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
 BackupHandler["cleanup-old-backups!"] = function(self)
@@ -104,7 +104,7 @@ BackupHandler["cleanup-old-backups!"] = function(self)
   local max_rollbacks = config["max-rollbacks"]
   validate_type("number", max_rollbacks)
   local threshold = (max_rollbacks + 1)
-  local backup_files = self["module-name->backup-files"](self, self["module-name"])
+  local backup_files = self["list-backup-files"](self, self["module-name"])
   table.sort(backup_files, sorter_2ffiles_to_oldest_by_birthtime)
   for i = threshold, #backup_files do
     local path = backup_files[i]
@@ -112,11 +112,11 @@ BackupHandler["cleanup-old-backups!"] = function(self)
   end
   return nil
 end
-BackupHandler["create-module-backup!"] = function(self, path)
+BackupHandler["write-backup!"] = function(self, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
   local module_name = self["_module-name"]
-  local backup_path = self["module-name->new-backup-path"](self, module_name)
-  local active_backup_path = self["module-name->active-backup-path"](self, module_name)
+  local backup_path = self["suggest-new-backup-path"](self, module_name)
+  local active_backup_path = self["determine-active-backup-path"](self, module_name)
   vim.fn.mkdir(vim.fs.dirname(active_backup_path), "p")
   assert(fs.copyfile(path, backup_path))
   return symlink_21(backup_path, active_backup_path)

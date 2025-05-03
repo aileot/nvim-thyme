@@ -124,7 +124,7 @@ local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
   local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
   if backup_handler["should-update-backup?"](backup_handler, lua_code) then
-    return backup_handler["create-module-backup!"](backup_handler, lua_path)
+    return backup_handler["write-backup!"](backup_handler, lua_path)
   else
     return nil
   end
@@ -155,8 +155,8 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
         if (nil ~= _28_) then
           local fnl_path = _28_
           local _let_30_ = require("thyme.compiler.cache")
-          local module_name__3elua_path = _let_30_["module-name->lua-path"]
-          local lua_path = module_name__3elua_path(module_name)
+          local determine_lua_path = _let_30_["determine-lua-path"]
+          local lua_path = determine_lua_path(module_name)
           local compiler_options = config["compiler-options"]
           local _31_, _32_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
           if ((_31_ == true) and (nil ~= _32_)) then
@@ -190,11 +190,11 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       elseif (true and (nil ~= _26_)) then
         local _ = _25_
         local error_msg = _26_
-        local backup_path = backup_handler["module-name->active-backup-path"](backup_handler, module_name)
+        local backup_path = backup_handler["determine-active-backup-path"](backup_handler, module_name)
         local max_rollbacks = config["max-rollbacks"]
         local rollback_enabled_3f = (0 < max_rollbacks)
         if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-          local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["module-name->active-backup-birthtime"](backup_handler, module_name), error_msg)
+          local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
           vim.notify_once(msg, vim.log.levels.WARN)
           or_21_ = loadfile(backup_path)
         else

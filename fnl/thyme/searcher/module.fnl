@@ -106,7 +106,7 @@ fennel.lua.
   (write-lua-file! lua-path lua-code)
   (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)]
     (when (backup-handler:should-update-backup? lua-code)
-      (backup-handler:create-module-backup! lua-path))))
+      (backup-handler:write-backup! lua-path))))
 
 (fn search-fnl-module-on-rtp! [module-name ...]
   "Search for fennel source file to compile into lua and save in nvim-thyme
@@ -131,8 +131,8 @@ cache dir.
                 (set cache.rtp vim.o.rtp)
                 (update-fennel-paths! fennel))
               (case (case (fennel.search-module module-name fennel.path)
-                      fnl-path (let [{: module-name->lua-path} (require :thyme.compiler.cache)
-                                     lua-path (module-name->lua-path module-name)
+                      fnl-path (let [{: determine-lua-path} (require :thyme.compiler.cache)
+                                     lua-path (determine-lua-path module-name)
                                      compiler-options config.compiler-options]
                                  (case (pcall-with-logger! fennel.compile-string
                                                            fnl-path lua-path
@@ -157,7 +157,7 @@ cache dir.
                       (_ msg) (values nil (.. "\nthyme-loader: " msg)))
                 chunk chunk
                 (_ error-msg)
-                (let [backup-path (backup-handler:module-name->active-backup-path module-name)
+                (let [backup-path (backup-handler:determine-active-backup-path module-name)
                       max-rollbacks config.max-rollbacks
                       rollback-enabled? (< 0 max-rollbacks)]
                   (if (and rollback-enabled? (file-readable? backup-path))
@@ -165,7 +165,7 @@ cache dir.
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                    :format module-name
-                                   (backup-handler:module-name->active-backup-birthtime module-name)
+                                   (backup-handler:determine-active-backup-birthtime module-name)
                                    error-msg)]
                         (vim.notify_once msg vim.log.levels.WARN)
                         (loadfile backup-path))

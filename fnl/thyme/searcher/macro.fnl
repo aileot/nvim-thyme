@@ -26,10 +26,10 @@
                               module-name)
       (true result)
       (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
-            backup-path (backup-handler:module-name->active-backup-path)]
+            backup-path (backup-handler:determine-active-backup-path)]
         (when (and (not= fnl-path backup-path)
                    (backup-handler:should-update-backup? (read-file fnl-path)))
-          (backup-handler:create-module-backup! fnl-path)
+          (backup-handler:write-backup! fnl-path)
           (backup-handler:cleanup-old-backups!))
         (set compiler-options.env ?env)
         #result)
@@ -59,7 +59,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
       chunk chunk
       (_ error-msg)
       (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
-            backup-path (backup-handler:module-name->active-backup-path)
+            backup-path (backup-handler:determine-active-backup-path)
             {: get-config} (require :thyme.config)
             config (get-config)]
         (case config.?error-msg
@@ -75,7 +75,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                  :format module-name
-                                 (backup-handler:module-name->active-backup-birthtime)
+                                 (backup-handler:determine-active-backup-birthtime)
                                  error-msg)]
                       (vim.notify_once msg vim.log.levels.WARN)
                       chunk)

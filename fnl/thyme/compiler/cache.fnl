@@ -7,7 +7,7 @@
 (local {: hide-files-in-dir!} (require :thyme.utils.pool))
 (local {: clear-module-map-files!} (require :thyme.module-map.unit))
 
-(fn module-name->lua-path [module-name]
+(fn determine-lua-path [module-name]
   "Determine `lua-path` from `module-name`
 @param module-name string
 @return string"
@@ -28,4 +28,4 @@
         (clear-module-map-files!)
         true)))
 
-{: module-name->lua-path : clear-cache!}
+{: determine-lua-path : clear-cache!}

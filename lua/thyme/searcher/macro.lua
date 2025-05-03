@@ -20,9 +20,9 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   if ((_4_ == true) and (nil ~= _5_)) then
     local result = _5_
     local backup_handler = MacroRollbackManager:backupHandlerOf(module_name)
-    local backup_path = backup_handler["module-name->active-backup-path"](backup_handler)
+    local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
     if ((fnl_path ~= backup_path) and backup_handler["should-update-backup?"](backup_handler, read_file(fnl_path))) then
-      backup_handler["create-module-backup!"](backup_handler, fnl_path)
+      backup_handler["write-backup!"](backup_handler, fnl_path)
       backup_handler["cleanup-old-backups!"](backup_handler)
     else
     end
@@ -65,7 +65,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
     local _ = _9_
     local error_msg = _10_
     local backup_handler = MacroRollbackManager:backupHandlerOf(module_name)
-    local backup_path = backup_handler["module-name->active-backup-path"](backup_handler)
+    local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
     local _let_14_ = require("thyme.config")
     local get_config = _let_14_["get-config"]
     local config = get_config()
@@ -81,7 +81,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
         local _16_, _17_ = macro_module__3e_3fchunk(module_name, backup_path)
         if (nil ~= _16_) then
           local chunk = _16_
-          local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["module-name->active-backup-birthtime"](backup_handler), error_msg)
+          local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
           vim.notify_once(msg, vim.log.levels.WARN)
           return chunk
         elseif (true and (nil ~= _17_)) then
