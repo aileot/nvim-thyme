@@ -1,4 +1,4 @@
-(import-macros {: when-not : str? : dec : first} :thyme.macros)
+(import-macros {: when-not : str? : dec : inc : first} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
 (local tts (require :thyme.wrapper.treesitter))
@@ -79,7 +79,32 @@
                           &until (and discard-last? (<= last-idx i))]
                      (let [text (if (= lang :lua) ?text ;
                                     (fennel.view ?text compiler-options))]
-                       (tts.print text {: lang}))))))))
+                       (tts.print text {: lang})))))
+      (when overwrite-cmd-history?
+        (-> (fn []
+              (let [trimmed-new-fnl-code (new-fnl-code:gsub "[%]}%)]$" "")
+                    last-cmd (vim.fn.histget ":" -1)]
+                (case (string.find last-cmd trimmed-new-fnl-code 1 true)
+                  (idx-start idx-end) (let [prefix (last-cmd:sub 1
+                                                                 (dec idx-start))
+                                            suffix (last-cmd:sub (inc idx-end))
+                                            trimmed-suffix (if omit-trailing-parens?
+                                                               (suffix:gsub "^%s*[%]}%)]*"
+                                                                            "")
+                                                               suffix)
+                                            overriding-cmd (.. prefix
+                                                               trimmed-new-fnl-code
+                                                               trimmed-suffix)]
+                                        (assert (= 1
+                                                   (vim.fn.histadd ":"
+                                                                   overriding-cmd))
+                                                "failed to add tidy fnl code")
+                                        ;; Make sure the last command is set to the last.
+                                        (when (= 1
+                                                 (vim.fn.histadd ":" last-cmd))
+                                          (assert (= 1 (vim.fn.histdel ":" -1))
+                                                  "failed to remove deprecated fnl code"))))))
+            (vim.schedule))))))
 
 (fn assert-is-file-of-thyme [path]
   (let [sep (or (path:match "/") "\\")]
