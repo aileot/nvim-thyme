@@ -1,3 +1,8 @@
+(import-macros {: inc} :thyme.macros)
+
+(local {: validate-type : sorter/files-to-oldest-by-birthtime}
+       (require :thyme.utils.general))
+
 (local Path (require :thyme.utils.path))
 
 (local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
@@ -101,6 +106,20 @@ Return `true` if the following conditions are met:
           (not= (read-file backup-path)
                 (assert expected-contents
                         "expected non empty string for `expected-contents`"))))))
+
+(fn RollbackModuleHandler.cleanup-old-backups! [self]
+  "Remove old backups more than the value of `max-rollbacks` option.
+@param module-name string"
+  (let [{: get-config} (require :thyme.config)
+        config (get-config)
+        max-rollbacks config.max-rollbacks]
+    (validate-type :number max-rollbacks)
+    (let [threshold (inc max-rollbacks)
+          backup-files (self:module-name->backup-files self.module-name)]
+      (table.sort backup-files sorter/files-to-oldest-by-birthtime)
+      (for [i threshold (length backup-files)]
+        (let [path (. backup-files i)]
+          (assert (fs.unlink path)))))))
 
 (fn RollbackModuleHandler.create-module-backup! [self path]
   "Create a backup file of `path` as `module-name`.

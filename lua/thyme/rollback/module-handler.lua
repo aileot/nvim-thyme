@@ -1,12 +1,15 @@
+local _local_1_ = require("thyme.utils.general")
+local validate_type = _local_1_["validate-type"]
+local sorter_2ffiles_to_oldest_by_birthtime = _local_1_["sorter/files-to-oldest-by-birthtime"]
 local Path = require("thyme.utils.path")
-local _local_1_ = require("thyme.utils.fs")
-local file_readable_3f = _local_1_["file-readable?"]
-local read_file = _local_1_["read-file"]
-local fs = _local_1_
-local _local_2_ = require("thyme.utils.pool")
-local hide_file_21 = _local_2_["hide-file!"]
-local has_hidden_file_3f = _local_2_["has-hidden-file?"]
-local restore_file_21 = _local_2_["restore-file!"]
+local _local_2_ = require("thyme.utils.fs")
+local file_readable_3f = _local_2_["file-readable?"]
+local read_file = _local_2_["read-file"]
+local fs = _local_2_
+local _local_3_ = require("thyme.utils.pool")
+local hide_file_21 = _local_3_["hide-file!"]
+local has_hidden_file_3f = _local_3_["has-hidden-file?"]
+local restore_file_21 = _local_3_["restore-file!"]
 local RollbackModuleHandler = {}
 RollbackModuleHandler.__index = RollbackModuleHandler
 local function symlink_21(path, new_path, ...)
@@ -14,13 +17,13 @@ local function symlink_21(path, new_path, ...)
     hide_file_21(new_path)
   else
   end
-  local _4_, _5_ = nil, nil
-  local function _6_()
+  local _5_, _6_ = nil, nil
+  local function _7_()
     return vim.uv.fs_symlink(path, new_path)
   end
-  _4_, _5_ = pcall(assert(_6_))
-  if ((_4_ == false) and (nil ~= _5_)) then
-    local msg = _5_
+  _5_, _6_ = pcall(assert(_7_))
+  if ((_5_ == false) and (nil ~= _6_)) then
+    local msg = _6_
     if has_hidden_file_3f(new_path) then
       return true
     else
@@ -29,7 +32,7 @@ local function symlink_21(path, new_path, ...)
       return false
     end
   else
-    local _ = _4_
+    local _ = _5_
     return true
   end
 end
@@ -62,22 +65,22 @@ RollbackModuleHandler["module-name->active-backup-path"] = function(self)
   return Path.join(backup_dir, filename)
 end
 RollbackModuleHandler["module-name->active-backup-birthtime"] = function(self)
-  local _9_
+  local _10_
   do
     local tmp_3_auto = self["module-name->active-backup-path"](self, self["_module-name"])
     if (nil ~= tmp_3_auto) then
       local tmp_3_auto0 = fs.stat(tmp_3_auto)
       if (nil ~= tmp_3_auto0) then
-        _9_ = tmp_3_auto0.birthtime.sec
+        _10_ = tmp_3_auto0.birthtime.sec
       else
-        _9_ = nil
+        _10_ = nil
       end
     else
-      _9_ = nil
+      _10_ = nil
     end
   end
-  if (nil ~= _9_) then
-    local time = _9_
+  if (nil ~= _10_) then
+    local time = _10_
     return os.date("%c", time)
   else
     return nil
@@ -93,6 +96,21 @@ RollbackModuleHandler["should-update-backup?"] = function(self, expected_content
   assert(not file_readable_3f(module_name), ("expected module-name, got path " .. module_name))
   local backup_path = self["module-name->active-backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
+end
+RollbackModuleHandler["cleanup-old-backups!"] = function(self)
+  local _let_14_ = require("thyme.config")
+  local get_config = _let_14_["get-config"]
+  local config = get_config()
+  local max_rollbacks = config["max-rollbacks"]
+  validate_type("number", max_rollbacks)
+  local threshold = (max_rollbacks + 1)
+  local backup_files = self["module-name->backup-files"](self, self["module-name"])
+  table.sort(backup_files, sorter_2ffiles_to_oldest_by_birthtime)
+  for i = threshold, #backup_files do
+    local path = backup_files[i]
+    assert(fs.unlink(path))
+  end
+  return nil
 end
 RollbackModuleHandler["create-module-backup!"] = function(self, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
