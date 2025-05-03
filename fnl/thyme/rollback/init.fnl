@@ -167,14 +167,15 @@ Return `true` if the following conditions are met:
 @param module-name string
 @return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
 @return nil|string: nil, or (only for macro searcher) an error message."
-  (let [rollback-path (self:module-name->mounted-backup-path module-name)
+  (let [rollback-handler (self:handlerOf module-name)
+        rollback-path (rollback-handler:module-name->mounted-backup-path)
         loader-name (-> "thyme-mounted-rollback-%s-loader"
                         (: :format self._kind))]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               msg (-> "%s: rollback to mounted backup for %s %s (created at %s)"
                       (: :format loader-name self._kind module-name module-name
-                         (self:module-name->active-backup-birthtime module-name)))]
+                         (rollback-handler:module-name->active-backup-birthtime)))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
