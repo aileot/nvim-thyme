@@ -78,10 +78,10 @@ path by itself.
   "Return the active backup creation time for `module-name`.
 @param module-name string
 @return string? the birthtime of the active backup, or nil if not found"
-  (let [backup-path (self:module-name->active-backup-path module-name)]
-    (-> backup-path
-        (fs.stat)
-        (?. :birthtime))))
+  (case (-?> (self:module-name->active-backup-path module-name)
+             (fs.stat)
+             (. :birthtime :sec))
+    time (os.date "%c" time)))
 
 (fn RollbackManager.module-name->mounted-backup-path [self module-name]
   "Return the mounted backupup path for `module-name`.

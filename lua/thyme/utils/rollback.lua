@@ -60,13 +60,26 @@ RollbackManager["module-name->active-backup-path"] = function(self, module_name)
   return Path.join(backup_dir, filename)
 end
 RollbackManager["module-name->active-backup-birthtime"] = function(self, module_name)
-  local backup_path = self["module-name->active-backup-path"](self, module_name)
-  local t_11_ = fs.stat(backup_path)
-  if (nil ~= t_11_) then
-    t_11_ = t_11_.birthtime
-  else
+  local _11_
+  do
+    local tmp_3_auto = self["module-name->active-backup-path"](self, module_name)
+    if (nil ~= tmp_3_auto) then
+      local tmp_3_auto0 = fs.stat(tmp_3_auto)
+      if (nil ~= tmp_3_auto0) then
+        _11_ = tmp_3_auto0.birthtime.sec
+      else
+        _11_ = nil
+      end
+    else
+      _11_ = nil
+    end
   end
-  return t_11_
+  if (nil ~= _11_) then
+    local time = _11_
+    return os.date("%c", time)
+  else
+    return nil
+  end
 end
 RollbackManager["module-name->mounted-backup-path"] = function(self, module_name)
   local backup_dir = self["module-name->backup-dir"](self, module_name)
@@ -79,8 +92,8 @@ RollbackManager["should-update-backup?"] = function(self, module_name, expected_
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
 RollbackManager["cleanup-old-backups!"] = function(self, module_name)
-  local _let_13_ = require("thyme.config")
-  local get_config = _let_13_["get-config"]
+  local _let_15_ = require("thyme.config")
+  local get_config = _let_15_["get-config"]
   local config = get_config()
   local max_rollbacks = config["max-rollbacks"]
   validate_type("number", max_rollbacks)
@@ -104,14 +117,14 @@ end
 RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   local loader_path_for_mounted_backups = Path.join(self["_labeled-root"], "?", self["_mounted-backup-filename"])
   local loader_prefix = (loader_path_for_mounted_backups .. ";")
-  local _14_, _15_ = old_loader_path:find(loader_path_for_mounted_backups, 1, true)
-  if (_14_ == 1) then
+  local _16_, _17_ = old_loader_path:find(loader_path_for_mounted_backups, 1, true)
+  if (_16_ == 1) then
     return old_loader_path
-  elseif (_14_ == nil) then
+  elseif (_16_ == nil) then
     return (loader_prefix .. old_loader_path)
-  elseif ((nil ~= _14_) and (nil ~= _15_)) then
-    local idx_start = _14_
-    local idx_end = _15_
+  elseif ((nil ~= _16_) and (nil ~= _17_)) then
+    local idx_start = _16_
+    local idx_end = _17_
     local tmp_loader_path = (old_loader_path:sub(1, idx_start) .. old_loader_path:sub(idx_end))
     return (loader_prefix .. tmp_loader_path)
   else
@@ -138,10 +151,10 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
 end
 RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   if not self["_injected-searcher"] then
-    local function _19_(...)
+    local function _21_(...)
       return self["search-module-from-mounted-backups"](self, ...)
     end
-    self["_injected-searcher"] = _19_
+    self["_injected-searcher"] = _21_
     return table.insert(searchers, 1, self["_injected-searcher"])
   elseif (searchers[1] ~= self["_injected-searcher"]) then
     do
@@ -203,9 +216,9 @@ RollbackManager["get-mounted-rollbacks"] = function()
 end
 RollbackManager["unmount-backup-all!"] = function()
   do
-    local _22_ = RollbackManager["get-mounted-rollbacks"]()
-    if (nil ~= _22_) then
-      local mounted_backup_paths = _22_
+    local _24_ = RollbackManager["get-mounted-rollbacks"]()
+    if (nil ~= _24_) then
+      local mounted_backup_paths = _24_
       for _, path in ipairs(mounted_backup_paths) do
         assert(fs.unlink(path))
       end
