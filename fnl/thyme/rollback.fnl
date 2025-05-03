@@ -205,6 +205,10 @@ Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to loa
 ;;; Static Methods
 
 (λ RollbackManager.new [kind file-extension]
+  "Create a new RollbackManager.
+@param kind string for internal capsulation on filesystem
+@param file-extension string
+@return RollbackManager"
   (let [self (setmetatable {} RollbackManager)
         root (Path.join RollbackManager._root kind)]
     (vim.fn.mkdir root :p)
