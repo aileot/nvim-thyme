@@ -99,11 +99,12 @@
               msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
                       (: :format config-filename error-msg))]
           (vim.notify_once msg vim.log.levels.ERROR)
-          (when (file-readable? backup-path)
-            (let [msg (-> "[thyme] temporarily restore config from backup.")]
-              (vim.notify_once msg vim.log.levels.WARN)
-              ;; Return the backup.
-              (fennel.dofile backup-path compiler-options)))))))
+          (if (file-readable? backup-path)
+              (let [msg (-> "[thyme] temporarily restore config from backup.")]
+                (vim.notify_once msg vim.log.levels.WARN)
+                ;; Return the backup.
+                (fennel.dofile backup-path compiler-options))
+              {})))))
 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.

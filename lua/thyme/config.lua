@@ -107,7 +107,7 @@ local function read_config_with_backup_21(config_file_path)
       vim.notify_once(msg0, vim.log.levels.WARN)
       return fennel.dofile(backup_path, compiler_options)
     else
-      return nil
+      return {}
     end
   end
 end
