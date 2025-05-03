@@ -21,7 +21,11 @@
                          "./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
-                        (table.concat ";"))})
+                        (table.concat ";"))
+        :watch {:event [:BufWritePost :FileChangedShellPost]
+                :pattern "*.fnlm?"
+                :notifier vim.notify
+                :strategy "recompile"}})
 
 (local cache {})
 
