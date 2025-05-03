@@ -2,6 +2,9 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
+(local RollbackManager (require :thyme.utils.rollback))
+(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
+
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
@@ -66,8 +69,10 @@
             (vim.defer_fn 800)))
     _ (error "abort proceeding with nvim-thyme")))
 
-(fn read-config [config-file-path]
-  "Return config table of `config-file-path`.
+(fn read-config-with-backup! [config-file-path]
+  "Return config table of `config-file-path`. With any errors in reading
+current config, the config for the current nvim session will be rolled back to
+the active backup, if available.
 @param config-file string a directory path.
 @return table"
   (assert-is-fnl-file config-file-path)
@@ -78,10 +83,30 @@
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
+        backup-name (or vim.env.NVIM_APPNAME "nvim")
         _ (set cache.evaluating? true)
-        ?config (fennel.eval config-code compiler-options)
+        (ok? ?result) (pcall fennel.eval config-code compiler-options)
         _ (set cache.evaluating? false)]
-    (or ?config {})))
+    ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
+    (if ok?
+        (let [?config ?result]
+          (when (ConfigRollbackManager:should-update-backup? backup-name
+                                                             config-code)
+            (ConfigRollbackManager:create-module-backup! backup-name
+                                                         config-file-path)
+            (ConfigRollbackManager:cleanup-old-backups! backup-name))
+          (or ?config {}))
+        (let [backup-path (ConfigRollbackManager:module-name->active-backup-path backup-name)
+              error-msg ?result
+              msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
+                      (: :format config-filename error-msg))]
+          (vim.notify_once msg vim.log.levels.ERROR)
+          (if (file-readable? backup-path)
+              (let [msg (-> "[thyme] temporarily restore config from backup.")]
+                (vim.notify_once msg vim.log.levels.WARN)
+                ;; Return the backup.
+                (fennel.dofile backup-path compiler-options))
+              {})))))
 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
@@ -91,7 +116,7 @@
       {:?error-msg (.. "recursion detected in evaluating " config-filename)}
       (next cache.main-config)
       cache.main-config
-      (let [user-config (read-config config-path)]
+      (let [user-config (read-config-with-backup! config-path)]
         (each [k v (pairs user-config)]
           ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
           ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be

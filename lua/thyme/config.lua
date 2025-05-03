@@ -7,6 +7,8 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
+local RollbackManager = require("thyme.utils.rollback")
+local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";")}
@@ -69,7 +71,7 @@ if not file_readable_3f(config_path) then
   end
 else
 end
-local function read_config(config_file_path)
+local function read_config_with_backup_21(config_file_path)
   assert_is_fnl_file(config_file_path)
   local fennel = require("fennel")
   local config_code
@@ -79,14 +81,35 @@ local function read_config(config_file_path)
     config_code = vim.secure.read(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
+  local backup_name = (vim.env.NVIM_APPNAME or "nvim")
   local _
   cache["evaluating?"] = true
   _ = nil
-  local _3fconfig = fennel.eval(config_code, compiler_options)
+  local ok_3f, _3fresult = pcall(fennel.eval, config_code, compiler_options)
   local _0
   cache["evaluating?"] = false
   _0 = nil
-  return (_3fconfig or {})
+  if ok_3f then
+    local _3fconfig = _3fresult
+    if ConfigRollbackManager["should-update-backup?"](ConfigRollbackManager, backup_name, config_code) then
+      ConfigRollbackManager["create-module-backup!"](ConfigRollbackManager, backup_name, config_file_path)
+      ConfigRollbackManager["cleanup-old-backups!"](ConfigRollbackManager, backup_name)
+    else
+    end
+    return (_3fconfig or {})
+  else
+    local backup_path = ConfigRollbackManager["module-name->active-backup-path"](ConfigRollbackManager, backup_name)
+    local error_msg = _3fresult
+    local msg = ("[thyme] failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
+    vim.notify_once(msg, vim.log.levels.ERROR)
+    if file_readable_3f(backup_path) then
+      local msg0 = "[thyme] temporarily restore config from backup."
+      vim.notify_once(msg0, vim.log.levels.WARN)
+      return fennel.dofile(backup_path, compiler_options)
+    else
+      return {}
+    end
+  end
 end
 local function get_config()
   if cache["evaluating?"] then
@@ -94,7 +117,7 @@ local function get_config()
   elseif next(cache["main-config"]) then
     return cache["main-config"]
   else
-    local user_config = read_config(config_path)
+    local user_config = read_config_with_backup_21(config_path)
     for k, v in pairs(user_config) do
       rawset(cache["main-config"], k, v)
     end
