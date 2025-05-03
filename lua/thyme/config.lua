@@ -129,7 +129,7 @@ local function get_config()
   else
     local user_config = read_config_with_backup_21(config_path)
     local mt = getmetatable(cache["main-config"])
-    cache["main-config"] = vim.tbl_deep_extend("force", cache["main-config"], user_config)
+    cache["main-config"] = vim.tbl_deep_extend("force", default_opts, user_config)
     setmetatable(cache["main-config"], mt)
     return cache["main-config"]
   end

@@ -137,7 +137,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
       (let [user-config (read-config-with-backup! config-path)
             mt (getmetatable cache.main-config)]
         (set cache.main-config
-             (vim.tbl_deep_extend :force cache.main-config user-config))
+             (vim.tbl_deep_extend :force default-opts user-config))
         (setmetatable cache.main-config mt)
         cache.main-config)))
 
