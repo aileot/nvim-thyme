@@ -12,6 +12,8 @@
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
 
+(local RollbackModuleHandler (require :thyme.rollback.module-handler))
+
 (local RollbackManager
        {:_root (Path.join state-prefix :rollbacks)
         :_active-backup-filename ".active"
@@ -36,6 +38,12 @@
     _ true))
 
 ;;; Class Methods
+
+(fn RollbackManager.handlerOf [module-name]
+  "Create a rollback handler for `module-name`
+@param module-name string
+@return RollbackModuleHandler"
+  (RollbackModuleHandler.new module-name))
 
 (fn RollbackManager.module-name->backup-dir [self module-name]
   "Return backup directory for `module-name`.
