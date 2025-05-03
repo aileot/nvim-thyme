@@ -83,7 +83,7 @@ the active backup, if available.
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
-        backup-name (or vim.env.NVIM_APPNAME "nvim")
+        backup-name "default"
         _ (set cache.evaluating? true)
         (ok? ?result) (pcall fennel.eval config-code compiler-options)
         _ (set cache.evaluating? false)]

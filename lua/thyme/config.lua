@@ -81,7 +81,7 @@ local function read_config_with_backup_21(config_file_path)
     config_code = vim.secure.read(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
-  local backup_name = (vim.env.NVIM_APPNAME or "nvim")
+  local backup_name = "default"
   local _
   cache["evaluating?"] = true
   _ = nil
