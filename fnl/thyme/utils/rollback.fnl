@@ -75,6 +75,8 @@ and `.mounted` are ignored.
 
 (fn RollbackManager.module-name->mounted-backup-path [self module-name]
   "Return module the mounted backed up path.
+Note that mounted backup is linked to an active backup so that the contents are
+always the same.
 @param module-name string
 @return string? the module backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir module-name)
