@@ -11,7 +11,7 @@ local RollbackManager = require("thyme.rollback")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), command = {["compiler-options"] = nil, ["fnl-cmd-prefix"] = "Fnl"}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.fnlm?", notifier = vim.notify, strategy = "recompile"}}
+local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), command = {["compiler-options"] = nil, ["fnl-cmd-prefix"] = "Fnl", ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.fnlm?", notifier = vim.notify, strategy = "recompile"}}
 local cache = {}
 local function _3_(self, k)
   if (k == "?error-msg") then

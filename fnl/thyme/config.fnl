@@ -23,7 +23,8 @@
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))
         :command {:compiler-options nil
-                  :fnl-cmd-prefix "Fnl"}
+                  :fnl-cmd-prefix "Fnl"
+                  :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.fnlm?"
                 :notifier vim.notify
