@@ -73,6 +73,15 @@ and `.mounted` are ignored.
         filename RollbackManager._active-backup-filename]
     (Path.join backup-dir filename)))
 
+(fn RollbackManager.module-name->active-backup-birthtime [self module-name]
+  "Return the active backup creation time for `module-name`.
+@param module-name string
+@return string? the module backup path, or nil if not found"
+  (let [backup-path (self:module-name->active-backup-path module-name)]
+    (-> backup-path
+        (fs.stat)
+        (?. :birthtime))))
+
 (fn RollbackManager.module-name->mounted-backup-path [self module-name]
   "Return module the mounted backed up path.
 Note that mounted backup is linked to an active backup so that the contents are
