@@ -115,27 +115,4 @@ Return `true` if the following conditions are met:
     (assert (fs.copyfile path backup-path))
     (symlink! backup-path active-backup-path)))
 
-(fn RollbackModuleHandler.search-module-from-mounted-backups [self]
-  "Search for `module-name` in mounted rollbacks.
-@return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
-@return nil|string: nil, or (only for macro searcher) an error message."
-  (let [module-name self._module-name
-        rollback-path (self:module-name->mounted-backup-path module-name)
-        loader-name (-> "thyme-mounted-rollback-%s-loader"
-                        (: :format self._kind))]
-    (if (file-readable? rollback-path)
-        (let [resolved-path (fs.readlink rollback-path)
-              msg (-> "%s: rollback to mounted backup for %s %s (created at %s)"
-                      (: :format loader-name self._kind module-name module-name
-                         (self:module-name->active-backup-birthtime module-name)))]
-          (vim.notify_once msg vim.log.levels.WARN)
-          ;; TODO: Is it redundant to resolve path for error message?
-          (loadfile resolved-path))
-        (let [error-msg (-> "%s: no mounted backup is found for %s %s"
-                            (: :format loader-name self._kind module-name))]
-          (if (= self._kind "macro")
-              ;; TODO: Better implementation independent of `self._kind`.
-              (values nil error-msg)
-              error-msg)))))
-
 RollbackModuleHandler

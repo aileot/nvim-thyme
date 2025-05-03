@@ -103,22 +103,4 @@ RollbackModuleHandler["create-module-backup!"] = function(self, path)
   assert(fs.copyfile(path, backup_path))
   return symlink_21(backup_path, active_backup_path)
 end
-RollbackModuleHandler["search-module-from-mounted-backups"] = function(self)
-  local module_name = self["_module-name"]
-  local rollback_path = self["module-name->mounted-backup-path"](self, module_name)
-  local loader_name = ("thyme-mounted-rollback-%s-loader"):format(self._kind)
-  if file_readable_3f(rollback_path) then
-    local resolved_path = fs.readlink(rollback_path)
-    local msg = ("%s: rollback to mounted backup for %s %s (created at %s)"):format(loader_name, self._kind, module_name, module_name, self["module-name->active-backup-birthtime"](self, module_name))
-    vim.notify_once(msg, vim.log.levels.WARN)
-    return loadfile(resolved_path)
-  else
-    local error_msg = ("%s: no mounted backup is found for %s %s"):format(loader_name, self._kind, module_name)
-    if (self._kind == "macro") then
-      return nil, error_msg
-    else
-      return error_msg
-    end
-  end
-end
 return RollbackModuleHandler
