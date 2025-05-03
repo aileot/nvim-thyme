@@ -40,8 +40,8 @@ local function symlink_21(path, new_path, ...)
     return true
   end
 end
-RollbackManager.handlerOf = function(module_name)
-  return RollbackModuleHandler.new(module_name)
+RollbackManager.handlerOf = function(self, module_name)
+  return RollbackModuleHandler.new(self["_kind-dir"], module_name)
 end
 RollbackManager["module-name->backup-dir"] = function(self, module_name)
   local dir = Path.join(self["_kind-dir"], module_name)

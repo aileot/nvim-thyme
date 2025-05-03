@@ -33,13 +33,15 @@ local function symlink_21(path, new_path, ...)
     return true
   end
 end
-RollbackModuleHandler.new = function(module_name)
-  local self = setmetatable({}, RollbackModuleHandler)
+RollbackModuleHandler.new = function(root_dir, module_name)
+  local attrs = {["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
+  local self = setmetatable(attrs, RollbackModuleHandler)
+  self["_root-dir"] = root_dir
   self["_module-name"] = module_name
   return self
 end
 RollbackModuleHandler["module-name->backup-dir"] = function(self)
-  local dir = Path.join(self["_kind-dir"], self["_module-name"])
+  local dir = Path.join(self["_root-dir"], self["_module-name"])
   return dir
 end
 RollbackModuleHandler["module-name->backup-files"] = function(self)

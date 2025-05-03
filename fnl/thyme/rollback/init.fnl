@@ -39,11 +39,11 @@
 
 ;;; Class Methods
 
-(fn RollbackManager.handlerOf [module-name]
+(fn RollbackManager.handlerOf [self module-name]
   "Create a rollback handler for `module-name`
 @param module-name string
 @return RollbackModuleHandler"
-  (RollbackModuleHandler.new module-name))
+  (RollbackModuleHandler.new self._kind-dir module-name))
 
 (fn RollbackManager.module-name->backup-dir [self module-name]
   "Return backup directory for `module-name`.

@@ -25,15 +25,18 @@
                       false))
     _ true))
 
-(fn RollbackModuleHandler.new [module-name]
-  (let [self (setmetatable {} RollbackModuleHandler)]
+(fn RollbackModuleHandler.new [root-dir module-name]
+  (let [attrs {:_active-backup-filename ".active"
+               :_mounted-backup-filename ".mounted"}
+        self (setmetatable attrs RollbackModuleHandler)]
+    (set self._root-dir root-dir)
     (set self._module-name module-name)
     self))
 
 (fn RollbackModuleHandler.module-name->backup-dir [self]
   "Return backup directory for `module-name`.
 @return string the backup directory"
-  (let [dir (Path.join self._kind-dir self._module-name)]
+  (let [dir (Path.join self._root-dir self._module-name)]
     dir))
 
 (fn RollbackModuleHandler.module-name->backup-files [self]
