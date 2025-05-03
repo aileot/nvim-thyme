@@ -94,7 +94,10 @@
 @param opts.compiler-options table? (default: same values as main config)
 @param opts.overwrite-cmd-history? bool? (default: true)
 @param opts.omit-trailing-parens? bool? (default: true)"
-  (let [opts (or ?opts {})
+  (let [config (get-config)
+        opts (if ?opts
+                 (vim.tbl_deep_extend :force config.command ?opts)
+                 config.command)
         fnl-cmd-prefix (or opts.fnl-cmd-prefix :Fnl)
         compiler-options opts.compiler-options
         overwrite-cmd-history? (or opts.overwrite-cmd-history? true)
