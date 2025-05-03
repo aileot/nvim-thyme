@@ -47,7 +47,7 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
         watch (require :thyme.user.watch)
         keymaps (require :thyme.user.keymaps)
         commands (require :thyme.user.commands)]
-    (watch.watch-files config.watch)
+    (watch.watch-files! config.watch)
     (keymaps.define-keymaps! config)
     (commands.define-commands! config)))
 

@@ -41,7 +41,7 @@ M.setup = function(_3fopts)
   local watch = require("thyme.user.watch")
   local keymaps = require("thyme.user.keymaps")
   local commands = require("thyme.user.commands")
-  watch["watch-files"](config.watch)
+  watch["watch-files!"](config.watch)
   keymaps["define-keymaps!"](config)
   return commands["define-commands!"](config)
 end
