@@ -70,7 +70,9 @@
     _ (error "abort proceeding with nvim-thyme")))
 
 (fn read-config-with-backup! [config-file-path]
-  "Return config table of `config-file-path`.
+  "Return config table of `config-file-path`. With any errors in reading
+current config, the config for the current nvim session will be rolled back to
+the active backup, if available.
 @param config-file string a directory path.
 @return table"
   (assert-is-fnl-file config-file-path)
