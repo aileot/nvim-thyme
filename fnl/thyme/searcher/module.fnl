@@ -160,8 +160,10 @@ cache dir.
                       max-rollbacks config.max-rollbacks
                       rollback-enabled? (< 0 max-rollbacks)]
                   (if (and rollback-enabled? (file-readable? backup-path))
-                      (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s due to the following error: %s"
-                                   :format module-name error-msg)]
+                      (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s"
+                                   :format module-name
+                                   (ModuleRollbackManager:module-name->active-backup-birthtime module-name)
+                                   error-msg)]
                         (vim.notify_once msg vim.log.levels.WARN)
                         (loadfile backup-path))
                       error-msg))))))))
