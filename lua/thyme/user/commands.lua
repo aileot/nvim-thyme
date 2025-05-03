@@ -80,7 +80,7 @@ local function edit_cmd_history_21(new_fnl_code, opts)
   local methods
   local function _18_(new_cmd)
     assert((1 == vim.fn.histadd(":", new_cmd)), "failed to add new fnl code")
-    return assert((1 == vim.fn.histdel(":", new_cmd)), "failed to remove the replaced fnl code")
+    return assert((1 == vim.fn.histdel(":", -2)), "failed to remove the replaced fnl code")
   end
   local function _19_(new_cmd)
     return assert((1 == vim.fn.histadd(":", new_cmd)), "failed to add new fnl code")

@@ -74,7 +74,9 @@
         methods {:overwrite (fn [new-cmd]
                               (assert (= 1 (vim.fn.histadd ":" new-cmd))
                                       "failed to add new fnl code")
-                              (assert (= 1 (vim.fn.histdel ":" new-cmd))
+                              ;; NOTE: Delete history entry after adding the
+                              ;; renew item just in case to leave clue.
+                              (assert (= 1 (vim.fn.histdel ":" -2))
                                       "failed to remove the replaced fnl code"))
                  :append (fn [new-cmd]
                            (assert (= 1 (vim.fn.histadd ":" new-cmd))
