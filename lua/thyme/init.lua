@@ -44,8 +44,8 @@ M.setup = function(_3fopts)
   local keymaps = require("thyme.user.keymaps")
   local commands = require("thyme.user.commands")
   watch["watch-files!"](config.watch)
-  keymaps["define-keymaps!"](config)
-  commands["define-commands!"](config)
+  keymaps["define-keymaps!"]()
+  commands["define-commands!"]()
   return self
 end
 for k, v in pairs(M) do

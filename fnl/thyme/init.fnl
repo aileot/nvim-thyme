@@ -51,8 +51,8 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
         keymaps (require :thyme.user.keymaps)
         commands (require :thyme.user.commands)]
     (watch.watch-files! config.watch)
-    (keymaps.define-keymaps! config)
-    (commands.define-commands! config)
+    (keymaps.define-keymaps!)
+    (commands.define-commands!)
     self))
 
 (each [k v (pairs M)]
