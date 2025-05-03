@@ -22,6 +22,8 @@
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))
+        :command {:compiler-options nil
+                  :fnl-cmd-prefix "Fnl"}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.fnlm?"
                 :notifier vim.notify
