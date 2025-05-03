@@ -47,23 +47,62 @@
               :string (if split? :split :edit))]
     (vim.cmd {: cmd :args [buf|path] : mods})))
 
+(fn edit-cmd-history! [new-fnl-code opts]
+  "Edit Vim command history with `new-fnl-code`.
+@param new-fnl-code string expecting a fnl code balanced by parinfer
+@param opts.method 'overwrite'|'append'|'ignore'
+@param opts.trailing-parens 'omit'|'keep'"
+  (let [make-new-cmd (fn [new-fnl-code]
+                       (let [trimmed-new-fnl-code (new-fnl-code:gsub "[%]}%)]$"
+                                                                     "")
+                             last-cmd (vim.fn.histget ":" -1)]
+                         (case (string.find last-cmd trimmed-new-fnl-code 1
+                                            true)
+                           (idx-start idx-end) (let [prefix (last-cmd:sub 1
+                                                                          (dec idx-start))
+                                                     suffix (last-cmd:sub (inc idx-end))
+                                                     trimmed-suffix (case opts.trailing-parens
+                                                                      :omit (suffix:gsub "^%s*[%]}%)]*"
+                                                                                         "")
+                                                                      :keep suffix
+                                                                      _
+                                                                      (error "expected one of `omit` or `keep`; got unknown value for trailing-parens "
+                                                                             opts.trailing-parens))
+                                                     new-cmd (.. prefix
+                                                                 trimmed-new-fnl-code
+                                                                 trimmed-suffix)]
+                                                 new-cmd))))
+        methods {:overwrite (fn [new-cmd]
+                              (assert (= 1 (vim.fn.histadd ":" new-cmd))
+                                      "failed to add new fnl code")
+                              (assert (= 1 (vim.fn.histdel ":" new-cmd))
+                                      "failed to remove the replaced fnl code"))
+                 :append (fn [new-cmd]
+                           (assert (= 1 (vim.fn.histadd ":" new-cmd))
+                                   "failed to add new fnl code"))
+                 :ignore #(comment "Do nothing")}]
+    (case (. methods opts.method)
+      apply-method (let [new-cmd (make-new-cmd new-fnl-code)]
+                     (apply-method new-cmd))
+      _
+      (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
+                 opts.method)))))
+
 (fn wrap-fennel-wrapper-for-command [callback
                                      {: lang
                                       : discard-last?
                                       : compiler-options
-                                      : overwrite-cmd-history?
-                                      : omit-trailing-parens?}]
+                                      : cmd-history-opts}]
   "Wrap the `fennel` wrapper callback of thyme.
 @param callback fun(fnl-code: string): any
 @param opts.lang string? (default: \"fennel\")
 @param opts.compiler-options table? (default: same values as main config)
-@param opts.overwrite-cmd-history? bool? (default: true)
-@param opts.omit-trailing-parens? bool? (default: true)"
+@param opts.cmd-history-opts.method string (default: \"overwrite\")
+@param opts.cmd-history-opts.trailing-parens string (default: \"omit\")"
   (fn [{: args : smods}]
     (let [verbose? (< -1 smods.verbose)
           new-fnl-code (-> args
-                           (apply-parinfer {: overwrite-cmd-history?
-                                            : omit-trailing-parens?}))]
+                           (apply-parinfer {: cmd-history-opts}))]
       (when verbose?
         ;; TODO: Replace with nvim_echo on treesitter highlight?
         (tts.print ";;; Source")
@@ -80,30 +119,8 @@
                      (let [text (if (= lang :lua) ?text ;
                                     (fennel.view ?text compiler-options))]
                        (tts.print text {: lang})))))
-      (when overwrite-cmd-history?
-        (-> (fn []
-              (let [trimmed-new-fnl-code (new-fnl-code:gsub "[%]}%)]$" "")
-                    last-cmd (vim.fn.histget ":" -1)]
-                (case (string.find last-cmd trimmed-new-fnl-code 1 true)
-                  (idx-start idx-end) (let [prefix (last-cmd:sub 1
-                                                                 (dec idx-start))
-                                            suffix (last-cmd:sub (inc idx-end))
-                                            trimmed-suffix (if omit-trailing-parens?
-                                                               (suffix:gsub "^%s*[%]}%)]*"
-                                                                            "")
-                                                               suffix)
-                                            overriding-cmd (.. prefix
-                                                               trimmed-new-fnl-code
-                                                               trimmed-suffix)]
-                                        (assert (= 1
-                                                   (vim.fn.histadd ":"
-                                                                   overriding-cmd))
-                                                "failed to add tidy fnl code")
-                                        ;; Make sure the last command is set to the last.
-                                        (when (= 1
-                                                 (vim.fn.histadd ":" last-cmd))
-                                          (assert (= 1 (vim.fn.histdel ":" -1))
-                                                  "failed to remove deprecated fnl code"))))))
+      (when cmd-history-opts
+        (-> #(edit-cmd-history! new-fnl-code cmd-history-opts)
             (vim.schedule))))))
 
 (fn assert-is-file-of-thyme [path]
@@ -117,16 +134,14 @@
   "Define user commands.
 @param opts.fnl-cmd-prefix string (default: \"Fnl\")
 @param opts.compiler-options table? (default: same values as main config)
-@param opts.overwrite-cmd-history? bool? (default: true)
-@param opts.omit-trailing-parens? bool? (default: true)"
+@param opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
   (let [config (get-config)
         opts (if ?opts
                  (vim.tbl_deep_extend :force config.command ?opts)
                  config.command)
         fnl-cmd-prefix opts.fnl-cmd-prefix
         compiler-options opts.compiler-options
-        overwrite-cmd-history? (or opts.overwrite-cmd-history? true)
-        omit-trailing-parens? (or opts.omit-trailing-parens? true)]
+        cmd-history-opts opts.cmd-history]
     (command! :ThymeConfigOpen
       {:desc (.. "[thyme] open the main config file " config-filename)}
       (fn []
@@ -245,8 +260,7 @@
         (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                          {:lang :fennel
                                           : compiler-options
-                                          : overwrite-cmd-history?
-                                          : omit-trailing-parens?})))
+                                          : cmd-history-opts})))
     (command! (.. fnl-cmd-prefix :Eval)
       {:nargs "*"
        :complete :lua
@@ -254,8 +268,7 @@
       (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                        {:lang :fennel
                                         : compiler-options
-                                        : overwrite-cmd-history?
-                                        : omit-trailing-parens?}))
+                                        : cmd-history-opts}))
     (command! (.. fnl-cmd-prefix :CompileString)
       {:nargs "*"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
@@ -263,8 +276,7 @@
                                        {:lang :lua
                                         :discard-last? true
                                         : compiler-options
-                                        : overwrite-cmd-history?
-                                        : omit-trailing-parens?}))
+                                        : cmd-history-opts}))
     (command! (.. fnl-cmd-prefix :EvalFile)
       {:range "%"
        :nargs "?"
@@ -283,8 +295,7 @@
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                                         {:lang :fennel
                                                          : compiler-options
-                                                         : overwrite-cmd-history?
-                                                         : omit-trailing-parens?})]
+                                                         : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
     (command! (.. fnl-cmd-prefix :EvalBuffer)
@@ -300,8 +311,7 @@
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                                         {:lang :fennel
                                                          : compiler-options
-                                                         : overwrite-cmd-history?
-                                                         : omit-trailing-parens?})]
+                                                         : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
     (command! (.. fnl-cmd-prefix :CompileBuffer)
@@ -318,8 +328,7 @@
                                                         {:lang :lua
                                                          :discard-last? true
                                                          : compiler-options
-                                                         : overwrite-cmd-history?
-                                                         : omit-trailing-parens?})]
+                                                         : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
     ;; (command! (.. fnl-cmd-prefix :ReplOnRtp)
