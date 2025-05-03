@@ -167,8 +167,8 @@ Return `true` if the following conditions are met:
               msg (-> "%s: rollback to mounted backup for %s %s
 Note that this loader is intended to help you fix the module reducing its annoying errors.
 Please execute `:ThymeRollbackUnmount %s`, or `:ThymeRollbackUnmountAll`, to load your runtime %s on &rtp."
-                      (: :format loader-name self._label module-name unmount-arg
-                         module-name))]
+                      (: :format loader-name self._label module-name
+                         unmount-arg module-name))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
