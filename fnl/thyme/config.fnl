@@ -128,12 +128,11 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
       {:?error-msg (.. "recursion detected in evaluating " config-filename)}
       (next cache.main-config)
       cache.main-config
-      (let [user-config (read-config-with-backup! config-path)]
-        (each [k v (pairs user-config)]
-          ;; NOTE: By-pass metatable __newindex tweaks, which are only intended
-          ;; to users. Unless $THYME_DEBUG is set, The config table must NOT be
-          ;; overridden by the other locations than here.
-          (rawset cache.main-config k v))
+      (let [user-config (read-config-with-backup! config-path)
+            mt (getmetatable cache.main-config)]
+        (set cache.main-config
+             (vim.tbl_deep_extend :force cache.main-config user-config))
+        (setmetatable cache.main-config mt)
         cache.main-config)))
 
 (fn config-file? [path]

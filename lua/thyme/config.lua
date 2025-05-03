@@ -128,9 +128,9 @@ local function get_config()
     return cache["main-config"]
   else
     local user_config = read_config_with_backup_21(config_path)
-    for k, v in pairs(user_config) do
-      rawset(cache["main-config"], k, v)
-    end
+    local mt = getmetatable(cache["main-config"])
+    cache["main-config"] = vim.tbl_deep_extend("force", cache["main-config"], user_config)
+    setmetatable(cache["main-config"], mt)
     return cache["main-config"]
   end
 end
