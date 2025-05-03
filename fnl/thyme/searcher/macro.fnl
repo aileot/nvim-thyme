@@ -25,12 +25,12 @@
     (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
                               module-name)
       (true result)
-      (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)]
+      (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
+            backup-path (backup-handler:determine-active-backup-path)]
         (when (and (not= fnl-path backup-path)
-                   (MacroRollbackManager:should-update-backup? module-name
-                                                               (read-file fnl-path)))
-          (MacroRollbackManager:create-module-backup! module-name fnl-path)
-          (MacroRollbackManager:cleanup-old-backups! module-name))
+                   (backup-handler:should-update-backup? (read-file fnl-path)))
+          (backup-handler:write-backup! fnl-path)
+          (backup-handler:cleanup-old-backups!))
         (set compiler-options.env ?env)
         #result)
       (_ msg) (let [msg-prefix (: "
@@ -58,7 +58,8 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
             (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
       chunk chunk
       (_ error-msg)
-      (let [backup-path (MacroRollbackManager:module-name->active-backup-path module-name)
+      (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
+            backup-path (backup-handler:determine-active-backup-path)
             {: get-config} (require :thyme.config)
             config (get-config)]
         (case config.?error-msg
@@ -74,7 +75,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                  :format module-name
-                                 (MacroRollbackManager:module-name->active-backup-birthtime module-name)
+                                 (backup-handler:determine-active-backup-birthtime)
                                  error-msg)]
                       (vim.notify_once msg vim.log.levels.WARN)
                       chunk)

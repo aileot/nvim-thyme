@@ -83,34 +83,30 @@
                   (remove-context-files!)))
     (it* "limits the number of backups per Fennel module."
       (let [mod :foobar
-            filename (.. mod ".fnl")]
+            filename (.. mod ".fnl")
+            backup-handler (ModuleRollbackManager:backupHandlerOf mod)]
         (prepare-config-fnl-file! filename ":ctx1")
-        (assert.equals 0
-                       (length (ModuleRollbackManager:module-name->backup-files mod)))
+        (assert.equals 0 (length (backup-handler:list-backup-files)))
         (assert.equals :ctx1 (require mod))
         (tset package.loaded mod nil)
         (vim.cmd :ThymeCacheClear)
         (vim.wait 1)
-        (assert.equals 1
-                       (length (ModuleRollbackManager:module-name->backup-files mod)))
+        (assert.equals 1 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename ":ctx2")
         (assert.equals :ctx2 (require mod))
         (tset package.loaded mod nil)
         (vim.cmd :ThymeCacheClear)
         (vim.wait 1)
-        (assert.equals 2
-                       (length (ModuleRollbackManager:module-name->backup-files mod)))
+        (assert.equals 2 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename ":ctx3")
         (assert.equals :ctx3 (require mod))
         (tset package.loaded mod nil)
         (vim.cmd :ThymeCacheClear)
         (vim.wait 1)
-        (assert.equals 3
-                       (length (ModuleRollbackManager:module-name->backup-files mod)))
+        (assert.equals 3 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename ":ctx4")
         (assert.equals :ctx4 (require mod))
         (tset package.loaded mod nil)
         (vim.cmd :ThymeCacheClear)
         (vim.wait 1)
-        (assert.equals 3
-                       (length (ModuleRollbackManager:module-name->backup-files mod)))))))
+        (assert.equals 3 (length (backup-handler:list-backup-files)))))))

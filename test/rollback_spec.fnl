@@ -18,15 +18,16 @@
   (before-each (fn []
                  (clear-backup-files!)))
   (it* ".new creates a backup directory."
-    (let [label "foo"]
-      (TestRollbackManager.new label ".foobar")
+    (let [kind "foo"]
+      (TestRollbackManager.new kind ".foobar")
       (->> (vim.fn.isdirectory (TestRollbackManager.get-root))
            (assert.is_same 1))))
   (it* ".create-module-backup! creates a backup file."
-    (let [label "foo"
+    (let [kind "foo"
           module-name "foobar"
-          bm (TestRollbackManager.new label ".fnl")
-          stored-path (bm:module-name->active-backup-path module-name)
+          rollback-manager (TestRollbackManager.new kind ".fnl")
+          backup-handler (rollback-manager:backupHandlerOf module-name)
+          stored-path (backup-handler:determine-active-backup-path)
           filename (.. module-name ".fnl")
           original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]
       (-> (vim.fs.dirname original-path)
@@ -34,7 +35,7 @@
       (vim.fn.writefile ["{:foo :bar}"] original-path)
       (->> (vim.fn.filereadable stored-path)
            (assert.is_same 0))
-      (bm:create-module-backup! module-name original-path)
+      (backup-handler:write-backup! original-path)
       (->> (vim.fn.filereadable stored-path)
            (assert.is_same 1)))))
 
@@ -48,32 +49,26 @@
     (it* "limits the number of backups per module to `config.max-rollbacks`."
       (let [mod :foobar
             filename (.. mod ".fnl")
-            path (prepare-config-fnl-file! filename "ctx1")]
-        (assert.equals 0
-                       (length (TestRollbackManager:module-name->backup-files mod)))
-        (TestRollbackManager:create-module-backup! mod path)
-        (assert.equals 1
-                       (length (TestRollbackManager:module-name->backup-files mod)))
+            path (prepare-config-fnl-file! filename "ctx1")
+            backup-handler (TestRollbackManager:backupHandlerOf)]
+        (assert.equals 0 (length (backup-handler:list-backup-files)))
+        (backup-handler:write-backup! path)
+        (assert.equals 1 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename "ctx2")
         (vim.wait 1)
-        (TestRollbackManager:create-module-backup! mod path)
-        (assert.equals 2
-                       (length (TestRollbackManager:module-name->backup-files mod)))
+        (backup-handler:write-backup! path)
+        (assert.equals 2 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename "ctx3")
         (vim.wait 1)
-        (TestRollbackManager:create-module-backup! mod path)
-        (assert.equals 3
-                       (length (TestRollbackManager:module-name->backup-files mod)))
+        (backup-handler:write-backup! path)
+        (assert.equals 3 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename "ctx4")
         (vim.wait 1)
-        (TestRollbackManager:create-module-backup! mod path)
-        (assert.equals 4
-                       (length (TestRollbackManager:module-name->backup-files mod)))
+        (backup-handler:write-backup! path)
+        (assert.equals 4 (length (backup-handler:list-backup-files)))
         (prepare-config-fnl-file! filename "ctx5")
         (vim.wait 1)
-        (TestRollbackManager:create-module-backup! mod path)
-        (assert.equals 5
-                       (length (TestRollbackManager:module-name->backup-files mod)))
-        (TestRollbackManager:cleanup-old-backups! mod)
-        (assert.equals 3
-                       (length (TestRollbackManager:module-name->backup-files mod)))))))
+        (backup-handler:write-backup! path)
+        (assert.equals 5 (length (backup-handler:list-backup-files)))
+        (backup-handler:cleanup-old-backups!)
+        (assert.equals 3 (length (backup-handler:list-backup-files)))))))

@@ -5,7 +5,7 @@ local _local_2_ = require("thyme.utils.pool")
 local hide_files_in_dir_21 = _local_2_["hide-files-in-dir!"]
 local _local_3_ = require("thyme.module-map.unit")
 local clear_module_map_files_21 = _local_3_["clear-module-map-files!"]
-local function module_name__3elua_path(module_name)
+local function determine_lua_path(module_name)
   local lua_module_path = (module_name:gsub("%.", Path.sep) .. ".lua")
   return Path.join(lua_cache_prefix, lua_module_path)
 end
@@ -24,4 +24,4 @@ local function clear_cache_21()
     return true
   end
 end
-return {["module-name->lua-path"] = module_name__3elua_path, ["clear-cache!"] = clear_cache_21}
+return {["determine-lua-path"] = determine_lua_path, ["clear-cache!"] = clear_cache_21}

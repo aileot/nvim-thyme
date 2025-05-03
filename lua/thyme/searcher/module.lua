@@ -122,8 +122,9 @@ local function update_fennel_paths_21(fennel)
 end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
-  if ModuleRollbackManager["should-update-backup?"](ModuleRollbackManager, module_name, lua_code) then
-    return ModuleRollbackManager["create-module-backup!"](ModuleRollbackManager, module_name, lua_path)
+  local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
+  if backup_handler["should-update-backup?"](backup_handler, lua_code) then
+    return backup_handler["write-backup!"](backup_handler, lua_path)
   else
     return nil
   end
@@ -136,6 +137,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     local config = get_config()
     local or_21_ = config["?error-msg"]
     if not or_21_ then
+      local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
       ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders)
       if ((nil == cache.rtp) or debug_3f) then
         initialize_macro_searcher_on_rtp_21(fennel)
@@ -147,52 +149,52 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
         update_fennel_paths_21(fennel)
       else
       end
-      local _24_, _25_ = nil, nil
+      local _25_, _26_ = nil, nil
       do
-        local _27_, _28_ = fennel["search-module"](module_name, fennel.path)
-        if (nil ~= _27_) then
-          local fnl_path = _27_
-          local _let_29_ = require("thyme.compiler.cache")
-          local module_name__3elua_path = _let_29_["module-name->lua-path"]
-          local lua_path = module_name__3elua_path(module_name)
+        local _28_, _29_ = fennel["search-module"](module_name, fennel.path)
+        if (nil ~= _28_) then
+          local fnl_path = _28_
+          local _let_30_ = require("thyme.compiler.cache")
+          local determine_lua_path = _let_30_["determine-lua-path"]
+          local lua_path = determine_lua_path(module_name)
           local compiler_options = config["compiler-options"]
-          local _30_, _31_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
-          if ((_30_ == true) and (nil ~= _31_)) then
-            local lua_code = _31_
+          local _31_, _32_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+          if ((_31_ == true) and (nil ~= _32_)) then
+            local lua_code = _32_
             if can_restore_file_3f(lua_path, lua_code) then
               restore_file_21(lua_path)
             else
               write_lua_file_with_backup_21(lua_path, lua_code, module_name)
-              ModuleRollbackManager["cleanup-old-backups!"](ModuleRollbackManager, module_name)
+              backup_handler["cleanup-old-backups!"](backup_handler, module_name)
             end
-            _24_, _25_ = load(lua_code, lua_path)
-          elseif (true and (nil ~= _31_)) then
-            local _ = _30_
-            local msg = _31_
+            _25_, _26_ = load(lua_code, lua_path)
+          elseif (true and (nil ~= _32_)) then
+            local _ = _31_
+            local msg = _32_
             local msg_prefix = ("\n    thyme-loader: %s is found for the module %s, but failed to compile it\n    \t"):format(fnl_path, module_name)
-            _24_, _25_ = nil, (msg_prefix .. msg)
+            _25_, _26_ = nil, (msg_prefix .. msg)
           else
-            _24_, _25_ = nil
+            _25_, _26_ = nil
           end
-        elseif (true and (nil ~= _28_)) then
-          local _ = _27_
-          local msg = _28_
-          _24_, _25_ = nil, ("\nthyme-loader: " .. msg)
+        elseif (true and (nil ~= _29_)) then
+          local _ = _28_
+          local msg = _29_
+          _25_, _26_ = nil, ("\nthyme-loader: " .. msg)
         else
-          _24_, _25_ = nil
+          _25_, _26_ = nil
         end
       end
-      if (nil ~= _24_) then
-        local chunk = _24_
+      if (nil ~= _25_) then
+        local chunk = _25_
         or_21_ = chunk
-      elseif (true and (nil ~= _25_)) then
-        local _ = _24_
-        local error_msg = _25_
-        local backup_path = ModuleRollbackManager["module-name->active-backup-path"](ModuleRollbackManager, module_name)
+      elseif (true and (nil ~= _26_)) then
+        local _ = _25_
+        local error_msg = _26_
+        local backup_path = backup_handler["determine-active-backup-path"](backup_handler, module_name)
         local max_rollbacks = config["max-rollbacks"]
         local rollback_enabled_3f = (0 < max_rollbacks)
         if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-          local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, ModuleRollbackManager["module-name->active-backup-birthtime"](ModuleRollbackManager, module_name), error_msg)
+          local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
           vim.notify_once(msg, vim.log.levels.WARN)
           or_21_ = loadfile(backup_path)
         else

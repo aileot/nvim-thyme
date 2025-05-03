@@ -1,16 +1,15 @@
 (import-macros {: when-not : inc : first : last} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable? : assert-is-file-readable : read-file &as fs}
+(local {: file-readable? : assert-is-file-readable &as fs}
        (require :thyme.utils.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
-(local {: validate-type : sorter/files-to-oldest-by-birthtime}
-       (require :thyme.utils.general))
-
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
+
+(local BackupHandler (require :thyme.rollback.backup-handler))
 
 (local RollbackManager
        {:_root (Path.join state-prefix :rollbacks)
@@ -37,106 +36,11 @@
 
 ;;; Class Methods
 
-(fn RollbackManager.module-name->backup-dir [self module-name]
-  "Return backup directory for `module-name`.
+(fn RollbackManager.backupHandlerOf [self module-name]
+  "Create a rollback handler for `module-name`
 @param module-name string
-@return string the backup directory"
-  (let [dir (Path.join self._kind-dir module-name)]
-    dir))
-
-(fn RollbackManager.module-name->backup-files [self module-name]
-  "Return backup files for `module-name`. The special files like `.active` and
-`.mounted` are ignored.
-@param module-name string
-@return string[] backup files"
-  (let [backup-dir (self:module-name->backup-dir module-name)]
-    (-> (Path.join backup-dir "*")
-        (vim.fn.glob false true))))
-
-(fn RollbackManager.module-name->new-backup-path [self module-name]
-  "Suggest a new backup path for `module-name`. This method does not create the
-path by itself.
-@param module-name string
-@return string a new backup path"
-  (let [rollback-id (-> (os.date "%Y-%m-%d_%H-%M-%S")
-                        ;; NOTE: os.date does not interpret `%N` for nanoseconds.
-                        (.. "_" (vim.uv.hrtime)))
-        backup-filename (.. rollback-id self.file-extension)
-        backup-dir (self:module-name->backup-dir module-name)]
-    (vim.fn.mkdir backup-dir :p)
-    (Path.join backup-dir backup-filename)))
-
-(fn RollbackManager.module-name->active-backup-path [self module-name]
-  "Return the active backup path for `module-name`.
-@param module-name string
-@return string? the active backup path, or nil if not found"
-  (let [backup-dir (self:module-name->backup-dir module-name)
-        filename RollbackManager._active-backup-filename]
-    (Path.join backup-dir filename)))
-
-(fn RollbackManager.module-name->active-backup-birthtime [self module-name]
-  "Return the active backup creation time for `module-name`.
-@param module-name string
-@return string? the birthtime of the active backup, or nil if not found"
-  (case (-?> (self:module-name->active-backup-path module-name)
-             (fs.stat)
-             (. :birthtime :sec))
-    time (os.date "%c" time)))
-
-(fn RollbackManager.module-name->mounted-backup-path [self module-name]
-  "Return the mounted backupup path for `module-name`.
-Note that mounted backup is linked to an active backup so that the contents are
-always the same.
-@param module-name string
-@return string? the mounted backup path, or nil if not found"
-  (let [backup-dir (self:module-name->backup-dir module-name)
-        filename RollbackManager._mounted-backup-filename]
-    (Path.join backup-dir filename)))
-
-(fn RollbackManager.should-update-backup? [self module-name expected-contents]
-  "Check if the backup of the module should be updated.
-Return `true` if the following conditions are met:
-
-- `expected-contents` is different from the backed-up contents for the
-  module.
-
-@param module-name string
-@param expected-contents string contents expected for the module
-@return boolean true if module should be backed up, false otherwise"
-  (assert (not (file-readable? module-name))
-          (.. "expected module-name, got path " module-name))
-  (let [backup-path (self:module-name->active-backup-path module-name)]
-    (or (not (file-readable? backup-path))
-        (not= (read-file backup-path)
-              (assert expected-contents
-                      "expected non empty string for `expected-contents`")))))
-
-(fn RollbackManager.cleanup-old-backups! [self module-name]
-  "Remove old backups more than the value of `max-rollbacks` option.
-@param module-name string"
-  (let [{: get-config} (require :thyme.config)
-        config (get-config)
-        max-rollbacks config.max-rollbacks]
-    (validate-type :number max-rollbacks)
-    (let [threshold (inc max-rollbacks)
-          backup-files (self:module-name->backup-files module-name)]
-      (table.sort backup-files sorter/files-to-oldest-by-birthtime)
-      (for [i threshold (length backup-files)]
-        (let [path (. backup-files i)]
-          (assert (fs.unlink path)))))))
-
-(fn RollbackManager.create-module-backup! [self module-name path]
-  "Create a backup file of `path` as `module-name`.
-@param module-name string
-@param path string"
-  ;; NOTE: Saving a chunk of macro module is probably impossible.
-  (assert (file-readable? path) (.. "expected readable file, got " path))
-  (let [backup-path (self:module-name->new-backup-path module-name)
-        active-backup-path (self:module-name->active-backup-path module-name)]
-    (-> (vim.fs.dirname active-backup-path)
-        (vim.fn.mkdir :p))
-    (assert (fs.copyfile path backup-path))
-    (symlink! backup-path active-backup-path)))
+@return BackupHandler"
+  (BackupHandler.new self._kind-dir self.file-extension module-name))
 
 (fn RollbackManager.arrange-loader-path [self old-loader-path]
   "Return loader path updated for mounted rollback feature.
@@ -159,14 +63,15 @@ Return `true` if the following conditions are met:
 @param module-name string
 @return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
 @return nil|string: nil, or (only for macro searcher) an error message."
-  (let [rollback-path (self:module-name->mounted-backup-path module-name)
+  (let [backup-handler (self:backupHandlerOf module-name)
+        rollback-path (backup-handler:determine-mounted-backup-path)
         loader-name (-> "thyme-mounted-rollback-%s-loader"
                         (: :format self._kind))]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               msg (-> "%s: rollback to mounted backup for %s %s (created at %s)"
                       (: :format loader-name self._kind module-name module-name
-                         (self:module-name->active-backup-birthtime module-name)))]
+                         (backup-handler:determine-active-backup-birthtime)))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
