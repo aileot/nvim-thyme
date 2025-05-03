@@ -102,7 +102,9 @@ the active backup, if available.
                       (: :format config-filename error-msg))]
           (vim.notify_once msg vim.log.levels.ERROR)
           (if (file-readable? backup-path)
-              (let [msg (-> "[thyme] temporarily restore config from backup.")]
+              (let [msg (-> "[thyme] temporarily restore config from backup created at %s"
+                            (: :format
+                               (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
                 (vim.notify_once msg vim.log.levels.WARN)
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))
