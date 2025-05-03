@@ -79,11 +79,12 @@ the active backup, if available.
   ;; NOTE: fennel is likely to get into loop or previous error.
   (let [fennel (require :fennel)
         backup-name "default"
-        mounted-backup-path (ConfigRollbackManager:module-name->mounted-backup-path backup-name)
+        rollback-handler (ConfigRollbackManager:handlerOf backup-name)
+        mounted-backup-path (rollback-handler:module-name->mounted-backup-path)
         config-code (if (file-readable? mounted-backup-path)
                         (let [msg (-> "[thyme] rollback config to mounted backup (created at %s)"
                                       (: :format
-                                         (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
+                                         (rollback-handler:module-name->active-backup-birthtime)))]
                           (vim.notify_once msg vim.log.levels.WARN)
                           (read-file mounted-backup-path))
                         secure-nvim-env?
@@ -97,13 +98,11 @@ the active backup, if available.
     ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
     (if ok?
         (let [?config ?result]
-          (when (ConfigRollbackManager:should-update-backup? backup-name
-                                                             config-code)
-            (ConfigRollbackManager:create-module-backup! backup-name
-                                                         config-file-path)
-            (ConfigRollbackManager:cleanup-old-backups! backup-name))
+          (when (rollback-handler:should-update-backup? config-code)
+            (rollback-handler:create-module-backup! config-file-path)
+            (rollback-handler:cleanup-old-backups!))
           (or ?config {}))
-        (let [backup-path (ConfigRollbackManager:module-name->active-backup-path backup-name)
+        (let [backup-path (rollback-handler:module-name->active-backup-path)
               error-msg ?result
               msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
                       (: :format config-filename error-msg))]
@@ -113,7 +112,7 @@ the active backup, if available.
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                             (: :format
-                               (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
+                               (rollback-handler:module-name->active-backup-birthtime)))]
                 (vim.notify_once msg vim.log.levels.WARN)
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))
