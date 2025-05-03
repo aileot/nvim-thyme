@@ -5,13 +5,14 @@
 (local thyme (require :thyme))
 
 (describe* "setup"
-  (it* "can be called without arguments"
-    (assert.has_no_error #(thyme.setup)))
-  (it* "can also be called with an empty table"
-    (assert.has_no_error #(thyme.setup {})))
-  (it* "can also be called in method call syntax"
-    (assert.has_no_error #(thyme:setup))
-    (assert.has_no_error #(thyme:setup {})))
+  (describe* "can be called"
+    (it* "without arguments"
+      (assert.has_no_error #(thyme.setup)))
+    (it* "with an empty table"
+      (assert.has_no_error #(thyme.setup {})))
+    (it* "in method call syntax"
+      (assert.has_no_error #(thyme:setup))
+      (assert.has_no_error #(thyme:setup {}))))
   (it* "should throw errors with non-empty table"
     (assert.has_error #(thyme.setup {:foo :bar})))
   (describe* "defines an augroup ThymeWatch"
