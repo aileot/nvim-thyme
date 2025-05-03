@@ -35,15 +35,18 @@ local function _11_(...)
   return require("thyme.user.commands")["define-commands!"](...)
 end
 M = {loader = search_fnl_module_on_rtp_21, view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_, ["define-keymaps!"] = _10_, ["define-commands!"] = _11_}
+M.__index = M
 M.setup = function(_3fopts)
-  assert(((nil == _3fopts) or (nil == next(_3fopts))), "Please call `thyme.setup` without any args, or with an empty table.")
+  assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
+  local self = setmetatable({}, M)
   local config = require("thyme.config")
   local watch = require("thyme.user.watch")
   local keymaps = require("thyme.user.keymaps")
   local commands = require("thyme.user.commands")
   watch["watch-files!"](config.watch)
   keymaps["define-keymaps!"](config)
-  return commands["define-commands!"](config)
+  commands["define-commands!"](config)
+  return self
 end
 for k, v in pairs(M) do
   if k:find("[^-!]") then
@@ -55,4 +58,4 @@ for k, v in pairs(M) do
   else
   end
 end
-return M
+return setmetatable({}, M)

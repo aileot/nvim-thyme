@@ -27,6 +27,8 @@
                                                    :define-commands!
                                                    :watch-to-update!)})
 
+(set M.__index M)
+
 (fn M.setup [?opts]
   "Initialize thyme environment:
 
@@ -41,15 +43,17 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
 `vim.schedule`, or later.
 
 @param ?opts table (default: `{}`)"
-  (assert (or (= nil ?opts) (= nil (next ?opts)))
+  (assert (or (= nil ?opts) (= nil (next ?opts)) (= ?opts M))
           "Please call `thyme.setup` without any args, or with an empty table.")
-  (let [config (require :thyme.config)
+  (let [self (setmetatable {} M)
+        config (require :thyme.config)
         watch (require :thyme.user.watch)
         keymaps (require :thyme.user.keymaps)
         commands (require :thyme.user.commands)]
     (watch.watch-files! config.watch)
     (keymaps.define-keymaps! config)
-    (commands.define-commands! config)))
+    (commands.define-commands! config)
+    self))
 
 (each [k v (pairs M)]
   ;; Generate keys compatible with Lua format addition to the Fennel-styled
@@ -61,4 +65,4 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
       (when (= nil (. M new-key))
         (tset M new-key v)))))
 
-M
+(setmetatable {} M)
