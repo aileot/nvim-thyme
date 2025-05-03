@@ -78,12 +78,19 @@ the active backup, if available.
   (assert-is-fnl-file config-file-path)
   ;; NOTE: fennel is likely to get into loop or previous error.
   (let [fennel (require :fennel)
-        config-code (if secure-nvim-env?
+        backup-name "default"
+        mounted-backup-path (ConfigRollbackManager:module-name->mounted-backup-path backup-name)
+        config-code (if (file-readable? mounted-backup-path)
+                        (let [msg (-> "[thyme] rollback config to mounted backup (created at %s)"
+                                      (: :format
+                                         (ConfigRollbackManager:module-name->active-backup-birthtime backup-name)))]
+                          (vim.notify_once msg vim.log.levels.WARN)
+                          (read-file mounted-backup-path))
+                        secure-nvim-env?
                         (read-file config-file-path)
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
-        backup-name "default"
         _ (set cache.evaluating? true)
         (ok? ?result) (pcall fennel.eval config-code compiler-options)
         _ (set cache.evaluating? false)]
