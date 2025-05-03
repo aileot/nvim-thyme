@@ -58,7 +58,7 @@ RollbackModuleHandler["module-name->new-backup-path"] = function(self)
 end
 RollbackModuleHandler["module-name->active-backup-path"] = function(self)
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
-  local filename = RollbackModuleHandler["_active-backup-filename"]
+  local filename = self["_active-backup-filename"]
   return Path.join(backup_dir, filename)
 end
 RollbackModuleHandler["module-name->active-backup-birthtime"] = function(self)
@@ -85,7 +85,7 @@ RollbackModuleHandler["module-name->active-backup-birthtime"] = function(self)
 end
 RollbackModuleHandler["module-name->mounted-backup-path"] = function(self)
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
-  local filename = RollbackModuleHandler["_mounted-backup-filename"]
+  local filename = self["_mounted-backup-filename"]
   return Path.join(backup_dir, filename)
 end
 RollbackModuleHandler["should-update-backup?"] = function(self, expected_contents)

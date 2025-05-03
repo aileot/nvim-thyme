@@ -64,7 +64,7 @@ path by itself.
   "Return the active backup path for `module-name`.
 @return string? the active backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir self._module-name)
-        filename RollbackModuleHandler._active-backup-filename]
+        filename self._active-backup-filename]
     (Path.join backup-dir filename)))
 
 (fn RollbackModuleHandler.module-name->active-backup-birthtime [self]
@@ -81,7 +81,7 @@ Note that mounted backup is linked to an active backup so that the contents are
 always the same.
 @return string? the mounted backup path, or nil if not found"
   (let [backup-dir (self:module-name->backup-dir self._module-name)
-        filename RollbackModuleHandler._mounted-backup-filename]
+        filename self._mounted-backup-filename]
     (Path.join backup-dir filename)))
 
 (fn RollbackModuleHandler.should-update-backup? [self expected-contents]
