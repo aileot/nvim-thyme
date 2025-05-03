@@ -9,7 +9,7 @@ local _local_3_ = require("thyme.utils.pool")
 local hide_file_21 = _local_3_["hide-file!"]
 local has_hidden_file_3f = _local_3_["has-hidden-file?"]
 local restore_file_21 = _local_3_["restore-file!"]
-local RollbackModuleHandler = require("thyme.rollback.module-handler")
+local BackupHandler = require("thyme.rollback.backup-handler")
 local RollbackManager = {_root = Path.join(state_prefix, "rollbacks"), ["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
 RollbackManager.__index = RollbackManager
 local function symlink_21(path, new_path, ...)
@@ -36,8 +36,8 @@ local function symlink_21(path, new_path, ...)
     return true
   end
 end
-RollbackManager.handlerOf = function(self, module_name)
-  return RollbackModuleHandler.new(self["_kind-dir"], self["file-extension"], module_name)
+RollbackManager.backupHandlerOf = function(self, module_name)
+  return BackupHandler.new(self["_kind-dir"], self["file-extension"], module_name)
 end
 RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   local loader_path_for_mounted_backups = Path.join(self["_kind-dir"], "?", self["_mounted-backup-filename"])
@@ -57,12 +57,12 @@ RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
   end
 end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
-  local rollback_handler = self:handlerOf(module_name)
-  local rollback_path = rollback_handler["module-name->mounted-backup-path"](rollback_handler)
+  local backup_handler = self:backupHandlerOf(module_name)
+  local rollback_path = backup_handler["module-name->mounted-backup-path"](backup_handler)
   local loader_name = ("thyme-mounted-rollback-%s-loader"):format(self._kind)
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
-    local msg = ("%s: rollback to mounted backup for %s %s (created at %s)"):format(loader_name, self._kind, module_name, module_name, rollback_handler["module-name->active-backup-birthtime"](rollback_handler))
+    local msg = ("%s: rollback to mounted backup for %s %s (created at %s)"):format(loader_name, self._kind, module_name, module_name, backup_handler["module-name->active-backup-birthtime"](backup_handler))
     vim.notify_once(msg, vim.log.levels.WARN)
     return loadfile(resolved_path)
   else

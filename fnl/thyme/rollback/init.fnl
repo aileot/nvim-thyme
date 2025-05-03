@@ -9,7 +9,7 @@
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
 
-(local RollbackModuleHandler (require :thyme.rollback.module-handler))
+(local BackupHandler (require :thyme.rollback.backup-handler))
 
 (local RollbackManager
        {:_root (Path.join state-prefix :rollbacks)
@@ -36,11 +36,11 @@
 
 ;;; Class Methods
 
-(fn RollbackManager.handlerOf [self module-name]
+(fn RollbackManager.backupHandlerOf [self module-name]
   "Create a rollback handler for `module-name`
 @param module-name string
-@return RollbackModuleHandler"
-  (RollbackModuleHandler.new self._kind-dir self.file-extension module-name))
+@return BackupHandler"
+  (BackupHandler.new self._kind-dir self.file-extension module-name))
 
 (fn RollbackManager.arrange-loader-path [self old-loader-path]
   "Return loader path updated for mounted rollback feature.
@@ -63,15 +63,15 @@
 @param module-name string
 @return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
 @return nil|string: nil, or (only for macro searcher) an error message."
-  (let [rollback-handler (self:handlerOf module-name)
-        rollback-path (rollback-handler:module-name->mounted-backup-path)
+  (let [backup-handler (self:backupHandlerOf module-name)
+        rollback-path (backup-handler:module-name->mounted-backup-path)
         loader-name (-> "thyme-mounted-rollback-%s-loader"
                         (: :format self._kind))]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               msg (-> "%s: rollback to mounted backup for %s %s (created at %s)"
                       (: :format loader-name self._kind module-name module-name
-                         (rollback-handler:module-name->active-backup-birthtime)))]
+                         (backup-handler:module-name->active-backup-birthtime)))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))

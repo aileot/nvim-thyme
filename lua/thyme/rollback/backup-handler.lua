@@ -10,8 +10,8 @@ local _local_3_ = require("thyme.utils.pool")
 local hide_file_21 = _local_3_["hide-file!"]
 local has_hidden_file_3f = _local_3_["has-hidden-file?"]
 local restore_file_21 = _local_3_["restore-file!"]
-local RollbackModuleHandler = {}
-RollbackModuleHandler.__index = RollbackModuleHandler
+local BackupHandler = {}
+BackupHandler.__index = BackupHandler
 local function symlink_21(path, new_path, ...)
   if file_readable_3f(new_path) then
     hide_file_21(new_path)
@@ -36,35 +36,35 @@ local function symlink_21(path, new_path, ...)
     return true
   end
 end
-RollbackModuleHandler.new = function(root_dir, file_extension, module_name)
+BackupHandler.new = function(root_dir, file_extension, module_name)
   local attrs = {["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
-  local self = setmetatable(attrs, RollbackModuleHandler)
+  local self = setmetatable(attrs, BackupHandler)
   self["_root-dir"] = root_dir
   self["_file-extension"] = file_extension
   self["_module-name"] = module_name
   return self
 end
-RollbackModuleHandler["module-name->backup-dir"] = function(self)
+BackupHandler["module-name->backup-dir"] = function(self)
   local dir = Path.join(self["_root-dir"], self["_module-name"])
   return dir
 end
-RollbackModuleHandler["module-name->backup-files"] = function(self)
+BackupHandler["module-name->backup-files"] = function(self)
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
   return vim.fn.glob(Path.join(backup_dir, "*"), false, true)
 end
-RollbackModuleHandler["module-name->new-backup-path"] = function(self)
+BackupHandler["module-name->new-backup-path"] = function(self)
   local rollback_id = (os.date("%Y-%m-%d_%H-%M-%S") .. "_" .. vim.uv.hrtime())
   local backup_filename = (rollback_id .. self["_file-extension"])
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
   vim.fn.mkdir(backup_dir, "p")
   return Path.join(backup_dir, backup_filename)
 end
-RollbackModuleHandler["module-name->active-backup-path"] = function(self)
+BackupHandler["module-name->active-backup-path"] = function(self)
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
   local filename = self["_active-backup-filename"]
   return Path.join(backup_dir, filename)
 end
-RollbackModuleHandler["module-name->active-backup-birthtime"] = function(self)
+BackupHandler["module-name->active-backup-birthtime"] = function(self)
   local _10_
   do
     local tmp_3_auto = self["module-name->active-backup-path"](self, self["_module-name"])
@@ -86,18 +86,18 @@ RollbackModuleHandler["module-name->active-backup-birthtime"] = function(self)
     return nil
   end
 end
-RollbackModuleHandler["module-name->mounted-backup-path"] = function(self)
+BackupHandler["module-name->mounted-backup-path"] = function(self)
   local backup_dir = self["module-name->backup-dir"](self, self["_module-name"])
   local filename = self["_mounted-backup-filename"]
   return Path.join(backup_dir, filename)
 end
-RollbackModuleHandler["should-update-backup?"] = function(self, expected_contents)
+BackupHandler["should-update-backup?"] = function(self, expected_contents)
   local module_name = self["_module-name"]
   assert(not file_readable_3f(module_name), ("expected module-name, got path " .. module_name))
   local backup_path = self["module-name->active-backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
-RollbackModuleHandler["cleanup-old-backups!"] = function(self)
+BackupHandler["cleanup-old-backups!"] = function(self)
   local _let_14_ = require("thyme.config")
   local get_config = _let_14_["get-config"]
   local config = get_config()
@@ -112,7 +112,7 @@ RollbackModuleHandler["cleanup-old-backups!"] = function(self)
   end
   return nil
 end
-RollbackModuleHandler["create-module-backup!"] = function(self, path)
+BackupHandler["create-module-backup!"] = function(self, path)
   assert(file_readable_3f(path), ("expected readable file, got " .. path))
   local module_name = self["_module-name"]
   local backup_path = self["module-name->new-backup-path"](self, module_name)
@@ -121,4 +121,4 @@ RollbackModuleHandler["create-module-backup!"] = function(self, path)
   assert(fs.copyfile(path, backup_path))
   return symlink_21(backup_path, active_backup_path)
 end
-return RollbackModuleHandler
+return BackupHandler

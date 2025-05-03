@@ -122,9 +122,9 @@ local function update_fennel_paths_21(fennel)
 end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
-  local rollback_handler = ModuleRollbackManager:handlerOf(module_name)
-  if rollback_handler["should-update-backup?"](rollback_handler, lua_code) then
-    return rollback_handler["create-module-backup!"](rollback_handler, lua_path)
+  local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
+  if backup_handler["should-update-backup?"](backup_handler, lua_code) then
+    return backup_handler["create-module-backup!"](backup_handler, lua_path)
   else
     return nil
   end
@@ -137,7 +137,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     local config = get_config()
     local or_21_ = config["?error-msg"]
     if not or_21_ then
-      local rollback_handler = ModuleRollbackManager:handlerOf(module_name)
+      local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
       ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders)
       if ((nil == cache.rtp) or debug_3f) then
         initialize_macro_searcher_on_rtp_21(fennel)
@@ -165,7 +165,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               restore_file_21(lua_path)
             else
               write_lua_file_with_backup_21(lua_path, lua_code, module_name)
-              rollback_handler["cleanup-old-backups!"](rollback_handler, module_name)
+              backup_handler["cleanup-old-backups!"](backup_handler, module_name)
             end
             _25_, _26_ = load(lua_code, lua_path)
           elseif (true and (nil ~= _32_)) then
@@ -190,11 +190,11 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       elseif (true and (nil ~= _26_)) then
         local _ = _25_
         local error_msg = _26_
-        local backup_path = rollback_handler["module-name->active-backup-path"](rollback_handler, module_name)
+        local backup_path = backup_handler["module-name->active-backup-path"](backup_handler, module_name)
         local max_rollbacks = config["max-rollbacks"]
         local rollback_enabled_3f = (0 < max_rollbacks)
         if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-          local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, rollback_handler["module-name->active-backup-birthtime"](rollback_handler, module_name), error_msg)
+          local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["module-name->active-backup-birthtime"](backup_handler, module_name), error_msg)
           vim.notify_once(msg, vim.log.levels.WARN)
           or_21_ = loadfile(backup_path)
         else

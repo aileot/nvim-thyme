@@ -104,9 +104,9 @@ fennel.lua.
 @param module-name string
 @return undefined"
   (write-lua-file! lua-path lua-code)
-  (let [rollback-handler (ModuleRollbackManager:handlerOf module-name)]
-    (when (rollback-handler:should-update-backup? lua-code)
-      (rollback-handler:create-module-backup! lua-path))))
+  (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)]
+    (when (backup-handler:should-update-backup? lua-code)
+      (backup-handler:create-module-backup! lua-path))))
 
 (fn search-fnl-module-on-rtp! [module-name ...]
   "Search for fennel source file to compile into lua and save in nvim-thyme
@@ -122,7 +122,7 @@ cache dir.
       (let [fennel (require :fennel)
             config (get-config)]
         (or config.?error-msg
-            (let [rollback-handler (ModuleRollbackManager:handlerOf module-name)]
+            (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)]
               (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
               (when (or (= nil cache.rtp) debug?)
                 (initialize-macro-searcher-on-rtp! fennel)
@@ -146,7 +146,7 @@ cache dir.
                                                            (write-lua-file-with-backup! lua-path
                                                                                         lua-code
                                                                                         module-name)
-                                                           (rollback-handler:cleanup-old-backups! module-name)))
+                                                           (backup-handler:cleanup-old-backups! module-name)))
                                                      (load lua-code lua-path))
                                    (_ msg) (let [msg-prefix (: "
     thyme-loader: %s is found for the module %s, but failed to compile it
@@ -157,7 +157,7 @@ cache dir.
                       (_ msg) (values nil (.. "\nthyme-loader: " msg)))
                 chunk chunk
                 (_ error-msg)
-                (let [backup-path (rollback-handler:module-name->active-backup-path module-name)
+                (let [backup-path (backup-handler:module-name->active-backup-path module-name)
                       max-rollbacks config.max-rollbacks
                       rollback-enabled? (< 0 max-rollbacks)]
                   (if (and rollback-enabled? (file-readable? backup-path))
@@ -165,7 +165,7 @@ cache dir.
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                    :format module-name
-                                   (rollback-handler:module-name->active-backup-birthtime module-name)
+                                   (backup-handler:module-name->active-backup-birthtime module-name)
                                    error-msg)]
                         (vim.notify_once msg vim.log.levels.WARN)
                         (loadfile backup-path))
