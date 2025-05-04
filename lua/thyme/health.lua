@@ -36,28 +36,28 @@ local function report_integrations()
     else
       reporter = report_ok
     end
-    reporter(("vim.g.parinfer_loaded = " .. tostring(vim.g.parinfer_loaded)))
+    reporter(("`%s`"):format(("vim.g.parinfer_loaded = " .. tostring(vim.g.parinfer_loaded))))
   end
   local dependency_files = {"parser/fennel.so"}
   for _, file in ipairs(dependency_files) do
     local _11_ = get_runtime_files({file}, false)
     if ((_G.type(_11_) == "table") and (nil ~= _11_[1])) then
       local path = _11_[1]
-      report_ok(("%s is detected at %s."):format(file, path))
+      report_ok(("`%s` is detected at `%s`."):format(file, path))
     else
       local _0 = _11_
-      report_warn(("missing %s."):format(file))
+      report_warn(("missing `%s`."):format(file))
     end
   end
   return nil
 end
 local function report_thyme_disk_info()
   report_start("Thyme Disk Info")
-  report_info(("The path to .nvim-thyme.fnl:\t" .. config_path))
-  report_info(("The root path of Lua cache:\t" .. lua_cache_prefix))
-  report_info(("The root path of backups for rollback:\t" .. get_root_of_backup()))
-  report_info(("The root path of module-mapping:\t" .. get_root_of_modmap()))
-  return report_info(("The root path of pool:\t" .. get_root_of_pool()))
+  report_info(("The path to .nvim-thyme.fnl:\t`%s`"):format(config_path))
+  report_info(("The root path of Lua cache:\t`%s`"):format(lua_cache_prefix))
+  report_info(("The root path of backups for rollback:\t`%s`"):format(get_root_of_backup()))
+  report_info(("The root path of module-mapping:\t`%s`"):format(get_root_of_modmap()))
+  return report_info(("The root path of pool:\t`%s`"):format(get_root_of_pool()))
 end
 local function report_thyme_config()
   report_start("Thyme .nvim-thyme.fnl")
@@ -71,12 +71,12 @@ local function report_thyme_config()
     config.command["compiler-options"].filename = nil
   else
   end
-  return report_info(("The current config:\n" .. fennel.view(config)))
+  return report_info(("The current config:\n\n%s\n"):format(fennel.view(config)))
 end
 local function report_fennel_paths()
   report_start("Thyme fennel.{path,macro-path}")
-  report_info(("fennel.path:\n- " .. fennel.path:gsub(";", "\n- ")))
-  return report_info(("fennel.macro-path:\n- " .. fennel["macro-path"]:gsub(";", "\n- ")))
+  report_info(("fennel.path:\n- `%s`"):format(fennel.path:gsub(";", "`\n- `")))
+  return report_info(("fennel.macro-path:\n- `%s`"):format(fennel["macro-path"]:gsub(";", "`\n- `")))
 end
 local function report_imported_macros()
   report_start("Thyme Imported Macros")
@@ -86,7 +86,7 @@ local function report_imported_macros()
     if macro_recorded_3f(log_path) then
       local module_name = peek_module_name(log_path)
       local fnl_path = peek_fnl_path(log_path)
-      local msg = ("%s\n- source file:\n  %s\n- dependency-map file:\n  %s"):format(module_name, fnl_path, log_path)
+      local msg = ("%s\n- source file:\n  `%s`\n- dependency-map file:\n  `%s`"):format(module_name, fnl_path, log_path)
       return report_info(msg)
     else
       return nil

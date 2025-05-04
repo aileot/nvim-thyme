@@ -27,23 +27,29 @@
   (let [reporter (if (= nil vim.g.parinfer_loaded)
                      report-warn
                      report-ok)]
-    (reporter (.. "vim.g.parinfer_loaded = " (tostring vim.g.parinfer_loaded))))
+    (reporter (-> "`%s`"
+                  (: :format
+                     (.. "vim.g.parinfer_loaded = "
+                         (tostring vim.g.parinfer_loaded))))))
   (let [dependency-files [:parser/fennel.so]]
     ;; NOTE: The files "parser-info/*.revision" should only belong to
     ;; https://github.com/nvim-treesitter/nvim-treesitter.
     (each [_ file (ipairs dependency-files)]
       (case (get-runtime-files [file] false)
-        [path] (report-ok (: "%s is detected at %s." :format file path))
-        _ (report-warn (: "missing %s." :format file))))))
+        [path] (report-ok (: "`%s` is detected at `%s`." :format file path))
+        _ (report-warn (: "missing `%s`." :format file))))))
 
 (fn report-thyme-disk-info []
   (report-start "Thyme Disk Info")
-  (report-info (.. "The path to .nvim-thyme.fnl:\t" config-path))
-  (report-info (.. "The root path of Lua cache:\t" lua-cache-prefix))
-  (report-info (.. "The root path of backups for rollback:\t"
-                   (get-root-of-backup)))
-  (report-info (.. "The root path of module-mapping:\t" (get-root-of-modmap)))
-  (report-info (.. "The root path of pool:\t" (get-root-of-pool))))
+  (report-info (-> "The path to .nvim-thyme.fnl:\t`%s`" (: :format config-path)))
+  (report-info (-> "The root path of Lua cache:\t`%s`"
+                   (: :format lua-cache-prefix)))
+  (report-info (-> "The root path of backups for rollback:\t`%s`"
+                   (: :format (get-root-of-backup))))
+  (report-info (-> "The root path of module-mapping:\t`%s`"
+                   (: :format (get-root-of-modmap))))
+  (report-info (-> "The root path of pool:\t`%s`"
+                   (: :format (get-root-of-pool)))))
 
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")
@@ -56,13 +62,20 @@
       (set config.command.compiler-options.module-name nil)
       (set config.command.compiler-options.filename nil))
     ;; TODO: Dump the file contents in .nvim-thyme.fnl instead?
-    (report-info (.. "The current config:\n" (fennel.view config)))))
+    ;; NOTE: To inject fennel syntax, `<` must be put at the head of the line,
+    ;; but health does not allow it.
+    (report-info (-> "The current config:
+
+%s
+"
+                     (: :format (fennel.view config))))))
 
 (fn report-fennel-paths []
   (report-start "Thyme fennel.{path,macro-path}")
-  (report-info (.. "fennel.path:\n- " ;
-                   (fennel.path:gsub ";" "\n- ")))
-  (report-info (.. "fennel.macro-path:\n- " (fennel.macro-path:gsub ";" "\n- "))))
+  (report-info (-> "fennel.path:\n- `%s`" ;
+                   (: :format (fennel.path:gsub ";" "`\n- `"))))
+  (report-info (-> "fennel.macro-path:\n- `%s`"
+                   (: :format (fennel.macro-path:gsub ";" "`\n- `")))))
 
 (fn report-imported-macros []
   (report-start "Thyme Imported Macros")
@@ -73,9 +86,9 @@
                            fnl-path (peek-fnl-path log-path)
                            msg (: "%s
 - source file:
-  %s
+  `%s`
 - dependency-map file:
-  %s" :format module-name fnl-path log-path)]
+  `%s`" :format module-name fnl-path log-path)]
                        (report-info msg))))]
     (each-file reporter root)))
 
