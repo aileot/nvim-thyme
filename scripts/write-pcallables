@@ -1,0 +1,47 @@
+#!/usr/bin/env -S nvim --headless --clean -u NONE -Es -l
+
+local script_path = debug.getinfo(1).source:match("^@(.*)$")
+
+local repo_root = vim.fs.root(script_path, ".git")
+
+local pcallable_dirname = "call"
+local pcallable_dir = vim.fs.joinpath("fnl", "thyme", pcallable_dirname)
+
+vim.opt.rtp:prepend(repo_root)
+
+local tmp_compile_dir = vim.fs.joinpath(os.tmpname(), "thyme", "compile")
+vim.opt.rtp:prepend(tmp_compile_dir)
+
+local thyme = require("thyme")
+
+local function write_pcallable(tbl, module_name)
+  for key, val in pairs(tbl) do
+    local t = type(val)
+    module_name = vim.fs.joinpath(module_name, key)
+    if t == "function" then
+      local dot_args = module_name:gsub("[/\\]", " :") -- Convert "foo/bar/baz" to ":foo :bar :baz"; thus, `(. :foo :bar :baz)`.
+      local contents = ("((-> (require :thyme) (.%s)))"):format(dot_args)
+      local filename = vim.fs.joinpath(pcallable_dir, module_name .. ".fnl")
+      local fullpath = vim.fs.joinpath(repo_root, filename)
+      io.stdout:write("generating pcallable file: ")
+      io.stdout:write(fullpath)
+      io.stdout:write("\n")
+      io.stdout:write("with the contents: ")
+      io.stdout:write(contents)
+      io.stdout:write("\n")
+      local dir = vim.fs.dirname(fullpath)
+      vim.fn.mkdir(dir, "p")
+      local file = assert(io.open(fullpath, "w"))
+      file:write(contents)
+      file:close()
+      module_name = vim.fs.dirname(module_name) -- Reset module_name by one level.
+    elseif t == "table" then
+      write_pcallable(val, module_name)
+      module_name = "" -- Reset module_name
+    end
+  end
+end
+
+write_pcallable(thyme, "")
+
+-- vim:ft=lua
