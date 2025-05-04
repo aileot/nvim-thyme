@@ -6,7 +6,7 @@
 (local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: check-to-update!} (require :thyme.user.check))
 
-(local {: get-config} (require :thyme.config))
+(local Config (require :thyme.config))
 
 (var ?group nil)
 
@@ -27,10 +27,9 @@ the same.
 @param ?opts.pattern string|string[] autocmd-pattern
 @return number autocmd-id"
   (let [group (or ?group (augroup! :ThymeWatch {}))
-        config (get-config)
         opts (if ?opts
-                 (vim.tbl_deep_extend :force config.watch ?opts)
-                 config.watch)
+                 (vim.tbl_deep_extend :force Config.watch ?opts)
+                 Config.watch)
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
