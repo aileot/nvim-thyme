@@ -22,8 +22,6 @@ local function watch_files_21(_3fopts)
   else
     opts = config.watch
   end
-  local event = opts.event
-  local pattern = opts.pattern
   local callback
   local function _8_(_7_)
     local fnl_path = _7_["match"]
@@ -45,6 +43,6 @@ local function watch_files_21(_3fopts)
   end
   callback = _8_
   _3fgroup = group
-  return vim.api.nvim_create_autocmd(event, {group = group, pattern = pattern, callback = callback})
+  return vim.api.nvim_create_autocmd(opts.event, {group = group, pattern = opts.pattern, callback = callback})
 end
 return {["watch-files!"] = watch_files_21}

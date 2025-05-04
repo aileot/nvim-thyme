@@ -31,8 +31,6 @@ the same.
         opts (if ?opts
                  (vim.tbl_deep_extend :force config.watch ?opts)
                  config.watch)
-        event opts.event
-        pattern opts.pattern
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
@@ -44,6 +42,6 @@ the same.
                      ;; Prevent not to destroy the autocmd.
                      nil))]
     (set ?group group)
-    (autocmd! event {: group : pattern : callback})))
+    (autocmd! opts.event {: group :pattern opts.pattern : callback})))
 
 {: watch-files!}
