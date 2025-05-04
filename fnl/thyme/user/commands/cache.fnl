@@ -4,16 +4,23 @@
 
 (local {: clear-cache!} (require :thyme.compiler.cache))
 
-(local M {})
+(local CmdCache {})
 
-(fn M.setup! []
+(fn CmdCache.open []
+  "Open the cache root directory in a new tabpage."
+  ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
+  ;; so that `:tab drop` is unlikely to work expectedly.
+  (vim.cmd (.. "tab drop " lua-cache-prefix)))
+
+(fn CmdCache.clear []
+  "Clear the lua cache and dependency map logs."
+  (clear-cache!))
+
+(fn CmdCache.setup! []
   "Define thyme cache commands."
   (command! :ThymeCacheOpen
     {:desc "[thyme] open the cache root directory"}
-    (fn []
-      ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
-      ;; so that `:tab drop` is unlikely to work expectedly.
-      (vim.cmd (.. "tab drop " lua-cache-prefix))))
+    (CmdCache.open))
   (command! :ThymeCacheClear
     ;; NOTE: No args will be allowed because handling module-map would
     ;; be a bit complicated.
@@ -22,8 +29,8 @@
      :desc "[thyme] clear the lua cache and dependency map logs"}
     ;; TODO: Or `:confirm` prefix to ask?
     (fn []
-      (if (clear-cache!)
+      (if (CmdCache.clear)
           (vim.notify (.. "Cleared cache: " lua-cache-prefix))
           (vim.notify (.. "No cache files detected at " lua-cache-prefix))))))
 
-M
+CmdCache

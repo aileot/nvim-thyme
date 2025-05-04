@@ -5,8 +5,6 @@
 (local {: lua-cache-prefix : config-filename : config-path}
        (require :thyme.const))
 
-(local Config (require :thyme.config))
-
 (local {: directory?} (require :thyme.utils.fs))
 
 (local cache-commands (require :thyme.user.commands.cache))
