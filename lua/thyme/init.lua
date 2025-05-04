@@ -28,7 +28,7 @@ end
 local function _9_(...)
   return require("thyme.wrapper.fennel").macrodebug(...)
 end
-M = {loader = search_fnl_module_on_rtp_21, view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_}
+M = {loader = search_fnl_module_on_rtp_21, fennel = {view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_}}
 M.__index = M
 M.setup = function(_3fopts)
   assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
