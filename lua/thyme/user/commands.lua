@@ -50,19 +50,19 @@ end
 local function edit_cmd_history_21(new_fnl_code, opts)
   local make_new_cmd
   local function _12_(new_fnl_code0)
-    local trimmed_new_fnl_code = new_fnl_code0:gsub("[%]}%)]$", "")
+    local trimmed_new_fnl_code = new_fnl_code0:gsub("%s*[%]}%)]*$", "")
     local last_cmd = vim.fn.histget(":", -1)
     local _13_, _14_ = last_cmd:find(trimmed_new_fnl_code, 1, true)
     if ((nil ~= _13_) and (nil ~= _14_)) then
       local idx_start = _13_
       local idx_end = _14_
       local prefix = last_cmd:sub(1, (idx_start - 1))
-      local suffix = last_cmd:sub((idx_end + 1))
+      local suffix = new_fnl_code0:gsub("%s*$", ""):sub((idx_end - idx_start - -2))
       local trimmed_suffix
       do
         local _15_ = opts["trailing-parens"]
         if (_15_ == "omit") then
-          trimmed_suffix = suffix:gsub("^%s*[%]}%)]*", "")
+          trimmed_suffix = suffix:gsub("^[%]}%)]*", "")
         elseif (_15_ == "keep") then
           trimmed_suffix = suffix
         else

@@ -53,15 +53,21 @@
 @param opts.method 'overwrite'|'append'|'ignore'
 @param opts.trailing-parens 'omit'|'keep'"
   (let [make-new-cmd (fn [new-fnl-code]
-                       (let [trimmed-new-fnl-code (new-fnl-code:gsub "[%]}%)]$"
+                       (let [trimmed-new-fnl-code (new-fnl-code:gsub "%s*[%]}%)]*$"
                                                                      "")
                              last-cmd (vim.fn.histget ":" -1)]
                          (case (last-cmd:find trimmed-new-fnl-code 1 true)
                            (idx-start idx-end) (let [prefix (last-cmd:sub 1
                                                                           (dec idx-start))
-                                                     suffix (last-cmd:sub (inc idx-end))
+                                                     suffix (-> new-fnl-code
+                                                                (: :gsub "%s*$"
+                                                                   "")
+                                                                (: :sub
+                                                                   (- idx-end
+                                                                      idx-start
+                                                                      -2)))
                                                      trimmed-suffix (case opts.trailing-parens
-                                                                      :omit (suffix:gsub "^%s*[%]}%)]*"
+                                                                      :omit (suffix:gsub "^[%]}%)]*"
                                                                                          "")
                                                                       :keep suffix
                                                                       ?val
