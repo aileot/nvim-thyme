@@ -149,4 +149,21 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   ;; NOTE: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
-{: get-config : config-file?}
+(setmetatable {: get-config : config-file?}
+  {:__index (fn [self k]
+              (case k
+                "?error-msg" (when cache.evaluating?
+                               (.. "recursion detected in evaluating "
+                                   config-filename))
+                _ (let [config (get-config)]
+                    (case (. config k)
+                      val (do
+                            (rawset self k val)
+                            val)
+                      _ (error (.. "unexpected option detected: " k))))))
+   :__newindex (fn [self k v]
+                 (error k)
+                 (let [config (get-config)]
+                   (tset config k v)
+                   (case (. config k)
+                     val (rawset self k val))))})
