@@ -62,7 +62,7 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
   local loader_name = ("thyme-mounted-rollback-%s-loader"):format(self._kind)
   if file_readable_3f(rollback_path) then
     local resolved_path = fs.readlink(rollback_path)
-    local msg = ("%s: rollback to mounted backup for %s %s (created at %s)"):format(loader_name, self._kind, module_name, module_name, backup_handler["determine-active-backup-birthtime"](backup_handler))
+    local msg = ("%s: rollback to mounted backup for %s %s (created at %s)"):format(loader_name, self._kind, module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name))
     vim.notify_once(msg, vim.log.levels.WARN)
     return loadfile(resolved_path)
   else

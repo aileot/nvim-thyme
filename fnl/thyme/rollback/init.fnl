@@ -70,8 +70,8 @@
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
               msg (-> "%s: rollback to mounted backup for %s %s (created at %s)"
-                      (: :format loader-name self._kind module-name module-name
-                         (backup-handler:determine-active-backup-birthtime)))]
+                      (: :format loader-name self._kind module-name
+                         (backup-handler:determine-active-backup-birthtime module-name)))]
           (vim.notify_once msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
