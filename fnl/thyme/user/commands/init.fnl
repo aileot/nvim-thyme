@@ -38,26 +38,26 @@
 @param opts.fnl-cmd-prefix string (default: \"Fnl\")
 @param opts.compiler-options table? (default: same values as main config)
 @param opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
-    (command! :ThymeConfigOpen
-      {:desc (.. "[thyme] open the main config file " config-filename)}
-      (fn []
-        (vim.cmd (.. "tab drop " config-path))))
-    (command! :ThymeUninstall
-      {:desc "[thyme] delete all the thyme's cache, state, and data files"}
-      (fn []
-        (let [files [lua-cache-prefix
-                     (Path.join (vim.fn.stdpath :cache) :thyme)
-                     (Path.join (vim.fn.stdpath :state) :thyme)
-                     (Path.join (vim.fn.stdpath :data) :thyme)]]
-          (each [_ path (ipairs files)]
-            (assert-is-file-of-thyme path)
-            (when (directory? path)
-              (case (vim.fn.delete path :rf)
-                0 (vim.notify (.. "[thyme] successfully deleted " path))
-                _ (error (.. "[thyme] failed to delete " path)))))
-          (vim.notify (.. "[thyme] successfully uninstalled")))))
-    (cache-commands.setup!)
-    (rollback-commands.setup!)
-    (fennel-wrapper-commands.setup! ?opts))
+  (command! :ThymeConfigOpen
+    {:desc (.. "[thyme] open the main config file " config-filename)}
+    (fn []
+      (vim.cmd (.. "tab drop " config-path))))
+  (command! :ThymeUninstall
+    {:desc "[thyme] delete all the thyme's cache, state, and data files"}
+    (fn []
+      (let [files [lua-cache-prefix
+                   (Path.join (vim.fn.stdpath :cache) :thyme)
+                   (Path.join (vim.fn.stdpath :state) :thyme)
+                   (Path.join (vim.fn.stdpath :data) :thyme)]]
+        (each [_ path (ipairs files)]
+          (assert-is-file-of-thyme path)
+          (when (directory? path)
+            (case (vim.fn.delete path :rf)
+              0 (vim.notify (.. "[thyme] successfully deleted " path))
+              _ (error (.. "[thyme] failed to delete " path)))))
+        (vim.notify (.. "[thyme] successfully uninstalled")))))
+  (cache-commands.setup!)
+  (rollback-commands.setup!)
+  (fennel-wrapper-commands.setup! ?opts))
 
 {: define-commands!}
