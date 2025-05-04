@@ -6,7 +6,7 @@
 (local {: lua-cache-prefix : config-filename : config-path}
        (require :thyme.const))
 
-(local {: get-config : config-file?} (require :thyme.config))
+(local {: config-file? &as Config} (require :thyme.config))
 
 (local {: file-readable? : directory? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
@@ -142,10 +142,9 @@
 @param opts.fnl-cmd-prefix string (default: \"Fnl\")
 @param opts.compiler-options table? (default: same values as main config)
 @param opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
-  (let [config (get-config)
-        opts (if ?opts
-                 (vim.tbl_deep_extend :force config.command ?opts)
-                 config.command)
+  (let [opts (if ?opts
+                 (vim.tbl_deep_extend :force Config.command ?opts)
+                 Config.command)
         fnl-cmd-prefix opts.fnl-cmd-prefix
         compiler-options opts.compiler-options
         cmd-history-opts opts.cmd-history]
@@ -393,8 +392,7 @@
                                    false)))))
             (let [;; TODO: Add interface to overwrite fennel-options in this
                   ;; command?
-                  config (get-config)
-                  fennel-options config.compiler-options]
+                  fennel-options Config.compiler-options]
               (each [fnl-path lua-path (pairs path-pairs)]
                 (assert (not (config-file? fnl-path))
                         "Abort. Attempted to compile config file")
