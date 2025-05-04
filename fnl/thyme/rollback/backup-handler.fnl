@@ -115,9 +115,8 @@ Return `true` if the following conditions are met:
 (fn BackupHandler.cleanup-old-backups! [self]
   "Remove old backups more than the value of `max-rollbacks` option.
 @param module-name string"
-  (let [{: get-config} (require :thyme.config)
-        config (get-config)
-        max-rollbacks config.max-rollbacks]
+  (let [Config (require :thyme.config)
+        max-rollbacks Config.max-rollbacks]
     (validate-type :number max-rollbacks)
     (let [threshold (inc max-rollbacks)
           backup-files (self:list-backup-files self.module-name)]
