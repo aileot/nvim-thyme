@@ -1,4 +1,4 @@
-(import-macros {: when-not : str? : dec : inc : first} :thyme.macros)
+(import-macros {: when-not : str? : dec : inc : first : command!} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
 (local tts (require :thyme.wrapper.treesitter))
@@ -19,9 +19,6 @@
 (local {: fnl-path->lua-path} (require :thyme.module-map.logger))
 
 (local fennel (require :fennel))
-
-(macro command! [name opts callback]
-  `(vim.api.nvim_create_user_command ,name ,callback ,opts))
 
 ;; (fn get-candidates-in-cache-dir [arg-lead _cmdline _cursorpos]
 ;;   "Return list of directories under thyme's cache as `arg-lead`.
