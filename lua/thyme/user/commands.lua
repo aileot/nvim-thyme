@@ -66,8 +66,8 @@ local function edit_cmd_history_21(new_fnl_code, opts)
         elseif (_15_ == "keep") then
           trimmed_suffix = suffix
         else
-          local _ = _15_
-          trimmed_suffix = error("expected one of `omit` or `keep`; got unknown value for trailing-parens ", opts["trailing-parens"])
+          local _3fval = _15_
+          trimmed_suffix = error(("expected one of `omit` or `keep`; got unknown value for trailing-parens: " .. vim.inspect(_3fval)))
         end
       end
       local new_cmd = (prefix .. trimmed_new_fnl_code .. trimmed_suffix)

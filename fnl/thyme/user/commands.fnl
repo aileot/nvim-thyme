@@ -64,9 +64,9 @@
                                                                       :omit (suffix:gsub "^%s*[%]}%)]*"
                                                                                          "")
                                                                       :keep suffix
-                                                                      _
-                                                                      (error "expected one of `omit` or `keep`; got unknown value for trailing-parens "
-                                                                             opts.trailing-parens))
+                                                                      ?val
+                                                                      (error (.. "expected one of `omit` or `keep`; got unknown value for trailing-parens: "
+                                                                                 (vim.inspect ?val))))
                                                      new-cmd (.. prefix
                                                                  trimmed-new-fnl-code
                                                                  trimmed-suffix)]
