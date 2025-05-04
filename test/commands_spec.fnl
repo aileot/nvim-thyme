@@ -3,9 +3,13 @@
 
 (include :test.helper.prerequisites)
 
-(local {: define-commands!} (require :thyme))
+(local thyme (require :thyme))
 
 (local {: lua-cache-prefix} (require :thyme.const))
+
+(local {: get-config} (require :thyme.config))
+
+(local config (get-config))
 
 (describe* "define-commands!"
   (before-each (fn []
@@ -16,27 +20,37 @@
     (it* "e.g., :ThymeCacheClear"
       (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
                          (. :ThymeCacheClear)))
-      (define-commands!)
+      (thyme.setup)
       (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
                              (. :ThymeCacheClear)))))
   (describe* "defines fennel interface commands on thyme"
     (it* "e.g., :Fnl"
       (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
                          (. :Fnl)))
-      (define-commands!)
+      (thyme.setup)
       (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
                              (. :Fnl)))))
   (describe* "optionally defines arbitrary prefix commands for fennel interface commands"
     (it* "e.g., with prefix `Foobar`, it defines `:FoobarEval`"
-      (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                         (. :FoobarEval)))
-      (define-commands! {:fnl-cmd-prefix "Foobar"})
-      (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                             (. :FoobarEval))))))
+      (let [last-fnl-cmd-prefix config.command.fnl-cmd-prefix]
+        (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
+                           (. :FoobarEval)))
+        (set config.command.fnl-cmd-prefix "Foobar")
+        (thyme.setup)
+        (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
+                               (. :FoobarEval)))
+        (set config.command.fnl-cmd-prefix last-fnl-cmd-prefix)
+        (thyme.setup)
+        (let [commands (vim.api.nvim_get_commands {:builtin false})]
+          (each [name _map (pairs commands)]
+            (when (vim.startswith name "Foobar")
+              (vim.api.nvim_del_user_command name))))
+        (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
+                           (. :FoobarEval)))))))
 
 (describe* "command"
   (setup* (fn []
-            (define-commands!)))
+            (thyme.setup)))
   (describe* ":ThymeConfigOpen"
     (it* "opens the main config file .nvim-thyme.fnl"
       (vim.cmd :new)
