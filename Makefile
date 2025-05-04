@@ -24,13 +24,16 @@ TEST_DEPS+=$(wildcard $(TEST_ROOT)/*/*.lua)
 
 LUA_ALL:=$(wildcard lua/*/*.lua)
 LUA_ALL+=$(wildcard lua/*/*/*.lua)
+LUA_ALL+=$(wildcard lua/*/*/*/*.lua)
 FNL_SRC:=$(wildcard fnl/*/*.fnl)
 FNL_SRC+=$(wildcard fnl/*/*/*.fnl)
+FNL_SRC+=$(wildcard fnl/*/*/*/*.fnl)
 FNL_SRC:=$(filter-out %/macros.fnl,$(FNL_SRC))
 LUA_RES:=$(FNL_SRC:fnl/%.fnl=lua/%.lua)
 LUA_OLD:=$(filter-out $(LUA_RES),$(LUA_ALL))
 
 FNL_SRC_DIRS:=$(wildcard fnl/*/*/)
+FNL_SRC_DIRS+=$(wildcard fnl/*/*/*/)
 LUA_RES_DIRS:=$(FNL_SRC_DIRS:fnl/%=lua/%)
 
 REPO_FNL_DIR := $(REPO_ROOT)/fnl
