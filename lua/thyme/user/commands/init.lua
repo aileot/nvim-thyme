@@ -3,7 +3,6 @@ local _local_1_ = require("thyme.const")
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
-local Config = require("thyme.config")
 local _local_2_ = require("thyme.utils.fs")
 local directory_3f = _local_2_["directory?"]
 local cache_commands = require("thyme.user.commands.cache")
