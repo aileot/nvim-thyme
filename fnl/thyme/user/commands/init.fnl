@@ -13,11 +13,11 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
-(local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: fnl-path->lua-path} (require :thyme.module-map.logger))
 
 (local fennel (require :fennel))
 
+(local cache-commands (require :thyme.user.commands.cache))
 (local rollback-commands (require :thyme.user.commands.rollback))
 
 ;; (fn get-candidates-in-cache-dir [arg-lead _cmdline _cursorpos]
@@ -149,23 +149,6 @@
       {:desc (.. "[thyme] open the main config file " config-filename)}
       (fn []
         (vim.cmd (.. "tab drop " config-path))))
-    (command! :ThymeCacheOpen
-      {:desc "[thyme] open the cache root directory"}
-      (fn []
-        ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
-        ;; so that `:tab drop` is unlikely to work expectedly.
-        (vim.cmd (.. "tab drop " lua-cache-prefix))))
-    (command! :ThymeCacheClear
-      ;; NOTE: No args will be allowed because handling module-map would
-      ;; be a bit complicated.
-      {:bar true
-       :bang true
-       :desc "[thyme] clear the lua cache and dependency map logs"}
-      ;; TODO: Or `:confirm` prefix to ask?
-      (fn []
-        (if (clear-cache!)
-            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
-            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
     (command! :ThymeUninstall
       {:desc "[thyme] delete all the thyme's cache, state, and data files"}
       (fn []
@@ -180,6 +163,7 @@
                 0 (vim.notify (.. "[thyme] successfully deleted " path))
                 _ (error (.. "[thyme] failed to delete " path)))))
           (vim.notify (.. "[thyme] successfully uninstalled")))))
+    (cache-commands.setup!)
     (rollback-commands.setup!)
     (when-not (= "" fnl-cmd-prefix)
       (command! fnl-cmd-prefix
