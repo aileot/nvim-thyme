@@ -72,7 +72,6 @@ clean: ## Remove generated files
 
 .PHONY: prune
 prune: ## Remove stale lua files
-	@echo "$(LUA_OLD)"
 	@if [ -n "$(LUA_OLD)" ]; then
 	@	rm $(LUA_OLD) && echo "Pruned $(LUA_OLD)"
 	@fi
