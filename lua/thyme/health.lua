@@ -71,7 +71,7 @@ local function report_thyme_config()
     config.command["compiler-options"].filename = nil
   else
   end
-  return report_info(("The current config:\n\n```fennel\n%s\n```"):format(fennel.view(config)))
+  return report_info(("The current config:\n\n%s\n"):format(fennel.view(config)))
 end
 local function report_fennel_paths()
   report_start("Thyme fennel.{path,macro-path}")

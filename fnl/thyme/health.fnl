@@ -62,7 +62,12 @@
       (set config.command.compiler-options.module-name nil)
       (set config.command.compiler-options.filename nil))
     ;; TODO: Dump the file contents in .nvim-thyme.fnl instead?
-    (report-info (-> "The current config:\n\n```fennel\n%s\n```"
+    ;; NOTE: To inject fennel syntax, `<` must be put at the head of the line,
+    ;; but health does not allow it.
+    (report-info (-> "The current config:
+
+%s
+"
                      (: :format (fennel.view config))))))
 
 (fn report-fennel-paths []
