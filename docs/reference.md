@@ -14,7 +14,15 @@ written are the same as the corresponding files in the `pool`.
 The `pool` directory is in `(.. (vim.fn.stdpath :state) "/thyme/pool")`:\
 Try `:Fnl (vim.cmd.edit (.. (vim.fn.stdpath :state) "/thyme/pool")`.
 
+<!-- panvimdoc-ignore-start -->
+
 ## Options for `.nvim-thyme.fnl`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+options ~                                                     *thyme-options*
+.nvim-thyme.fnl ~                                           *.nvim-thyme.fnl*
+-->
 
 ### compiler-options
 
@@ -50,22 +58,72 @@ path of `(vim.fn.stdpath :config)`.
 
 Keep the number of backups for rollback at most. Set `0` to disable it.
 
-Note: Unlike the rollback system for compile error, `nvim-thyme` does
+Note: Unlike the rollback system for compile error, [nvim-thyme][] does
 _**not** provide any rollback system for nvim **runtime** error._
 Such a feature should be realized independently of a runtime compiler plugin.
 
 ## Functions
 
-### `loader`
+### `thyme.loader`
 
-### `define-commands!`
+The core function of [nvim-thyme][].
+The loader is to be appended to [package.loaders] manually by user
+before loading any Fennel modules.
 
-### `define_commands`
+```lua
+-- Wrapping the `require` in `function-end` is important for lazy-load.
+table.insert(package.loaders, function(...)
+  return require("thyme").loader(...) -- Make sure to `return` the result!
+end)
+```
 
-### `define-keymaps!`
+<!-- panvimdoc-ignore-start -->
 
-### `define_keymaps`
+### `thyme.setup` or `thyme:setup`
 
-### `watch-files!`
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+thyme.setup                                                     *thyme.setup*
+thyme:setup                                                     *thyme:setup*
+-->
 
-### `watch_files`
+This function is to be called
+_after_ [VimEnter][] wrapped in [vim.schedule][],
+or later.
+
+Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
+
+Define [commands](#commnands) and [keymaps](#keymaps).
+
+It also defines an autocmd group `ThymeWatch` to keep compiled lua files
+up-to-date.
+
+> [!IMPORTANT]
+> No arguments are allowed. You should manage all the options in [.nvim-thyme.fnl][] instead.
+
+### `thyme.cache.clear`
+
+Equivalent to [:ThymeCacheClear](#thymecacheclear), but it should work without [thyme.setup].
+
+### `thyme.cache.open`
+
+Equivalent to [:ThymeCacheOpen](#thymecacheopen), but it should work without [thyme.setup].
+
+## Commands
+
+The commands are defined by [thyme.setup][].
+
+### `:ThymeCacheClear`
+
+Clear all the Lua caches managed by [nvim-thyme][].
+
+### `:ThymeCacheOpen`
+
+Open the root directory of the Lua caches managed by [nvim-thyme][].
+
+[package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
+[VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
+[vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
+[nvim-thyme]: https://github.com/aileot/nvim-thyme
+[.nvim-thyme.fnl]: #options-for-.nvim-thyme.fnl
+[thyme.setup]: #thyme.setup
