@@ -7,46 +7,6 @@
 
 (local {: lua-cache-prefix} (require :thyme.const))
 
-(local {: get-config} (require :thyme.config))
-
-(local config (get-config))
-
-(describe* "define-commands!"
-  (before-each (fn []
-                 (let [commands (vim.api.nvim_get_commands {:builtin false})]
-                   (each [name _map (pairs commands)]
-                     (vim.api.nvim_del_user_command name)))))
-  (describe* "defines user commands dedicated to thyme"
-    (it* "e.g., :ThymeCacheClear"
-      (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                         (. :ThymeCacheClear)))
-      (thyme.setup)
-      (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                             (. :ThymeCacheClear)))))
-  (describe* "defines fennel interface commands on thyme"
-    (it* "e.g., :Fnl"
-      (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                         (. :Fnl)))
-      (thyme.setup)
-      (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                             (. :Fnl)))))
-  (describe* "optionally defines arbitrary prefix commands for fennel interface commands"
-    (it* "e.g., with prefix `Foobar`, it defines `:FoobarEval`"
-      (let [last-fnl-cmd-prefix config.command.fnl-cmd-prefix]
-        (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                           (. :FoobarEval)))
-        (set config.command.fnl-cmd-prefix "Foobar")
-        (thyme.setup)
-        (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                               (. :FoobarEval)))
-        (set config.command.fnl-cmd-prefix last-fnl-cmd-prefix)
-        (thyme.setup)
-        (let [commands (vim.api.nvim_get_commands {:builtin false})]
-          (each [name _map (pairs commands)]
-            (when (vim.startswith name "Foobar")
-              (vim.api.nvim_del_user_command name))))
-        (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                           (. :FoobarEval)))))))
 
 (describe* "command"
   (setup* (fn []

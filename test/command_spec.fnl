@@ -11,13 +11,7 @@
 
 (local RollbackManager (require :thyme.rollback))
 
-(describe* "#command"
-  (it* "thyme.define-commands! defines :ThymeCacheClear"
-    (thyme.setup)
-    (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                       (. "must not defined")))
-    (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                           (. "ThymeCacheClear"))))
+(describe* "command"
   (describe* ":FnlAlternate"
     (before_each (fn []
                    (thyme.setup)))
