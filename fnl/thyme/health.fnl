@@ -33,17 +33,20 @@
     ;; https://github.com/nvim-treesitter/nvim-treesitter.
     (each [_ file (ipairs dependency-files)]
       (case (get-runtime-files [file] false)
-        [path] (report-ok (: "%s is detected at %s." :format file path))
-        _ (report-warn (: "missing %s." :format file))))))
+        [path] (report-ok (: "`%s` is detected at `%s`." :format file path))
+        _ (report-warn (: "missing `%s`." :format file))))))
 
 (fn report-thyme-disk-info []
   (report-start "Thyme Disk Info")
-  (report-info (.. "The path to .nvim-thyme.fnl:\t" config-path))
-  (report-info (.. "The root path of Lua cache:\t" lua-cache-prefix))
-  (report-info (.. "The root path of backups for rollback:\t"
-                   (get-root-of-backup)))
-  (report-info (.. "The root path of module-mapping:\t" (get-root-of-modmap)))
-  (report-info (.. "The root path of pool:\t" (get-root-of-pool))))
+  (report-info (-> "The path to .nvim-thyme.fnl:\t`%s`" (: :format config-path)))
+  (report-info (-> "The root path of Lua cache:\t`%s`"
+                   (: :format lua-cache-prefix)))
+  (report-info (-> "The root path of backups for rollback:\t`%s`"
+                   (: :format (get-root-of-backup))))
+  (report-info (-> "The root path of module-mapping:\t`%s`"
+                   (: :format (get-root-of-modmap))))
+  (report-info (-> "The root path of pool:\t`%s`"
+                   (: :format (get-root-of-pool)))))
 
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")

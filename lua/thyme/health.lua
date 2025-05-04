@@ -43,21 +43,21 @@ local function report_integrations()
     local _11_ = get_runtime_files({file}, false)
     if ((_G.type(_11_) == "table") and (nil ~= _11_[1])) then
       local path = _11_[1]
-      report_ok(("%s is detected at %s."):format(file, path))
+      report_ok(("`%s` is detected at `%s`."):format(file, path))
     else
       local _0 = _11_
-      report_warn(("missing %s."):format(file))
+      report_warn(("missing `%s`."):format(file))
     end
   end
   return nil
 end
 local function report_thyme_disk_info()
   report_start("Thyme Disk Info")
-  report_info(("The path to .nvim-thyme.fnl:\t" .. config_path))
-  report_info(("The root path of Lua cache:\t" .. lua_cache_prefix))
-  report_info(("The root path of backups for rollback:\t" .. get_root_of_backup()))
-  report_info(("The root path of module-mapping:\t" .. get_root_of_modmap()))
-  return report_info(("The root path of pool:\t" .. get_root_of_pool()))
+  report_info(("The path to .nvim-thyme.fnl:\t`%s`"):format(config_path))
+  report_info(("The root path of Lua cache:\t`%s`"):format(lua_cache_prefix))
+  report_info(("The root path of backups for rollback:\t`%s`"):format(get_root_of_backup()))
+  report_info(("The root path of module-mapping:\t`%s`"):format(get_root_of_modmap()))
+  return report_info(("The root path of pool:\t`%s`"):format(get_root_of_pool()))
 end
 local function report_thyme_config()
   report_start("Thyme .nvim-thyme.fnl")
