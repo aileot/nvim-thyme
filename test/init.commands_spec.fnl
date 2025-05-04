@@ -1,0 +1,14 @@
+(import-macros {: describe* : it*} :test.helper.busted-macros)
+
+(include :test.helper.prerequisites)
+
+(local thyme (require :thyme))
+
+(describe* "thyme.cache.open"
+  (it* "should open a dir a name of whose subdirectory contains literally `compile`"
+    (vim.cmd :new)
+    (thyme.cache.open)
+    (let [fullpath (vim.fn.expand "%:p")]
+      (assert.equals :compile
+                     (-> fullpath
+                         (: :match "compile"))))))
