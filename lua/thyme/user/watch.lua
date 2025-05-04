@@ -22,8 +22,8 @@ local function watch_files_21(_3fopts)
   else
     opts = config.watch
   end
-  local event = (opts.event or {"BufWritePost", "FileChangedShellPost"})
-  local pattern = (opts.pattern or "*.fnl")
+  local event = opts.event
+  local pattern = opts.pattern
   local callback
   local function _8_(_7_)
     local fnl_path = _7_["match"]

@@ -31,9 +31,8 @@ the same.
         opts (if ?opts
                  (vim.tbl_deep_extend :force config.watch ?opts)
                  config.watch)
-        ;; TODO: Also consider RemoteReply, ShellCmdPost, etc.?
-        event (or opts.event [:BufWritePost :FileChangedShellPost])
-        pattern (or opts.pattern :*.fnl)
+        event opts.event
+        pattern opts.pattern
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
