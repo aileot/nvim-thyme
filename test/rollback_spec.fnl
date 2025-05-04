@@ -8,8 +8,7 @@
 (local RollbackManager (require :thyme.rollback))
 (local TestRollbackManager (RollbackManager.new :test ".fnl"))
 
-(local {: get-config} (require :thyme.config))
-(local config (get-config))
+(local Config (require :thyme.config))
 
 (fn clear-backup-files! []
   (vim.fn.delete (TestRollbackManager.get-root) :rf))
@@ -40,11 +39,10 @@
            (assert.is_same 1)))))
 
 (describe* "rollback.cleanup-old-backups!"
-  (let [default-max-rollbacks config.max-rollbacks]
     (before_each (fn []
-                   (set config.max-rollbacks 3)))
+                   (set Config.max-rollbacks 3)))
     (after_each (fn []
-                  (set config.max-rollbacks default-max-rollbacks)
+                  (set Config.max-rollbacks nil)
                   (remove-context-files!)))
     (it* "limits the number of backups per module to `config.max-rollbacks`."
       (let [mod :foobar
@@ -71,4 +69,4 @@
         (backup-handler:write-backup! path)
         (assert.equals 5 (length (backup-handler:list-backup-files)))
         (backup-handler:cleanup-old-backups!)
-        (assert.equals 3 (length (backup-handler:list-backup-files)))))))
+        (assert.equals 3 (length (backup-handler:list-backup-files))))))
