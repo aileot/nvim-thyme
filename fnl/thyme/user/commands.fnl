@@ -57,8 +57,9 @@
                                                                      "")
                              last-cmd (vim.fn.histget ":" -1)]
                          (case (last-cmd:find trimmed-new-fnl-code 1 true)
-                           (idx-start idx-end) (let [prefix (last-cmd:sub 1
-                                                                          (dec idx-start))
+                           (idx-start idx-end) (let [prefix (-> last-cmd
+                                                                (: :sub 1
+                                                                   (dec idx-start)))
                                                      suffix (-> new-fnl-code
                                                                 (: :gsub "%s*$"
                                                                    "")
