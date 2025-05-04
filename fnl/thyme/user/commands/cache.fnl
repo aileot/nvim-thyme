@@ -7,11 +7,13 @@
 (local CmdCache {})
 
 (fn CmdCache.open []
+  "Open the cache root directory in a new tabpage."
   ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
   ;; so that `:tab drop` is unlikely to work expectedly.
   (vim.cmd (.. "tab drop " lua-cache-prefix)))
 
 (fn CmdCache.clear []
+  "Clear the lua cache and dependency map logs."
   (clear-cache!))
 
 (fn CmdCache.setup! []
