@@ -103,9 +103,19 @@ local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
 local function _16_()
-  return vim.deepcopy(get_config())
+  local config = vim.deepcopy(get_config())
+  config["compiler-options"].source = nil
+  config["compiler-options"]["module-name"] = nil
+  config["compiler-options"].filename = nil
+  if config.command["compiler-options"] then
+    config.command["compiler-options"].source = nil
+    config.command["compiler-options"]["module-name"] = nil
+    config.command["compiler-options"].filename = nil
+  else
+  end
+  return config
 end
-local function _17_(_self, k)
+local function _18_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -118,13 +128,13 @@ local function _17_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _20_
+local _21_
 if not debug_3f then
-  local function _21_()
+  local function _22_()
     return error("thyme.config is readonly")
   end
-  _20_ = _21_
+  _21_ = _22_
 else
-  _20_ = nil
+  _21_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _16_}, {__index = _17_, __newindex = _20_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _16_}, {__index = _18_, __newindex = _21_})

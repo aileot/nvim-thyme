@@ -63,15 +63,6 @@ end
 local function report_thyme_config()
   report_start("Thyme .nvim-thyme.fnl")
   local config = get_config()
-  config["compiler-options"].source = nil
-  config["compiler-options"]["module-name"] = nil
-  config["compiler-options"].filename = nil
-  if config.command["compiler-options"] then
-    config.command["compiler-options"].source = nil
-    config.command["compiler-options"]["module-name"] = nil
-    config.command["compiler-options"].filename = nil
-  else
-  end
   return report_info(("The current config:\n\n%s\n"):format(fennel.view(config)))
 end
 local function report_fennel_paths()
@@ -83,7 +74,7 @@ local function report_imported_macros()
   report_start("Thyme Imported Macros")
   local root = get_root_of_modmap()
   local reporter
-  local function _14_(log_path)
+  local function _13_(log_path)
     if macro_recorded_3f(log_path) then
       local module_name = peek_module_name(log_path)
       local fnl_path = peek_fnl_path(log_path)
@@ -93,7 +84,7 @@ local function report_imported_macros()
       return nil
     end
   end
-  reporter = _14_
+  reporter = _13_
   return each_file(reporter, root)
 end
 local function report_mounted_paths()
@@ -105,7 +96,7 @@ local function report_mounted_paths()
     return report_info("No paths are mounted.")
   end
 end
-local function _17_()
+local function _16_()
   report_integrations()
   report_thyme_disk_info()
   report_fennel_paths()
@@ -113,4 +104,4 @@ local function _17_()
   report_thyme_config()
   return report_mounted_paths()
 end
-return {check = _17_}
+return {check = _16_}

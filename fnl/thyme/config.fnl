@@ -130,7 +130,20 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
 (setmetatable {: config-file?
                ;; Make sure `get-config` readonly. It is only intedended to be
                ;; called for checkhealth.
-               :get-config #(vim.deepcopy (get-config))}
+               :get-config #(let [config (vim.deepcopy (get-config))]
+                              ;; NOTE: The options .source, .module-name, and
+                              ;; .filename only represents the last used
+                              ;; options for the last evaluated fennel codes.
+                              (set config.compiler-options.source nil)
+                              (set config.compiler-options.module-name nil)
+                              (set config.compiler-options.filename nil)
+                              (when config.command.compiler-options
+                                (set config.command.compiler-options.source nil)
+                                (set config.command.compiler-options.module-name
+                                     nil)
+                                (set config.command.compiler-options.filename
+                                     nil))
+                              config)}
   {:__index (fn [_self k]
               (case k
                 "?error-msg" (when cache.evaluating?

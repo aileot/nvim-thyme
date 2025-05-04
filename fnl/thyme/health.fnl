@@ -56,13 +56,6 @@
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")
   (let [config (get-config)]
-    (set config.compiler-options.source nil)
-    (set config.compiler-options.module-name nil)
-    (set config.compiler-options.filename nil)
-    (when config.command.compiler-options
-      (set config.command.compiler-options.source nil)
-      (set config.command.compiler-options.module-name nil)
-      (set config.command.compiler-options.filename nil))
     ;; TODO: Dump the file contents in .nvim-thyme.fnl instead?
     ;; NOTE: To inject fennel syntax, `<` must be put at the head of the line,
     ;; but health does not allow it.
