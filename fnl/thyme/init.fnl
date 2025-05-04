@@ -36,6 +36,15 @@
 - Define commands
 - Create autocmds to watch loaded fennel files to update compile caches.
 
+```fennel
+;; They all works equally.
+(let [thyme (require :thyme)]
+  (thyme.setup)
+  (thyme:setup)
+(-> (require :thyme)
+    (: :setup)
+```
+
 NOTE: To customize options, please edit `.nvim-thyme.fnl` instead; this
 function does NOT handle any options.
 
