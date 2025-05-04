@@ -3,7 +3,7 @@
 
 (include :test.helper.prerequisites)
 
-(local {: define-commands!} (require :thyme))
+(local thyme (require :thyme))
 (local {: fnl-path->lua-path} (require :thyme.module-map.logger))
 
 (local default-fnl-dir (-> (vim.fn.stdpath :config)
@@ -11,7 +11,7 @@
 
 (describe* "module-map.logger"
   (setup* (fn []
-            (define-commands!)))
+            (thyme.setup)))
   (after-each (fn []
                 (vim.cmd "ThymeUninstall")
                 (vim.cmd "% bdelete")))
