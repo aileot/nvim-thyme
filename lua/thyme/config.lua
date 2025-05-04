@@ -147,26 +147,16 @@ local function _25_(_self, k)
   else
     local _ = k
     local config = get_config()
-    local _27_ = config[k]
-    if (nil ~= _27_) then
-      local val = _27_
-      return val
-    else
-      local _0 = _27_
-      return error(("unexpected option detected: " .. k))
-    end
+    return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local function _30_(self, k, v)
-  error(k)
-  local config = get_config()
-  config[k] = v
-  local _31_ = config[k]
-  if (nil ~= _31_) then
-    local val = _31_
-    return rawset(self, k, val)
-  else
-    return nil
+local _28_
+if not debug_3f then
+  local function _29_()
+    return error("thyme.config is readonly")
   end
+  _28_ = _29_
+else
+  _28_ = nil
 end
-return setmetatable({["get-config"] = get_config, ["config-file?"] = config_file_3f}, {__index = _25_, __newindex = _30_})
+return setmetatable({["get-config"] = get_config, ["config-file?"] = config_file_3f}, {__index = _25_, __newindex = _28_})

@@ -1,3 +1,5 @@
+(import-macros {: when-not} :thyme.macros)
+
 (local {: debug? : config-filename : config-path} (require :thyme.const))
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
@@ -156,16 +158,9 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                                (.. "recursion detected in evaluating "
                                    config-filename))
                 _ (let [config (get-config)]
-                    (case (. config k)
-                      val (do
-                            ;; FIXME: Handle nested table values? Tests fails
-                            ;; because `max-rollbacks` is ignored.
-                            ;; (rawset _self k val)
-                            val)
-                      _ (error (.. "unexpected option detected: " k))))))
-   :__newindex (fn [self k v]
-                 (error k)
-                 (let [config (get-config)]
-                   (tset config k v)
-                   (case (. config k)
-                     val (rawset self k val))))})
+                    ;; NOTE: Do NOT overwrite self with `rawset` to keep
+                    ;; __newindex working.
+                    (or (. config k)
+                        (error (.. "unexpected option detected: " k))))))
+   :__newindex (when-not debug?
+                 #(error "thyme.config is readonly"))})
