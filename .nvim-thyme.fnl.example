@@ -20,4 +20,8 @@
                          :method "overwrite"
                          ;; trailing-parens only works with method "overwrite" or "append"
                          ;; "omit"|"keep"
-                         :trailing-parens "omit"}}}
+                         :trailing-parens "omit"}}
+ :watch {:event [:BufWritePost :FileChangedShellPost]
+         :pattern "*.fnlm?"
+         :notifier vim.notify
+         :strategy "recompile"}}
