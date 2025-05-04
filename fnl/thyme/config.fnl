@@ -34,27 +34,6 @@
 
 (local cache {})
 
-(set cache.main-config
-     (setmetatable {}
-       {:__index (fn [self k]
-                   (if (= k "?error-msg")
-                       ;; As a placeholder.
-                       nil
-                       (case (rawget default-opts k)
-                         val (do
-                               (rawset self k val)
-                               val)
-                         _ (error (.. "unexpected option detected: "
-                                      (vim.inspect k))))))
-        :__newindex (if debug?
-                        (fn [self k v]
-                          (rawset self k v))
-                        (fn [self k v]
-                          (if (= nil (rawget default-opts k))
-                              (error (.. "unexpected option detected: "
-                                         (vim.inspect k)))
-                              (rawset self k v))))}))
-
 (when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
   (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
@@ -129,16 +108,16 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 (fennel.dofile backup-path compiler-options))
               {})))))
 
+(set cache.main-config {})
+
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
   (if (next cache.main-config)
       cache.main-config
-      (let [user-config (read-config-with-backup! config-path)
-            mt (getmetatable cache.main-config)]
+      (let [user-config (read-config-with-backup! config-path)]
         (set cache.main-config
              (vim.tbl_deep_extend :force default-opts user-config))
-        (setmetatable cache.main-config mt)
         cache.main-config)))
 
 (fn config-file? [path]
