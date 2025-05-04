@@ -18,6 +18,7 @@ local peek_module_name = _local_7_["peek-module-name"]
 local peek_fnl_path = _local_7_["peek-fnl-path"]
 local _local_8_ = require("thyme.module-map.unit")
 local get_root_of_modmap = _local_8_["get-root"]
+local RollbackManager = require("thyme.rollback")
 local report_start, report_info, report_ok, report_warn, report_error = nil, nil, nil, nil, nil
 do
   local health = vim.health
@@ -53,11 +54,11 @@ local function report_integrations()
 end
 local function report_thyme_disk_info()
   report_start("Thyme Disk Info")
-  report_info(("The path to .nvim-thyme.fnl:\t`%s`"):format(config_path))
-  report_info(("The root path of Lua cache:\t`%s`"):format(lua_cache_prefix))
-  report_info(("The root path of backups for rollback:\t`%s`"):format(get_root_of_backup()))
-  report_info(("The root path of module-mapping:\t`%s`"):format(get_root_of_modmap()))
-  return report_info(("The root path of pool:\t`%s`"):format(get_root_of_pool()))
+  report_info(("The path to .nvim-thyme.fnl: `%s`"):format(config_path))
+  report_info(("The root path of Lua cache:  `%s`"):format(lua_cache_prefix))
+  report_info(("The root path of backups for rollback: `%s`"):format(get_root_of_backup()))
+  report_info(("The root path of module-mapping: `%s`"):format(get_root_of_modmap()))
+  return report_info(("The root path of pool: `%s`"):format(get_root_of_pool()))
 end
 local function report_thyme_config()
   report_start("Thyme .nvim-thyme.fnl")
@@ -95,11 +96,21 @@ local function report_imported_macros()
   reporter = _14_
   return each_file(reporter, root)
 end
-local function _16_()
+local function report_mounted_paths()
+  report_start("Thyme Mounted Paths")
+  local mounted_paths = RollbackManager["get-mounted-paths"]()
+  if next(mounted_paths) then
+    return report_info(("Th mounted paths:\n- `%s`"):format(table.concat(mounted_paths, "`\n- `")))
+  else
+    return report_info("No paths are mounted.")
+  end
+end
+local function _17_()
   report_integrations()
   report_thyme_disk_info()
   report_fennel_paths()
   report_imported_macros()
-  return report_thyme_config()
+  report_thyme_config()
+  return report_mounted_paths()
 end
-return {check = _16_}
+return {check = _17_}

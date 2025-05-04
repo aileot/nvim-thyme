@@ -12,6 +12,8 @@
 
 (local {:get-root get-root-of-modmap} (require :thyme.module-map.unit))
 
+(local RollbackManager (require :thyme.rollback))
+
 (local (report-start report-info report-ok report-warn report-error)
        (let [health vim.health]
          (if health.start
@@ -41,14 +43,14 @@
 
 (fn report-thyme-disk-info []
   (report-start "Thyme Disk Info")
-  (report-info (-> "The path to .nvim-thyme.fnl:\t`%s`" (: :format config-path)))
-  (report-info (-> "The root path of Lua cache:\t`%s`"
+  (report-info (-> "The path to .nvim-thyme.fnl: `%s`" (: :format config-path)))
+  (report-info (-> "The root path of Lua cache:  `%s`"
                    (: :format lua-cache-prefix)))
-  (report-info (-> "The root path of backups for rollback:\t`%s`"
+  (report-info (-> "The root path of backups for rollback: `%s`"
                    (: :format (get-root-of-backup))))
-  (report-info (-> "The root path of module-mapping:\t`%s`"
+  (report-info (-> "The root path of module-mapping: `%s`"
                    (: :format (get-root-of-modmap))))
-  (report-info (-> "The root path of pool:\t`%s`"
+  (report-info (-> "The root path of pool: `%s`"
                    (: :format (get-root-of-pool)))))
 
 (fn report-thyme-config []
@@ -92,9 +94,22 @@
                        (report-info msg))))]
     (each-file reporter root)))
 
+(fn report-mounted-paths []
+  (report-start "Thyme Mounted Paths")
+  (let [mounted-paths (RollbackManager.get-mounted-paths)]
+    (if (next mounted-paths)
+        (do
+          ;; TODO: Split reports per rollback kind: config, macro, and module
+          (report-info (-> "Th mounted paths:\n- `%s`"
+                           (: :format
+                              (-> mounted-paths
+                                  (table.concat "`\n- `"))))))
+        (report-info "No paths are mounted."))))
+
 {:check (fn []
           (report-integrations)
           (report-thyme-disk-info)
           (report-fennel-paths)
           (report-imported-macros)
-          (report-thyme-config))}
+          (report-thyme-config)
+          (report-mounted-paths))}
