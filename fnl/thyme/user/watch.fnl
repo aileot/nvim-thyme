@@ -6,6 +6,8 @@
 (local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: check-to-update!} (require :thyme.user.check))
 
+(local {: get-config} (require :thyme.config))
+
 (var ?group nil)
 
 (macro augroup! [...]
@@ -25,7 +27,10 @@ the same.
 @param ?opts.pattern string|string[] autocmd-pattern
 @return number autocmd-id"
   (let [group (or ?group (augroup! :ThymeWatch {}))
-        opts (or ?opts {})
+        config (get-config)
+        opts (if ?opts
+                 (vim.tbl_deep_extend :force config.watch ?opts)
+                 config.watch)
         ;; TODO: Also consider RemoteReply, ShellCmdPost, etc.?
         event (or opts.event [:BufWritePost :FileChangedShellPost])
         pattern (or opts.pattern :*.fnl)
