@@ -122,9 +122,7 @@ local function read_config_with_backup_21(config_file_path)
   end
 end
 local function get_config()
-  if cache["evaluating?"] then
-    return {["?error-msg"] = ("recursion detected in evaluating " .. config_filename)}
-  elseif next(cache["main-config"]) then
+  if next(cache["main-config"]) then
     return cache["main-config"]
   else
     local user_config = read_config_with_backup_21(config_path)

@@ -132,10 +132,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
-  (if cache.evaluating?
-      ;; NOTE: This expects `(pcall require missing-mdodule)` in .nvim-thyme.fnl.
-      {:?error-msg (.. "recursion detected in evaluating " config-filename)}
-      (next cache.main-config)
+  (if (next cache.main-config)
       cache.main-config
       (let [user-config (read-config-with-backup! config-path)
             mt (getmetatable cache.main-config)]
