@@ -7,20 +7,14 @@
         : prepare-context-lua-file!
         : remove-context-files!} (include :test.helper.utils))
 
-(local {: define-commands!} (require :thyme))
+(local thyme (require :thyme))
 
 (local RollbackManager (require :thyme.rollback))
 
-(describe* "#command"
-  (it* "thyme.define-commands! defines :ThymeCacheClear"
-    (define-commands!)
-    (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                       (. "must not defined")))
-    (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                           (. "ThymeCacheClear"))))
+(describe* "command"
   (describe* ":FnlAlternate"
     (before_each (fn []
-                   (define-commands!)))
+                   (thyme.setup)))
     (after_each (fn []
                   (remove-context-files!)))
     (describe* "(for the files compiled by thyme)"
@@ -66,7 +60,7 @@
 
 (describe* "command :ThymeRollbackSwitch"
   (setup (fn []
-           (define-commands!)))
+           (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
   (describe* "for module"
@@ -125,7 +119,7 @@
 
 (describe* "command :ThymeRollbackMount"
   (setup (fn []
-           (define-commands!)))
+           (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
   (describe* "for module"
@@ -151,7 +145,7 @@
 
 (describe* "command :ThymeRollbackUnmountAll"
   (setup (fn []
-           (define-commands!)))
+           (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
   (describe* "for module"

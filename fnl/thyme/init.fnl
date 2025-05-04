@@ -20,13 +20,44 @@
                                                 :compile-file!)
           :compile-string (lazy-require-with-key :thyme.wrapper.fennel
                                                  :compile-string)
-          :macrodebug (lazy-require-with-key :thyme.wrapper.fennel :macrodebug)
-          :watch-files! (lazy-require-with-key :thyme.user.watch
-                                               :watch-to-update!)
-          :define-keymaps! (lazy-require-with-key :thyme.user.keymaps
-                                                  :define-keymaps!)
-          :define-commands! (lazy-require-with-key :thyme.user.commands
-                                                   :define-commands!)})
+          :macrodebug (lazy-require-with-key :thyme.wrapper.fennel :macrodebug)})
+
+(set M.__index M)
+
+(fn M.setup [?opts]
+  "Initialize thyme environment:
+
+- Define keymaps
+- Define commands
+- Create autocmds to watch loaded fennel files to update compile caches.
+
+```fennel
+;; They all works equally.
+(let [thyme (require :thyme)]
+  (thyme.setup)
+  (thyme:setup)
+(-> (require :thyme)
+    (: :setup)
+```
+
+NOTE: To customize options, please edit `.nvim-thyme.fnl` instead; this
+function does NOT handle any options.
+
+NOTE: This function is expected to be called after `VimEnter` events wrapped in
+`vim.schedule`, or later.
+
+@param ?opts table (default: `{}`)"
+  (assert (or (= nil ?opts) (= nil (next ?opts)) (= ?opts M))
+          "Please call `thyme.setup` without any args, or with an empty table.")
+  (let [self (setmetatable {} M)
+        config (require :thyme.config)
+        watch (require :thyme.user.watch)
+        keymaps (require :thyme.user.keymaps)
+        commands (require :thyme.user.commands)]
+    (watch.watch-files! config.watch)
+    (keymaps.define-keymaps!)
+    (commands.define-commands!)
+    self))
 
 (each [k v (pairs M)]
   ;; Generate keys compatible with Lua format addition to the Fennel-styled
@@ -38,4 +69,4 @@
       (when (= nil (. M new-key))
         (tset M new-key v)))))
 
-M
+(setmetatable {} M)

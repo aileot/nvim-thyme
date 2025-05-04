@@ -3,12 +3,12 @@
 
 (include :test.helper.prerequisites)
 
-(local {: define-commands!} (require :thyme))
+(local thyme (require :thyme))
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
 
 (describe* "module searcher"
   (setup (fn []
-           (define-commands!)))
+           (thyme.setup)))
   (describe* "can load the module `fennel`;"
     (it* "thus, searcher returns a chunk function."
       (assert.equals :function (type (search-fnl-module-on-rtp! :fennel)))))

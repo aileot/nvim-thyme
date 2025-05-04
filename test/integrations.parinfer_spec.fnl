@@ -2,11 +2,11 @@
 
 (include :test.helper.prerequisites)
 
-(local {: define-commands!} (require :thyme))
+(local thyme (require :thyme))
 
 (describe* "integrated with parinfer,"
   (setup (fn []
-           (define-commands!)))
+           (thyme.setup)))
   (before_each (fn []
                  (assert.is_truthy (vim.o.rtp:find "parinfer"))))
   (describe* "fnl wrapper commands automatically balance parentheses;"

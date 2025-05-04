@@ -5,7 +5,7 @@
 
 (local {: remove-context-files!} (include :test.helper.utils))
 
-(local {:loader thyme-loader : define-commands!} (require :thyme))
+(local thyme (require :thyme))
 
 (local default-config-home (vim.fn.stdpath :config))
 
@@ -18,7 +18,7 @@
 
 (describe* :loader
   (setup* (fn []
-            (define-commands!)))
+            (thyme.setup)))
   (before-each (fn []
                  (-> (vim.fs.dirname default-fnl-module-path)
                      (vim.fn.mkdir :p))
@@ -40,9 +40,9 @@
                 (set package.loaded.foobar nil)
                 (vim.cmd "silent % bdelete")))
   (it* "returns a string if specified module is not found"
-    (assert.equals :string (type (thyme-loader :foo)))
-    (assert.equals :string (type (thyme-loader :bar)))
-    (assert.equals :string (type (thyme-loader :foobar))))
+    (assert.equals :string (type (thyme.loader :foo)))
+    (assert.equals :string (type (thyme.loader :bar)))
+    (assert.equals :string (type (thyme.loader :foobar))))
   (describe* "cannot load a lua file under lua/ as a module;"
     (it* "thus, thyme.loader returns a string for the module \"foobar\" without any error"
       (vim.cmd "silent ThymeUninstall")
@@ -51,7 +51,7 @@
       (vim.cmd (.. "silent write " default-lua-module-path))
       (-> (vim.fn.filereadable default-lua-module-path)
           (assert.equals 1))
-      (assert.equals :string (type (thyme-loader :foobar)))
+      (assert.equals :string (type (thyme.loader :foobar)))
       (vim.fn.delete default-lua-module-path)))
   (describe* "can load a fnl file under fnl/ as a module by default;"
     (it* "thus, thyme.loader can load the module \"foobar\" without any error"
@@ -61,7 +61,7 @@
       (vim.cmd (.. "silent write " default-fnl-module-path))
       (-> (vim.fn.filereadable default-fnl-module-path)
           (assert.equals 1))
-      (assert.equals :function (type (thyme-loader :foobar)))
+      (assert.equals :function (type (thyme.loader :foobar)))
       (vim.fn.delete default-fnl-module-path))
     (it* "thus, `require` can load the module \"foobar\" without any error"
       (assert.is_false (pcall require :foobar))
@@ -69,14 +69,14 @@
       (assert.is_true (pcall require :foobar))))
   (it* "can restore and load missing module from backup once loaded"
     (vim.cmd (.. "silent write " default-fnl-module-path))
-    (assert.equals :function (type (thyme-loader :foobar)))
+    (assert.equals :function (type (thyme.loader :foobar)))
     (set package.loaded.foobar nil)
     (vim.fn.delete default-fnl-module-path)
-    (assert.equals :function (type (thyme-loader :foobar))))
+    (assert.equals :function (type (thyme.loader :foobar))))
   (it* "cannot restore once loaded module after :ThymeUninstall"
     (vim.cmd (.. "silent write " default-fnl-module-path))
-    (assert.equals :function (type (thyme-loader :foobar)))
+    (assert.equals :function (type (thyme.loader :foobar)))
     (set package.loaded.foobar nil)
     (vim.fn.delete default-fnl-module-path)
     (vim.cmd "silent ThymeUninstall")
-    (assert.equals :string (type (thyme-loader :foobar)))))
+    (assert.equals :string (type (thyme.loader :foobar)))))

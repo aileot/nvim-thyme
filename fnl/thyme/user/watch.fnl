@@ -6,6 +6,8 @@
 (local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: check-to-update!} (require :thyme.user.check))
 
+(local {: get-config} (require :thyme.config))
+
 (var ?group nil)
 
 (macro augroup! [...]
@@ -14,8 +16,8 @@
 (macro autocmd! [...]
   `(vim.api.nvim_create_autocmd ,...))
 
-(fn watch-to-update! [?opts]
-  "Add an autocmd in augroup \"Thyme\" to watch fennel files.
+(fn watch-files! [?opts]
+  "Add an autocmd in augroup named `ThymeWatch` to watch fennel files.
 It overrides the previously defined `autocmd`s if both event and pattern are
 the same.
 @param ?opts.verbose boolean (default: false) notify if successfully compiled file.
@@ -25,10 +27,10 @@ the same.
 @param ?opts.pattern string|string[] autocmd-pattern
 @return number autocmd-id"
   (let [group (or ?group (augroup! :ThymeWatch {}))
-        opts (or ?opts {})
-        ;; TODO: Also consider RemoteReply, ShellCmdPost, etc.?
-        event (or opts.event [:BufWritePost :FileChangedShellPost])
-        pattern (or opts.pattern :*.fnl)
+        config (get-config)
+        opts (if ?opts
+                 (vim.tbl_deep_extend :force config.watch ?opts)
+                 config.watch)
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
@@ -40,6 +42,6 @@ the same.
                      ;; Prevent not to destroy the autocmd.
                      nil))]
     (set ?group group)
-    (autocmd! event {: group : pattern : callback})))
+    (autocmd! opts.event {: group :pattern opts.pattern : callback})))
 
-{: watch-to-update!}
+{: watch-files!}

@@ -21,7 +21,14 @@
                          "./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
-                        (table.concat ";"))})
+                        (table.concat ";"))
+        :command {:compiler-options nil
+                  :fnl-cmd-prefix "Fnl"
+                  :cmd-history {:method "overwrite" :trailing-parens "omit"}}
+        :watch {:event [:BufWritePost :FileChangedShellPost]
+                :pattern "*.fnlm?"
+                :notifier vim.notify
+                :strategy "recompile"}})
 
 (local cache {})
 
@@ -131,7 +138,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
       (let [user-config (read-config-with-backup! config-path)
             mt (getmetatable cache.main-config)]
         (set cache.main-config
-             (vim.tbl_deep_extend :force cache.main-config user-config))
+             (vim.tbl_deep_extend :force default-opts user-config))
         (setmetatable cache.main-config mt)
         cache.main-config)))
 
