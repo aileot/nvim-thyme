@@ -8,19 +8,21 @@
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
 
 (local M {:loader search-fnl-module-on-rtp!
-          :view (lazy-require-with-key :thyme.wrapper.fennel :view)
-          :eval (lazy-require-with-key :thyme.wrapper.fennel :eval)
-          :compile_file (fn [...]
-                          (let [key (if (select 3 ...) :compile-file!
-                                        :compile-file)]
-                            ((require-with-key :thyme.wrapper.fennel key) ...)))
-          :compile-file (lazy-require-with-key :thyme.wrapper.fennel
-                                               :compile-file)
-          :compile-file! (lazy-require-with-key :thyme.wrapper.fennel
-                                                :compile-file!)
-          :compile-string (lazy-require-with-key :thyme.wrapper.fennel
-                                                 :compile-string)
-          :macrodebug (lazy-require-with-key :thyme.wrapper.fennel :macrodebug)})
+          :fennel {:view (lazy-require-with-key :thyme.wrapper.fennel :view)
+                   :eval (lazy-require-with-key :thyme.wrapper.fennel :eval)
+                   :compile_file (fn [...]
+                                   (let [key (if (select 3 ...) :compile-file!
+                                                 :compile-file)]
+                                     ((require-with-key :thyme.wrapper.fennel
+                                                        key) ...)))
+                   :compile-file (lazy-require-with-key :thyme.wrapper.fennel
+                                                        :compile-file)
+                   :compile-file! (lazy-require-with-key :thyme.wrapper.fennel
+                                                         :compile-file!)
+                   :compile-string (lazy-require-with-key :thyme.wrapper.fennel
+                                                          :compile-string)
+                   :macrodebug (lazy-require-with-key :thyme.wrapper.fennel
+                                                      :macrodebug)}})
 
 (set M.__index M)
 
