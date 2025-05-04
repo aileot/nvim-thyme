@@ -27,8 +27,6 @@
                   :clear (lazy-require-with-key :thyme.user.commands.cache
                                                 :clear)}})
 
-(set M.__index M)
-
 (fn M.setup [?opts]
   "Initialize thyme environment:
 
@@ -74,4 +72,4 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
       (when (= nil (. M new-key))
         (tset M new-key v)))))
 
-(setmetatable {} M)
+(setmetatable M {:__index M})
