@@ -39,34 +39,34 @@
            (assert.is_same 1)))))
 
 (describe* "rollback.cleanup-old-backups!"
-    (before_each (fn []
-                   (set Config.max-rollbacks 3)))
-    (after_each (fn []
-                  (set Config.max-rollbacks nil)
-                  (remove-context-files!)))
-    (it* "limits the number of backups per module to `config.max-rollbacks`."
-      (let [mod :foobar
-            filename (.. mod ".fnl")
-            path (prepare-config-fnl-file! filename "ctx1")
-            backup-handler (TestRollbackManager:backupHandlerOf)]
-        (assert.equals 0 (length (backup-handler:list-backup-files)))
-        (backup-handler:write-backup! path)
-        (assert.equals 1 (length (backup-handler:list-backup-files)))
-        (prepare-config-fnl-file! filename "ctx2")
-        (vim.wait 1)
-        (backup-handler:write-backup! path)
-        (assert.equals 2 (length (backup-handler:list-backup-files)))
-        (prepare-config-fnl-file! filename "ctx3")
-        (vim.wait 1)
-        (backup-handler:write-backup! path)
-        (assert.equals 3 (length (backup-handler:list-backup-files)))
-        (prepare-config-fnl-file! filename "ctx4")
-        (vim.wait 1)
-        (backup-handler:write-backup! path)
-        (assert.equals 4 (length (backup-handler:list-backup-files)))
-        (prepare-config-fnl-file! filename "ctx5")
-        (vim.wait 1)
-        (backup-handler:write-backup! path)
-        (assert.equals 5 (length (backup-handler:list-backup-files)))
-        (backup-handler:cleanup-old-backups!)
-        (assert.equals 3 (length (backup-handler:list-backup-files))))))
+  (before_each (fn []
+                 (set Config.max-rollbacks 3)))
+  (after_each (fn []
+                (set Config.max-rollbacks nil)
+                (remove-context-files!)))
+  (it* "limits the number of backups per module to `config.max-rollbacks`."
+    (let [mod :foobar
+          filename (.. mod ".fnl")
+          path (prepare-config-fnl-file! filename "ctx1")
+          backup-handler (TestRollbackManager:backupHandlerOf)]
+      (assert.equals 0 (length (backup-handler:list-backup-files)))
+      (backup-handler:write-backup! path)
+      (assert.equals 1 (length (backup-handler:list-backup-files)))
+      (prepare-config-fnl-file! filename "ctx2")
+      (vim.wait 1)
+      (backup-handler:write-backup! path)
+      (assert.equals 2 (length (backup-handler:list-backup-files)))
+      (prepare-config-fnl-file! filename "ctx3")
+      (vim.wait 1)
+      (backup-handler:write-backup! path)
+      (assert.equals 3 (length (backup-handler:list-backup-files)))
+      (prepare-config-fnl-file! filename "ctx4")
+      (vim.wait 1)
+      (backup-handler:write-backup! path)
+      (assert.equals 4 (length (backup-handler:list-backup-files)))
+      (prepare-config-fnl-file! filename "ctx5")
+      (vim.wait 1)
+      (backup-handler:write-backup! path)
+      (assert.equals 5 (length (backup-handler:list-backup-files)))
+      (backup-handler:cleanup-old-backups!)
+      (assert.equals 3 (length (backup-handler:list-backup-files))))))
