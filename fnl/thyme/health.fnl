@@ -43,14 +43,14 @@
 
 (fn report-thyme-disk-info []
   (report-start "Thyme Disk Info")
-  (report-info (-> "The path to .nvim-thyme.fnl:\t`%s`" (: :format config-path)))
-  (report-info (-> "The root path of Lua cache:\t`%s`"
+  (report-info (-> "The path to .nvim-thyme.fnl: `%s`" (: :format config-path)))
+  (report-info (-> "The root path of Lua cache:  `%s`"
                    (: :format lua-cache-prefix)))
-  (report-info (-> "The root path of backups for rollback:\t`%s`"
+  (report-info (-> "The root path of backups for rollback: `%s`"
                    (: :format (get-root-of-backup))))
-  (report-info (-> "The root path of module-mapping:\t`%s`"
+  (report-info (-> "The root path of module-mapping: `%s`"
                    (: :format (get-root-of-modmap))))
-  (report-info (-> "The root path of pool:\t`%s`"
+  (report-info (-> "The root path of pool: `%s`"
                    (: :format (get-root-of-pool)))))
 
 (fn report-thyme-config []
