@@ -1,0 +1,63 @@
+(import-macros {: when-not : str? : dec : inc : first : command!} :thyme.macros)
+
+(local Path (require :thyme.utils.path))
+
+(local {: lua-cache-prefix : config-filename : config-path}
+       (require :thyme.const))
+
+(local Config (require :thyme.config))
+
+(local {: directory?} (require :thyme.utils.fs))
+
+(local cache-commands (require :thyme.user.commands.cache))
+(local rollback-commands (require :thyme.user.commands.rollback))
+(local fennel-wrapper-commands (require :thyme.user.commands.fennel))
+
+;; (fn get-candidates-in-cache-dir [arg-lead _cmdline _cursorpos]
+;;   "Return list of directories under thyme's cache as `arg-lead`.
+;; @param arg-lead string
+;; @return string[]"
+;;   (let [root lua-cache-prefix
+;;         current-path (Path.join root arg-lead)
+;;         glob-result (vim.fn.glob (.. current-path "*"))]
+;;     (-> (if (current-path:find (.. "^" glob-result Path.sep "?$"))
+;;             (vim.fn.glob (Path.join current-path "*"))
+;;             glob-result)
+;;         (: :gsub (.. root Path.sep) "")
+;;         (vim.split "\n"))))
+
+(fn assert-is-file-of-thyme [path]
+  (let [sep (or (path:match "/") "\\")]
+    (assert (or (= (.. sep :thyme) (path:sub -6))
+                (path:find (.. sep :thyme sep) 1 true))
+            (.. path " does not belong to thyme"))
+    path))
+
+(fn define-commands! [?opts]
+  "Define user commands.
+@param opts.fnl-cmd-prefix string (default: \"Fnl\")
+@param opts.compiler-options table? (default: same values as main config)
+@param opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
+  (command! :ThymeConfigOpen
+    {:desc (.. "[thyme] open the main config file " config-filename)}
+    (fn []
+      (vim.cmd (.. "tab drop " config-path))))
+  (command! :ThymeUninstall
+    {:desc "[thyme] delete all the thyme's cache, state, and data files"}
+    (fn []
+      (let [files [lua-cache-prefix
+                   (Path.join (vim.fn.stdpath :cache) :thyme)
+                   (Path.join (vim.fn.stdpath :state) :thyme)
+                   (Path.join (vim.fn.stdpath :data) :thyme)]]
+        (each [_ path (ipairs files)]
+          (assert-is-file-of-thyme path)
+          (when (directory? path)
+            (case (vim.fn.delete path :rf)
+              0 (vim.notify (.. "[thyme] successfully deleted " path))
+              _ (error (.. "[thyme] failed to delete " path)))))
+        (vim.notify (.. "[thyme] successfully uninstalled")))))
+  (cache-commands.setup!)
+  (rollback-commands.setup!)
+  (fennel-wrapper-commands.setup! ?opts))
+
+{: define-commands!}

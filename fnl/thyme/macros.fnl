@@ -52,6 +52,9 @@
   (let [opts (or ?opts {})]
     `(vim.api.nvim_get_option_value ,name ,opts)))
 
+(fn command! [name opts callback]
+  `(vim.api.nvim_create_user_command ,name ,callback ,opts))
+
 {: when-not
  : num?
  : str?
@@ -66,4 +69,5 @@
  : error-fmt
  : nvim
  : nvim-set-option
- : nvim-get-option}
+ : nvim-get-option
+ : command!}

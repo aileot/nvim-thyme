@@ -1,51 +1,23 @@
-(import-macros {: when-not : str? : dec : inc : first} :thyme.macros)
-
-(local Path (require :thyme.utils.path))
-(local tts (require :thyme.wrapper.treesitter))
-
-(local {: lua-cache-prefix : config-filename : config-path}
-       (require :thyme.const))
-
-(local {: config-file? &as Config} (require :thyme.config))
-
-(local {: file-readable? : directory? : read-file : write-lua-file!}
-       (require :thyme.utils.fs))
-
-(local RollbackManager (require :thyme.rollback))
-
-(local fennel-wrapper (require :thyme.wrapper.fennel))
-(local {: apply-parinfer} (require :thyme.wrapper.parinfer))
-(local {: clear-cache!} (require :thyme.compiler.cache))
-(local {: fnl-path->lua-path} (require :thyme.module-map.logger))
+(import-macros {: when-not : str? : dec : inc : first : command!} :thyme.macros)
 
 (local fennel (require :fennel))
 
-(macro command! [name opts callback]
-  `(vim.api.nvim_create_user_command ,name ,callback ,opts))
+(local tts (require :thyme.wrapper.treesitter))
 
-;; (fn get-candidates-in-cache-dir [arg-lead _cmdline _cursorpos]
-;;   "Return list of directories under thyme's cache as `arg-lead`.
-;; @param arg-lead string
-;; @return string[]"
-;;   (let [root lua-cache-prefix
-;;         current-path (Path.join root arg-lead)
-;;         glob-result (vim.fn.glob (.. current-path "*"))]
-;;     (-> (if (current-path:find (.. "^" glob-result Path.sep "?$"))
-;;             (vim.fn.glob (Path.join current-path "*"))
-;;             glob-result)
-;;         (: :gsub (.. root Path.sep) "")
-;;         (vim.split "\n"))))
+(local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 
-(fn open-buffer! [buf|path {: split : tab &as mods}]
-  "Open buffer as `mods.split` value.
-@param buf|path number|string buffer-number or path
-@param mods table
-@param mods.split string"
-  (let [split? (or (not= -1 tab) (not= "" split))
-        cmd (case (type buf|path)
-              :number (if split? :sbuffer :buffer)
-              :string (if split? :split :edit))]
-    (vim.cmd {: cmd :args [buf|path] : mods})))
+(local {: lua-cache-prefix} (require :thyme.const))
+
+(local {: file-readable? : read-file : write-lua-file!}
+       (require :thyme.utils.fs))
+
+(local {: config-file? &as Config} (require :thyme.config))
+
+(local {: fnl-path->lua-path} (require :thyme.module-map.logger))
+
+(local fennel-wrapper (require :thyme.wrapper.fennel))
+
+(local M {})
 
 (fn edit-cmd-history! [new-fnl-code opts]
   "Edit Vim command history with `new-fnl-code`.
@@ -130,134 +102,28 @@
         (-> #(edit-cmd-history! new-fnl-code cmd-history-opts)
             (vim.schedule))))))
 
-(fn assert-is-file-of-thyme [path]
-  (let [sep (or (path:match "/") "\\")]
-    (assert (or (= (.. sep :thyme) (path:sub -6))
-                (path:find (.. sep :thyme sep) 1 true))
-            (.. path " does not belong to thyme"))
-    path))
+(fn open-buffer! [buf|path {: split : tab &as mods}]
+  "Open buffer as `mods.split` value.
+@param buf|path number|string buffer-number or path
+@param mods table
+@param mods.split string"
+  (let [split? (or (not= -1 tab) (not= "" split))
+        cmd (case (type buf|path)
+              :number (if split? :sbuffer :buffer)
+              :string (if split? :split :edit))]
+    (vim.cmd {: cmd :args [buf|path] : mods})))
 
-(fn define-commands! [?opts]
-  "Define user commands.
-@param opts.fnl-cmd-prefix string (default: \"Fnl\")
-@param opts.compiler-options table? (default: same values as main config)
-@param opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
+(fn M.setup! [?opts]
+  "Define fennel wrapper commands.
+@param ?opts.fnl-cmd-prefix string (default: \"Fnl\")
+@param ?opts.compiler-options table? (default: same values as main config)
+@param ?opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
   (let [opts (if ?opts
                  (vim.tbl_deep_extend :force Config.command ?opts)
                  Config.command)
         fnl-cmd-prefix opts.fnl-cmd-prefix
         compiler-options opts.compiler-options
         cmd-history-opts opts.cmd-history]
-    (command! :ThymeConfigOpen
-      {:desc (.. "[thyme] open the main config file " config-filename)}
-      (fn []
-        (vim.cmd (.. "tab drop " config-path))))
-    (command! :ThymeCacheOpen
-      {:desc "[thyme] open the cache root directory"}
-      (fn []
-        ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
-        ;; so that `:tab drop` is unlikely to work expectedly.
-        (vim.cmd (.. "tab drop " lua-cache-prefix))))
-    (command! :ThymeCacheClear
-      ;; NOTE: No args will be allowed because handling module-map would
-      ;; be a bit complicated.
-      {:bar true
-       :bang true
-       :desc "[thyme] clear the lua cache and dependency map logs"}
-      ;; TODO: Or `:confirm` prefix to ask?
-      (fn []
-        (if (clear-cache!)
-            (vim.notify (.. "Cleared cache: " lua-cache-prefix))
-            (vim.notify (.. "No cache files detected at " lua-cache-prefix)))))
-    (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
-                          (let [root (RollbackManager.get-root)
-                                prefix-length (+ 2 (length root))
-                                glob-pattern (Path.join root
-                                                        (.. arg-lead "**/"))
-                                paths (vim.fn.glob glob-pattern false true)]
-                            (icollect [_ path (ipairs paths)]
-                              ;; Trim root prefix and trailing `/`.
-                              (path:sub prefix-length -2))))]
-      (command! :ThymeRollbackSwitch
-        {:bar true
-         :nargs 1
-         :complete complete-dirs
-         :desc "[thyme] Prompt to select rollback for compile error"}
-        (fn [{:args input}]
-          (let [root (RollbackManager.get-root)
-                prefix (Path.join root input)
-                glob-pattern (Path.join prefix "*.{lua,fnl}")
-                candidates (vim.fn.glob glob-pattern false true)]
-            (case (length candidates)
-              0 (vim.notify (.. "Abort. No backup is found for " input))
-              1 (vim.notify (.. "Abort. Only one backup is found for " input))
-              _ (do
-                  (table.sort candidates #(< $2 $1))
-                  (vim.ui.select candidates ;
-                                 {:prompt (-> "Select rollback for %s: "
-                                              (: :format input))
-                                  :format_item (fn [path]
-                                                 (let [basename (vim.fs.basename path)]
-                                                   (if (RollbackManager.active-backup? path)
-                                                       (.. basename
-                                                           " (current)")
-                                                       basename)))}
-                                 (fn [?backup-path]
-                                   (if ?backup-path
-                                       (do
-                                         (RollbackManager.switch-active-backup! ?backup-path)
-                                         (vim.cmd :ThymeCacheClear))
-                                       (vim.notify "Abort selecting rollback target")))))))))
-      (command! :ThymeRollbackMount
-        {:bar true
-         :nargs 1
-         :complete complete-dirs
-         :desc "[thyme] Mount currently active backup"}
-        (fn [{:args input}]
-          (let [root (RollbackManager.get-root)
-                dir (Path.join root input)]
-            (if (RollbackManager.mount-backup! dir)
-                (vim.notify (.. "successfully mounted " dir)
-                            vim.log.levels.INFO)
-                (vim.notify (.. "failed to mount " dir) vim.log.levels.WARN)))))
-      (command! :ThymeRollbackUnmount
-        {:bar true
-         :nargs "?"
-         ;; TODO: Complete only mounted backups.
-         :complete complete-dirs
-         :desc "[thyme] Unmount mounted backup"}
-        (fn [{:args input}]
-          (let [root (RollbackManager.get-root)
-                dir (Path.join root input)]
-            (case (pcall RollbackManager.unmount-backup! dir)
-              (false msg) (vim.notify (-> "failed to mount %s:\n%s"
-                                          (: :format dir msg))
-                                      vim.log.levels.WARN)
-              _ (vim.notify (.. "successfully mounted " dir)
-                            vim.log.levels.INFO)))))
-      (command! :ThymeRollbackUnmountAll
-        {:bar true :nargs 0 :desc "[thyme] Unmount all the mounted backups"}
-        (fn []
-          (case (pcall RollbackManager.unmount-backup-all!)
-            (false msg) (vim.notify (-> "failed to mount backups:\n%s"
-                                        (: :format msg))
-                                    vim.log.levels.WARN)
-            _ (vim.notify (.. "successfully mounted backups")
-                          vim.log.levels.INFO)))))
-    (command! :ThymeUninstall
-      {:desc "[thyme] delete all the thyme's cache, state, and data files"}
-      (fn []
-        (let [files [lua-cache-prefix
-                     (Path.join (vim.fn.stdpath :cache) :thyme)
-                     (Path.join (vim.fn.stdpath :state) :thyme)
-                     (Path.join (vim.fn.stdpath :data) :thyme)]]
-          (each [_ path (ipairs files)]
-            (assert-is-file-of-thyme path)
-            (when (directory? path)
-              (case (vim.fn.delete path :rf)
-                0 (vim.notify (.. "[thyme] successfully deleted " path))
-                _ (error (.. "[thyme] failed to delete " path)))))
-          (vim.notify (.. "[thyme] successfully uninstalled")))))
     (when-not (= "" fnl-cmd-prefix)
       (command! fnl-cmd-prefix
         {:nargs "*"
@@ -380,7 +246,7 @@
                              (table.insert existing-lua-files lua-file)))
                          (if (< 0 (length existing-lua-files))
                              (case (-> (.. "The following files have already existed:
-" ;
+    " ;
                                            (table.concat existing-lua-files
                                                          "\n")
                                            "\nOverride the files?")
@@ -441,4 +307,4 @@
                 (-> (.. "failed to find the alternate file of " input-path)
                     (vim.notify vim.log.levels.WARN)))))))))
 
-{: define-commands!}
+M

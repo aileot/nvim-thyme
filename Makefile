@@ -22,17 +22,21 @@ LUA_ALL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.lua)
 TEST_DEPS:=$(wildcard $(TEST_ROOT)/*/*.fnl)
 TEST_DEPS+=$(wildcard $(TEST_ROOT)/*/*.lua)
 
-FNL_SRC_DIR=fnl
-
-FNL_SRC:=$(wildcard $(FNL_SRC_DIR)/*/*.fnl)
-FNL_SRC+=$(wildcard $(FNL_SRC_DIR)/*/*/*.fnl)
+LUA_ALL:=$(wildcard lua/*/*.lua)
+LUA_ALL+=$(wildcard lua/*/*/*.lua)
+LUA_ALL+=$(wildcard lua/*/*/*/*.lua)
+FNL_SRC:=$(wildcard fnl/*/*.fnl)
+FNL_SRC+=$(wildcard fnl/*/*/*.fnl)
+FNL_SRC+=$(wildcard fnl/*/*/*/*.fnl)
 FNL_SRC:=$(filter-out %/macros.fnl,$(FNL_SRC))
-LUA_RES:=$(FNL_SRC:$(FNL_SRC_DIR)/%.fnl=lua/%.lua)
+LUA_RES:=$(FNL_SRC:fnl/%.fnl=lua/%.lua)
+LUA_OLD:=$(filter-out $(LUA_RES),$(LUA_ALL))
 
-FNL_SRC_DIRS:=$(wildcard $(FNL_SRC_DIR)/*/*/)
-LUA_RES_DIRS:=$(FNL_SRC_DIRS:$(FNL_SRC_DIR)/%=lua/%)
+FNL_SRC_DIRS:=$(wildcard fnl/*/*/)
+FNL_SRC_DIRS+=$(wildcard fnl/*/*/*/)
+LUA_RES_DIRS:=$(FNL_SRC_DIRS:fnl/%=lua/%)
 
-REPO_FNL_DIR := $(REPO_ROOT)/$(FNL_SRC_DIR)
+REPO_FNL_DIR := $(REPO_ROOT)/fnl
 REPO_FNL_PATH := $(REPO_FNL_DIR)/?.fnl;$(REPO_FNL_DIR)/?/init.fnl
 REPO_MACRO_DIR := $(REPO_FNL_DIR)
 REPO_MACRO_PATH := $(REPO_MACRO_DIR)/?.fnl;$(REPO_MACRO_DIR)/?/init.fnl
@@ -52,7 +56,7 @@ help: ## Show this help
 lua/%/:
 	@mkdir -p $@
 
-lua/%.lua: $(FNL_SRC_DIR)/%.fnl
+lua/%.lua: fnl/%.fnl
 	@$(FENNEL) \
 		$(FNL_FLAGS) \
 		$(FNL_EXTRA_FLAGS) \
@@ -66,8 +70,15 @@ clean: ## Remove generated files
 	@rm -f $(LUA_ALL_SPECS)
 	@rm -rf $(TEST_CONTEXT_DIR)
 
+.PHONY: prune
+prune: ## Remove stale lua files
+	@echo "$(LUA_OLD)"
+	@if [ -n "$(LUA_OLD)" ]; then
+	@	rm $(LUA_OLD) && echo "Pruned $(LUA_OLD)"
+	@fi
+
 .PHONY: build
-build: $(LUA_RES_DIRS) $(LUA_RES) ## Compile lua files from fnl/
+build: $(LUA_RES_DIRS) prune $(LUA_RES) ## Compile lua files from fnl/
 
 %_spec.lua: %_spec.fnl $(LUA_RES) $(TEST_DEPS)
 	@$(FENNEL) \
