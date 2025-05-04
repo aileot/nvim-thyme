@@ -20,12 +20,7 @@
                                                 :compile-file!)
           :compile-string (lazy-require-with-key :thyme.wrapper.fennel
                                                  :compile-string)
-          :macrodebug (lazy-require-with-key :thyme.wrapper.fennel :macrodebug)
-          :define-keymaps! (lazy-require-with-key :thyme.user.keymaps
-                                                  :define-keymaps!)
-          :define-commands! (lazy-require-with-key :thyme.user.commands
-                                                   :define-commands!
-                                                   :watch-to-update!)})
+          :macrodebug (lazy-require-with-key :thyme.wrapper.fennel :macrodebug)})
 
 (set M.__index M)
 
