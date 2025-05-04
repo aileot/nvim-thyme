@@ -161,9 +161,9 @@
     (assert-is-file-readable mounted-backup-path)
     (assert (fs.unlink mounted-backup-path))))
 
-(fn RollbackManager.get-mounted-rollbacks []
-  "Return all the mounted rollbacks.
-@return string[] the list of mounted rollbacks"
+(fn RollbackManager.get-mounted-paths []
+  "Return all the mounted rollback paths.
+@return string[] the list of mounted paths"
   (-> (Path.join RollbackManager._root ;
                  "*" ; for rollback kind
                  "*" ; for module
@@ -173,7 +173,7 @@
 (fn RollbackManager.unmount-backup-all! []
   "Unmount all the mounted backups.
 @return boolean true if all the mounted backups are successfully unmounted, or no backup has been mounted; false otherwise"
-  (case (RollbackManager.get-mounted-rollbacks)
+  (case (RollbackManager.get-mounted-paths)
     mounted-backup-paths (each [_ path (ipairs mounted-backup-paths)]
                            (assert (fs.unlink path))))
   true)

@@ -159,6 +159,6 @@
           (require mod)
           (tset package.loaded mod nil)
           (vim.cmd.ThymeRollbackMount (.. backup-label mod))
-          (assert.not_equals 0 (length (RollbackManager.get-mounted-rollbacks)))
+          (assert.not_equals 0 (length (RollbackManager.get-mounted-paths)))
           (vim.cmd.ThymeRollbackUnmountAll)
-          (assert.equals 0 (length (RollbackManager.get-mounted-rollbacks))))))))
+          (assert.equals 0 (length (RollbackManager.get-mounted-paths))))))))
