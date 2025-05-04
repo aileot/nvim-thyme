@@ -98,10 +98,8 @@ BackupHandler["should-update-backup?"] = function(self, expected_contents)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
 BackupHandler["cleanup-old-backups!"] = function(self)
-  local _let_14_ = require("thyme.config")
-  local get_config = _let_14_["get-config"]
-  local config = get_config()
-  local max_rollbacks = config["max-rollbacks"]
+  local Config = require("thyme.config")
+  local max_rollbacks = Config["max-rollbacks"]
   validate_type("number", max_rollbacks)
   local threshold = (max_rollbacks + 1)
   local backup_files = self["list-backup-files"](self, self["module-name"])

@@ -5,8 +5,8 @@ local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
 local _local_2_ = require("thyme.config")
-local get_config = _local_2_["get-config"]
 local config_file_3f = _local_2_["config-file?"]
+local Config = _local_2_
 local _local_3_ = require("thyme.utils.fs")
 local file_readable_3f = _local_3_["file-readable?"]
 local directory_3f = _local_3_["directory?"]
@@ -149,12 +149,11 @@ local function assert_is_file_of_thyme(path)
   return path
 end
 local function define_commands_21(_3fopts)
-  local config = get_config()
   local opts
   if _3fopts then
-    opts = vim.tbl_deep_extend("force", config.command, _3fopts)
+    opts = vim.tbl_deep_extend("force", Config.command, _3fopts)
   else
-    opts = config.command
+    opts = Config.command
   end
   local fnl_cmd_prefix = opts["fnl-cmd-prefix"]
   local compiler_options = opts["compiler-options"]
@@ -430,8 +429,7 @@ local function define_commands_21(_3fopts)
       or_81_ = and_85_
     end
     if or_81_ then
-      local config0 = get_config()
-      local fennel_options = config0["compiler-options"]
+      local fennel_options = Config["compiler-options"]
       for fnl_path, lua_path in pairs(path_pairs) do
         assert(not config_file_3f(fnl_path), "Abort. Attempted to compile config file")
         local lua_lines = fennel_wrapper["compile-file"](fnl_path, fennel_options)

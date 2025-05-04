@@ -13,64 +13,32 @@ local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {["max-rollbacks"] = 10, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), command = {["compiler-options"] = nil, ["fnl-cmd-prefix"] = "Fnl", ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.fnlm?", notifier = vim.notify, strategy = "recompile"}}
 local cache = {}
-local function _3_(self, k)
-  if (k == "?error-msg") then
-    return nil
-  else
-    local _4_ = rawget(default_opts, k)
-    if (nil ~= _4_) then
-      local val = _4_
-      rawset(self, k, val)
-      return val
-    else
-      local _ = _4_
-      return error(("unexpected option detected: " .. vim.inspect(k)))
-    end
-  end
-end
-local _7_
-if debug_3f then
-  local function _8_(self, k, v)
-    return rawset(self, k, v)
-  end
-  _7_ = _8_
-else
-  local function _9_(self, k, v)
-    if (nil == rawget(default_opts, k)) then
-      return error(("unexpected option detected: " .. vim.inspect(k)))
-    else
-      return rawset(self, k, v)
-    end
-  end
-  _7_ = _9_
-end
-cache["main-config"] = setmetatable({}, {__index = _3_, __newindex = _7_})
 if not file_readable_3f(config_path) then
-  local _12_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-  if (_12_ == 2) then
+  local _3_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  if (_3_ == 2) then
     local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
     local example_config_filename = (config_filename .. ".example")
-    local _let_13_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
-    local example_config_path = _let_13_[1]
+    local _let_4_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
+    local example_config_path = _let_4_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
-    local function _14_()
+    local function _5_()
       if (config_path == vim.api.nvim_buf_get_name(0)) then
-        local _15_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-        if (_15_ == 2) then
+        local _6_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+        if (_6_ == 2) then
           return error(("abort trusting " .. config_path))
         else
-          local _ = _15_
+          local _ = _6_
           return vim.cmd.trust()
         end
       else
         return nil
       end
     end
-    vim.defer_fn(_14_, 800)
+    vim.defer_fn(_5_, 800)
   else
-    local _ = _12_
+    local _ = _3_
     error("abort proceeding with nvim-thyme")
   end
 else
@@ -121,20 +89,42 @@ local function read_config_with_backup_21(config_file_path)
     end
   end
 end
+cache["main-config"] = {}
 local function get_config()
-  if cache["evaluating?"] then
-    return {["?error-msg"] = ("recursion detected in evaluating " .. config_filename)}
-  elseif next(cache["main-config"]) then
+  if next(cache["main-config"]) then
     return cache["main-config"]
   else
     local user_config = read_config_with_backup_21(config_path)
-    local mt = getmetatable(cache["main-config"])
     cache["main-config"] = vim.tbl_deep_extend("force", default_opts, user_config)
-    setmetatable(cache["main-config"], mt)
     return cache["main-config"]
   end
 end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-return {["get-config"] = get_config, ["config-file?"] = config_file_3f}
+local function _16_()
+  return vim.deepcopy(get_config())
+end
+local function _17_(_self, k)
+  if (k == "?error-msg") then
+    if cache["evaluating?"] then
+      return ("recursion detected in evaluating " .. config_filename)
+    else
+      return nil
+    end
+  else
+    local _ = k
+    local config = get_config()
+    return (config[k] or error(("unexpected option detected: " .. k)))
+  end
+end
+local _20_
+if not debug_3f then
+  local function _21_()
+    return error("thyme.config is readonly")
+  end
+  _20_ = _21_
+else
+  _20_ = nil
+end
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _16_}, {__index = _17_, __newindex = _20_})

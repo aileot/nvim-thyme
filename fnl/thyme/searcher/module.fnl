@@ -15,7 +15,7 @@
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
-(local {: get-config} (require :thyme.config))
+(local Config (require :thyme.config))
 
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
 
@@ -67,8 +67,7 @@ fennel.lua.
 
 (fn initialize-module-searcher-on-rtp! [fennel]
   (let [std-config-home (vim.fn.stdpath :config)
-        config (get-config)
-        fnl-dir (-> (.. "/" config.fnl-dir "/")
+        fnl-dir (-> (.. "/" Config.fnl-dir "/")
                     (string.gsub "//+" "/"))
         fennel-path (-> (icollect [_ suffix (ipairs [:?.fnl :?/init.fnl])]
                           (.. std-config-home fnl-dir suffix))
@@ -79,13 +78,12 @@ fennel.lua.
     (set fennel.path fennel-path)))
 
 (fn update-fennel-paths! [fennel]
-  (let [config (get-config)
-        base-path-cache (setmetatable {}
+  (let [base-path-cache (setmetatable {}
                           {:__index (fn [self key]
                                       (rawset self key
                                               (get-runtime-files [key] true))
                                       (. self key))})
-        macro-path (-> (icollect [fnl-template (gsplit config.macro-path ";")]
+        macro-path (-> (icollect [fnl-template (gsplit Config.macro-path ";")]
                          (if (= "/" (fnl-template:sub 1 1))
                              fnl-template
                              (let [(offset rest) (fnl-template:match "^%./([^?]*)(.-)$")
@@ -119,9 +117,8 @@ cache dir.
       (compile-fennel-into-rtp!)
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
-      (let [fennel (require :fennel)
-            config (get-config)]
-        (or config.?error-msg
+      (let [fennel (require :fennel)]
+        (or Config.?error-msg
             (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)]
               (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
               (when (or (= nil cache.rtp) debug?)
@@ -133,7 +130,7 @@ cache dir.
               (case (case (fennel.search-module module-name fennel.path)
                       fnl-path (let [{: determine-lua-path} (require :thyme.compiler.cache)
                                      lua-path (determine-lua-path module-name)
-                                     compiler-options config.compiler-options]
+                                     compiler-options Config.compiler-options]
                                  (case (pcall-with-logger! fennel.compile-string
                                                            fnl-path lua-path
                                                            compiler-options
@@ -158,7 +155,7 @@ cache dir.
                 chunk chunk
                 (_ error-msg)
                 (let [backup-path (backup-handler:determine-active-backup-path module-name)
-                      max-rollbacks config.max-rollbacks
+                      max-rollbacks Config.max-rollbacks
                       rollback-enabled? (< 0 max-rollbacks)]
                   (if (and rollback-enabled? (file-readable? backup-path))
                       (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s

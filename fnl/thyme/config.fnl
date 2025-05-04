@@ -1,3 +1,5 @@
+(import-macros {: when-not} :thyme.macros)
+
 (local {: debug? : config-filename : config-path} (require :thyme.const))
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
@@ -31,27 +33,6 @@
                 :strategy "recompile"}})
 
 (local cache {})
-
-(set cache.main-config
-     (setmetatable {}
-       {:__index (fn [self k]
-                   (if (= k "?error-msg")
-                       ;; As a placeholder.
-                       nil
-                       (case (rawget default-opts k)
-                         val (do
-                               (rawset self k val)
-                               val)
-                         _ (error (.. "unexpected option detected: "
-                                      (vim.inspect k))))))
-        :__newindex (if debug?
-                        (fn [self k v]
-                          (rawset self k v))
-                        (fn [self k v]
-                          (if (= nil (rawget default-opts k))
-                              (error (.. "unexpected option detected: "
-                                         (vim.inspect k)))
-                              (rawset self k v))))}))
 
 (when (not (file-readable? config-path))
   ;; Generate main-config-file if missing.
@@ -127,19 +108,16 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 (fennel.dofile backup-path compiler-options))
               {})))))
 
+(set cache.main-config {})
+
 (fn get-config []
   "Return the config found at stdpath('config') on the first load.
 @return table Thyme config"
-  (if cache.evaluating?
-      ;; NOTE: This expects `(pcall require missing-mdodule)` in .nvim-thyme.fnl.
-      {:?error-msg (.. "recursion detected in evaluating " config-filename)}
-      (next cache.main-config)
+  (if (next cache.main-config)
       cache.main-config
-      (let [user-config (read-config-with-backup! config-path)
-            mt (getmetatable cache.main-config)]
+      (let [user-config (read-config-with-backup! config-path)]
         (set cache.main-config
              (vim.tbl_deep_extend :force default-opts user-config))
-        (setmetatable cache.main-config mt)
         cache.main-config)))
 
 (fn config-file? [path]
@@ -149,4 +127,19 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   ;; NOTE: Just in case, do not compare in full path.
   (= config-filename (vim.fs.basename path)))
 
-{: get-config : config-file?}
+(setmetatable {: config-file?
+               ;; Make sure `get-config` readonly. It is only intedended to be
+               ;; called for checkhealth.
+               :get-config #(vim.deepcopy (get-config))}
+  {:__index (fn [_self k]
+              (case k
+                "?error-msg" (when cache.evaluating?
+                               (.. "recursion detected in evaluating "
+                                   config-filename))
+                _ (let [config (get-config)]
+                    ;; NOTE: Do NOT overwrite self with `rawset` to keep
+                    ;; __newindex working.
+                    (or (. config k)
+                        (error (.. "unexpected option detected: " k))))))
+   :__newindex (when-not debug?
+                 #(error "thyme.config is readonly"))})

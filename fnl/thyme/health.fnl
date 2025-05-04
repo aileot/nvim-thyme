@@ -48,9 +48,13 @@
 (fn report-thyme-config []
   (report-start "Thyme .nvim-thyme.fnl")
   (let [config (get-config)]
-    (set config.source nil)
-    (set config.module-name nil)
-    (set config.filename nil)
+    (set config.compiler-options.source nil)
+    (set config.compiler-options.module-name nil)
+    (set config.compiler-options.filename nil)
+    (when config.command.compiler-options
+      (set config.command.compiler-options.source nil)
+      (set config.command.compiler-options.module-name nil)
+      (set config.command.compiler-options.filename nil))
     ;; TODO: Dump the file contents in .nvim-thyme.fnl instead?
     (report-info (.. "The current config:\n" (fennel.view config)))))
 
