@@ -4,9 +4,7 @@
 
 (local thyme (require :thyme))
 
-(local {: get-config} (require :thyme.config))
-
-(local config (get-config))
+(local Config (require :thyme.config))
 
 (describe* "setup"
   (describe* "can be called"
@@ -46,14 +44,14 @@
                                (. :Fnl))))
       (describe* "with arbitrary prefix"
         (it* "e.g., with prefix `Foobar`, it defines `:FoobarEval`"
-          (let [last-fnl-cmd-prefix config.command.fnl-cmd-prefix]
+          (let [last-fnl-cmd-prefix Config.command.fnl-cmd-prefix]
             (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
                                (. :FoobarEval)))
-            (set config.command.fnl-cmd-prefix "Foobar")
+            (set Config.command.fnl-cmd-prefix "Foobar")
             (thyme.setup)
             (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
                                    (. :FoobarEval)))
-            (set config.command.fnl-cmd-prefix last-fnl-cmd-prefix)
+            (set Config.command.fnl-cmd-prefix last-fnl-cmd-prefix)
             (thyme.setup)
             (let [commands (vim.api.nvim_get_commands {:builtin false})]
               (each [name _map (pairs commands)]
