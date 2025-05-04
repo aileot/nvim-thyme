@@ -137,7 +137,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _25_(self, k)
+local function _25_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -150,7 +150,6 @@ local function _25_(self, k)
     local _27_ = config[k]
     if (nil ~= _27_) then
       local val = _27_
-      rawset(self, k, val)
       return val
     else
       local _0 = _27_

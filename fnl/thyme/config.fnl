@@ -150,7 +150,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   (= config-filename (vim.fs.basename path)))
 
 (setmetatable {: get-config : config-file?}
-  {:__index (fn [self k]
+  {:__index (fn [_self k]
               (case k
                 "?error-msg" (when cache.evaluating?
                                (.. "recursion detected in evaluating "
@@ -158,7 +158,9 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 _ (let [config (get-config)]
                     (case (. config k)
                       val (do
-                            (rawset self k val)
+                            ;; FIXME: Handle nested table values? Tests fails
+                            ;; because `max-rollbacks` is ignored.
+                            ;; (rawset _self k val)
                             val)
                       _ (error (.. "unexpected option detected: " k))))))
    :__newindex (fn [self k v]
