@@ -104,6 +104,7 @@ up-to-date.
 ### `thyme.cache.clear`
 
 Equivalent to [:ThymeCacheClear](#thymecacheclear), but it should work without [thyme.setup].
+You can also call it with `pcall(require, "thyme.call.cache.clear")`
 
 ### `thyme.cache.open`
 
