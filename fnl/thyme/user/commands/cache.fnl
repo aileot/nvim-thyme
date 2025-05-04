@@ -20,7 +20,7 @@
   "Define thyme cache commands."
   (command! :ThymeCacheOpen
     {:desc "[thyme] open the cache root directory"}
-    (CmdCache.open))
+    CmdCache.open)
   (command! :ThymeCacheClear
     ;; NOTE: No args will be allowed because handling module-map would
     ;; be a bit complicated.

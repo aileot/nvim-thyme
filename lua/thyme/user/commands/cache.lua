@@ -10,7 +10,7 @@ CmdCache.clear = function()
   return clear_cache_21()
 end
 CmdCache["setup!"] = function()
-  vim.api.nvim_create_user_command("ThymeCacheOpen", CmdCache.open(), {desc = "[thyme] open the cache root directory"})
+  vim.api.nvim_create_user_command("ThymeCacheOpen", CmdCache.open, {desc = "[thyme] open the cache root directory"})
   local function _3_()
     if CmdCache.clear() then
       return vim.notify(("Cleared cache: " .. lua_cache_prefix))
