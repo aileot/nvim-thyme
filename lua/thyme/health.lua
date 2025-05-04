@@ -36,7 +36,7 @@ local function report_integrations()
     else
       reporter = report_ok
     end
-    reporter(("vim.g.parinfer_loaded = " .. tostring(vim.g.parinfer_loaded)))
+    reporter(("`%s`"):format(("vim.g.parinfer_loaded = " .. tostring(vim.g.parinfer_loaded))))
   end
   local dependency_files = {"parser/fennel.so"}
   for _, file in ipairs(dependency_files) do
@@ -71,12 +71,12 @@ local function report_thyme_config()
     config.command["compiler-options"].filename = nil
   else
   end
-  return report_info(("The current config:\n" .. fennel.view(config)))
+  return report_info(("The current config:\n\n```fennel\n%s\n```"):format(fennel.view(config)))
 end
 local function report_fennel_paths()
   report_start("Thyme fennel.{path,macro-path}")
-  report_info(("fennel.path:\n- " .. fennel.path:gsub(";", "\n- ")))
-  return report_info(("fennel.macro-path:\n- " .. fennel["macro-path"]:gsub(";", "\n- ")))
+  report_info(("fennel.path:\n- `%s`"):format(fennel.path:gsub(";", "`\n- `")))
+  return report_info(("fennel.macro-path:\n- `%s`"):format(fennel["macro-path"]:gsub(";", "`\n- `")))
 end
 local function report_imported_macros()
   report_start("Thyme Imported Macros")
@@ -86,7 +86,7 @@ local function report_imported_macros()
     if macro_recorded_3f(log_path) then
       local module_name = peek_module_name(log_path)
       local fnl_path = peek_fnl_path(log_path)
-      local msg = ("%s\n- source file:\n  %s\n- dependency-map file:\n  %s"):format(module_name, fnl_path, log_path)
+      local msg = ("%s\n- source file:\n  `%s`\n- dependency-map file:\n  `%s`"):format(module_name, fnl_path, log_path)
       return report_info(msg)
     else
       return nil

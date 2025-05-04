@@ -27,7 +27,10 @@
   (let [reporter (if (= nil vim.g.parinfer_loaded)
                      report-warn
                      report-ok)]
-    (reporter (.. "vim.g.parinfer_loaded = " (tostring vim.g.parinfer_loaded))))
+    (reporter (-> "`%s`"
+                  (: :format
+                     (.. "vim.g.parinfer_loaded = "
+                         (tostring vim.g.parinfer_loaded))))))
   (let [dependency-files [:parser/fennel.so]]
     ;; NOTE: The files "parser-info/*.revision" should only belong to
     ;; https://github.com/nvim-treesitter/nvim-treesitter.
@@ -59,13 +62,15 @@
       (set config.command.compiler-options.module-name nil)
       (set config.command.compiler-options.filename nil))
     ;; TODO: Dump the file contents in .nvim-thyme.fnl instead?
-    (report-info (.. "The current config:\n" (fennel.view config)))))
+    (report-info (-> "The current config:\n\n```fennel\n%s\n```"
+                     (: :format (fennel.view config))))))
 
 (fn report-fennel-paths []
   (report-start "Thyme fennel.{path,macro-path}")
-  (report-info (.. "fennel.path:\n- " ;
-                   (fennel.path:gsub ";" "\n- ")))
-  (report-info (.. "fennel.macro-path:\n- " (fennel.macro-path:gsub ";" "\n- "))))
+  (report-info (-> "fennel.path:\n- `%s`" ;
+                   (: :format (fennel.path:gsub ";" "`\n- `"))))
+  (report-info (-> "fennel.macro-path:\n- `%s`"
+                   (: :format (fennel.macro-path:gsub ";" "`\n- `")))))
 
 (fn report-imported-macros []
   (report-start "Thyme Imported Macros")
@@ -76,9 +81,9 @@
                            fnl-path (peek-fnl-path log-path)
                            msg (: "%s
 - source file:
-  %s
+  `%s`
 - dependency-map file:
-  %s" :format module-name fnl-path log-path)]
+  `%s`" :format module-name fnl-path log-path)]
                        (report-info msg))))]
     (each-file reporter root)))
 
