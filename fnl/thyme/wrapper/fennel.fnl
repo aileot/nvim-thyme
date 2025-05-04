@@ -4,7 +4,7 @@
 (local {: assert-is-fnl-file : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
-(local {: get-config : config-file?} (require :thyme.config))
+(local {: config-file? &as Config} (require :thyme.config))
 
 (fn fnl-code->fennel-ready [fnl-code ?opts]
   "Convert `fnl-code` ready to execute on fennel interface.
@@ -12,8 +12,7 @@
 @param ?opts table WIP
 @return string modified fnl-code
 @return table fennel compiler options"
-  (let [config (get-config)
-        compiler-options (or ?opts config.compiler-options)
+  (let [compiler-options (or ?opts Config.compiler-options)
         balanced?-fnl-code (if vim.g.parinfer_loaded
                                (apply-parinfer fnl-code)
                                fnl-code)]
@@ -95,8 +94,7 @@ It does not affect file system.
   ;; NOTE: Do not by-pass parinfer completion just in case.
   (assert-is-fnl-file fnl-path)
   (let [fennel (require :fennel)
-        config (get-config)
-        compiler-options (or ?opts config.compiler-options)
+        compiler-options (or ?opts Config.compiler-options)
         fnl-lines (read-file fnl-path)]
     (set compiler-options.filename fnl-path)
     (fennel.compile-string fnl-lines compiler-options)))
