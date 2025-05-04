@@ -22,10 +22,13 @@ LUA_ALL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.lua)
 TEST_DEPS:=$(wildcard $(TEST_ROOT)/*/*.fnl)
 TEST_DEPS+=$(wildcard $(TEST_ROOT)/*/*.lua)
 
+LUA_ALL:=$(wildcard lua/*/*.lua)
+LUA_ALL+=$(wildcard lua/*/*/*.lua)
 FNL_SRC:=$(wildcard fnl/*/*.fnl)
 FNL_SRC+=$(wildcard fnl/*/*/*.fnl)
 FNL_SRC:=$(filter-out %/macros.fnl,$(FNL_SRC))
 LUA_RES:=$(FNL_SRC:fnl/%.fnl=lua/%.lua)
+LUA_OLD:=$(filter-out $(LUA_RES),$(LUA_ALL))
 
 FNL_SRC_DIRS:=$(wildcard fnl/*/*/)
 LUA_RES_DIRS:=$(FNL_SRC_DIRS:fnl/%=lua/%)
@@ -64,8 +67,15 @@ clean: ## Remove generated files
 	@rm -f $(LUA_ALL_SPECS)
 	@rm -rf $(TEST_CONTEXT_DIR)
 
+.PHONY: prune
+prune: ## Remove stale lua files
+	@echo "$(LUA_OLD)"
+	@if [ -n "$(LUA_OLD)" ]; then
+	@	rm $(LUA_OLD) && echo "Pruned $(LUA_OLD)"
+	@fi
+
 .PHONY: build
-build: $(LUA_RES_DIRS) $(LUA_RES) ## Compile lua files from fnl/
+build: $(LUA_RES_DIRS) prune $(LUA_RES) ## Compile lua files from fnl/
 
 %_spec.lua: %_spec.fnl $(LUA_RES) $(TEST_DEPS)
 	@$(FENNEL) \
