@@ -106,6 +106,12 @@ up-to-date.
 Equivalent to [:ThymeCacheClear](#thymecacheclear), but it should work without [thyme.setup].
 You can also call it with `pcall(require, "thyme.call.cache.clear")`
 
+This function is useful to be called
+on [githooks](https://git-scm.com/docs/githooks)
+without worrying about [thyme]'s validity,
+and about the interface dependencies
+when you were considering another Fennel compiler system.
+
 ### `thyme.cache.open`
 
 Equivalent to [:ThymeCacheOpen](#thymecacheopen), but it should work without [thyme.setup].
@@ -126,5 +132,6 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
+[thyme]: https://github.com/aileot/nvim-thyme
 [.nvim-thyme.fnl]: #options-for-.nvim-thyme.fnl
 [thyme.setup]: #thyme.setup
