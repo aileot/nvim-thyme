@@ -10,10 +10,18 @@
 
 (describe* "thyme.call.cache.open"
   (before_each (fn []
-                 (vim.cmd.new)))
+                 (vim.cmd :new)))
   (after_each (fn []
-                (vim.cmd.only)))
-  (it* "should open the cache directory"
+                (vim.cmd :only)))
+  ;; (it* "should open the same directory as `:ThymeCacheOpen` opened."
+  ;;   (vim.cmd "ThymeCacheOpen")
+  ;;   (let [buf-name (vim.api.nvim_buf_get_name 0)]
+  ;;     (vim.cmd :new)
+  ;;     (assert.not_equals buf-name (vim.api.nvim_buf_get_name 0))
+  ;;     (require "thyme.call.cache.open")
+  ;;     ;; FIXME: Why the buffer name gets empty?
+  ;;     (assert.equals buf-name (vim.api.nvim_buf_get_name 0))))
+  (it* "should open the cache directory."
     (assert.not_equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))
     (require "thyme.call.cache.open")
     (assert.equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))))
