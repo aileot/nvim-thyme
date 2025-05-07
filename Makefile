@@ -17,6 +17,7 @@ FNL_EXTRA_FLAGS ?=
 REPO_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
 SCRIPT_ROOT:=$(REPO_ROOT)/scripts
+SCRIPT_WRITE_PCALLABLES := $(SCRIPT_ROOT)/write-pcallables
 
 TEST_ROOT:=$(REPO_ROOT)/test
 TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
@@ -91,10 +92,10 @@ prune: ## Remove stale lua files
 
 $(FNL_INIT_MOD_FILE): # Just to trigger pcallable re-generations as export functions could be changed.
 
-$(FNL_PCALLABLE_FILES): $(FNL_INIT_MOD_FILE) # Re-generate modules to be called with `pcall(require, ...)`
+$(FNL_PCALLABLE_FILES): $(FNL_INIT_MOD_FILE) $(SCRIPT_WRITE_PCALLABLES) # Re-generate modules to be called with `pcall(require, ...)`
 	@rm -rf $(FNL_PCALLABLE_DIR)
 	@rm -rf $(LUA_PCALLABLE_DIR)
-	@$(SCRIPT_ROOT)/write-pcallables
+	@$(SCRIPT_WRITE_PCALLABLES)
 
 .PHONY: build
 build: $(LUA_RES_DIRS) $(FNL_PCALLABLE_FILES) prune $(LUA_RES) ## Compile lua files from fnl/
