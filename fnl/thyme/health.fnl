@@ -89,7 +89,7 @@
 
 (fn report-mounted-paths []
   (report-start "Thyme Mounted Paths")
-  (let [mounted-paths (RollbackManager.get-mounted-paths)]
+  (let [mounted-paths (RollbackManager.list-mounted-paths)]
     (if (next mounted-paths)
         (do
           ;; TODO: Split reports per rollback kind: config, macro, and module

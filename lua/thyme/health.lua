@@ -89,7 +89,7 @@ local function report_imported_macros()
 end
 local function report_mounted_paths()
   report_start("Thyme Mounted Paths")
-  local mounted_paths = RollbackManager["get-mounted-paths"]()
+  local mounted_paths = RollbackManager["list-mounted-paths"]()
   if next(mounted_paths) then
     return report_info(("Th mounted paths:\n- `%s`"):format(table.concat(mounted_paths, "`\n- `")))
   else
