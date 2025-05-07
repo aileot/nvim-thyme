@@ -79,7 +79,7 @@ M["setup!"] = function()
       return vim.notify(("failed to mount %s:\n%s"):format(dir, msg), vim.log.levels.WARN)
     else
       local _ = _17_
-      return vim.notify(("successfully mounted " .. dir), vim.log.levels.INFO)
+      return vim.notify(("successfully unmounted " .. dir), vim.log.levels.INFO)
     end
   end
   vim.api.nvim_create_user_command("ThymeRollbackUnmount", _16_, {nargs = "?", complete = complete_dirs, desc = "[thyme] Unmount mounted backup"})
@@ -90,7 +90,7 @@ M["setup!"] = function()
       return vim.notify(("failed to mount backups:\n%s"):format(msg), vim.log.levels.WARN)
     else
       local _ = _21_
-      return vim.notify("successfully mounted backups", vim.log.levels.INFO)
+      return vim.notify("successfully unmounted all the backups", vim.log.levels.INFO)
     end
   end
   return vim.api.nvim_create_user_command("ThymeRollbackUnmountAll", _20_, {nargs = 0, desc = "[thyme] Unmount all the mounted backups"})
