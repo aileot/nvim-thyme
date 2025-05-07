@@ -66,7 +66,8 @@
             (false msg) (vim.notify (-> "Failed to mount %s:\n%s"
                                         (: :format dir msg))
                                     vim.log.levels.WARN)
-            _ (vim.notify (.. "Successfully unmounted " dir) vim.log.levels.INFO)))))
+            _ (vim.notify (.. "Successfully unmounted " dir)
+                          vim.log.levels.INFO)))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []
@@ -74,6 +75,7 @@
           (false msg) (vim.notify (-> "Failed to mount backups:\n%s"
                                       (: :format msg))
                                   vim.log.levels.WARN)
-          _ (vim.notify (.. "Successfully unmounted all the backups") vim.log.levels.INFO))))))
+          _ (vim.notify (.. "Successfully unmounted all the backups")
+                        vim.log.levels.INFO))))))
 
 M
