@@ -4,7 +4,7 @@ local _local_2_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_2_["clear-cache!"]
 local CmdCache = {}
 CmdCache.open = function()
-  return vim.cmd(("tab drop " .. lua_cache_prefix))
+  return vim.api.nvim_exec2(("tab drop " .. lua_cache_prefix), {})
 end
 CmdCache.clear = function()
   return clear_cache_21()
