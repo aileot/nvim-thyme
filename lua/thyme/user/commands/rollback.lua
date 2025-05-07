@@ -57,7 +57,7 @@ M["setup!"] = function()
       return vim.ui.select(candidates, {prompt = ("Select rollback for %s: "):format(input), format_item = _7_}, _9_)
     end
   end
-  vim.api.nvim_create_user_command("ThymeRollbackSwitch", _4_, {bar = true, nargs = 1, complete = complete_dirs, desc = "[thyme] Prompt to select rollback for compile error"})
+  vim.api.nvim_create_user_command("ThymeRollbackSwitch", _4_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Prompt to select rollback for compile error"})
   local function _13_(_12_)
     local input = _12_["args"]
     local root = RollbackManager["get-root"]()
@@ -68,7 +68,7 @@ M["setup!"] = function()
       return vim.notify(("failed to mount " .. dir), vim.log.levels.WARN)
     end
   end
-  vim.api.nvim_create_user_command("ThymeRollbackMount", _13_, {bar = true, nargs = 1, complete = complete_dirs, desc = "[thyme] Mount currently active backup"})
+  vim.api.nvim_create_user_command("ThymeRollbackMount", _13_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Mount currently active backup"})
   local function _16_(_15_)
     local input = _15_["args"]
     local root = RollbackManager["get-root"]()
@@ -82,7 +82,7 @@ M["setup!"] = function()
       return vim.notify(("successfully mounted " .. dir), vim.log.levels.INFO)
     end
   end
-  vim.api.nvim_create_user_command("ThymeRollbackUnmount", _16_, {bar = true, nargs = "?", complete = complete_dirs, desc = "[thyme] Unmount mounted backup"})
+  vim.api.nvim_create_user_command("ThymeRollbackUnmount", _16_, {nargs = "?", complete = complete_dirs, desc = "[thyme] Unmount mounted backup"})
   local function _20_()
     local _21_, _22_ = pcall(RollbackManager["unmount-backup-all!"])
     if ((_21_ == false) and (nil ~= _22_)) then
@@ -93,6 +93,6 @@ M["setup!"] = function()
       return vim.notify("successfully mounted backups", vim.log.levels.INFO)
     end
   end
-  return vim.api.nvim_create_user_command("ThymeRollbackUnmountAll", _20_, {bar = true, nargs = 0, desc = "[thyme] Unmount all the mounted backups"})
+  return vim.api.nvim_create_user_command("ThymeRollbackUnmountAll", _20_, {nargs = 0, desc = "[thyme] Unmount all the mounted backups"})
 end
 return M

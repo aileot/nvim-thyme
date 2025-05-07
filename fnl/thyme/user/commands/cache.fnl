@@ -27,9 +27,7 @@
   (command! :ThymeCacheClear
     ;; NOTE: No args will be allowed because handling module-map would
     ;; be a bit complicated.
-    {:bar true
-     :bang true
-     :desc "[thyme] clear the lua cache and dependency map logs"}
+    {:desc "[thyme] clear the lua cache and dependency map logs"}
     ;; TODO: Or `:confirm` prefix to ask?
     (fn []
       (if (CmdCache.clear)

@@ -18,6 +18,6 @@ CmdCache["setup!"] = function()
       return vim.notify(("No cache files detected at " .. lua_cache_prefix))
     end
   end
-  return vim.api.nvim_create_user_command("ThymeCacheClear", _3_, {bar = true, bang = true, desc = "[thyme] clear the lua cache and dependency map logs"})
+  return vim.api.nvim_create_user_command("ThymeCacheClear", _3_, {desc = "[thyme] clear the lua cache and dependency map logs"})
 end
 return CmdCache

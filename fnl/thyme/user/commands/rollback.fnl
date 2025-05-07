@@ -17,8 +17,7 @@
                             ;; Trim root prefix and trailing `/`.
                             (path:sub prefix-length -2))))]
     (command! :ThymeRollbackSwitch
-      {:bar true
-       :nargs 1
+      {:nargs 1
        :complete complete-dirs
        :desc "[thyme] Prompt to select rollback for compile error"}
       (fn [{:args input}]
@@ -46,8 +45,7 @@
                                        (vim.cmd :ThymeCacheClear))
                                      (vim.notify "Abort selecting rollback target")))))))))
     (command! :ThymeRollbackMount
-      {:bar true
-       :nargs 1
+      {:nargs 1
        :complete complete-dirs
        :desc "[thyme] Mount currently active backup"}
       (fn [{:args input}]
@@ -57,8 +55,7 @@
               (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO)
               (vim.notify (.. "failed to mount " dir) vim.log.levels.WARN)))))
     (command! :ThymeRollbackUnmount
-      {:bar true
-       :nargs "?"
+      {:nargs "?"
        ;; TODO: Complete only mounted backups.
        :complete complete-dirs
        :desc "[thyme] Unmount mounted backup"}
@@ -71,7 +68,7 @@
                                     vim.log.levels.WARN)
             _ (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO)))))
     (command! :ThymeRollbackUnmountAll
-      {:bar true :nargs 0 :desc "[thyme] Unmount all the mounted backups"}
+      {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []
         (case (pcall RollbackManager.unmount-backup-all!)
           (false msg) (vim.notify (-> "failed to mount backups:\n%s"
