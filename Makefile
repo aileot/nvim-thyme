@@ -97,6 +97,12 @@ $(FNL_PCALLABLE_FILES): $(FNL_INIT_MOD_FILE) $(SCRIPT_WRITE_PCALLABLES) # Re-gen
 	@rm -rf $(LUA_PCALLABLE_DIR)
 	@$(SCRIPT_WRITE_PCALLABLES)
 
+.PHONY: pcallables
+pcallables: $(FNL_PCALLABLE_FILES) ## Force to re-generate pcallables
+	@rm -rf $(FNL_PCALLABLE_DIR)
+	@rm -rf $(LUA_PCALLABLE_DIR)
+	@$(SCRIPT_WRITE_PCALLABLES)
+
 .PHONY: build
 build: $(LUA_RES_DIRS) $(FNL_PCALLABLE_FILES) prune $(LUA_RES) ## Compile lua files from fnl/
 
