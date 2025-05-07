@@ -63,9 +63,9 @@ M["setup!"] = function()
     local root = RollbackManager["get-root"]()
     local dir = Path.join(root, input)
     if RollbackManager["mount-backup!"](dir) then
-      return vim.notify(("successfully mounted " .. dir), vim.log.levels.INFO)
+      return vim.notify(("Successfully mounted " .. dir), vim.log.levels.INFO)
     else
-      return vim.notify(("failed to mount " .. dir), vim.log.levels.WARN)
+      return vim.notify(("Failed to mount " .. dir), vim.log.levels.WARN)
     end
   end
   vim.api.nvim_create_user_command("ThymeRollbackMount", _13_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Mount currently active backup"})
@@ -76,10 +76,10 @@ M["setup!"] = function()
     local _17_, _18_ = pcall(RollbackManager["unmount-backup!"], dir)
     if ((_17_ == false) and (nil ~= _18_)) then
       local msg = _18_
-      return vim.notify(("failed to mount %s:\n%s"):format(dir, msg), vim.log.levels.WARN)
+      return vim.notify(("Failed to mount %s:\n%s"):format(dir, msg), vim.log.levels.WARN)
     else
       local _ = _17_
-      return vim.notify(("successfully unmounted " .. dir), vim.log.levels.INFO)
+      return vim.notify(("Successfully unmounted " .. dir), vim.log.levels.INFO)
     end
   end
   vim.api.nvim_create_user_command("ThymeRollbackUnmount", _16_, {nargs = "?", complete = complete_dirs, desc = "[thyme] Unmount mounted backup"})
@@ -87,10 +87,10 @@ M["setup!"] = function()
     local _21_, _22_ = pcall(RollbackManager["unmount-backup-all!"])
     if ((_21_ == false) and (nil ~= _22_)) then
       local msg = _22_
-      return vim.notify(("failed to mount backups:\n%s"):format(msg), vim.log.levels.WARN)
+      return vim.notify(("Failed to mount backups:\n%s"):format(msg), vim.log.levels.WARN)
     else
       local _ = _21_
-      return vim.notify("successfully unmounted all the backups", vim.log.levels.INFO)
+      return vim.notify("Successfully unmounted all the backups", vim.log.levels.INFO)
     end
   end
   return vim.api.nvim_create_user_command("ThymeRollbackUnmountAll", _20_, {nargs = 0, desc = "[thyme] Unmount all the mounted backups"})

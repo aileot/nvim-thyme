@@ -52,8 +52,8 @@
         (let [root (RollbackManager.get-root)
               dir (Path.join root input)]
           (if (RollbackManager.mount-backup! dir)
-              (vim.notify (.. "successfully mounted " dir) vim.log.levels.INFO)
-              (vim.notify (.. "failed to mount " dir) vim.log.levels.WARN)))))
+              (vim.notify (.. "Successfully mounted " dir) vim.log.levels.INFO)
+              (vim.notify (.. "Failed to mount " dir) vim.log.levels.WARN)))))
     (command! :ThymeRollbackUnmount
       {:nargs "?"
        ;; TODO: Complete only mounted backups.
@@ -63,17 +63,17 @@
         (let [root (RollbackManager.get-root)
               dir (Path.join root input)]
           (case (pcall RollbackManager.unmount-backup! dir)
-            (false msg) (vim.notify (-> "failed to mount %s:\n%s"
+            (false msg) (vim.notify (-> "Failed to mount %s:\n%s"
                                         (: :format dir msg))
                                     vim.log.levels.WARN)
-            _ (vim.notify (.. "successfully unmounted " dir) vim.log.levels.INFO)))))
+            _ (vim.notify (.. "Successfully unmounted " dir) vim.log.levels.INFO)))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []
         (case (pcall RollbackManager.unmount-backup-all!)
-          (false msg) (vim.notify (-> "failed to mount backups:\n%s"
+          (false msg) (vim.notify (-> "Failed to mount backups:\n%s"
                                       (: :format msg))
                                   vim.log.levels.WARN)
-          _ (vim.notify (.. "successfully unmounted all the backups") vim.log.levels.INFO))))))
+          _ (vim.notify (.. "Successfully unmounted all the backups") vim.log.levels.INFO))))))
 
 M
