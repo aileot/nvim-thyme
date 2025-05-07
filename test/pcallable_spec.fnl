@@ -2,9 +2,21 @@
 
 (include "test.helper.prerequisites")
 
+(local {: lua-cache-prefix} (require :thyme.const))
+
 (describe* "thyme.call.cache.clear"
   (it* "can be called without error."
     (assert.has_no_error #(require "thyme.call.cache.clear"))))
+
+(describe* "thyme.call.cache.open"
+  (before_each (fn []
+                 (vim.cmd.new)))
+  (after_each (fn []
+                (vim.cmd.only)))
+  (it* "should open the cache directory"
+    (assert.not_equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))
+    (require "thyme.call.cache.open")
+    (assert.equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))))
 
 (describe* "thyme.call.setup"
   (it* "can be called without error."
