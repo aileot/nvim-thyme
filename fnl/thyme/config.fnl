@@ -28,7 +28,7 @@
                   :fnl-cmd-prefix "Fnl"
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
-                :pattern "*.fnlm?"
+                :pattern "*.{fnl,fnlm}"
                 :notifier vim.notify
                 :strategy "recompile"}})
 
