@@ -4,6 +4,7 @@ local sorter_2ffiles_to_oldest_by_birthtime = _local_1_["sorter/files-to-oldest-
 local Path = require("thyme.utils.path")
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
+local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local fs = _local_2_
 local _local_3_ = require("thyme.utils.pool")
@@ -96,6 +97,18 @@ BackupHandler["should-update-backup?"] = function(self, expected_contents)
   assert(not file_readable_3f(module_name), ("expected module-name, got path " .. module_name))
   local backup_path = self["determine-active-backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
+end
+BackupHandler["mount-backup!"] = function(self)
+  local backup_dir = Path.join(self["_root-dir"], self["_module-name"])
+  local active_backup_path = Path.join(backup_dir, self["_active-backup-filename"])
+  local mounted_backup_path = Path.join(backup_dir, self["_mounted-backup-filename"])
+  return symlink_21(active_backup_path, mounted_backup_path)
+end
+BackupHandler["unmount-backup!"] = function(self)
+  local backup_dir = Path.join(self["_root-dir"], self["_module-name"])
+  local mounted_backup_path = Path.join(backup_dir, self["_mounted-backup-filename"])
+  assert_is_file_readable(mounted_backup_path)
+  return assert(fs.unlink(mounted_backup_path))
 end
 BackupHandler["cleanup-old-backups!"] = function(self)
   local Config = require("thyme.config")
