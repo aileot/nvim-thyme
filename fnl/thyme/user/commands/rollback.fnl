@@ -6,6 +6,24 @@
 
 (local M {})
 
+(local RollbackCommandBackend {})
+
+(λ RollbackCommandBackend.attach [kind]
+  "Create a RollbackManager instance only to attach to the data stored for
+`kind`.
+@return RollbackManager"
+  (let [ext-tmp ".tmp"]
+    (RollbackManager.new kind ext-tmp)))
+
+(fn RollbackCommandBackend.mount-backup! [kind module-name]
+  "Mount currently active backup for `module-name` of the `kind`.
+@param kind string
+@param module-name string an empty string indicates all the backups in the `kind`"
+  (let [ext-tmp ".tmp"
+        backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
+                           (: :backupHandlerOf module-name))]
+    (backup-handler:mount-backup!)))
+
 (fn M.setup! []
   "Define thyme rollback commands."
   (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
@@ -48,12 +66,14 @@
       {:nargs 1
        :complete complete-dirs
        :desc "[thyme] Mount currently active backup"}
-      (fn [{:args input}]
-        (let [root (RollbackManager.get-root)
-              dir (Path.join root input)]
-          (if (RollbackManager.mount-backup! dir)
-              (vim.notify (.. "Successfully mounted " dir) vim.log.levels.INFO)
-              (vim.notify (.. "Failed to mount " dir) vim.log.levels.WARN)))))
+      (fn [{: args}]
+        (case (args:match "([^/]+)/?([^/]*)")
+          (kind module-name) (if (RollbackCommandBackend.mount-backup! kind
+                                                                       module-name)
+                                 (vim.notify (.. "Successfully mounted " args)
+                                             vim.log.levels.INFO)
+                                 (vim.notify (.. "Failed to mount " args)
+                                             vim.log.levels.WARN)))))
     (command! :ThymeRollbackUnmount
       {:nargs "?"
        ;; TODO: Complete only mounted backups.
