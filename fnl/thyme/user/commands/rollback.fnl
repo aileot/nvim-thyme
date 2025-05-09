@@ -24,6 +24,14 @@
                            (: :backupHandlerOf module-name))]
     (backup-handler:mount-backup!)))
 
+(fn RollbackCommandBackend.unmount-backup! [kind module-name]
+  "Unmount previously mounted backup for `backup-dir`.
+@param backup-dir string"
+  (let [ext-tmp ".tmp"
+        backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
+                           (: :backupHandlerOf module-name))]
+    (backup-handler:unmount-backup!)))
+
 (fn RollbackCommandBackend.cmdargs->kind-modname [cmdargs]
   "Parse cmdargs (slash-separated) into two strings: `kind` and `module-name`.
 @param cmdargs string
@@ -86,14 +94,14 @@
        ;; TODO: Complete only mounted backups.
        :complete complete-dirs
        :desc "[thyme] Unmount mounted backup"}
-      (fn [{:args input}]
-        (let [root (RollbackManager.get-root)
-              dir (Path.join root input)]
-          (case (pcall RollbackManager.unmount-backup! dir)
+      (fn [{: args}]
+        (case (RollbackCommandBackend.cmdargs->kind-modname args)
+          (kind modname)
+          (case (pcall RollbackCommandBackend.unmount-backup! kind modname)
             (false msg) (vim.notify (-> "Failed to mount %s:\n%s"
-                                        (: :format dir msg))
+                                        (: :format args msg))
                                     vim.log.levels.WARN)
-            _ (vim.notify (.. "Successfully unmounted " dir)
+            _ (vim.notify (.. "Successfully unmounted " args)
                           vim.log.levels.INFO)))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
