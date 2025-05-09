@@ -140,13 +140,21 @@ when you are considering another Fennel compiler system.
 ### `thyme.call.cache.clear`
 
 Equivalent to [:ThymeCacheClear][], but it should work without [thyme.setup].
-You can also call it with `pcall(require, "thyme.call.cache.clear")`
 
 This function is useful to be called
 on [githooks](https://git-scm.com/docs/githooks)
 without worrying about [thyme]'s validity,
 and about the interface dependencies
 when you were considering another Fennel compiler system.
+
+For example, add the following lines in `.githooks/post-checkout`
+with executable permission:
+
+```sh
+if type nvim >/dev/null; then
+  nvim --headless -c "lua pcall(require, 'thyme.call.cache.clear')" +q
+fi
+```
 
 ### `thyme.call.cache.open`
 
@@ -176,5 +184,5 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-nvim-thyme.fnl
 [thyme.setup]: #thymesetup-or-thymesetup
-[:ThymeCacheOpen]: #%3Athymecacheopen
-[:ThymeCacheClear]: #%3Athymecacheclear
+[:ThymeCacheOpen]: #thymecacheopen
+[:ThymeCacheClear]: #thymecacheclear
