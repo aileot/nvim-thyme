@@ -139,7 +139,7 @@ when you are considering another Fennel compiler system.
 
 ### `thyme.call.cache.clear`
 
-Equivalent to [:ThymeCacheClear](#thymecacheclear), but it should work without [thyme.setup].
+Equivalent to [:ThymeCacheClear][], but it should work without [thyme.setup].
 You can also call it with `pcall(require, "thyme.call.cache.clear")`
 
 This function is useful to be called
@@ -150,7 +150,7 @@ when you were considering another Fennel compiler system.
 
 ### `thyme.call.cache.open`
 
-Equivalent to [:ThymeCacheOpen](#thymecacheopen), but it should work without [thyme.setup].
+Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
 ## Commands
 
@@ -160,7 +160,7 @@ The commands are defined by [thyme.setup][].
 
 Clear all the Lua caches managed by [nvim-thyme][].
 
-If you failed to define the command `:ThymeCacheClear` for some reasons,
+If you failed to define the command [:ThymeCacheClear][] for some reasons,
 please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
 manually in Command line instead.
 
@@ -176,3 +176,5 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-nvim-thyme.fnl
 [thyme.setup]: #thymesetup-or-thymesetup
+[:ThymeCacheOpen]: #%3Athymecacheopen
+[:ThymeCacheClear]: #%3Athymecacheclear
