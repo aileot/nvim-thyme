@@ -39,6 +39,8 @@
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
                            (: :backupHandlerOf modname))]
+    ;; NOTE: Do NOT mess up lines on unmounting, but leave the `restore-file!`
+    ;; tasks to the searchers at runtime instead.
     (backup-handler:unmount-backup!)))
 
 (fn RollbackCommandBackend.cmdargs->kind-modname [cmdargs]
