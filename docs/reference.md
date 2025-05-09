@@ -182,7 +182,7 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [thyme]: https://github.com/aileot/nvim-thyme
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
-[.nvim-thyme.fnl]: #options-for-nvim-thyme.fnl
+[.nvim-thyme.fnl]: #options-for-nvim-thymefnl
 [thyme.setup]: #thymesetup-or-thymesetup
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
