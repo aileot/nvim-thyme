@@ -14,8 +14,8 @@
 (local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
 
 (local Messenger (require :thyme.utils.messenger))
-(local SearcherMessenger (Messenger.new "module-searcher"))
-(local RollbackLoaderMessenger (Messenger.new "module-rollback-loader"))
+(local LoaderMessenger (Messenger.new "loader"))
+(local RollbackLoaderMessenger (Messenger.new "rollback-loader"))
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
@@ -173,13 +173,14 @@ cache dir.
                         max-rollbacks Config.max-rollbacks
                         rollback-enabled? (< 0 max-rollbacks)]
                     (if (and rollback-enabled? (file-readable? backup-path))
-                        (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+                        (let [msg (: "temporarily restore backup for the module %s (created at %s) due to the following error: %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                      :format module-name
                                      (backup-handler:determine-active-backup-birthtime module-name)
                                      error-msg)]
-                          (vim.notify_once msg vim.log.levels.WARN)
+                          (RollbackLoaderMessenger:notify-once! msg
+                                                                vim.log.levels.WARN)
                           (loadfile backup-path))
                         error-msg))))))))
 

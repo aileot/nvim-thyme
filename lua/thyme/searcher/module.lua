@@ -14,8 +14,8 @@ local _local_4_ = require("thyme.utils.pool")
 local can_restore_file_3f = _local_4_["can-restore-file?"]
 local restore_file_21 = _local_4_["restore-file!"]
 local Messenger = require("thyme.utils.messenger")
-local SearcherMessenger = Messenger.new("module-searcher")
-local RollbackLoaderMessenger = Messenger.new("module-rollback-loader")
+local LoaderMessenger = Messenger.new("loader")
+local RollbackLoaderMessenger = Messenger.new("rollback-loader")
 local _local_5_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_5_["get-runtime-files"]
 local Config = require("thyme.config")
@@ -208,8 +208,8 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
           local max_rollbacks = Config["max-rollbacks"]
           local rollback_enabled_3f = (0 < max_rollbacks)
           if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-            local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
-            vim.notify_once(msg, vim.log.levels.WARN)
+            local msg = ("temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
+            RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
             or_26_ = loadfile(backup_path)
           else
             or_26_ = error_msg
