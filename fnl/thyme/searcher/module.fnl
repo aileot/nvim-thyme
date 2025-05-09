@@ -165,8 +165,8 @@ cache dir.
                                                                module-name))
                                            msg-body (LoaderMessenger:wrap-message raw-msg-body)
                                            msg (-> "
-    %s
-    \t%s"
+%s
+\t%s"
                                                    (: :format msg-body raw-msg))]
                                        (values nil msg))))
                         (_ raw-msg) (let [msg (LoaderMessenger:wrap-message raw-msg)]
