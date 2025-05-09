@@ -49,13 +49,6 @@ The project started from scratch. _Now in Beta!_
 - The _macro dependency tracker_ is based on the nature that module callstacks
   represent the dependencies of the modules as is. No `fennel.plugins`
   dependency!
-- Clearing caches on `:FnlCacheClear!` does not actually delete cache files;
-  instead, it _hides_ files to the [pool](./docs/reference.md#Pool)
-  directory, and tries to restore the corresponding file in the pool if no
-  contents are updated.
-  This pool system is adopted here and there in this project.
-  That prevents your SSD from wearing out
-  though your modern SSD and OS might have optimized the file system already.
 
 ### Limitations
 
