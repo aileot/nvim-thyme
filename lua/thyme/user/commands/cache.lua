@@ -1,5 +1,7 @@
 local _local_1_ = require("thyme.const")
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
+local Messenger = require("thyme.utils.messenger")
+local CommandMessenger = Messenger.new("command")
 local _local_2_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_2_["clear-cache!"]
 local CmdCache = {}
@@ -13,9 +15,9 @@ CmdCache["setup!"] = function()
   vim.api.nvim_create_user_command("ThymeCacheOpen", CmdCache.open, {desc = "[thyme] open the cache root directory"})
   local function _3_()
     if CmdCache.clear() then
-      return vim.notify(("Cleared cache: " .. lua_cache_prefix))
+      return CommandMessenger["notify!"](CommandMessenger, ("Cleared cache: " .. lua_cache_prefix))
     else
-      return vim.notify(("No cache files detected at " .. lua_cache_prefix))
+      return CommandMessenger["notify!"](CommandMessenger, ("No cache files detected at " .. lua_cache_prefix))
     end
   end
   return vim.api.nvim_create_user_command("ThymeCacheClear", _3_, {desc = "[thyme] clear the lua cache and dependency map logs"})

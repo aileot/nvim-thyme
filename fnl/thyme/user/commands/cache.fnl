@@ -2,6 +2,9 @@
 
 (local {: lua-cache-prefix} (require :thyme.const))
 
+(local Messenger (require :thyme.utils.messenger))
+(local CommandMessenger (Messenger.new "command"))
+
 (local {: clear-cache!} (require :thyme.compiler.cache))
 
 (local CmdCache {})
@@ -31,7 +34,8 @@
     ;; TODO: Or `:confirm` prefix to ask?
     (fn []
       (if (CmdCache.clear)
-          (vim.notify (.. "Cleared cache: " lua-cache-prefix))
-          (vim.notify (.. "No cache files detected at " lua-cache-prefix))))))
+          (CommandMessenger:notify! (.. "Cleared cache: " lua-cache-prefix))
+          (CommandMessenger:notify! (.. "No cache files detected at "
+                                        lua-cache-prefix))))))
 
 CmdCache
