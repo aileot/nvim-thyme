@@ -49,8 +49,9 @@
                                                      module-name)
                         true)
       (_ error-msg)
-      (let [msg (: "thyme-recompiler: abort recompiling %s due to the following error
-  %s" :format fnl-path error-msg)]
+      (let [msg (-> "thyme-recompiler: abort recompiling %s due to the following error
+  %s"
+                    (: :format fnl-path error-msg))]
         (vim.notify msg vim.log.levels.WARN)
         (restore-module-map! fnl-path)
         false))))

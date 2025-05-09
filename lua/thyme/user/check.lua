@@ -58,8 +58,8 @@ local function recompile_21(fnl_path, lua_path, module_name)
   end
 end
 local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:58")
-  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:58")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:59")
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:59")
   local always_recompile_3f = opts["_always-recompile?"]
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)
