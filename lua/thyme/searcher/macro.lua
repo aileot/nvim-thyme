@@ -35,7 +35,9 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   elseif (true and (nil ~= _4_)) then
     local _ = _3_
     local raw_msg = _4_
-    local msg = ("\nthyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment\n\t%s"):format(fnl_path, module_name, raw_msg)
+    local raw_msg_body = ("%s is found for the module %s, but failed to evaluate it in a compiler environment"):format(fnl_path, module_name)
+    local msg_body = SearcherMessenger["wrap-message"](SearcherMessenger, raw_msg_body)
+    local msg = ("\n%s\n\t%s"):format(msg_body, raw_msg)
     compiler_options.env = _3fenv
     return nil, msg
   else
