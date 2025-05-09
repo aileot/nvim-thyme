@@ -159,14 +159,18 @@ cache dir.
                                                                                           module-name)
                                                              (backup-handler:cleanup-old-backups! module-name)))
                                                        (load lua-code lua-path))
-                                     (_ msg) (let [msg-prefix (: "
-    thyme-loader: %s is found for the module %s, but failed to compile it
-    \t"
-                                                                 :format
-                                                                 fnl-path
-                                                                 module-name)]
-                                               (values nil (.. msg-prefix msg)))))
-                        (_ msg) (values nil (.. "\nthyme-loader: " msg)))
+                                     (_ raw-msg)
+                                     (let [raw-msg-body (-> "%s is found for the module %s, but failed to compile it"
+                                                            (: :format fnl-path
+                                                               module-name))
+                                           msg-body (LoaderMessenger:wrap-message raw-msg-body)
+                                           msg (-> "
+    %s
+    \t%s"
+                                                   (: :format msg-body raw-msg))]
+                                       (values nil msg))))
+                        (_ raw-msg) (let [msg (LoaderMessenger:wrap-message raw-msg)]
+                                      (values nil (.. "\n" msg))))
                   chunk chunk
                   (_ error-msg)
                   (let [backup-path (backup-handler:determine-active-backup-path module-name)
