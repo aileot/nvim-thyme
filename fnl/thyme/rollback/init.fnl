@@ -42,22 +42,6 @@
 @return BackupHandler"
   (BackupHandler.new self._kind-dir self.file-extension module-name))
 
-(fn RollbackManager.arrange-loader-path [self old-loader-path]
-  "Return loader path updated for mounted rollback feature.
-@param old-loader-path string
-@return string"
-  (let [loader-path-for-mounted-backups (Path.join self._kind-dir "?"
-                                                   self._mounted-backup-filename)
-        loader-prefix (.. loader-path-for-mounted-backups ";")]
-    ;; Keep mounted backup loader path at the beginning of loader path.
-    (case (old-loader-path:find loader-path-for-mounted-backups 1 true)
-      1 old-loader-path
-      nil (.. loader-prefix old-loader-path)
-      (idx-start idx-end) (let [tmp-loader-path (.. (old-loader-path:sub 1
-                                                                         idx-start)
-                                                    (old-loader-path:sub idx-end))]
-                            (.. loader-prefix tmp-loader-path)))))
-
 (fn RollbackManager.search-module-from-mounted-backups [self module-name]
   "Search for `module-name` in mounted rollbacks.
 @param module-name string

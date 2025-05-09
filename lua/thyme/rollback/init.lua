@@ -39,23 +39,6 @@ end
 RollbackManager.backupHandlerOf = function(self, module_name)
   return BackupHandler.new(self["_kind-dir"], self["file-extension"], module_name)
 end
-RollbackManager["arrange-loader-path"] = function(self, old_loader_path)
-  local loader_path_for_mounted_backups = Path.join(self["_kind-dir"], "?", self["_mounted-backup-filename"])
-  local loader_prefix = (loader_path_for_mounted_backups .. ";")
-  local _10_, _11_ = old_loader_path:find(loader_path_for_mounted_backups, 1, true)
-  if (_10_ == 1) then
-    return old_loader_path
-  elseif (_10_ == nil) then
-    return (loader_prefix .. old_loader_path)
-  elseif ((nil ~= _10_) and (nil ~= _11_)) then
-    local idx_start = _10_
-    local idx_end = _11_
-    local tmp_loader_path = (old_loader_path:sub(1, idx_start) .. old_loader_path:sub(idx_end))
-    return (loader_prefix .. tmp_loader_path)
-  else
-    return nil
-  end
-end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
   local backup_handler = self:backupHandlerOf(module_name)
   local rollback_path = backup_handler["determine-mounted-backup-path"](backup_handler)
@@ -76,10 +59,10 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
 end
 RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   if not self["_injected-searcher"] then
-    local function _15_(...)
+    local function _12_(...)
       return self["search-module-from-mounted-backups"](self, ...)
     end
-    self["_injected-searcher"] = _15_
+    self["_injected-searcher"] = _12_
     table.insert(searchers, 1, self["_injected-searcher"])
     return self["_injected-searcher"]
   elseif (searchers[1] ~= self["_injected-searcher"]) then
@@ -100,8 +83,8 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers)
   end
 end
 RollbackManager.new = function(kind, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback/init.fnl:111")
-  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback/init.fnl:111")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback/init.fnl:95")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback/init.fnl:95")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, kind)
   vim.fn.mkdir(root, "p")
@@ -115,7 +98,7 @@ RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
 RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/rollback/init.fnl:131")
+  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/rollback/init.fnl:115")
   assert_is_file_readable(backup_path)
   local dir = vim.fs.dirname(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
@@ -132,9 +115,9 @@ RollbackManager["list-mounted-paths"] = function()
 end
 RollbackManager["unmount-backup-all!"] = function()
   do
-    local _18_ = RollbackManager["list-mounted-paths"]()
-    if (nil ~= _18_) then
-      local mounted_backup_paths = _18_
+    local _15_ = RollbackManager["list-mounted-paths"]()
+    if (nil ~= _15_) then
+      local mounted_backup_paths = _15_
       for _, path in ipairs(mounted_backup_paths) do
         assert(fs.unlink(path))
       end
