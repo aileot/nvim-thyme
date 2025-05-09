@@ -161,7 +161,7 @@ The commands are defined by [thyme.setup][].
 Clear all the Lua caches managed by [nvim-thyme][].
 
 If you failed to define the command `:ThymeCacheClear` for some reasons,
-please execute [`:lua require('thyme.call.cache.clear')`][thyme-call-cache-clear]
+please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
 manually in Command line instead.
 
 ### `:ThymeCacheOpen`
@@ -174,5 +174,5 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [thyme]: https://github.com/aileot/nvim-thyme
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
-[.nvim-thyme.fnl]: #options-for-.nvim-thyme.fnl
-[thyme.setup]: #thyme-setup
+[.nvim-thyme.fnl]: #options-for-nvim-thyme.fnl
+[thyme.setup]: #thymesetup-or-thymesetup
