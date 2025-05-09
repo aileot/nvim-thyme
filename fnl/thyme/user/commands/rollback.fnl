@@ -34,7 +34,8 @@
 
 (fn RollbackCommandBackend.unmount-backup! [kind modname]
   "Unmount previously mounted backup for `backup-dir`.
-@param backup-dir string"
+@param backup-dir string
+@return boolean true if module has been successfully unmounted, false otherwise."
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
                            (: :backupHandlerOf modname))]
