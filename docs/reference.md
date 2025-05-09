@@ -82,7 +82,7 @@ thyme.setup                                                     *thyme.setup*
 thyme:setup                                                     *thyme:setup*
 -->
 
-Define [commands](#commnands) and [keymaps](#keymaps).
+Define [commands](#commands) and [keymaps](#keymaps).
 
 It also defines an autocmd group `ThymeWatch` to keep compiled lua files
 up-to-date.
