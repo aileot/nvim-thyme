@@ -126,11 +126,6 @@ RollbackManager["active-backup?"] = function(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
   return (backup_path == fs.readlink(active_backup_path))
 end
-RollbackManager["unmount-backup!"] = function(backup_dir)
-  local mounted_backup_path = Path.join(backup_dir, RollbackManager["_mounted-backup-filename"])
-  assert_is_file_readable(mounted_backup_path)
-  return assert(fs.unlink(mounted_backup_path))
-end
 RollbackManager["list-mounted-paths"] = function()
   return vim.fn.glob(Path.join(RollbackManager._root, "*", "*", RollbackManager["_mounted-backup-filename"]), false, true)
 end

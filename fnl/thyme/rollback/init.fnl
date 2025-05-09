@@ -144,14 +144,6 @@
                                       RollbackManager._active-backup-filename)]
     (= backup-path (fs.readlink active-backup-path))))
 
-(fn RollbackManager.unmount-backup! [backup-dir]
-  "Unmount previously mounted backup for `backup-dir`.
-@param backup-dir string"
-  (let [mounted-backup-path (Path.join backup-dir
-                                       RollbackManager._mounted-backup-filename)]
-    (assert-is-file-readable mounted-backup-path)
-    (assert (fs.unlink mounted-backup-path))))
-
 (fn RollbackManager.list-mounted-paths []
   "Return all the mounted rollback paths.
 @return string[] the list of mounted paths"
