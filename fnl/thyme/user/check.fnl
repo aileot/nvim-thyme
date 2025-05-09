@@ -2,8 +2,8 @@
 
 (local fennel (require :fennel))
 
-(local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: lua-cache-prefix} (require :thyme.const))
+(local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
