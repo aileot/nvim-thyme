@@ -100,6 +100,38 @@ Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
 This function is to be called
 _after_ [VimEnter][] wrapped in [vim.schedule][],
 or later.
+For example,
+
+```lua
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = vim.schedule_wrap(function()
+    require("thyme").setup()
+    require("others")
+  end,
+})
+```
+
+```fennel
+(vim.api.nvim_create_autocmd :VimEnter
+  {:once true
+   :callback #(-> (fn []
+                    (-> (require :thyme)
+                        (: :setup))
+                    (require :others))
+                  (vim.schedule))})
+```
+
+With [nvim-laurel][],
+
+```fennel
+(autocmd! :VimEnter * [:once]
+          #(-> (fn []
+                 (-> (require :thyme)
+                     (: :setup))
+                 (require :others))
+               (vim.schedule)))
+```
 
 ## Functions `pcall`-able
 
@@ -142,5 +174,6 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [thyme]: https://github.com/aileot/nvim-thyme
+[nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-.nvim-thyme.fnl
 [thyme.setup]: #thyme.setup
