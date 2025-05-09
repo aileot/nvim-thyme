@@ -51,8 +51,8 @@
                                                      module-name)
                         (RecompilerMessenger:notify! msg)
                         true)
-      (_ error-msg) (let [msg (-> "abort recompiling %s due to the following error
-  %s"
+      (_ error-msg) (let [msg (-> "abort recompiling %s due to the following error:
+%s"
                                   (: :format fnl-path error-msg))]
                       (RecompilerMessenger:notify! msg vim.log.levels.WARN)
                       (restore-module-map! fnl-path)

@@ -53,7 +53,7 @@ local function recompile_21(fnl_path, lua_path, module_name)
   elseif (true and (nil ~= _11_)) then
     local _ = _10_
     local error_msg = _11_
-    local msg = ("abort recompiling %s due to the following error\n  %s"):format(fnl_path, error_msg)
+    local msg = ("abort recompiling %s due to the following error:\n%s"):format(fnl_path, error_msg)
     RecompilerMessenger["notify!"](RecompilerMessenger, msg, vim.log.levels.WARN)
     restore_module_map_21(fnl_path)
     return false
