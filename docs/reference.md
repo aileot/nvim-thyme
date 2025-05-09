@@ -87,12 +87,6 @@ thyme.setup                                                     *thyme.setup*
 thyme:setup                                                     *thyme:setup*
 -->
 
-This function is to be called
-_after_ [VimEnter][] wrapped in [vim.schedule][],
-or later.
-
-Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
-
 Define [commands](#commnands) and [keymaps](#keymaps).
 
 It also defines an autocmd group `ThymeWatch` to keep compiled lua files
@@ -100,6 +94,12 @@ up-to-date.
 
 > [!IMPORTANT]
 > No arguments are allowed. You should manage all the options in [.nvim-thyme.fnl][] instead.
+
+Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
+
+This function is to be called
+_after_ [VimEnter][] wrapped in [vim.schedule][],
+or later.
 
 ## Functions `pcall`-able
 
