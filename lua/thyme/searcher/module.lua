@@ -126,30 +126,34 @@ local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
     return nil
   end
 end
+local function module_name__3efnl_file_on_rtp_21(module_name)
+  local fennel = require("fennel")
+  if ((nil == cache.rtp) or debug_3f) then
+    initialize_macro_searcher_on_rtp_21(fennel)
+    initialize_module_searcher_on_rtp_21(fennel)
+  else
+  end
+  if not (cache.rtp == vim.o.rtp) then
+    cache.rtp = vim.o.rtp
+    update_fennel_paths_21(fennel)
+  else
+  end
+  return fennel["search-module"](module_name, fennel.path)
+end
 local function search_fnl_module_on_rtp_21(module_name, ...)
   if ("fennel" == module_name) then
     return compile_fennel_into_rtp_21()
   else
-    local fennel = require("fennel")
-    local or_20_ = Config["?error-msg"]
-    if not or_20_ then
+    local or_22_ = Config["?error-msg"]
+    if not or_22_ then
       local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
       ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders)
-      if ((nil == cache.rtp) or debug_3f) then
-        initialize_macro_searcher_on_rtp_21(fennel)
-        initialize_module_searcher_on_rtp_21(fennel)
-      else
-      end
-      if not (cache.rtp == vim.o.rtp) then
-        cache.rtp = vim.o.rtp
-        update_fennel_paths_21(fennel)
-      else
-      end
       local _24_, _25_ = nil, nil
       do
-        local _27_, _28_ = fennel["search-module"](module_name, fennel.path)
+        local _27_, _28_ = module_name__3efnl_file_on_rtp_21(module_name)
         if (nil ~= _27_) then
           local fnl_path = _27_
+          local fennel = require("fennel")
           local _let_29_ = require("thyme.compiler.cache")
           local determine_lua_path = _let_29_["determine-lua-path"]
           local lua_path = determine_lua_path(module_name)
@@ -182,7 +186,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       end
       if (nil ~= _24_) then
         local chunk = _24_
-        or_20_ = chunk
+        or_22_ = chunk
       elseif (true and (nil ~= _25_)) then
         local _ = _24_
         local error_msg = _25_
@@ -192,15 +196,15 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
         if (rollback_enabled_3f and file_readable_3f(backup_path)) then
           local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
           vim.notify_once(msg, vim.log.levels.WARN)
-          or_20_ = loadfile(backup_path)
+          or_22_ = loadfile(backup_path)
         else
-          or_20_ = error_msg
+          or_22_ = error_msg
         end
       else
-        or_20_ = nil
+        or_22_ = nil
       end
     end
-    return or_20_
+    return or_22_
   end
 end
 return {["search-fnl-module-on-rtp!"] = search_fnl_module_on_rtp_21, ["write-lua-file-with-backup!"] = write_lua_file_with_backup_21}
