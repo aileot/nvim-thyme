@@ -5,7 +5,8 @@
 
 (local Path (require :thyme.utils.path))
 
-(local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
+(local {: file-readable? : assert-is-file-readable : read-file &as fs}
+       (require :thyme.utils.fs))
 
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
@@ -111,6 +112,22 @@ Return `true` if the following conditions are met:
           (not= (read-file backup-path)
                 (assert expected-contents
                         "expected non empty string for `expected-contents`"))))))
+
+(fn BackupHandler.mount-backup! [self]
+  "Mount currently active backup for `module-name`.
+@return boolean true if module has been successfully mounted, false otherwise."
+  (let [backup-dir (Path.join self._root-dir self._module-name)
+        active-backup-path (Path.join backup-dir self._active-backup-filename)
+        mounted-backup-path (Path.join backup-dir self._mounted-backup-filename)]
+    (symlink! active-backup-path mounted-backup-path)))
+
+(fn BackupHandler.unmount-backup! [self]
+  "Unmount previously mounted backup for `module-name`.
+@return boolean true if module has been successfully unmounted, false otherwise."
+  (let [backup-dir (Path.join self._root-dir self._module-name)
+        mounted-backup-path (Path.join backup-dir self._mounted-backup-filename)]
+    (assert-is-file-readable mounted-backup-path)
+    (assert (fs.unlink mounted-backup-path))))
 
 (fn BackupHandler.cleanup-old-backups! [self]
   "Remove old backups more than the value of `max-rollbacks` option.

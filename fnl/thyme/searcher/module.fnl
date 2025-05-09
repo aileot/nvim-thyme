@@ -106,6 +106,20 @@ fennel.lua.
     (when (backup-handler:should-update-backup? lua-code)
       (backup-handler:write-backup! lua-path))))
 
+(fn module-name->fnl-file-on-rtp! [module-name]
+  "Search for `fnl-file` from `module-name` on `&rtp`.
+@param module-name string
+@return string|false fnl path, or `false`
+@return string? error message only with `false` in the first return value."
+  (let [fennel (require :fennel)]
+    (when (or (= nil cache.rtp) debug?)
+      (initialize-macro-searcher-on-rtp! fennel)
+      (initialize-module-searcher-on-rtp! fennel))
+    (when-not (= cache.rtp vim.o.rtp)
+      (set cache.rtp vim.o.rtp)
+      (update-fennel-paths! fennel))
+    (fennel.search-module module-name fennel.path)))
+
 (fn search-fnl-module-on-rtp! [module-name ...]
   "Search for fennel source file to compile into lua and save in nvim-thyme
 cache dir.
@@ -117,55 +131,52 @@ cache dir.
       (compile-fennel-into-rtp!)
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
-      (let [fennel (require :fennel)]
-        (or Config.?error-msg
-            (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)]
-              (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
-              (when (or (= nil cache.rtp) debug?)
-                (initialize-macro-searcher-on-rtp! fennel)
-                (initialize-module-searcher-on-rtp! fennel))
-              (when-not (= cache.rtp vim.o.rtp)
-                (set cache.rtp vim.o.rtp)
-                (update-fennel-paths! fennel))
-              (case (case (fennel.search-module module-name fennel.path)
-                      fnl-path (let [{: determine-lua-path} (require :thyme.compiler.cache)
-                                     lua-path (determine-lua-path module-name)
-                                     compiler-options Config.compiler-options]
-                                 (case (pcall-with-logger! fennel.compile-string
-                                                           fnl-path lua-path
-                                                           compiler-options
-                                                           module-name)
-                                   (true lua-code) (do
-                                                     (if (can-restore-file? lua-path
-                                                                            lua-code)
-                                                         (restore-file! lua-path)
-                                                         (do
-                                                           (write-lua-file-with-backup! lua-path
-                                                                                        lua-code
-                                                                                        module-name)
-                                                           (backup-handler:cleanup-old-backups! module-name)))
-                                                     (load lua-code lua-path))
-                                   (_ msg) (let [msg-prefix (: "
+      (or Config.?error-msg ;
+          (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)
+                ?chunk (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
+                         searcher (searcher module-name))]
+            (or ?chunk ;
+                (case (case (module-name->fnl-file-on-rtp! module-name)
+                        fnl-path (let [fennel (require :fennel)
+                                       {: determine-lua-path} (require :thyme.compiler.cache)
+                                       lua-path (determine-lua-path module-name)
+                                       compiler-options Config.compiler-options]
+                                   (case (pcall-with-logger! fennel.compile-string
+                                                             fnl-path lua-path
+                                                             compiler-options
+                                                             module-name)
+                                     (true lua-code) (do
+                                                       (if (can-restore-file? lua-path
+                                                                              lua-code)
+                                                           (restore-file! lua-path)
+                                                           (do
+                                                             (write-lua-file-with-backup! lua-path
+                                                                                          lua-code
+                                                                                          module-name)
+                                                             (backup-handler:cleanup-old-backups! module-name)))
+                                                       (load lua-code lua-path))
+                                     (_ msg) (let [msg-prefix (: "
     thyme-loader: %s is found for the module %s, but failed to compile it
-    \t" :format
-                                                               fnl-path
-                                                               module-name)]
-                                             (values nil (.. msg-prefix msg)))))
-                      (_ msg) (values nil (.. "\nthyme-loader: " msg)))
-                chunk chunk
-                (_ error-msg)
-                (let [backup-path (backup-handler:determine-active-backup-path module-name)
-                      max-rollbacks Config.max-rollbacks
-                      rollback-enabled? (< 0 max-rollbacks)]
-                  (if (and rollback-enabled? (file-readable? backup-path))
-                      (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+    \t"
+                                                                 :format
+                                                                 fnl-path
+                                                                 module-name)]
+                                               (values nil (.. msg-prefix msg)))))
+                        (_ msg) (values nil (.. "\nthyme-loader: " msg)))
+                  chunk chunk
+                  (_ error-msg)
+                  (let [backup-path (backup-handler:determine-active-backup-path module-name)
+                        max-rollbacks Config.max-rollbacks
+                        rollback-enabled? (< 0 max-rollbacks)]
+                    (if (and rollback-enabled? (file-readable? backup-path))
+                        (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
-                                   :format module-name
-                                   (backup-handler:determine-active-backup-birthtime module-name)
-                                   error-msg)]
-                        (vim.notify_once msg vim.log.levels.WARN)
-                        (loadfile backup-path))
-                      error-msg))))))))
+                                     :format module-name
+                                     (backup-handler:determine-active-backup-birthtime module-name)
+                                     error-msg)]
+                          (vim.notify_once msg vim.log.levels.WARN)
+                          (loadfile backup-path))
+                        error-msg))))))))
 
 {: search-fnl-module-on-rtp! : write-lua-file-with-backup!}

@@ -50,36 +50,38 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
 @return nil|string: nil, or an error message."
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
-  (let [fennel (require :fennel)]
-    (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers)
-    (case (case (fennel.search-module module-name fennel.macro-path)
-            fnl-path (macro-module->?chunk module-name fnl-path)
-            (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
-      chunk chunk
-      (_ error-msg)
-      (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
-            backup-path (backup-handler:determine-active-backup-path)
-            Config (require :thyme.config)]
-        (case Config.?error-msg
-          msg (values nil msg)
-          _ (let [max-rollbacks Config.max-rollbacks
-                  rollback-enabled? (< 0 max-rollbacks)]
-              (if (and rollback-enabled? (file-readable? backup-path))
-                  (case (macro-module->?chunk module-name backup-path)
-                    chunk
-                    ;; TODO: As described in the error message below, append
-                    ;; thyme-backup-loader independently to fennel.macro-searchers?
-                    (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+  (let [fennel (require :fennel)
+        ?chunk (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers)
+                 searcher (searcher module-name))]
+    (or ?chunk ;
+        (case (case (fennel.search-module module-name fennel.macro-path)
+                fnl-path (macro-module->?chunk module-name fnl-path)
+                (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
+          chunk chunk
+          (_ error-msg)
+          (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
+                backup-path (backup-handler:determine-active-backup-path)
+                Config (require :thyme.config)]
+            (case Config.?error-msg
+              msg (values nil msg)
+              _ (let [max-rollbacks Config.max-rollbacks
+                      rollback-enabled? (< 0 max-rollbacks)]
+                  (if (and rollback-enabled? (file-readable? backup-path))
+                      (case (macro-module->?chunk module-name backup-path)
+                        chunk
+                        ;; TODO: As described in the error message below, append
+                        ;; thyme-backup-loader independently to fennel.macro-searchers?
+                        (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
-                                 :format module-name
-                                 (backup-handler:determine-active-backup-birthtime)
-                                 error-msg)]
-                      (vim.notify_once msg vim.log.levels.WARN)
-                      chunk)
-                    (_ msg)
-                    (values nil msg))
-                  (values nil error-msg))))))))
+                                     :format module-name
+                                     (backup-handler:determine-active-backup-birthtime)
+                                     error-msg)]
+                          (vim.notify_once msg vim.log.levels.WARN)
+                          chunk)
+                        (_ msg)
+                        (values nil msg))
+                      (values nil error-msg)))))))))
 
 (fn overwrite-metatable! [original-table cache-table]
   (case (getmetatable original-table)
