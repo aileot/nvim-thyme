@@ -61,7 +61,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
-                (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
+                (_ msg) (values nil (SearcherMessenger:wrap-message msg)))
           chunk chunk
           (_ error-msg)
           (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
@@ -76,13 +76,14 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
                         chunk
                         ;; TODO: As described in the error message below, append
                         ;; thyme-backup-loader independently to fennel.macro-searchers?
-                        (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+                        (let [msg (: "temporarily restore backup for the module %s (created at %s) due to the following error: %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                      :format module-name
                                      (backup-handler:determine-active-backup-birthtime)
                                      error-msg)]
-                          (vim.notify_once msg vim.log.levels.WARN)
+                          (RollbackLoaderMessenger:notify-once! msg
+                                                                vim.log.levels.WARN)
                           chunk)
                         (_ msg)
                         (values nil msg))

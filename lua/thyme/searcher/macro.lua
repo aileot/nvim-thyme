@@ -65,7 +65,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
       elseif (true and (nil ~= _15_)) then
         local _ = _14_
         local msg = _15_
-        _11_, _12_ = nil, ("thyme-macro-searcher: " .. msg)
+        _11_, _12_ = nil, SearcherMessenger["wrap-message"](SearcherMessenger, msg)
       else
         _11_, _12_ = nil
       end
@@ -91,8 +91,8 @@ local function search_fnl_macro_on_rtp_21(module_name)
           local _25_, _26_ = macro_module__3e_3fchunk(module_name, backup_path)
           if (nil ~= _25_) then
             local chunk = _25_
-            local msg = ("thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
-            vim.notify_once(msg, vim.log.levels.WARN)
+            local msg = ("temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
+            RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
             or_10_ = chunk
           elseif (true and (nil ~= _26_)) then
             local _1 = _25_
