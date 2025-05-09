@@ -1,7 +1,8 @@
 (import-macros {: command!} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-
+(local {: hide-file!} (require :thyme.utils.pool))
+(local {: determine-lua-path} (require :thyme.compiler.cache))
 (local RollbackManager (require :thyme.rollback))
 
 (local M {})
@@ -18,11 +19,18 @@
 (fn RollbackCommandBackend.mount-backup! [kind modname]
   "Mount currently active backup for `modname` of the `kind`.
 @param kind string
-@param modname string an empty string indicates all the backups in the `kind`"
+@param modname string an empty string indicates all the backups in the `kind`
+@return boolean true if successfully mounted; false otherwise"
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backupHandlerOf modname))]
-    (backup-handler:mount-backup!)))
+                           (: :backupHandlerOf modname))
+        ok? (backup-handler:mount-backup!)]
+    (when (and ok? (= kind :module))
+      ;; Hide the corresponding lua cache from &rtp to make sure the
+      ;; `mounted-rollback-loader` to be injected in `package.loaders` first.
+      (case (determine-lua-path modname)
+        lua-path (hide-file! lua-path)))
+    ok?))
 
 (fn RollbackCommandBackend.unmount-backup! [kind modname]
   "Unmount previously mounted backup for `backup-dir`.
