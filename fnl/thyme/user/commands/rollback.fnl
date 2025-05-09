@@ -24,6 +24,13 @@
                            (: :backupHandlerOf module-name))]
     (backup-handler:mount-backup!)))
 
+(fn RollbackCommandBackend.cmdargs->kind-modname [cmdargs]
+  "Parse cmdargs (slash-separated) into two strings: `kind` and `module-name`.
+@param cmdargs string
+@return kind string
+@return module-name string an empty string will indicates all the stored modulesof the `kind`."
+  (cmdargs:match "([^/]+)/?([^/]*)"))
+
 (fn M.setup! []
   "Define thyme rollback commands."
   (let [complete-dirs (fn [arg-lead _cmdline _cursorpos]
@@ -67,7 +74,7 @@
        :complete complete-dirs
        :desc "[thyme] Mount currently active backup"}
       (fn [{: args}]
-        (case (args:match "([^/]+)/?([^/]*)")
+        (case (RollbackCommandBackend.cmdargs->kind-modname args)
           (kind module-name) (if (RollbackCommandBackend.mount-backup! kind
                                                                        module-name)
                                  (vim.notify (.. "Successfully mounted " args)

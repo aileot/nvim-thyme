@@ -12,6 +12,9 @@ RollbackCommandBackend["mount-backup!"] = function(kind, module_name)
   local backup_handler = RollbackCommandBackend.attach(kind, ext_tmp):backupHandlerOf(module_name)
   return backup_handler["mount-backup!"](backup_handler)
 end
+RollbackCommandBackend["cmdargs->kind-modname"] = function(cmdargs)
+  return cmdargs:match("([^/]+)/?([^/]*)")
+end
 M["setup!"] = function()
   local complete_dirs
   local function _1_(arg_lead, _cmdline, _cursorpos)
@@ -71,7 +74,7 @@ M["setup!"] = function()
   vim.api.nvim_create_user_command("ThymeRollbackSwitch", _4_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Prompt to select rollback for compile error"})
   local function _13_(_12_)
     local args = _12_["args"]
-    local _14_, _15_ = args:match("([^/]+)/?([^/]*)")
+    local _14_, _15_ = RollbackCommandBackend["cmdargs->kind-modname"](args)
     if ((nil ~= _14_) and (nil ~= _15_)) then
       local kind = _14_
       local module_name = _15_
