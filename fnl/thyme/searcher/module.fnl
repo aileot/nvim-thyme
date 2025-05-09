@@ -13,6 +13,10 @@
 (local {: gsplit} (require :thyme.utils.iterator))
 (local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
 
+(local Messenger (require :thyme.utils.messenger))
+(local SearcherMessenger (Messenger.new "module-searcher"))
+(local RollbackLoaderMessenger (Messenger.new "module-rollback-loader"))
+
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
 (local Config (require :thyme.config))
