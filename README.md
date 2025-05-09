@@ -430,7 +430,7 @@ for performance as described in [Commands](#commands) section above.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
   - Use git hooks.
-    (See the [.githooks](,/.githooks) in this project as a WIP example. Help wanted.)
+    (See the [.githooks](./.githooks) in this project as a WIP example. Help wanted.)
 
 ## Acknowledgement
 
