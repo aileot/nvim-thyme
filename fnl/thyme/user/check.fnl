@@ -49,6 +49,8 @@
       (true lua-code) (do
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)
+                        (RecompilerMessenger:notify! (.. "successfully recompile "
+                                                         fnl-path))
                         true)
       (_ error-msg) (let [msg (-> "abort recompiling %s due to the following error
   %s"
@@ -81,10 +83,7 @@
         :recompile
         (when (or always-recompile?
                   (should-recompile-lua-cache? fnl-path ?lua-path))
-          (let [ok? (recompile! fnl-path ?lua-path module-name)]
-            (when (and ok? notifiers.recompile)
-              (notifiers.recompile (.. "[thyme] successfully recompile "
-                                       fnl-path)))))))
+          (recompile! fnl-path ?lua-path module-name))))
     (case strategy
       (where (or :clear-all :clear :recompile :reload))
       (case (fnl-path->dependent-map fnl-path)

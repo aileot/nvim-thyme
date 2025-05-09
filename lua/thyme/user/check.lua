@@ -47,6 +47,7 @@ local function recompile_21(fnl_path, lua_path, module_name)
   if ((_10_ == true) and (nil ~= _11_)) then
     local lua_code = _11_
     write_lua_file_with_backup_21(lua_path, lua_code, module_name)
+    RecompilerMessenger["notify!"](RecompilerMessenger, ("successfully recompile " .. fnl_path))
     return true
   elseif (true and (nil ~= _11_)) then
     local _ = _10_
@@ -60,8 +61,8 @@ local function recompile_21(fnl_path, lua_path, module_name)
   end
 end
 local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:60")
-  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:60")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:62")
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:62")
   local always_recompile_3f = opts["_always-recompile?"]
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)
@@ -79,11 +80,7 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
       end
     elseif (strategy == "recompile") then
       if (always_recompile_3f or should_recompile_lua_cache_3f(fnl_path, _3flua_path)) then
-        local ok_3f = recompile_21(fnl_path, _3flua_path, module_name)
-        if (ok_3f and notifiers.recompile) then
-          notifiers.recompile(("[thyme] successfully recompile " .. fnl_path))
-        else
-        end
+        recompile_21(fnl_path, _3flua_path, module_name)
       else
       end
     else
@@ -91,9 +88,9 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   else
   end
   if ((strategy == "clear-all") or (strategy == "clear") or (strategy == "recompile") or (strategy == "reload")) then
-    local _20_ = fnl_path__3edependent_map(fnl_path)
-    if (nil ~= _20_) then
-      local dependent_map = _20_
+    local _19_ = fnl_path__3edependent_map(fnl_path)
+    if (nil ~= _19_) then
+      local dependent_map = _19_
       for dependent_fnl_path, dependent in pairs(dependent_map) do
         update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
       end
@@ -109,22 +106,22 @@ end
 local function check_to_update_21(fnl_path, _3fopts)
   local opts = (_3fopts or {})
   local lua_path = fnl_path__3elua_path(fnl_path)
-  local _23_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _23_) then
-    local modmap = _23_
+  local _22_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _22_) then
+    local modmap = _22_
     local dependent_count = fnl_path__3edependent_count(fnl_path)
     local user_strategy
     do
-      local _24_ = type(opts.strategy)
-      if (_24_ == "string") then
+      local _23_ = type(opts.strategy)
+      if (_23_ == "string") then
         user_strategy = opts.strategy
-      elseif (_24_ == "function") then
+      elseif (_23_ == "function") then
         local context = {["module-name"] = modmap["module-name"]}
         user_strategy = opts.strategy(dependent_count, context)
-      elseif (_24_ == "nil") then
+      elseif (_23_ == "nil") then
         user_strategy = default_strategy
-      elseif (nil ~= _24_) then
-        local _else = _24_
+      elseif (nil ~= _23_) then
+        local _else = _23_
         user_strategy = error(("expected string or function, got " .. _else))
       else
         user_strategy = nil
