@@ -49,13 +49,6 @@ The project started from scratch. _Now in Beta!_
 - The _macro dependency tracker_ is based on the nature that module callstacks
   represent the dependencies of the modules as is. No `fennel.plugins`
   dependency!
-- Clearing caches on `:FnlCacheClear!` does not actually delete cache files;
-  instead, it _hides_ files to the [pool](./docs/reference.md#Pool)
-  directory, and tries to restore the corresponding file in the pool if no
-  contents are updated.
-  This pool system is adopted here and there in this project.
-  That prevents your SSD from wearing out
-  though your modern SSD and OS might have optimized the file system already.
 
 ### Limitations
 
@@ -205,9 +198,7 @@ vim.api.nvim_create_autocmd("User", {
   once = true,
   pattern = "VeryLazy",
   callback = function()
-    local thyme = require("thyme")
-    thyme.watch_files() -- an autocmd wrapper of thyme.check_file
-    thyme.define_commands()
+    require("thyme").setup()
   end,
 })
 ```
@@ -220,44 +211,12 @@ Independently from lazy.nvim, define an autocmd.
 </summary>
 
 ```lua
-vim.api.nvim_create_autocmd("UIEnter", {
+vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function() -- You can substitute vim.schedule_wrap if you don't mind its tiny overhead.
     vim.schedule(function()
-      local thyme = require("thyme")
-      thyme.watch_files() -- an autocmd wrapper of thyme.check_file
-      thyme.define_commands()
+      require("thyme").setup()
     end)
-  end,
-})
-```
-
-</details>
-
-<details>
-<summary>
-Individually defines commands and autocmd to check.
-</summary>
-
-```lua
-local id = vim.api.nvim_create_augroup("ThymeFoobar", {})
-vim.api.nvim_create_autocmd({
-  "CmdlineEnter",
-  "CmdwinEnter",
-}, {
-  group = id,
-  callback = function()
-    require("thyme").define_commands()
-  end,
-})
-vim.api.nvim_create_autocmd({
-  "BufWritePost",
-  "FileChangedShellPost",
-}, {
-  group = id,
-  pattern = "*.fnl",
-  callback = function(a)
-    require("thyme").check_file(a.match)
   end,
 })
 ```
@@ -418,9 +377,7 @@ require([[tangerine]]).setup({})
 ## Ex Command Comparisons
 
 Note: nvim-thyme only provides user commands when you call
-[`thyme.define-commands!`](./docs/reference.md#define-commands!)
-or
-[`thyme.define_commands`](./docs/reference.md#define_commands)
+[`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
 for performance as described in [Commands](#commands) section above.
 
 ### Evaluate expression and print the result
@@ -460,11 +417,6 @@ for performance as described in [Commands](#commands) section above.
 
 ## Not in Plan
 
-- Regardless of the nvim-plugin convention,
-  `nvim-thyme` will _**not** provide a `setup` function._
-  No matter how optimized a `setup` file is, searching a file
-  (whether lua module or vim autoload)
-  through `&rtp` would be inevitably the biggest cost.
 - Unlike [tangerine.nvim][],
   `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
 - Unlike [hotpot.nvim][],
@@ -478,7 +430,7 @@ for performance as described in [Commands](#commands) section above.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
   - Use git hooks.
-    (See the [.githooks](,/.githooks) in this project as a WIP example. Help wanted.)
+    (See the [.githooks](./.githooks) in this project as a WIP example. Help wanted.)
 
 ## Acknowledgement
 

@@ -2,18 +2,6 @@
 
 TODO
 
-## Terminology
-
-### Pool
-
-To prevent SSD from wearing out, `nvim-thyme` tries to delete and create files
-_as few times_ as possible; instead, it tries to hide possibly outdated files
-to the `pool` directory, and restore from the `pool` when the contents to be
-written are the same as the corresponding files in the `pool`.
-
-The `pool` directory is in `(.. (vim.fn.stdpath :state) "/thyme/pool")`:\
-Try `:Fnl (vim.cmd.edit (.. (vim.fn.stdpath :state) "/thyme/pool")`.
-
 <!-- panvimdoc-ignore-start -->
 
 ## Options for `.nvim-thyme.fnl`
@@ -77,6 +65,13 @@ table.insert(package.loaders, function(...)
 end)
 ```
 
+> [!IMPORTANT]
+> Before loading any Fennel module,
+> you also have to prepend `/a/path/to/thyme/compile`
+> which contains a substring `"/thyme/compile"`
+> in `&runtimepath`, for example,
+> `vim.opt.rtp:prepend(vim.fn.stdpath('cache') .. '/thyme/compiled')`.
+
 <!-- panvimdoc-ignore-start -->
 
 ### `thyme.setup` or `thyme:setup`
@@ -87,19 +82,51 @@ thyme.setup                                                     *thyme.setup*
 thyme:setup                                                     *thyme:setup*
 -->
 
-This function is to be called
-_after_ [VimEnter][] wrapped in [vim.schedule][],
-or later.
-
-Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
-
-Define [commands](#commnands) and [keymaps](#keymaps).
+Define [commands](#commands) and [keymaps](#keymaps).
 
 It also defines an autocmd group `ThymeWatch` to keep compiled lua files
 up-to-date.
 
 > [!IMPORTANT]
 > No arguments are allowed. You should manage all the options in [.nvim-thyme.fnl][] instead.
+
+Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
+
+This function is to be called
+_after_ [VimEnter][] wrapped in [vim.schedule][],
+or later.
+For example,
+
+```lua
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = vim.schedule_wrap(function()
+    require("thyme").setup()
+    require("others")
+  end,
+})
+```
+
+```fennel
+(vim.api.nvim_create_autocmd :VimEnter
+  {:once true
+   :callback #(-> (fn []
+                    (-> (require :thyme)
+                        (: :setup))
+                    (require :others))
+                  (vim.schedule))})
+```
+
+With [nvim-laurel][],
+
+```fennel
+(autocmd! :VimEnter * [:once]
+          #(-> (fn []
+                 (-> (require :thyme)
+                     (: :setup))
+                 (require :others))
+               (vim.schedule)))
+```
 
 ## Functions `pcall`-able
 
@@ -112,8 +139,7 @@ when you are considering another Fennel compiler system.
 
 ### `thyme.call.cache.clear`
 
-Equivalent to [:ThymeCacheClear](#thymecacheclear), but it should work without [thyme.setup].
-You can also call it with `pcall(require, "thyme.call.cache.clear")`
+Equivalent to [:ThymeCacheClear][], but it should work without [thyme.setup].
 
 This function is useful to be called
 on [githooks](https://git-scm.com/docs/githooks)
@@ -121,9 +147,18 @@ without worrying about [thyme]'s validity,
 and about the interface dependencies
 when you were considering another Fennel compiler system.
 
+For example, add the following lines in `.githooks/post-checkout`
+with executable permission:
+
+```sh
+if type nvim >/dev/null; then
+  nvim --headless -c "lua pcall(require, 'thyme.call.cache.clear')" +q
+fi
+```
+
 ### `thyme.call.cache.open`
 
-Equivalent to [:ThymeCacheOpen](#thymecacheopen), but it should work without [thyme.setup].
+Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
 ## Commands
 
@@ -132,6 +167,10 @@ The commands are defined by [thyme.setup][].
 ### `:ThymeCacheClear`
 
 Clear all the Lua caches managed by [nvim-thyme][].
+
+If you failed to define the command [:ThymeCacheClear][] for some reasons,
+please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
+manually in Command line instead.
 
 ### `:ThymeCacheOpen`
 
@@ -142,5 +181,8 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [thyme]: https://github.com/aileot/nvim-thyme
-[.nvim-thyme.fnl]: #options-for-.nvim-thyme.fnl
-[thyme.setup]: #thyme.setup
+[nvim-laurel]: https://github.com/aileot/nvim-laurel
+[.nvim-thyme.fnl]: #options-for-nvim-thymefnl
+[thyme.setup]: #thymesetup-or-thymesetup
+[:ThymeCacheOpen]: #thymecacheopen
+[:ThymeCacheClear]: #thymecacheclear
