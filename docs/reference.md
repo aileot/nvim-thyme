@@ -65,6 +65,13 @@ table.insert(package.loaders, function(...)
 end)
 ```
 
+> [!IMPORTANT]
+> Before loading any Fennel module,
+> you also have to prepend `/a/path/to/thyme/compile`
+> which contains a substring `"/thyme/compile"`
+> in `&runtimepath`, for example,
+> `vim.opt.rtp:prepend(vim.fn.stdpath('cache') .. '/thyme/compiled')`.
+
 <!-- panvimdoc-ignore-start -->
 
 ### `thyme.setup` or `thyme:setup`
