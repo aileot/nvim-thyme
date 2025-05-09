@@ -37,17 +37,17 @@
           (backup-handler:cleanup-old-backups!))
         (set compiler-options.env ?env)
         #result)
-      (_ msg) (let [msg-prefix (-> "
+      (_ raw-msg) (let [msg (-> "
 thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment
-\t"
-                                   (: :format fnl-path module-name))]
-                (set compiler-options.env ?env)
-                ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
-                ;; is supposed to return a function which must returns a table;
-                ;; otherwise when the searhcer fails to find a macro module,
-                ;; it must return nil. See the implementation of
-                ;; search-macro-module in src/fennel/specials.fnl @1276
-                (values nil (.. msg-prefix msg))))))
+\t%s"
+                                (: :format fnl-path module-name raw-msg))]
+                    (set compiler-options.env ?env)
+                    ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
+                    ;; is supposed to return a function which must returns a table;
+                    ;; otherwise when the searhcer fails to find a macro module,
+                    ;; it must return nil. See the implementation of
+                    ;; search-macro-module in src/fennel/specials.fnl @1276
+                    (values nil msg)))))
 
 (fn search-fnl-macro-on-rtp! [module-name]
   "Search macro on &rtp.

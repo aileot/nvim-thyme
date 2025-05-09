@@ -34,10 +34,10 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     return _6_
   elseif (true and (nil ~= _4_)) then
     local _ = _3_
-    local msg = _4_
-    local msg_prefix = ("\nthyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment\n\t"):format(fnl_path, module_name)
+    local raw_msg = _4_
+    local msg = ("\nthyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment\n\t%s"):format(fnl_path, module_name, raw_msg)
     compiler_options.env = _3fenv
-    return nil, (msg_prefix .. msg)
+    return nil, msg
   else
     return nil
   end
