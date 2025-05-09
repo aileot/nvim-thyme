@@ -1,8 +1,8 @@
 (import-macros {: when-not : last : nvim-get-option} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
-
 (local {: debug? : lua-cache-prefix} (require :thyme.const))
+
+(local Path (require :thyme.utils.path))
 
 (local {: file-readable?
         : assert-is-file-readable
