@@ -15,28 +15,28 @@
   (let [ext-tmp ".tmp"]
     (RollbackManager.new kind ext-tmp)))
 
-(fn RollbackCommandBackend.mount-backup! [kind module-name]
-  "Mount currently active backup for `module-name` of the `kind`.
+(fn RollbackCommandBackend.mount-backup! [kind modname]
+  "Mount currently active backup for `modname` of the `kind`.
 @param kind string
-@param module-name string an empty string indicates all the backups in the `kind`"
+@param modname string an empty string indicates all the backups in the `kind`"
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backupHandlerOf module-name))]
+                           (: :backupHandlerOf modname))]
     (backup-handler:mount-backup!)))
 
-(fn RollbackCommandBackend.unmount-backup! [kind module-name]
+(fn RollbackCommandBackend.unmount-backup! [kind modname]
   "Unmount previously mounted backup for `backup-dir`.
 @param backup-dir string"
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backupHandlerOf module-name))]
+                           (: :backupHandlerOf modname))]
     (backup-handler:unmount-backup!)))
 
 (fn RollbackCommandBackend.cmdargs->kind-modname [cmdargs]
-  "Parse cmdargs (slash-separated) into two strings: `kind` and `module-name`.
+  "Parse cmdargs (slash-separated) into two strings: `kind` and `modname`.
 @param cmdargs string
 @return kind string
-@return module-name string an empty string will indicates all the stored modulesof the `kind`."
+@return modname string an empty string will indicates all the stored modulesof the `kind`."
   (cmdargs:match "([^/]+)/?([^/]*)"))
 
 (fn M.setup! []
@@ -83,12 +83,11 @@
        :desc "[thyme] Mount currently active backup"}
       (fn [{: args}]
         (case (RollbackCommandBackend.cmdargs->kind-modname args)
-          (kind module-name) (if (RollbackCommandBackend.mount-backup! kind
-                                                                       module-name)
-                                 (vim.notify (.. "Successfully mounted " args)
-                                             vim.log.levels.INFO)
-                                 (vim.notify (.. "Failed to mount " args)
-                                             vim.log.levels.WARN)))))
+          (kind modname) (if (RollbackCommandBackend.mount-backup! kind modname)
+                             (vim.notify (.. "Successfully mounted " args)
+                                         vim.log.levels.INFO)
+                             (vim.notify (.. "Failed to mount " args)
+                                         vim.log.levels.WARN)))))
     (command! :ThymeRollbackUnmount
       {:nargs "?"
        ;; TODO: Complete only mounted backups.

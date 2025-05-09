@@ -7,14 +7,14 @@ RollbackCommandBackend.attach = function(kind)
   local ext_tmp = ".tmp"
   return RollbackManager.new(kind, ext_tmp)
 end
-RollbackCommandBackend["mount-backup!"] = function(kind, module_name)
+RollbackCommandBackend["mount-backup!"] = function(kind, modname)
   local ext_tmp = ".tmp"
-  local backup_handler = RollbackCommandBackend.attach(kind, ext_tmp):backupHandlerOf(module_name)
+  local backup_handler = RollbackCommandBackend.attach(kind, ext_tmp):backupHandlerOf(modname)
   return backup_handler["mount-backup!"](backup_handler)
 end
-RollbackCommandBackend["unmount-backup!"] = function(kind, module_name)
+RollbackCommandBackend["unmount-backup!"] = function(kind, modname)
   local ext_tmp = ".tmp"
-  local backup_handler = RollbackCommandBackend.attach(kind, ext_tmp):backupHandlerOf(module_name)
+  local backup_handler = RollbackCommandBackend.attach(kind, ext_tmp):backupHandlerOf(modname)
   return backup_handler["unmount-backup!"](backup_handler)
 end
 RollbackCommandBackend["cmdargs->kind-modname"] = function(cmdargs)
@@ -82,8 +82,8 @@ M["setup!"] = function()
     local _14_, _15_ = RollbackCommandBackend["cmdargs->kind-modname"](args)
     if ((nil ~= _14_) and (nil ~= _15_)) then
       local kind = _14_
-      local module_name = _15_
-      if RollbackCommandBackend["mount-backup!"](kind, module_name) then
+      local modname = _15_
+      if RollbackCommandBackend["mount-backup!"](kind, modname) then
         return vim.notify(("Successfully mounted " .. args), vim.log.levels.INFO)
       else
         return vim.notify(("Failed to mount " .. args), vim.log.levels.WARN)
