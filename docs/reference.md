@@ -168,4 +168,4 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [thyme]: https://github.com/aileot/nvim-thyme
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-.nvim-thyme.fnl
-[thyme.setup]: #thyme.setup
+[thyme.setup]: #thyme-setup
