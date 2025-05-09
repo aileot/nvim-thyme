@@ -84,7 +84,8 @@
 
 (fn RollbackManager.inject-mounted-backup-searcher! [self searchers]
   "Inject mounted backup searcher into `searchers` in the highest priority.
-@param searchers function[]"
+@param searchers function[]
+@return function? the mounted searcher if `searchers` is not yet injected."
   ;; TODO: Add option to avoid injecting searcher more than once in case where
   ;; some other plugin injects other searchers only to fall into infinite loop.
   (if (not self._injected-searcher)
@@ -95,7 +96,8 @@
              ;; as the first argument, but only get module-name as the first
              ;; argument and `nil` as the second argument.
              (partial self.search-module-from-mounted-backups self))
-        (table.insert searchers 1 self._injected-searcher))
+        (table.insert searchers 1 self._injected-searcher)
+        self._injected-searcher)
       (not= (first searchers) self._injected-searcher)
       (do
         (faccumulate [dropped? false i 1 (length searchers) &until dropped?]
