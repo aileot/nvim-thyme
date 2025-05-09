@@ -8,18 +8,21 @@ Messenger.new = function(role)
   self._prefix = ("thyme(%s): "):format(role)
   return self
 end
+Messenger["wrap-message"] = function(self, old_msg)
+  return (self._prefix .. old_msg)
+end
 Messenger["_validate-raw-msg!"] = function(raw_msg)
   assert(not raw_msg:find("^thyme"), "The raw message must not starts with `thyme`")
   return assert(not raw_msg:find("^%[thyme"), "The raw message must not starts with `[thyme`")
 end
 Messenger["notify!"] = function(self, old_msg, ...)
   self["_validate-raw-msg!"](old_msg)
-  local new_msg = (self._prefix .. old_msg)
+  local new_msg = self["wrap-message"](self, old_msg)
   return vim.notify(new_msg, ...)
 end
 Messenger["notify-once!"] = function(self, old_msg, ...)
   self["_validate-raw-msg!"](old_msg)
-  local new_msg = (self._prefix .. old_msg)
+  local new_msg = self["wrap-message"](self, old_msg)
   return vim.notify_once(new_msg, ...)
 end
 Messenger["warn!"] = function(self, msg)
