@@ -9,6 +9,8 @@
 (local {: hide-file! : has-hidden-file? : restore-file!}
        (require :thyme.utils.pool))
 
+(local Messenger (require :thyme.utils.messenger))
+
 (local BackupHandler (require :thyme.rollback.backup-handler))
 
 (local RollbackManager
@@ -49,14 +51,15 @@
 @return nil|string: nil, or (only for macro searcher) an error message."
   (let [backup-handler (self:backupHandlerOf module-name)
         rollback-path (backup-handler:determine-mounted-backup-path)
-        loader-name (-> "thyme-mounted-rollback-%s-loader"
-                        (: :format self._kind))]
+        loader-name (-> "mounted-rollback-%s-loader"
+                        (: :format self._kind))
+        messenger (Messenger.new loader-name)]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
-              msg (-> "%s: rollback to backup for %s (created at %s)"
+              msg (-> "rollback to backup for %s (created at %s)"
                       (: :format loader-name module-name
                          (backup-handler:determine-active-backup-birthtime module-name)))]
-          (vim.notify_once msg vim.log.levels.WARN)
+          (messenger:notify-once! msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
         (let [error-msg (-> "%s: no mounted backup is found for %s %s"
