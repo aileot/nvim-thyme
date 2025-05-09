@@ -1,5 +1,3 @@
-local RollbackManager = require("thyme.rollback")
-local MacroRollbackManager = RollbackManager.new("macro", ".fnl")
 local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
 local read_file = _local_1_["read-file"]
@@ -7,6 +5,8 @@ local _local_2_ = require("thyme.module-map.callstack")
 local pcall_with_logger_21 = _local_2_["pcall-with-logger!"]
 local is_logged_3f = _local_2_["is-logged?"]
 local log_again_21 = _local_2_["log-again!"]
+local RollbackManager = require("thyme.rollback")
+local MacroRollbackManager = RollbackManager.new("macro", ".fnl")
 local cache = {["macro-loaded"] = {}}
 local function macro_module__3e_3fchunk(module_name, fnl_path)
   local fennel = require("fennel")

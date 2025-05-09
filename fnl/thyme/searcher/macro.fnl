@@ -1,11 +1,11 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local RollbackManager (require :thyme.rollback))
-(local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
-
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: pcall-with-logger! : is-logged? : log-again!}
        (require :thyme.module-map.callstack))
+
+(local RollbackManager (require :thyme.rollback))
+(local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
 (local cache {:macro-loaded {}})
 
