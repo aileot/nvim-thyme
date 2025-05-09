@@ -7,6 +7,8 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
+local Messenger = require("thyme.utils.messenger")
+local ConfigMessenger = Messenger.new("config")
 local RollbackManager = require("thyme.rollback")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
@@ -51,8 +53,8 @@ local function read_config_with_backup_21(config_file_path)
   local mounted_backup_path = backup_handler["determine-mounted-backup-path"](backup_handler)
   local config_code
   if file_readable_3f(mounted_backup_path) then
-    local msg = ("[thyme] rollback config to mounted backup (created at %s)"):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
-    vim.notify_once(msg, vim.log.levels.WARN)
+    local msg = ("rollback config to mounted backup (created at %s)"):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
+    ConfigMessenger["notify-once!"](ConfigMessenger, msg, vim.log.levels.WARN)
     config_code = read_file(mounted_backup_path)
   elseif secure_nvim_env_3f then
     config_code = read_file(config_file_path)
@@ -78,11 +80,11 @@ local function read_config_with_backup_21(config_file_path)
   else
     local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
     local error_msg = _3fresult
-    local msg = ("[thyme] failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
-    vim.notify_once(msg, vim.log.levels.ERROR)
+    local msg = ("failed to evaluating %s with the following error:\n%s"):format(config_filename, error_msg)
+    ConfigMessenger["notify-once!"](ConfigMessenger, msg, vim.log.levels.ERROR)
     if file_readable_3f(backup_path) then
-      local msg0 = ("[thyme] temporarily restore config from backup created at %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
-      vim.notify_once(msg0, vim.log.levels.WARN)
+      local msg0 = ("temporarily restore config from backup created at %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
+      ConfigMessenger["notify-once!"](ConfigMessenger, msg0, vim.log.levels.WARN)
       return fennel.dofile(backup_path, compiler_options)
     else
       return {}

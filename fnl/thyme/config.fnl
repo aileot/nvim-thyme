@@ -4,6 +4,9 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
+(local Messenger (require :thyme.utils.messenger))
+(local ConfigMessenger (Messenger.new "config"))
+
 (local RollbackManager (require :thyme.rollback))
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
@@ -72,10 +75,10 @@ the active backup, if available.
         backup-handler (ConfigRollbackManager:backupHandlerOf backup-name)
         mounted-backup-path (backup-handler:determine-mounted-backup-path)
         config-code (if (file-readable? mounted-backup-path)
-                        (let [msg (-> "[thyme] rollback config to mounted backup (created at %s)"
+                        (let [msg (-> "rollback config to mounted backup (created at %s)"
                                       (: :format
                                          (backup-handler:determine-active-backup-birthtime)))]
-                          (vim.notify_once msg vim.log.levels.WARN)
+                          (ConfigMessenger:notify-once! msg vim.log.levels.WARN)
                           (read-file mounted-backup-path))
                         secure-nvim-env?
                         (read-file config-file-path)
@@ -94,16 +97,16 @@ the active backup, if available.
           (or ?config {}))
         (let [backup-path (backup-handler:determine-active-backup-path)
               error-msg ?result
-              msg (-> "[thyme] failed to evaluating %s with the following error:\n%s"
+              msg (-> "failed to evaluating %s with the following error:\n%s"
                       (: :format config-filename error-msg))]
-          (vim.notify_once msg vim.log.levels.ERROR)
+          (ConfigMessenger:notify-once! msg vim.log.levels.ERROR)
           (if (file-readable? backup-path)
-              (let [msg (-> "[thyme] temporarily restore config from backup created at %s
+              (let [msg (-> "temporarily restore config from backup created at %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                             (: :format
                                (backup-handler:determine-active-backup-birthtime)))]
-                (vim.notify_once msg vim.log.levels.WARN)
+                (ConfigMessenger:notify-once! msg vim.log.levels.WARN)
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))
               {})))))
