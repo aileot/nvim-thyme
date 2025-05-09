@@ -163,13 +163,13 @@ cache dir.
                                      (let [raw-msg-body (-> "%s is found for the module %s, but failed to compile it"
                                                             (: :format fnl-path
                                                                module-name))
-                                           msg-body (LoaderMessenger:wrap-message raw-msg-body)
+                                           msg-body (LoaderMessenger:wrap-msg raw-msg-body)
                                            msg (-> "
 %s
 \t%s"
                                                    (: :format msg-body raw-msg))]
                                        (values nil msg))))
-                        (_ raw-msg) (let [msg (LoaderMessenger:wrap-message raw-msg)]
+                        (_ raw-msg) (let [msg (LoaderMessenger:wrap-msg raw-msg)]
                                       (values nil (.. "\n" msg))))
                   chunk chunk
                   (_ error-msg)

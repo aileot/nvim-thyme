@@ -40,7 +40,7 @@
       (_ raw-msg)
       (let [raw-msg-body (-> "%s is found for the macro module %s, but failed to evaluate it in a compiler environment"
                              (: :format fnl-path module-name))
-            msg-body (SearcherMessenger:wrap-message raw-msg-body)
+            msg-body (SearcherMessenger:wrap-msg raw-msg-body)
             msg (-> "
 %s
 \t%s"
@@ -66,7 +66,7 @@
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
-                (_ msg) (values nil (SearcherMessenger:wrap-message msg)))
+                (_ msg) (values nil (SearcherMessenger:wrap-msg msg)))
           chunk chunk
           (_ error-msg)
           (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)

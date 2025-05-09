@@ -186,7 +186,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               local _ = _33_
               local raw_msg = _34_
               local raw_msg_body = ("%s is found for the module %s, but failed to compile it"):format(fnl_path, module_name)
-              local msg_body = LoaderMessenger["wrap-message"](LoaderMessenger, raw_msg_body)
+              local msg_body = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg_body)
               local msg = ("\n%s\n\t%s"):format(msg_body, raw_msg)
               _27_, _28_ = nil, msg
             else
@@ -195,7 +195,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
           elseif (true and (nil ~= _31_)) then
             local _ = _30_
             local raw_msg = _31_
-            local msg = LoaderMessenger["wrap-message"](LoaderMessenger, raw_msg)
+            local msg = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg)
             _27_, _28_ = nil, ("\n" .. msg)
           else
             _27_, _28_ = nil

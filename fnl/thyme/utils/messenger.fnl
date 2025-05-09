@@ -16,7 +16,7 @@
                           (: :format role)))
     self))
 
-(fn Messenger.wrap-message [self old-msg]
+(fn Messenger.wrap-msg [self old-msg]
   "Wrap message with `role` signature.
 @param role string
 @return Messenger"
@@ -30,12 +30,12 @@
 
 (fn Messenger.notify! [self old-msg ...]
   (self._validate-raw-msg! old-msg)
-  (let [new-msg (self:wrap-message old-msg)]
+  (let [new-msg (self:wrap-msg old-msg)]
     (vim.notify new-msg ...)))
 
 (fn Messenger.notify-once! [self old-msg ...]
   (self._validate-raw-msg! old-msg)
-  (let [new-msg (self:wrap-message old-msg)]
+  (let [new-msg (self:wrap-msg old-msg)]
     (vim.notify_once new-msg ...)))
 
 (fn Messenger.warn! [self msg]
