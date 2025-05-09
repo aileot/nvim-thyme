@@ -46,8 +46,9 @@ local function recompile_21(fnl_path, lua_path, module_name)
   local _10_, _11_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
   if ((_10_ == true) and (nil ~= _11_)) then
     local lua_code = _11_
+    local msg = ("successfully recompile " .. fnl_path)
     write_lua_file_with_backup_21(lua_path, lua_code, module_name)
-    RecompilerMessenger["notify!"](RecompilerMessenger, ("successfully recompile " .. fnl_path))
+    RecompilerMessenger["notify!"](RecompilerMessenger, msg)
     return true
   elseif (true and (nil ~= _11_)) then
     local _ = _10_
@@ -61,8 +62,8 @@ local function recompile_21(fnl_path, lua_path, module_name)
   end
 end
 local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:62")
-  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:62")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:61")
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:61")
   local always_recompile_3f = opts["_always-recompile?"]
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)

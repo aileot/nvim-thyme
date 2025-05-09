@@ -46,11 +46,10 @@
     (clear-module-map! fnl-path)
     (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
                               compiler-options module-name)
-      (true lua-code) (do
+      (true lua-code) (let [msg (.. "successfully recompile " fnl-path)]
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)
-                        (RecompilerMessenger:notify! (.. "successfully recompile "
-                                                         fnl-path))
+                        (RecompilerMessenger:notify! msg)
                         true)
       (_ error-msg) (let [msg (-> "abort recompiling %s due to the following error
   %s"
