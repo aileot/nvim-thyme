@@ -6,9 +6,6 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-(local {: hide-file! : has-hidden-file? : restore-file!}
-       (require :thyme.utils.pool))
-
 (local Messenger (require :thyme.utils.messenger))
 
 (local BackupHandler (require :thyme.rollback.backup-handler))
@@ -19,22 +16,6 @@
         :_mounted-backup-filename ".mounted"})
 
 (set RollbackManager.__index RollbackManager)
-
-(fn symlink! [path new-path ...]
-  "Force create symbolic link from `path` to `new-path`.
-@param path string
-@param new-path string
-@return boolean true if symlink is successfully created, or false"
-  (when (file-readable? new-path)
-    (hide-file! new-path))
-  (case (pcall (assert #(vim.uv.fs_symlink path new-path)))
-    (false msg) (if (has-hidden-file? new-path)
-                    true
-                    (do
-                      (restore-file! new-path)
-                      (vim.notify msg vim.log.levels.ERROR)
-                      false))
-    _ true))
 
 ;;; Class Methods
 
@@ -121,7 +102,7 @@
   (let [dir (vim.fs.dirname backup-path)
         active-backup-path (Path.join dir
                                       RollbackManager._active-backup-filename)]
-    (symlink! backup-path active-backup-path)))
+    (fs.symlink! backup-path active-backup-path)))
 
 (fn RollbackManager.active-backup? [backup-path]
   "Tell if given `backup-path` is an active backup.

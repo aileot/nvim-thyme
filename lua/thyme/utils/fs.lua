@@ -154,7 +154,35 @@ local function async_append_log_file_21(log_path, lines)
   assert_is_log_file(log_path)
   return async_write_file_with_flags_21(log_path, lines, "a")
 end
-local function _16_(_, key)
+uv["symlink!"] = function(path, new_path, ...)
+  local _let_16_ = require("thyme.utils.pool")
+  local hide_file_21 = _let_16_["hide-file!"]
+  local has_hidden_file_3f = _let_16_["has-hidden-file?"]
+  local restore_file_21 = _let_16_["restore-file!"]
+  if file_readable_3f(new_path) then
+    hide_file_21(new_path)
+  else
+  end
+  local _18_, _19_ = nil, nil
+  local function _20_()
+    return vim.uv.fs_symlink(path, new_path)
+  end
+  _18_, _19_ = pcall(assert(_20_))
+  if ((_18_ == false) and (nil ~= _19_)) then
+    local msg = _19_
+    if has_hidden_file_3f(new_path) then
+      return true
+    else
+      restore_file_21(new_path)
+      vim.notify(msg, vim.log.levels.ERROR)
+      return false
+    end
+  else
+    local _ = _18_
+    return true
+  end
+end
+local function _23_(_, key)
   return uv[key]
 end
-return setmetatable({["file-readable?"] = file_readable_3f, ["directory?"] = directory_3f, ["assert-is-file-readable"] = assert_is_file_readable, ["assert-is-directory"] = assert_is_directory, ["assert-is-fnl-file"] = assert_is_fnl_file, ["assert-is-lua-file"] = assert_is_lua_file, ["assert-is-log-file"] = assert_is_log_file, ["read-file"] = read_file, ["write-log-file!"] = write_log_file_21, ["append-log-file!"] = append_log_file_21, ["async-write-log-file!"] = async_write_log_file_21, ["async-append-log-file!"] = async_append_log_file_21, ["delete-file!"] = delete_file_21, ["write-fnl-file!"] = write_fnl_file_21, ["write-lua-file!"] = write_lua_file_21, ["delete-lua-file!"] = delete_lua_file_21, ["delete-log-file!"] = delete_log_file_21, uv = uv}, {__index = _16_})
+return setmetatable({["file-readable?"] = file_readable_3f, ["directory?"] = directory_3f, ["assert-is-file-readable"] = assert_is_file_readable, ["assert-is-directory"] = assert_is_directory, ["assert-is-fnl-file"] = assert_is_fnl_file, ["assert-is-lua-file"] = assert_is_lua_file, ["assert-is-log-file"] = assert_is_log_file, ["read-file"] = read_file, ["write-log-file!"] = write_log_file_21, ["append-log-file!"] = append_log_file_21, ["async-write-log-file!"] = async_write_log_file_21, ["async-append-log-file!"] = async_append_log_file_21, ["delete-file!"] = delete_file_21, ["write-fnl-file!"] = write_fnl_file_21, ["write-lua-file!"] = write_lua_file_21, ["delete-lua-file!"] = delete_lua_file_21, ["delete-log-file!"] = delete_log_file_21, uv = uv}, {__index = _23_})
