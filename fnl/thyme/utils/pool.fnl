@@ -47,8 +47,6 @@ respectively.
   (let [pool-path (path->pool-path path)]
     (file-readable? pool-path)))
 
-;
-
 (fn can-restore-file? [path expected-contents]
   "Check if `expected-contents` is stored in pool-path of `path`.
 @param path string
