@@ -1,6 +1,8 @@
 local _local_1_ = require("thyme.const")
 local config_path = _local_1_["config-path"]
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
+local Messenger = require("thyme.utils.messenger")
+local WatchMessenger = Messenger.new("watch")
 local _local_2_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_2_["clear-cache!"]
 local _local_3_ = require("thyme.user.check")
@@ -26,14 +28,14 @@ local function watch_files_21(_3fopts)
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if clear_cache_21() then
-        vim.notify(("Cleared cache: " .. lua_cache_prefix))
+        WatchMessenger["notify!"](WatchMessenger, ("cleared cache: " .. lua_cache_prefix))
       else
       end
     else
       local _9_, _10_ = pcall(check_to_update_21, resolved_path, opts)
       if ((_9_ == false) and (nil ~= _10_)) then
         local msg = _10_
-        vim.notify_once(msg, vim.log.levels.ERROR)
+        WatchMessenger["notify-once!"](WatchMessenger, msg, vim.log.levels.ERROR)
       else
       end
     end

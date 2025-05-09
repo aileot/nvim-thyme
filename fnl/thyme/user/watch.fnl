@@ -3,6 +3,8 @@
 ;;; and vim.api.nvim_create_autocmd.
 
 (local {: config-path : lua-cache-prefix} (require :thyme.const))
+(local Messenger (require :thyme.utils.messenger))
+(local WatchMessenger (Messenger.new "watch"))
 (local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: check-to-update!} (require :thyme.user.check))
 
@@ -34,10 +36,11 @@ the same.
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
                          (when (clear-cache!)
-                           (vim.notify (.. "Cleared cache: " lua-cache-prefix)))
+                           (WatchMessenger:notify! (.. "cleared cache: "
+                                                       lua-cache-prefix)))
                          (case (pcall check-to-update! resolved-path opts)
-                           (false msg) (vim.notify_once msg
-                                                        vim.log.levels.ERROR)))
+                           (false msg) (WatchMessenger:notify-once! msg
+                                                                    vim.log.levels.ERROR)))
                      ;; Prevent not to destroy the autocmd.
                      nil))]
     (set ?group group)
