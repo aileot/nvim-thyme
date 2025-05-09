@@ -38,7 +38,7 @@
         (set compiler-options.env ?env)
         #result)
       (_ raw-msg)
-      (let [raw-msg-body (-> "%s is found for the module %s, but failed to evaluate it in a compiler environment"
+      (let [raw-msg-body (-> "%s is found for the macro module %s, but failed to evaluate it in a compiler environment"
                              (: :format fnl-path module-name))
             msg-body (SearcherMessenger:wrap-message raw-msg-body)
             msg (-> "
