@@ -4,6 +4,8 @@ local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local read_file = _local_2_["read-file"]
+local Messenger = require("thyme.utils.messenger")
+local RecompilerMessenger = Messenger.new("check.recompiler")
 local Config = require("thyme.config")
 local _local_3_ = require("thyme.wrapper.fennel")
 local compile_file = _local_3_["compile-file"]
@@ -49,8 +51,8 @@ local function recompile_21(fnl_path, lua_path, module_name)
   elseif (true and (nil ~= _11_)) then
     local _ = _10_
     local error_msg = _11_
-    local msg = ("thyme-recompiler: abort recompiling %s due to the following error\n  %s"):format(fnl_path, error_msg)
-    vim.notify(msg, vim.log.levels.WARN)
+    local msg = ("abort recompiling %s due to the following error\n  %s"):format(fnl_path, error_msg)
+    RecompilerMessenger["notify!"](RecompilerMessenger, msg, vim.log.levels.WARN)
     restore_module_map_21(fnl_path)
     return false
   else
@@ -58,8 +60,8 @@ local function recompile_21(fnl_path, lua_path, module_name)
   end
 end
 local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:59")
-  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:59")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/check.fnl:60")
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/user/check.fnl:60")
   local always_recompile_3f = opts["_always-recompile?"]
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)

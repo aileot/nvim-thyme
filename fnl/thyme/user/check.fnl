@@ -4,6 +4,8 @@
 
 (local {: lua-cache-prefix} (require :thyme.const))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
+(local Messenger (require :thyme.utils.messenger))
+(local RecompilerMessenger (Messenger.new "check.recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
@@ -48,13 +50,12 @@
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)
                         true)
-      (_ error-msg)
-      (let [msg (-> "thyme-recompiler: abort recompiling %s due to the following error
+      (_ error-msg) (let [msg (-> "abort recompiling %s due to the following error
   %s"
-                    (: :format fnl-path error-msg))]
-        (vim.notify msg vim.log.levels.WARN)
-        (restore-module-map! fnl-path)
-        false))))
+                                  (: :format fnl-path error-msg))]
+                      (RecompilerMessenger:notify! msg vim.log.levels.WARN)
+                      (restore-module-map! fnl-path)
+                      false))))
 
 (λ update-module-dependencies! [fnl-path ?lua-path opts]
   "Clear cache files of `fnl-path` and its dependent files.
