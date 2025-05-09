@@ -126,11 +126,6 @@ RollbackManager["active-backup?"] = function(backup_path)
   local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
   return (backup_path == fs.readlink(active_backup_path))
 end
-RollbackManager["mount-backup!"] = function(backup_dir)
-  local active_backup_path = Path.join(backup_dir, RollbackManager["_active-backup-filename"])
-  local mounted_backup_path = Path.join(backup_dir, RollbackManager["_mounted-backup-filename"])
-  return symlink_21(active_backup_path, mounted_backup_path)
-end
 RollbackManager["unmount-backup!"] = function(backup_dir)
   local mounted_backup_path = Path.join(backup_dir, RollbackManager["_mounted-backup-filename"])
   assert_is_file_readable(mounted_backup_path)
