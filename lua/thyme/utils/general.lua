@@ -36,10 +36,6 @@ local function new_matrix(row, col, val)
   end
   return setmetatable(matrix, {__index = _3_})
 end
-local function warn_21(raw_msg)
-  local msg = ("[thyme] " .. raw_msg)
-  return vim.notify(msg, vim.log.levels.WARN)
-end
 local function sorter_2ffiles_to_oldest_by_birthtime(file1, file2)
   local _let_4_ = vim.uv.fs_stat(file1).birthtime
   local sec1 = _let_4_["sec"]
@@ -49,4 +45,4 @@ local function sorter_2ffiles_to_oldest_by_birthtime(file1, file2)
   local nsec2 = _let_5_["nsec"]
   return ((sec2 < sec1) or ((sec2 == sec1) and (nsec2 < nsec1)))
 end
-return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["warn!"] = warn_21, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}
+return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}
