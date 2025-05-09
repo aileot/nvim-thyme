@@ -124,7 +124,7 @@
                 (remove-context-files!)))
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
-    (let [backup-label "module/"]
+    (let [backup-kind "module/"]
       (it* "will force `require` to load module from the mounted backup."
         (let [mod :foobar
               fnl-path (.. mod ".fnl")
@@ -134,7 +134,7 @@
           (assert.equals (tonumber ctx1) (require mod))
           (tset package.loaded mod nil)
           (prepare-config-fnl-file! fnl-path ctx2)
-          (vim.cmd.ThymeRollbackMount (.. backup-label mod))
+          (vim.cmd.ThymeRollbackMount (.. backup-kind mod))
           (vim.cmd :ThymeCacheClear)
           (assert.equals (tonumber ctx1) (require mod))
           (tset package.loaded mod nil)
