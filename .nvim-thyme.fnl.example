@@ -1,5 +1,5 @@
 ;; Example options for nvim-thyme; some of the values are different from the default ones.
-{:max-rollbacks 10
+{:max-rollbacks 5
  :compiler-options {:correlate true
                     ;; Comment out below to enable `vim` APIs and any others in
                     ;; compile time.
