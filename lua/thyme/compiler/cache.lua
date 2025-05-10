@@ -18,6 +18,8 @@ local function clear_cache_21()
   end
   _4_ = vim.fs.find(_5_, {type = "file", path = lua_cache_prefix})
   if ((_G.type(_4_) == "table") and (_4_[1] == nil)) then
+    local msg = ("no cache files detected at " .. lua_cache_prefix)
+    CacheMessenger["notify!"](CacheMessenger, msg)
     return false
   else
     local _ = _4_

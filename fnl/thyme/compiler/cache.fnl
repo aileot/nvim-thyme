@@ -24,7 +24,9 @@
 @return boolean return `true` when all the lua caches are cleared; otherwise, return `false`."
   ;; NOTE: glob is unavailable in vim.fs.find.
   (case (vim.fs.find #(= :.lua ($:sub -4)) {:type :file :path lua-cache-prefix})
-    [nil] false
+    [nil] (let [msg (.. "no cache files detected at " lua-cache-prefix)]
+            (CacheMessenger:notify! msg)
+            false)
     _ (let [msg (.. "clear all the cache under " lua-cache-prefix)]
         (hide-files-in-dir! lua-cache-prefix)
         (clear-module-map-files!)
