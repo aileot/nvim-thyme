@@ -5,6 +5,8 @@
 
 (local {: lua-cache-prefix} (require :thyme.const))
 (local {: hide-files-in-dir!} (require :thyme.utils.pool))
+(local Messenger (require :thyme.utils.messenger))
+(local CacheMessenger (Messenger.new "compiler.cache"))
 (local {: clear-module-map-files!} (require :thyme.module-map.unit))
 
 (fn determine-lua-path [module-name]
@@ -23,9 +25,10 @@
   ;; NOTE: glob is unavailable in vim.fs.find.
   (case (vim.fs.find #(= :.lua ($:sub -4)) {:type :file :path lua-cache-prefix})
     [nil] false
-    _ (do
+    _ (let [msg (.. "clear all the cache under " lua-cache-prefix)]
         (hide-files-in-dir! lua-cache-prefix)
         (clear-module-map-files!)
+        (CacheMessenger:notify! msg)
         true)))
 
 {: determine-lua-path : clear-cache!}

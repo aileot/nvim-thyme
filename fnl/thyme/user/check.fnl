@@ -65,8 +65,7 @@
 @param opts table"
   (let [always-recompile? opts._always-recompile?
         strategy (or opts._strategy (error "no strategy is specified"))
-        {: module-name} (fnl-path->entry-map fnl-path)
-        notifiers (or opts.notifier {})]
+        {: module-name} (fnl-path->entry-map fnl-path)]
     (when ?lua-path
       (case strategy
         ;; TODO: Activate the strategies:
@@ -75,10 +74,7 @@
         :clear-all
         (when (or always-recompile?
                   (should-recompile-lua-cache? fnl-path ?lua-path))
-          (let [clear-any? (clear-cache!)]
-            (when (and clear-any? notifiers.clear)
-              (notifiers.clear (.. "[thyme] clear all the cache under "
-                                   lua-cache-prefix)))))
+          (clear-cache!))
         :recompile
         (when (or always-recompile?
                   (should-recompile-lua-cache? fnl-path ?lua-path))

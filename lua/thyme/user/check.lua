@@ -68,15 +68,10 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   local strategy = (opts._strategy or error("no strategy is specified"))
   local _let_13_ = fnl_path__3eentry_map(fnl_path)
   local module_name = _let_13_["module-name"]
-  local notifiers = (opts.notifier or {})
   if _3flua_path then
     if (strategy == "clear-all") then
       if (always_recompile_3f or should_recompile_lua_cache_3f(fnl_path, _3flua_path)) then
-        local clear_any_3f = clear_cache_21()
-        if (clear_any_3f and notifiers.clear) then
-          notifiers.clear(("[thyme] clear all the cache under " .. lua_cache_prefix))
-        else
-        end
+        clear_cache_21()
       else
       end
     elseif (strategy == "recompile") then
@@ -89,9 +84,9 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   else
   end
   if ((strategy == "clear-all") or (strategy == "clear") or (strategy == "recompile") or (strategy == "reload")) then
-    local _19_ = fnl_path__3edependent_map(fnl_path)
-    if (nil ~= _19_) then
-      local dependent_map = _19_
+    local _18_ = fnl_path__3edependent_map(fnl_path)
+    if (nil ~= _18_) then
+      local dependent_map = _18_
       for dependent_fnl_path, dependent in pairs(dependent_map) do
         update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
       end
@@ -107,22 +102,22 @@ end
 local function check_to_update_21(fnl_path, _3fopts)
   local opts = (_3fopts or {})
   local lua_path = fnl_path__3elua_path(fnl_path)
-  local _22_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _22_) then
-    local modmap = _22_
+  local _21_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _21_) then
+    local modmap = _21_
     local dependent_count = fnl_path__3edependent_count(fnl_path)
     local user_strategy
     do
-      local _23_ = type(opts.strategy)
-      if (_23_ == "string") then
+      local _22_ = type(opts.strategy)
+      if (_22_ == "string") then
         user_strategy = opts.strategy
-      elseif (_23_ == "function") then
+      elseif (_22_ == "function") then
         local context = {["module-name"] = modmap["module-name"]}
         user_strategy = opts.strategy(dependent_count, context)
-      elseif (_23_ == "nil") then
+      elseif (_22_ == "nil") then
         user_strategy = default_strategy
-      elseif (nil ~= _23_) then
-        local _else = _23_
+      elseif (nil ~= _22_) then
+        local _else = _22_
         user_strategy = error(("expected string or function, got " .. _else))
       else
         user_strategy = nil
