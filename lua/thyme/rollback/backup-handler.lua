@@ -87,7 +87,7 @@ BackupHandler["cleanup-old-backups!"] = function(self)
   local max_rollbacks = Config["max-rollbacks"]
   validate_type("number", max_rollbacks)
   local threshold = (max_rollbacks + 1)
-  local backup_files = self["list-backup-files"](self, self["module-name"])
+  local backup_files = self["list-backup-files"](self)
   table.sort(backup_files, sorter_2ffiles_to_oldest_by_birthtime)
   for i = threshold, #backup_files do
     local path = backup_files[i]

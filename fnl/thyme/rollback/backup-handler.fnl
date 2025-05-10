@@ -117,7 +117,7 @@ Return `true` if the following conditions are met:
         max-rollbacks Config.max-rollbacks]
     (validate-type :number max-rollbacks)
     (let [threshold (inc max-rollbacks)
-          backup-files (self:list-backup-files self.module-name)]
+          backup-files (self:list-backup-files)]
       (table.sort backup-files sorter/files-to-oldest-by-birthtime)
       (for [i threshold (length backup-files)]
         (let [path (. backup-files i)]
