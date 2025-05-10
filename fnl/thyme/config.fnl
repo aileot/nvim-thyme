@@ -27,6 +27,7 @@
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))
+        :notifier vim.notify
         :command {:compiler-options nil
                   :fnl-cmd-prefix "Fnl"
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
