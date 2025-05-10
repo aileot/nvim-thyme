@@ -48,81 +48,95 @@ local function search_fnl_macro_on_rtp_21(module_name)
   local fennel = require("fennel")
   local _3fchunk
   do
-    local _8_ = MacroRollbackManager["inject-mounted-backup-searcher!"](MacroRollbackManager, fennel["macro-searchers"])
+    local _8_
+    do
+      local _9_ = MacroRollbackManager["inject-mounted-backup-searcher!"](MacroRollbackManager, fennel["macro-searchers"])
+      if (nil ~= _9_) then
+        local searcher = _9_
+        _8_ = searcher(module_name)
+      else
+        _8_ = nil
+      end
+    end
     if (nil ~= _8_) then
-      local searcher = _8_
-      _3fchunk = searcher(module_name)
+      local msg_7cchunk = _8_
+      local _11_ = type(msg_7cchunk)
+      if (_11_ == "function") then
+        _3fchunk = msg_7cchunk
+      else
+        _3fchunk = nil
+      end
     else
       _3fchunk = nil
     end
   end
-  local or_10_ = _3fchunk
-  if not or_10_ then
-    local _11_, _12_ = nil, nil
+  local or_14_ = _3fchunk
+  if not or_14_ then
+    local _15_, _16_ = nil, nil
     do
-      local _14_, _15_ = fennel["search-module"](module_name, fennel["macro-path"])
-      if (nil ~= _14_) then
-        local fnl_path = _14_
-        _11_, _12_ = macro_module__3e_3fchunk(module_name, fnl_path)
-      elseif (true and (nil ~= _15_)) then
-        local _ = _14_
-        local msg = _15_
-        _11_, _12_ = nil, SearcherMessenger["wrap-msg"](SearcherMessenger, msg)
+      local _18_, _19_ = fennel["search-module"](module_name, fennel["macro-path"])
+      if (nil ~= _18_) then
+        local fnl_path = _18_
+        _15_, _16_ = macro_module__3e_3fchunk(module_name, fnl_path)
+      elseif (true and (nil ~= _19_)) then
+        local _ = _18_
+        local msg = _19_
+        _15_, _16_ = nil, SearcherMessenger["wrap-msg"](SearcherMessenger, msg)
       else
-        _11_, _12_ = nil
+        _15_, _16_ = nil
       end
     end
-    if (nil ~= _11_) then
-      local chunk = _11_
-      or_10_ = chunk
-    elseif (true and (nil ~= _12_)) then
-      local _ = _11_
-      local error_msg = _12_
+    if (nil ~= _15_) then
+      local chunk = _15_
+      or_14_ = chunk
+    elseif (true and (nil ~= _16_)) then
+      local _ = _15_
+      local error_msg = _16_
       local backup_handler = MacroRollbackManager:backupHandlerOf(module_name)
       local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
       local Config = require("thyme.config")
-      local _20_ = Config["?error-msg"]
-      if (nil ~= _20_) then
-        local msg = _20_
-        or_10_ = nil
+      local _24_ = Config["?error-msg"]
+      if (nil ~= _24_) then
+        local msg = _24_
+        or_14_ = nil
       else
-        local _0 = _20_
+        local _0 = _24_
         local max_rollbacks = Config["max-rollbacks"]
         local rollback_enabled_3f = (0 < max_rollbacks)
         if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-          local _25_, _26_ = macro_module__3e_3fchunk(module_name, backup_path)
-          if (nil ~= _25_) then
-            local chunk = _25_
+          local _29_, _30_ = macro_module__3e_3fchunk(module_name, backup_path)
+          if (nil ~= _29_) then
+            local chunk = _29_
             local msg = ("temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
             RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
-            or_10_ = chunk
-          elseif (true and (nil ~= _26_)) then
-            local _1 = _25_
-            local msg = _26_
-            or_10_ = nil
+            or_14_ = chunk
+          elseif (true and (nil ~= _30_)) then
+            local _1 = _29_
+            local msg = _30_
+            or_14_ = nil
           else
-            or_10_ = nil
+            or_14_ = nil
           end
         else
-          or_10_ = nil
+          or_14_ = nil
         end
       end
     else
-      or_10_ = nil
+      or_14_ = nil
     end
   end
-  return or_10_
+  return or_14_
 end
 local function overwrite_metatable_21(original_table, cache_table)
   do
-    local _35_ = getmetatable(original_table)
-    if (nil ~= _35_) then
-      local mt = _35_
+    local _39_ = getmetatable(original_table)
+    if (nil ~= _39_) then
+      local mt = _39_
       setmetatable(cache_table, mt)
     else
     end
   end
-  local function _37_(self, module_name, val)
+  local function _41_(self, module_name, val)
     if is_logged_3f(module_name) then
       rawset(self, module_name, nil)
       cache_table[module_name] = val
@@ -131,34 +145,34 @@ local function overwrite_metatable_21(original_table, cache_table)
       return rawset(self, module_name, val)
     end
   end
-  local function _39_(_, module_name)
-    local _40_ = cache_table[module_name]
-    if (nil ~= _40_) then
-      local cached = _40_
+  local function _43_(_, module_name)
+    local _44_ = cache_table[module_name]
+    if (nil ~= _44_) then
+      local cached = _44_
       log_again_21(module_name)
       return cached
     else
       return nil
     end
   end
-  return setmetatable(original_table, {__newindex = _37_, __index = _39_})
+  return setmetatable(original_table, {__newindex = _41_, __index = _43_})
 end
 local function initialize_macro_searcher_on_rtp_21(fennel)
   table.insert(fennel["macro-searchers"], 1, search_fnl_macro_on_rtp_21)
-  local function _42_(...)
-    local _43_, _44_ = search_fnl_macro_on_rtp_21(...)
-    if (nil ~= _43_) then
-      local chunk = _43_
+  local function _46_(...)
+    local _47_, _48_ = search_fnl_macro_on_rtp_21(...)
+    if (nil ~= _47_) then
+      local chunk = _47_
       return chunk
-    elseif (true and (nil ~= _44_)) then
-      local _ = _43_
-      local msg = _44_
+    elseif (true and (nil ~= _48_)) then
+      local _ = _47_
+      local msg = _48_
       return msg
     else
       return nil
     end
   end
-  table.insert(package.loaders, _42_)
+  table.insert(package.loaders, _46_)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 return {["initialize-macro-searcher-on-rtp!"] = initialize_macro_searcher_on_rtp_21, ["search-fnl-macro-on-rtp!"] = search_fnl_macro_on_rtp_21}

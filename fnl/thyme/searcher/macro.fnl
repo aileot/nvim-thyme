@@ -61,8 +61,13 @@
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
   (let [fennel (require :fennel)
-        ?chunk (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers)
-                 searcher (searcher module-name))]
+        ?chunk (case (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers)
+                       searcher (searcher module-name))
+                 msg|chunk (case (type msg|chunk)
+                             ;; NOTE: Discard unwothy msg in the edge
+                             ;; cases on initializations.
+                             :function
+                             msg|chunk))]
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
