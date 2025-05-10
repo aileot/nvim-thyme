@@ -56,7 +56,7 @@
             (case (vim.fn.delete path :rf)
               0 (UninstallCommandMessenger:notify! (.. "successfully deleted "
                                                        path))
-              _ (error (.. "[thyme] failed to delete " path)))))
+              _ (error (.. "failed to delete " path)))))
         (UninstallCommandMessenger:notify! (.. "successfully uninstalled")))))
   (cache-commands.setup!)
   (rollback-commands.setup!)

@@ -30,7 +30,7 @@ local function define_commands_21(_3fopts)
           UninstallCommandMessenger["notify!"](UninstallCommandMessenger, ("successfully deleted " .. path))
         else
           local _0 = _5_
-          error(("[thyme] failed to delete " .. path))
+          error(("failed to delete " .. path))
         end
       else
       end
