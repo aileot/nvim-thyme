@@ -1,6 +1,7 @@
 (import-macros {: command!} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
+(local {: file-readable?} (require :thyme.utils.fs))
 (local {: hide-file!} (require :thyme.utils.pool))
 (local {: determine-lua-path} (require :thyme.compiler.cache))
 (local RollbackManager (require :thyme.rollback))
@@ -29,7 +30,8 @@
       ;; Hide the corresponding lua cache from &rtp to make sure the
       ;; `mounted-rollback-loader` to be injected in `package.loaders` first.
       (case (determine-lua-path modname)
-        lua-path (hide-file! lua-path)))
+        lua-path (when (file-readable? lua-path)
+                   (hide-file! lua-path))))
     ok?))
 
 (fn RollbackCommandBackend.unmount-backup! [kind modname]
