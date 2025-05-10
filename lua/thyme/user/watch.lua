@@ -28,7 +28,8 @@ local function watch_files_21(_3fopts)
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if clear_cache_21() then
-        WatchMessenger["notify!"](WatchMessenger, ("cleared cache: " .. lua_cache_prefix))
+        local msg = ("clear all the cache under " .. lua_cache_prefix)
+        WatchMessenger["notify!"](WatchMessenger, msg)
       else
       end
     else

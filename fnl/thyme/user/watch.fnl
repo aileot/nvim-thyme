@@ -36,8 +36,9 @@ the same.
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
                          (when (clear-cache!)
-                           (WatchMessenger:notify! (.. "cleared cache: "
-                                                       lua-cache-prefix)))
+                           (let [msg (.. "clear all the cache under "
+                                         lua-cache-prefix)]
+                             (WatchMessenger:notify! msg)))
                          (case (pcall check-to-update! resolved-path opts)
                            (false msg) (WatchMessenger:notify-once! msg
                                                                     vim.log.levels.ERROR)))
