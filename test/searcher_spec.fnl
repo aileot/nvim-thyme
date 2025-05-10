@@ -22,7 +22,13 @@
     (after_each (fn []
                   (vim.fn.delete fnl-path)
                   (set package.loaded.foo nil)
-                  (vim.cmd :ThymeUninstall)))
+                  (let [raw-confirm vim.fn.confirm]
+                    (set vim.fn.confirm
+                         (fn []
+                           (let [idx-yes 2]
+                             idx-yes)))
+                    (vim.cmd :ThymeUninstall)
+                    (set vim.fn.confirm raw-confirm))))
     (describe* "should find a fennel file in fnl/ dir on vim.o.rtp;"
       (it* "thus, searcher returns a chunk function."
         (assert.equals :function (type (search-fnl-module-on-rtp! :foo)))))
