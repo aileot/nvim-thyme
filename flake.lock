@@ -1,12 +1,28 @@
 {
   "nodes": {
+    "fennel-ls": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1745705188,
+        "narHash": "sha256-kVgNlC7wayznmoHzV1/TuXCggqgvS43B+O7f8S2JSLc=",
+        "ref": "refs/heads/main",
+        "rev": "39fdd0c282bcaf0d74c6996e97c65ba37437eb77",
+        "revCount": 431,
+        "type": "git",
+        "url": "https://git.sr.ht/~xerool/fennel-ls"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.sr.ht/~xerool/fennel-ls"
+      }
+    },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1734435836,
-        "narHash": "sha256-kMBQ5PRiFLagltK0sH+08aiNt3zGERC2297iB6vrvlU=",
+        "lastModified": 1746576598,
+        "narHash": "sha256-FshoQvr6Aor5SnORVvh/ZdJ1Sa2U4ZrIMwKBX5k2wu0=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "4989a246d7a390a859852baddb1013f825435cee",
+        "rev": "b3582c75c7f21ce0b429898980eddbbf05c68e55",
         "type": "github"
       },
       "original": {
@@ -18,6 +34,7 @@
     },
     "root": {
       "inputs": {
+        "fennel-ls": "fennel-ls",
         "nixpkgs": "nixpkgs",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
@@ -45,11 +62,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1734704479,
-        "narHash": "sha256-MMi74+WckoyEWBRcg/oaGRvXC9BVVxDZNRMpL+72wBI=",
+        "lastModified": 1746216483,
+        "narHash": "sha256-4h3s1L/kKqt3gMDcVfN8/4v2jqHrgLIe4qok4ApH5x4=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "65712f5af67234dad91a5a4baee986a8b62dbf8f",
+        "rev": "29ec5026372e0dec56f890e50dbe4f45930320fd",
         "type": "github"
       },
       "original": {
