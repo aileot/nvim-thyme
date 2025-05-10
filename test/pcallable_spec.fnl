@@ -24,7 +24,9 @@
   (it* "should open the cache directory."
     (assert.not_equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))
     (require "thyme.call.cache.open")
-    (assert.equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))))
+    (assert.equals lua-cache-prefix
+                   (-> (vim.api.nvim_buf_get_name 0)
+                       (: :gsub "/$" "")))))
 
 (describe* "thyme.call.setup"
   (it* "can be called without error."
