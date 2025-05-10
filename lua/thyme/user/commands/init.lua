@@ -5,6 +5,8 @@ local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
 local _local_2_ = require("thyme.utils.fs")
 local directory_3f = _local_2_["directory?"]
+local Messenger = require("thyme.utils.messenger")
+local UninstallCommandMessenger = Messenger.new("command/uninstall")
 local cache_commands = require("thyme.user.commands.cache")
 local rollback_commands = require("thyme.user.commands.rollback")
 local fennel_wrapper_commands = require("thyme.user.commands.fennel")
@@ -25,7 +27,7 @@ local function define_commands_21(_3fopts)
       if directory_3f(path) then
         local _5_ = vim.fn.delete(path, "rf")
         if (_5_ == 0) then
-          vim.notify(("[thyme] successfully deleted " .. path))
+          UninstallCommandMessenger["notify!"](UninstallCommandMessenger, ("successfully deleted " .. path))
         else
           local _0 = _5_
           error(("[thyme] failed to delete " .. path))
@@ -33,7 +35,7 @@ local function define_commands_21(_3fopts)
       else
       end
     end
-    return vim.notify("[thyme] successfully uninstalled")
+    return UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "successfully uninstalled")
   end
   vim.api.nvim_create_user_command("ThymeUninstall", _4_, {desc = "[thyme] delete all the thyme's cache, state, and data files"})
   cache_commands["setup!"]()

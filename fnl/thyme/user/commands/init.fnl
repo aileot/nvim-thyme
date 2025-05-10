@@ -7,6 +7,9 @@
 
 (local {: directory?} (require :thyme.utils.fs))
 
+(local Messenger (require :thyme.utils.messenger))
+(local UninstallCommandMessenger (Messenger.new "command/uninstall"))
+
 (local cache-commands (require :thyme.user.commands.cache))
 (local rollback-commands (require :thyme.user.commands.rollback))
 (local fennel-wrapper-commands (require :thyme.user.commands.fennel))
@@ -51,9 +54,10 @@
           (assert-is-file-of-thyme path)
           (when (directory? path)
             (case (vim.fn.delete path :rf)
-              0 (vim.notify (.. "[thyme] successfully deleted " path))
+              0 (UninstallCommandMessenger:notify! (.. "successfully deleted "
+                                                       path))
               _ (error (.. "[thyme] failed to delete " path)))))
-        (vim.notify (.. "[thyme] successfully uninstalled")))))
+        (UninstallCommandMessenger:notify! (.. "successfully uninstalled")))))
   (cache-commands.setup!)
   (rollback-commands.setup!)
   (fennel-wrapper-commands.setup! ?opts))
