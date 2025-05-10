@@ -32,8 +32,10 @@
 
 (fn Messenger.notify! [self old-msg ...]
   (self._validate-raw-msg! old-msg)
-  (let [new-msg (self:wrap-msg old-msg)]
-    (vim.notify new-msg ...)))
+  (let [Config (require :thyme.config) ;
+        ;; NOTE: Avoid "loop or previous error".
+        new-msg (self:wrap-msg old-msg)]
+    (Config.notifier new-msg ...)))
 
 (fn Messenger.notify-once! [self old-msg ...]
   ;; REF: $VIMRUNTIME/lua/vim/_editor.lua

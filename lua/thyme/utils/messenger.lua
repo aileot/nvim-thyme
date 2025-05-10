@@ -18,8 +18,9 @@ Messenger["_validate-raw-msg!"] = function(raw_msg)
 end
 Messenger["notify!"] = function(self, old_msg, ...)
   self["_validate-raw-msg!"](old_msg)
+  local Config = require("thyme.config")
   local new_msg = self["wrap-msg"](self, old_msg)
-  return vim.notify(new_msg, ...)
+  return Config.notifier(new_msg, ...)
 end
 Messenger["notify-once!"] = function(self, old_msg, ...)
   local or_1_ = self.notified[old_msg]
