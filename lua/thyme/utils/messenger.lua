@@ -1,11 +1,11 @@
 local Messenger = {notified = {}}
 Messenger.__index = Messenger
-Messenger.new = function(role)
-  assert(not role:find("^thyme"), ("`role` must not starts with `thyme`: " .. role))
-  assert(not role:find("^%[thyme"), ("`role` must not starts with `[thyme`: " .. role))
+Messenger.new = function(scope)
+  assert(not scope:find("^thyme"), ("`scope` must not starts with `thyme`: " .. scope))
+  assert(not scope:find("^%[thyme"), ("`scope` must not starts with `[thyme`: " .. scope))
   local self = setmetatable({}, Messenger)
-  self._role = role
-  self._prefix = ("thyme(%s): "):format(role)
+  self._role = scope
+  self._prefix = ("thyme(%s): "):format(scope)
   return self
 end
 Messenger["wrap-msg"] = function(self, old_msg)

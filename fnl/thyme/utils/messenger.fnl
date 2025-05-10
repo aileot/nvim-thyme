@@ -2,23 +2,23 @@
 
 (set Messenger.__index Messenger)
 
-(fn Messenger.new [role]
-  "Create `Messenger` instance as `role`.
-@param role string
+(fn Messenger.new [scope]
+  "Create `Messenger` instance as `scope`.
+@param scope string
 @return Messenger"
-  (assert (not (role:find "^thyme")) ;
-          (.. "`role` must not starts with `thyme`: " role))
-  (assert (not (role:find "^%[thyme")) ;
-          (.. "`role` must not starts with `[thyme`: " role))
+  (assert (not (scope:find "^thyme")) ;
+          (.. "`scope` must not starts with `thyme`: " scope))
+  (assert (not (scope:find "^%[thyme")) ;
+          (.. "`scope` must not starts with `[thyme`: " scope))
   (let [self (setmetatable {} Messenger)]
-    (set self._role role)
+    (set self._role scope)
     (set self._prefix (-> "thyme(%s): "
-                          (: :format role)))
+                          (: :format scope)))
     self))
 
 (fn Messenger.wrap-msg [self old-msg]
-  "Wrap message with `role` signature.
-@param role string
+  "Wrap message with `scope` signature.
+@param scope string
 @return Messenger"
   (.. self._prefix old-msg))
 
