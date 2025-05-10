@@ -8,6 +8,8 @@ local _local_3_ = require("thyme.utils.fs")
 local file_readable_3f = _local_3_["file-readable?"]
 local read_file = _local_3_["read-file"]
 local write_lua_file_21 = _local_3_["write-lua-file!"]
+local Messenger = require("thyme.utils.messenger")
+local CommandMessenger = Messenger.new("command/fennel")
 local _local_4_ = require("thyme.config")
 local config_file_3f = _local_4_["config-file?"]
 local Config = _local_4_
@@ -280,7 +282,7 @@ M["setup!"] = function(_3fopts)
             and_53_ = true
           else
             local _ = _54_
-            vim.notify("Abort")
+            CommandMessenger["notify!"](CommandMessenger, "Abort")
             and_53_ = false
           end
         else
@@ -295,11 +297,11 @@ M["setup!"] = function(_3fopts)
         assert(not config_file_3f(fnl_path), "Abort. Attempted to compile config file")
         local lua_lines = fennel_wrapper["compile-file"](fnl_path, fennel_options)
         if (lua_lines == read_file(lua_path)) then
-          vim.notify(("Abort. Nothing has changed in " .. fnl_path))
+          CommandMessenger["notify!"](CommandMessenger, ("Abort. Nothing has changed in " .. fnl_path))
         else
           local msg = (fnl_path .. " is compiled into " .. lua_path)
           write_lua_file_21(lua_path, lua_lines)
-          vim.notify(msg)
+          CommandMessenger["notify!"](CommandMessenger, msg)
         end
       end
       return nil
@@ -350,7 +352,7 @@ M["setup!"] = function(_3fopts)
       return open_buffer_21(output_path, mods)
     else
       if not mods.emsg_silent then
-        return vim.notify(("failed to find the alternate file of " .. input_path), vim.log.levels.WARN)
+        return CommandMessenger["notify!"](CommandMessenger, ("failed to find the alternate file of " .. input_path), vim.log.levels.WARN)
       else
         return nil
       end

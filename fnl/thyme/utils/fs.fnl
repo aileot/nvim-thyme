@@ -149,6 +149,27 @@
   (assert-is-log-file log-path)
   (async-write-file-with-flags! log-path lines :a))
 
+(fn uv.symlink! [path new-path ...]
+  "Force create symbolic link from `path` to `new-path`.
+@param path string
+@param new-path string
+@return boolean true if symlink is successfully created, or false"
+  ;; NOTE: `loop or previous error` since `utils.pool` depends on this `utils.fs` module.
+  (let [{: hide-file! : has-hidden-file? : restore-file!} (require :thyme.utils.pool)]
+    (when (file-readable? new-path)
+      (hide-file! new-path))
+    (case (pcall (assert #(vim.uv.fs_symlink path new-path)))
+      (false msg) (if (has-hidden-file? new-path)
+                      true
+                      (do
+                        (restore-file! new-path)
+                        ;; NOTE: This is just a delayed error message so that
+                        ;; it does not make sense to replace the `vim.notify`
+                        ;; with a `Messenger.notify!`.
+                        (vim.notify msg vim.log.levels.ERROR)
+                        false))
+      _ true)))
+
 (setmetatable {: file-readable?
                : directory?
                : assert-is-file-readable

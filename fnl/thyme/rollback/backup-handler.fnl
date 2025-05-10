@@ -8,28 +8,9 @@
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
        (require :thyme.utils.fs))
 
-(local {: hide-file! : has-hidden-file? : restore-file!}
-       (require :thyme.utils.pool))
-
 (local BackupHandler {})
 
 (set BackupHandler.__index BackupHandler)
-
-(fn symlink! [path new-path ...]
-  "Force create symbolic link from `path` to `new-path`.
-@param path string
-@param new-path string
-@return boolean true if symlink is successfully created, or false"
-  (when (file-readable? new-path)
-    (hide-file! new-path))
-  (case (pcall (assert #(vim.uv.fs_symlink path new-path)))
-    (false msg) (if (has-hidden-file? new-path)
-                    true
-                    (do
-                      (restore-file! new-path)
-                      (vim.notify msg vim.log.levels.ERROR)
-                      false))
-    _ true))
 
 (fn BackupHandler.new [root-dir file-extension module-name]
   "Create a new BackupHandler for `module-name`.
@@ -119,7 +100,7 @@ Return `true` if the following conditions are met:
   (let [backup-dir (Path.join self._root-dir self._module-name)
         active-backup-path (Path.join backup-dir self._active-backup-filename)
         mounted-backup-path (Path.join backup-dir self._mounted-backup-filename)]
-    (symlink! active-backup-path mounted-backup-path)))
+    (fs.symlink! active-backup-path mounted-backup-path)))
 
 (fn BackupHandler.unmount-backup! [self]
   "Unmount previously mounted backup for `module-name`.
@@ -153,6 +134,6 @@ Return `true` if the following conditions are met:
     (-> (vim.fs.dirname active-backup-path)
         (vim.fn.mkdir :p))
     (assert (fs.copyfile path backup-path))
-    (symlink! backup-path active-backup-path)))
+    (fs.symlink! backup-path active-backup-path)))
 
 BackupHandler

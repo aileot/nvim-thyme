@@ -6,8 +6,7 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-(local {: hide-file! : has-hidden-file? : restore-file!}
-       (require :thyme.utils.pool))
+(local Messenger (require :thyme.utils.messenger))
 
 (local BackupHandler (require :thyme.rollback.backup-handler))
 
@@ -18,22 +17,6 @@
 
 (set RollbackManager.__index RollbackManager)
 
-(fn symlink! [path new-path ...]
-  "Force create symbolic link from `path` to `new-path`.
-@param path string
-@param new-path string
-@return boolean true if symlink is successfully created, or false"
-  (when (file-readable? new-path)
-    (hide-file! new-path))
-  (case (pcall (assert #(vim.uv.fs_symlink path new-path)))
-    (false msg) (if (has-hidden-file? new-path)
-                    true
-                    (do
-                      (restore-file! new-path)
-                      (vim.notify msg vim.log.levels.ERROR)
-                      false))
-    _ true))
-
 ;;; Class Methods
 
 (fn RollbackManager.backupHandlerOf [self module-name]
@@ -42,22 +25,6 @@
 @return BackupHandler"
   (BackupHandler.new self._kind-dir self.file-extension module-name))
 
-(fn RollbackManager.arrange-loader-path [self old-loader-path]
-  "Return loader path updated for mounted rollback feature.
-@param old-loader-path string
-@return string"
-  (let [loader-path-for-mounted-backups (Path.join self._kind-dir "?"
-                                                   self._mounted-backup-filename)
-        loader-prefix (.. loader-path-for-mounted-backups ";")]
-    ;; Keep mounted backup loader path at the beginning of loader path.
-    (case (old-loader-path:find loader-path-for-mounted-backups 1 true)
-      1 old-loader-path
-      nil (.. loader-prefix old-loader-path)
-      (idx-start idx-end) (let [tmp-loader-path (.. (old-loader-path:sub 1
-                                                                         idx-start)
-                                                    (old-loader-path:sub idx-end))]
-                            (.. loader-prefix tmp-loader-path)))))
-
 (fn RollbackManager.search-module-from-mounted-backups [self module-name]
   "Search for `module-name` in mounted rollbacks.
 @param module-name string
@@ -65,18 +32,20 @@
 @return nil|string: nil, or (only for macro searcher) an error message."
   (let [backup-handler (self:backupHandlerOf module-name)
         rollback-path (backup-handler:determine-mounted-backup-path)
-        loader-name (-> "thyme-mounted-rollback-%s-loader"
-                        (: :format self._kind))]
+        loader-name (-> "mounted-rollback-%s-loader"
+                        (: :format self._kind))
+        messenger (Messenger.new loader-name)]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
-              msg (-> "%s: rollback to backup for %s (created at %s)"
-                      (: :format loader-name module-name
+              msg (-> "rollback to backup for %s (created at %s)"
+                      (: :format module-name
                          (backup-handler:determine-active-backup-birthtime module-name)))]
-          (vim.notify_once msg vim.log.levels.WARN)
+          (messenger:notify-once! msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
-        (let [error-msg (-> "%s: no mounted backup is found for %s %s"
-                            (: :format loader-name self._kind module-name))]
+        (let [error-msg (-> "no mounted backup is found for %s %s"
+                            (: :format self._kind module-name)
+                            (messenger:wrap-msg))]
           (if (= self._kind "macro")
               ;; TODO: Better implementation independent of `self._kind`.
               (values nil error-msg)
@@ -134,7 +103,7 @@
   (let [dir (vim.fs.dirname backup-path)
         active-backup-path (Path.join dir
                                       RollbackManager._active-backup-filename)]
-    (symlink! backup-path active-backup-path)))
+    (fs.symlink! backup-path active-backup-path)))
 
 (fn RollbackManager.active-backup? [backup-path]
   "Tell if given `backup-path` is an active backup.

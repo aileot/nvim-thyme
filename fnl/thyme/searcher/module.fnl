@@ -1,8 +1,8 @@
 (import-macros {: when-not : last : nvim-get-option} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
-
 (local {: debug? : lua-cache-prefix} (require :thyme.const))
+
+(local Path (require :thyme.utils.path))
 
 (local {: file-readable?
         : assert-is-file-readable
@@ -12,6 +12,10 @@
 
 (local {: gsplit} (require :thyme.utils.iterator))
 (local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
+
+(local Messenger (require :thyme.utils.messenger))
+(local LoaderMessenger (Messenger.new "loader"))
+(local RollbackLoaderMessenger (Messenger.new "rollback-loader"))
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
@@ -155,27 +159,32 @@ cache dir.
                                                                                           module-name)
                                                              (backup-handler:cleanup-old-backups! module-name)))
                                                        (load lua-code lua-path))
-                                     (_ msg) (let [msg-prefix (: "
-    thyme-loader: %s is found for the module %s, but failed to compile it
-    \t"
-                                                                 :format
-                                                                 fnl-path
-                                                                 module-name)]
-                                               (values nil (.. msg-prefix msg)))))
-                        (_ msg) (values nil (.. "\nthyme-loader: " msg)))
+                                     (_ raw-msg)
+                                     (let [raw-msg-body (-> "%s is found for the module %s, but failed to compile it"
+                                                            (: :format fnl-path
+                                                               module-name))
+                                           msg-body (LoaderMessenger:wrap-msg raw-msg-body)
+                                           msg (-> "
+%s
+\t%s"
+                                                   (: :format msg-body raw-msg))]
+                                       (values nil msg))))
+                        (_ raw-msg) (let [msg (LoaderMessenger:wrap-msg raw-msg)]
+                                      (values nil (.. "\n" msg))))
                   chunk chunk
                   (_ error-msg)
                   (let [backup-path (backup-handler:determine-active-backup-path module-name)
                         max-rollbacks Config.max-rollbacks
                         rollback-enabled? (< 0 max-rollbacks)]
                     (if (and rollback-enabled? (file-readable? backup-path))
-                        (let [msg (: "thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+                        (let [msg (: "temporarily restore backup for the module %s (created at %s) due to the following error: %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                      :format module-name
                                      (backup-handler:determine-active-backup-birthtime module-name)
                                      error-msg)]
-                          (vim.notify_once msg vim.log.levels.WARN)
+                          (RollbackLoaderMessenger:notify-once! msg
+                                                                vim.log.levels.WARN)
                           (loadfile backup-path))
                         error-msg))))))))
 

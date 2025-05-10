@@ -1,7 +1,7 @@
-local Path = require("thyme.utils.path")
 local _local_1_ = require("thyme.const")
 local debug_3f = _local_1_["debug?"]
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
+local Path = require("thyme.utils.path")
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
@@ -13,6 +13,9 @@ local gsplit = _local_3_["gsplit"]
 local _local_4_ = require("thyme.utils.pool")
 local can_restore_file_3f = _local_4_["can-restore-file?"]
 local restore_file_21 = _local_4_["restore-file!"]
+local Messenger = require("thyme.utils.messenger")
+local LoaderMessenger = Messenger.new("loader")
+local RollbackLoaderMessenger = Messenger.new("rollback-loader")
 local _local_5_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_5_["get-runtime-files"]
 local Config = require("thyme.config")
@@ -181,16 +184,19 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               _27_, _28_ = load(lua_code, lua_path)
             elseif (true and (nil ~= _34_)) then
               local _ = _33_
-              local msg = _34_
-              local msg_prefix = ("\n    thyme-loader: %s is found for the module %s, but failed to compile it\n    \t"):format(fnl_path, module_name)
-              _27_, _28_ = nil, (msg_prefix .. msg)
+              local raw_msg = _34_
+              local raw_msg_body = ("%s is found for the module %s, but failed to compile it"):format(fnl_path, module_name)
+              local msg_body = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg_body)
+              local msg = ("\n%s\n\t%s"):format(msg_body, raw_msg)
+              _27_, _28_ = nil, msg
             else
               _27_, _28_ = nil
             end
           elseif (true and (nil ~= _31_)) then
             local _ = _30_
-            local msg = _31_
-            _27_, _28_ = nil, ("\nthyme-loader: " .. msg)
+            local raw_msg = _31_
+            local msg = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg)
+            _27_, _28_ = nil, ("\n" .. msg)
           else
             _27_, _28_ = nil
           end
@@ -205,8 +211,8 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
           local max_rollbacks = Config["max-rollbacks"]
           local rollback_enabled_3f = (0 < max_rollbacks)
           if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-            local msg = ("thyme-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
-            vim.notify_once(msg, vim.log.levels.WARN)
+            local msg = ("temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
+            RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
             or_26_ = loadfile(backup_path)
           else
             or_26_ = error_msg

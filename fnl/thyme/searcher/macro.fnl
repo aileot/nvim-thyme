@@ -1,11 +1,16 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local RollbackManager (require :thyme.rollback))
-(local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
-
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
+
+(local Messenger (require :thyme.utils.messenger))
+(local SearcherMessenger (Messenger.new "macro-searcher"))
+(local RollbackLoaderMessenger (Messenger.new "macro-rollback-loader"))
+
 (local {: pcall-with-logger! : is-logged? : log-again!}
        (require :thyme.module-map.callstack))
+
+(local RollbackManager (require :thyme.rollback))
+(local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
 (local cache {:macro-loaded {}})
 
@@ -32,16 +37,21 @@
           (backup-handler:cleanup-old-backups!))
         (set compiler-options.env ?env)
         #result)
-      (_ msg) (let [msg-prefix (: "
-thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it in a compiler environment
-\t" :format fnl-path module-name)]
-                (set compiler-options.env ?env)
-                ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
-                ;; is supposed to return a function which must returns a table;
-                ;; otherwise when the searhcer fails to find a macro module,
-                ;; it must return nil. See the implementation of
-                ;; search-macro-module in src/fennel/specials.fnl @1276
-                (values nil (.. msg-prefix msg))))))
+      (_ raw-msg)
+      (let [raw-msg-body (-> "%s is found for the macro module %s, but failed to evaluate it in a compiler environment"
+                             (: :format fnl-path module-name))
+            msg-body (SearcherMessenger:wrap-msg raw-msg-body)
+            msg (-> "
+%s
+\t%s"
+                    (: :format msg-body raw-msg))]
+        (set compiler-options.env ?env)
+        ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
+        ;; is supposed to return a function which must returns a table;
+        ;; otherwise when the searhcer fails to find a macro module,
+        ;; it must return nil. See the implementation of
+        ;; search-macro-module in src/fennel/specials.fnl @1276
+        (values nil msg)))))
 
 (fn search-fnl-macro-on-rtp! [module-name]
   "Search macro on &rtp.
@@ -56,7 +66,7 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
-                (_ msg) (values nil (.. "thyme-macro-searcher: " msg)))
+                (_ msg) (values nil (SearcherMessenger:wrap-msg msg)))
           chunk chunk
           (_ error-msg)
           (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
@@ -71,13 +81,14 @@ thyme-macro-searcher: %s is found for the module %s, but failed to evaluate it i
                         chunk
                         ;; TODO: As described in the error message below, append
                         ;; thyme-backup-loader independently to fennel.macro-searchers?
-                        (let [msg (: "thyme-macro-rollback-loader: temporarily restore backup for the module %s (created at %s) due to the following error: %s
+                        (let [msg (: "temporarily restore backup for the module %s (created at %s) due to the following error: %s
 HINT: You can reduce its annoying errors during repairing the module running `:ThymeRollbackMount` to keep the active backup in the next nvim session.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                      :format module-name
                                      (backup-handler:determine-active-backup-birthtime)
                                      error-msg)]
-                          (vim.notify_once msg vim.log.levels.WARN)
+                          (RollbackLoaderMessenger:notify-once! msg
+                                                                vim.log.levels.WARN)
                           chunk)
                         (_ msg)
                         (values nil msg))
