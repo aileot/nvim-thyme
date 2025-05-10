@@ -6,7 +6,7 @@
 (local {: lua-cache-prefix} (require :thyme.const))
 (local {: hide-files-in-dir!} (require :thyme.utils.pool))
 (local Messenger (require :thyme.utils.messenger))
-(local CacheMessenger (Messenger.new "compiler.cache"))
+(local CacheMessenger (Messenger.new "cache"))
 (local {: clear-module-map-files!} (require :thyme.module-map.unit))
 
 (fn determine-lua-path [module-name]
