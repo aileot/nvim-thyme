@@ -18,6 +18,7 @@
     (before_each (fn []
                    (-> fnl-dir
                        (vim.fn.mkdir :p))
+                   (vim.cmd :ThymeUninstall)
                    (vim.cmd.write fnl-path)))
     (after_each (fn []
                   (vim.fn.delete fnl-path)
