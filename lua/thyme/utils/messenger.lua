@@ -14,8 +14,7 @@ Messenger["wrap-msg"] = function(self, old_msg)
 end
 Messenger["_validate-raw-msg!"] = function(raw_msg)
   assert(not raw_msg:find("^thyme"), "The raw message must not starts with `thyme`")
-  assert(not raw_msg:find("^%[thyme"), "The raw message must not starts with `[thyme`")
-  return assert(raw_msg:find("^[a-z]"), "The raw message must not starts with a lowercase letter")
+  return assert(not raw_msg:find("^%[thyme"), "The raw message must not starts with `[thyme`")
 end
 Messenger["notify!"] = function(self, old_msg, ...)
   self["_validate-raw-msg!"](old_msg)

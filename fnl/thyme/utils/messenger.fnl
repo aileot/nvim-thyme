@@ -27,12 +27,13 @@
   (.. self._prefix old-msg))
 
 (fn Messenger._validate-raw-msg! [raw-msg]
+  ;; NOTE: Some Fennel compiler errors start with capital letter.
+  ;; (assert (raw-msg:find "^[a-z]")
+  ;;         "The raw message must not starts with a lowercase letter"))
   (assert (not (raw-msg:find "^thyme"))
           "The raw message must not starts with `thyme`")
   (assert (not (raw-msg:find "^%[thyme"))
-          "The raw message must not starts with `[thyme`")
-  (assert (raw-msg:find "^[a-z]")
-          "The raw message must not starts with a lowercase letter"))
+          "The raw message must not starts with `[thyme`"))
 
 (fn Messenger.notify! [self old-msg ...]
   (self._validate-raw-msg! old-msg)
