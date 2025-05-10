@@ -1,4 +1,4 @@
-(local Messenger {})
+(local Messenger {:notified {}})
 
 (set Messenger.__index Messenger)
 
@@ -36,8 +36,11 @@
     (vim.notify new-msg ...)))
 
 (fn Messenger.notify-once! [self old-msg ...]
-  (self._validate-raw-msg! old-msg)
-  (let [new-msg (self:wrap-msg old-msg)]
-    (vim.notify_once new-msg ...)))
+  ;; REF: $VIMRUNTIME/lua/vim/_editor.lua
+  (or (. self.notified old-msg) ;
+      (do
+        (self:notify! old-msg ...)
+        (tset self.notified old-msg true)
+        true)))
 
 Messenger

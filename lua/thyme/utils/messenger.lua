@@ -1,4 +1,4 @@
-local Messenger = {}
+local Messenger = {notified = {}}
 Messenger.__index = Messenger
 Messenger.new = function(role)
   assert(not role:find("^thyme"), ("`role` must not starts with `thyme`: " .. role))
@@ -22,8 +22,12 @@ Messenger["notify!"] = function(self, old_msg, ...)
   return vim.notify(new_msg, ...)
 end
 Messenger["notify-once!"] = function(self, old_msg, ...)
-  self["_validate-raw-msg!"](old_msg)
-  local new_msg = self["wrap-msg"](self, old_msg)
-  return vim.notify_once(new_msg, ...)
+  local or_1_ = self.notified[old_msg]
+  if not or_1_ then
+    self["notify!"](self, old_msg, ...)
+    self.notified[old_msg] = true
+    or_1_ = true
+  end
+  return or_1_
 end
 return Messenger
