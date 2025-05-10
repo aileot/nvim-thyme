@@ -2,7 +2,6 @@
 
 (local fennel (require :fennel))
 
-(local {: lua-cache-prefix} (require :thyme.const))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local Messenger (require :thyme.utils.messenger))
 (local RecompilerMessenger (Messenger.new "check.recompiler"))
