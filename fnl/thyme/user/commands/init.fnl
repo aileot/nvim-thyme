@@ -46,18 +46,21 @@
   (command! :ThymeUninstall
     {:desc "[thyme] delete all the thyme's cache, state, and data files"}
     (fn []
-      (let [files [lua-cache-prefix
-                   (Path.join (vim.fn.stdpath :cache) :thyme)
-                   (Path.join (vim.fn.stdpath :state) :thyme)
-                   (Path.join (vim.fn.stdpath :data) :thyme)]]
-        (each [_ path (ipairs files)]
-          (assert-is-file-of-thyme path)
-          (when (directory? path)
-            (case (vim.fn.delete path :rf)
-              0 (UninstallCommandMessenger:notify! (.. "successfully deleted "
-                                                       path))
-              _ (error (.. "failed to delete " path)))))
-        (UninstallCommandMessenger:notify! (.. "successfully uninstalled")))))
+      (case (vim.fn.confirm "Delete all the thyme's cache, state, and data files? It will NOT modify your config files."
+                            "&No\n&yes" 1 :Warning)
+        2 (let [files [lua-cache-prefix
+                       (Path.join (vim.fn.stdpath :cache) :thyme)
+                       (Path.join (vim.fn.stdpath :state) :thyme)
+                       (Path.join (vim.fn.stdpath :data) :thyme)]]
+            (each [_ path (ipairs files)]
+              (assert-is-file-of-thyme path)
+              (when (directory? path)
+                (case (vim.fn.delete path :rf)
+                  0 (UninstallCommandMessenger:notify! (.. "successfully deleted "
+                                                           path))
+                  _ (error (.. "failed to delete " path)))))
+            (UninstallCommandMessenger:notify! (.. "successfully uninstalled")))
+        _ (UninstallCommandMessenger:notify! "aborted"))))
   (cache-commands.setup!)
   (rollback-commands.setup!)
   (fennel-wrapper-commands.setup! ?opts))

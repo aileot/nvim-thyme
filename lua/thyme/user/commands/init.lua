@@ -21,21 +21,27 @@ local function define_commands_21(_3fopts)
   end
   vim.api.nvim_create_user_command("ThymeConfigOpen", _3_, {desc = ("[thyme] open the main config file " .. config_filename)})
   local function _4_()
-    local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}
-    for _, path in ipairs(files) do
-      assert_is_file_of_thyme(path)
-      if directory_3f(path) then
-        local _5_ = vim.fn.delete(path, "rf")
-        if (_5_ == 0) then
-          UninstallCommandMessenger["notify!"](UninstallCommandMessenger, ("successfully deleted " .. path))
+    local _5_ = vim.fn.confirm("Delete all the thyme's cache, state, and data files? It will NOT modify your config files.", "&No\n&yes", 1, "Warning")
+    if (_5_ == 2) then
+      local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}
+      for _, path in ipairs(files) do
+        assert_is_file_of_thyme(path)
+        if directory_3f(path) then
+          local _6_ = vim.fn.delete(path, "rf")
+          if (_6_ == 0) then
+            UninstallCommandMessenger["notify!"](UninstallCommandMessenger, ("successfully deleted " .. path))
+          else
+            local _0 = _6_
+            error(("failed to delete " .. path))
+          end
         else
-          local _0 = _5_
-          error(("failed to delete " .. path))
         end
-      else
       end
+      return UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "successfully uninstalled")
+    else
+      local _ = _5_
+      return UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "aborted")
     end
-    return UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "successfully uninstalled")
   end
   vim.api.nvim_create_user_command("ThymeUninstall", _4_, {desc = "[thyme] delete all the thyme's cache, state, and data files"})
   cache_commands["setup!"]()
