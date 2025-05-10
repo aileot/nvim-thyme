@@ -163,6 +163,9 @@
                       true
                       (do
                         (restore-file! new-path)
+                        ;; NOTE: This is just a delayed error message so that
+                        ;; it does not make sense to replace the `vim.notify`
+                        ;; with a `Messenger.notify!`.
                         (vim.notify msg vim.log.levels.ERROR)
                         false))
       _ true)))
