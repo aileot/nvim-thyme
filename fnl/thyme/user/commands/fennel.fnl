@@ -11,6 +11,9 @@
 (local {: file-readable? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
+(local Messenger (require :thyme.utils.messenger))
+(local CommandMessenger (Messenger.new "command/fennel"))
+
 (local {: config-file? &as Config} (require :thyme.config))
 
 (local {: fnl-path->lua-path} (require :thyme.module-map.logger))
@@ -253,7 +256,7 @@
                                        (vim.fn.confirm "&No\n&yes"))
                                2 true
                                _ (do
-                                   (vim.notify :Abort)
+                                   (CommandMessenger:notify! :Abort)
                                    ;; NOTE: Just in case, thought vim.notify returns nil.
                                    false)))))
             (let [;; TODO: Add interface to overwrite fennel-options in this
@@ -265,11 +268,12 @@
                 (let [lua-lines (fennel-wrapper.compile-file fnl-path
                                                              fennel-options)]
                   (if (= lua-lines (read-file lua-path))
-                      (vim.notify (.. "Abort. Nothing has changed in " fnl-path))
+                      (CommandMessenger:notify! (.. "Abort. Nothing has changed in "
+                                                    fnl-path))
                       (let [msg (.. fnl-path " is compiled into " lua-path)]
                         ;; TODO: Remove dependent files.
                         (write-lua-file! lua-path lua-lines)
-                        (vim.notify msg))))))))))
+                        (CommandMessenger:notify! msg))))))))))
     (command! (.. fnl-cmd-prefix :Alternate)
       ;; TODO: Alternate lua-file to fennel-file.
       {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
@@ -305,6 +309,6 @@
               (open-buffer! output-path mods)
               (when-not mods.emsg_silent
                 (-> (.. "failed to find the alternate file of " input-path)
-                    (vim.notify vim.log.levels.WARN)))))))))
+                    (CommandMessenger:notify! vim.log.levels.WARN)))))))))
 
 M
