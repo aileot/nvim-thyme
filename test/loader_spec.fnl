@@ -1,5 +1,4 @@
-(import-macros {: setup* : before-each : after-each : describe* : it*}
-               :test.helper.busted-macros)
+(import-macros {: setup* : describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
@@ -19,7 +18,7 @@
 (describe* :loader
   (setup* (fn []
             (thyme.setup)))
-  (before-each (fn []
+  (before_each (fn []
                  (-> (vim.fs.dirname default-fnl-module-path)
                      (vim.fn.mkdir :p))
                  (-> (vim.fs.dirname default-lua-module-path)
@@ -33,7 +32,7 @@
                  (assert.is_not_nil (-> vim.o.runtimepath
                                         (: :find (vim.fn.stdpath :config) ;
                                            1 true)))))
-  (after-each (fn []
+  (after_each (fn []
                 (vim.fn.delete default-fnl-module-path)
                 (vim.fn.delete default-lua-module-path)
                 (remove-context-files!)
