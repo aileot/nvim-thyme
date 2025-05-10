@@ -57,17 +57,17 @@ local function initialize_module_searcher_on_rtp_21(fennel)
   local fennel_path
   local _11_
   do
-    local tbl_21_auto = {}
-    local i_22_auto = 0
+    local tbl_21_ = {}
+    local i_22_ = 0
     for _, suffix in ipairs({"?.fnl", "?/init.fnl"}) do
-      local val_23_auto = (std_config_home .. fnl_dir .. suffix)
-      if (nil ~= val_23_auto) then
-        i_22_auto = (i_22_auto + 1)
-        tbl_21_auto[i_22_auto] = val_23_auto
+      local val_23_ = (std_config_home .. fnl_dir .. suffix)
+      if (nil ~= val_23_) then
+        i_22_ = (i_22_ + 1)
+        tbl_21_[i_22_] = val_23_
       else
       end
     end
-    _11_ = tbl_21_auto
+    _11_ = tbl_21_
   end
   fennel_path = table.concat(_11_, ";")
   fennel.path = fennel_path
@@ -83,38 +83,38 @@ local function update_fennel_paths_21(fennel)
   local macro_path
   local _14_
   do
-    local tbl_21_auto = {}
-    local i_22_auto = 0
+    local tbl_21_ = {}
+    local i_22_ = 0
     for fnl_template in gsplit(Config["macro-path"], ";") do
-      local val_23_auto
+      local val_23_
       if ("/" == fnl_template:sub(1, 1)) then
-        val_23_auto = fnl_template
+        val_23_ = fnl_template
       else
         local offset, rest = fnl_template:match("^%./([^?]*)(.-)$")
         local base_paths = base_path_cache[offset]
         local _15_
         do
-          local tbl_21_auto0 = {}
-          local i_22_auto0 = 0
+          local tbl_21_0 = {}
+          local i_22_0 = 0
           for _, dir in pairs(base_paths) do
-            local val_23_auto0 = (dir .. rest)
-            if (nil ~= val_23_auto0) then
-              i_22_auto0 = (i_22_auto0 + 1)
-              tbl_21_auto0[i_22_auto0] = val_23_auto0
+            local val_23_0 = (dir .. rest)
+            if (nil ~= val_23_0) then
+              i_22_0 = (i_22_0 + 1)
+              tbl_21_0[i_22_0] = val_23_0
             else
             end
           end
-          _15_ = tbl_21_auto0
+          _15_ = tbl_21_0
         end
-        val_23_auto = table.concat(_15_, ";")
+        val_23_ = table.concat(_15_, ";")
       end
-      if (nil ~= val_23_auto) then
-        i_22_auto = (i_22_auto + 1)
-        tbl_21_auto[i_22_auto] = val_23_auto
+      if (nil ~= val_23_) then
+        i_22_ = (i_22_ + 1)
+        tbl_21_[i_22_] = val_23_
       else
       end
     end
-    _14_ = tbl_21_auto
+    _14_ = tbl_21_
   end
   macro_path = table.concat(_14_, ";"):gsub("/%./", "/")
   fennel["macro-path"] = macro_path
@@ -187,7 +187,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               local raw_msg = _34_
               local raw_msg_body = ("%s is found for the module %s, but failed to compile it"):format(fnl_path, module_name)
               local msg_body = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg_body)
-              local msg = ("\n%s\n\t%s"):format(msg_body, raw_msg)
+              local msg = ("\n%s\n\9%s"):format(msg_body, raw_msg)
               _27_, _28_ = nil, msg
             else
               _27_, _28_ = nil

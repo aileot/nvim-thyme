@@ -3,7 +3,7 @@ local read_file = _local_1_["read-file"]
 local assert_is_log_file = _local_1_["assert-is-log-file"]
 local _local_2_ = require("thyme.utils.iterator")
 local gsplit = _local_2_["gsplit"]
-local marker = {sep = "\t", macro = "\11", ["end"] = "\n"}
+local marker = {sep = "\9", macro = "\v", ["end"] = "\n"}
 local function modmap__3eline(modmap)
   assert((modmap["module-name"] and modmap["fnl-path"]), ("modmap requires 'module-name' and 'fnl-path'; got module-name: %s, fnl-path: %s"):format(modmap["module-name"], modmap["fnl-path"]))
   return ((modmap["lua-path"] or marker.macro) .. marker.sep .. modmap["module-name"] .. marker.sep .. modmap["fnl-path"] .. marker["end"])
@@ -26,28 +26,28 @@ local function line__3emodmap(line)
   end
 end
 local function read_module_map_file(log_path)
-  local tbl_16_auto = {}
+  local tbl_16_ = {}
   for line in gsplit(read_file(log_path):sub(1, -2), marker["end"]) do
-    local k_17_auto, v_18_auto = nil, nil
+    local k_17_, v_18_ = nil, nil
     do
       local _let_7_ = line__3emodmap(line)
       local fnl_path = _let_7_["fnl-path"]
       local modmap = _let_7_
-      k_17_auto, v_18_auto = fnl_path, modmap
+      k_17_, v_18_ = fnl_path, modmap
     end
-    if ((k_17_auto ~= nil) and (v_18_auto ~= nil)) then
-      tbl_16_auto[k_17_auto] = v_18_auto
+    if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+      tbl_16_[k_17_] = v_18_
     else
     end
   end
-  return tbl_16_auto
+  return tbl_16_
 end
 local function macro_recorded_3f(log_path)
   assert_is_log_file(log_path)
   local file = assert(io.open(log_path, "r"), ("failed to read " .. log_path))
-  local function close_handlers_12_auto(ok_13_auto, ...)
+  local function close_handlers_12_(ok_13_, ...)
     file:close()
-    if ok_13_auto then
+    if ok_13_ then
       return ...
     else
       return error(..., 0)
@@ -56,38 +56,110 @@ local function macro_recorded_3f(log_path)
   local function _10_()
     return (nil ~= file:read("*l"):find(marker.macro, 1, true))
   end
-  return close_handlers_12_auto(_G.xpcall(_10_, (package.loaded.fennel or _G.debug or {}).traceback))
+  local _12_
+  do
+    local t_11_ = _G
+    if (nil ~= t_11_) then
+      t_11_ = t_11_.package
+    else
+    end
+    if (nil ~= t_11_) then
+      t_11_ = t_11_.loaded
+    else
+    end
+    if (nil ~= t_11_) then
+      t_11_ = t_11_.fennel
+    else
+    end
+    _12_ = t_11_
+  end
+  local or_16_ = _12_ or _G.debug
+  if not or_16_ then
+    local function _17_()
+      return ""
+    end
+    or_16_ = {traceback = _17_}
+  end
+  return close_handlers_12_(_G.xpcall(_10_, or_16_.traceback))
 end
 local function peek_module_name(log_path)
   assert_is_log_file(log_path)
   local file = assert(io.open(log_path, "r"), ("failed to read " .. log_path))
-  local function close_handlers_12_auto(ok_13_auto, ...)
+  local function close_handlers_12_(ok_13_, ...)
     file:close()
-    if ok_13_auto then
+    if ok_13_ then
       return ...
     else
       return error(..., 0)
     end
   end
-  local function _12_()
+  local function _19_()
     return line__3emodmap(file:read("*l"))["module-name"]
   end
-  return close_handlers_12_auto(_G.xpcall(_12_, (package.loaded.fennel or _G.debug or {}).traceback))
+  local _21_
+  do
+    local t_20_ = _G
+    if (nil ~= t_20_) then
+      t_20_ = t_20_.package
+    else
+    end
+    if (nil ~= t_20_) then
+      t_20_ = t_20_.loaded
+    else
+    end
+    if (nil ~= t_20_) then
+      t_20_ = t_20_.fennel
+    else
+    end
+    _21_ = t_20_
+  end
+  local or_25_ = _21_ or _G.debug
+  if not or_25_ then
+    local function _26_()
+      return ""
+    end
+    or_25_ = {traceback = _26_}
+  end
+  return close_handlers_12_(_G.xpcall(_19_, or_25_.traceback))
 end
 local function peek_fnl_path(log_path)
   assert_is_log_file(log_path)
   local file = assert(io.open(log_path, "r"), ("failed to read " .. log_path))
-  local function close_handlers_12_auto(ok_13_auto, ...)
+  local function close_handlers_12_(ok_13_, ...)
     file:close()
-    if ok_13_auto then
+    if ok_13_ then
       return ...
     else
       return error(..., 0)
     end
   end
-  local function _14_()
+  local function _28_()
     return line__3emodmap(file:read("*l"))["fnl-path"]
   end
-  return close_handlers_12_auto(_G.xpcall(_14_, (package.loaded.fennel or _G.debug or {}).traceback))
+  local _30_
+  do
+    local t_29_ = _G
+    if (nil ~= t_29_) then
+      t_29_ = t_29_.package
+    else
+    end
+    if (nil ~= t_29_) then
+      t_29_ = t_29_.loaded
+    else
+    end
+    if (nil ~= t_29_) then
+      t_29_ = t_29_.fennel
+    else
+    end
+    _30_ = t_29_
+  end
+  local or_34_ = _30_ or _G.debug
+  if not or_34_ then
+    local function _35_()
+      return ""
+    end
+    or_34_ = {traceback = _35_}
+  end
+  return close_handlers_12_(_G.xpcall(_28_, or_34_.traceback))
 end
 return {["modmap->line"] = modmap__3eline, ["read-module-map-file"] = read_module_map_file, ["macro-recorded?"] = macro_recorded_3f, ["peek-module-name"] = peek_module_name, ["peek-fnl-path"] = peek_fnl_path}

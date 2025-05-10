@@ -222,57 +222,57 @@ M["setup!"] = function(_3fopts)
     else
       local _45_
       do
-        local tbl_21_auto = {}
-        local i_22_auto = 0
+        local tbl_21_ = {}
+        local i_22_ = 0
         for _, path in ipairs(glob_paths) do
-          local val_23_auto = vim.split(vim.fn.glob(path), "\n")
-          if (nil ~= val_23_auto) then
-            i_22_auto = (i_22_auto + 1)
-            tbl_21_auto[i_22_auto] = val_23_auto
+          local val_23_ = vim.split(vim.fn.glob(path), "\n")
+          if (nil ~= val_23_) then
+            i_22_ = (i_22_ + 1)
+            tbl_21_[i_22_] = val_23_
           else
           end
         end
-        _45_ = tbl_21_auto
+        _45_ = tbl_21_
       end
       fnl_paths = vim.fn.flatten(_45_, 1)
     end
     local path_pairs
     do
-      local tbl_16_auto = {}
+      local tbl_16_ = {}
       for _, path in ipairs(fnl_paths) do
-        local k_17_auto, v_18_auto = nil, nil
+        local k_17_, v_18_ = nil, nil
         do
           local full_path = vim.fn.fnamemodify(path, ":p")
-          k_17_auto, v_18_auto = full_path, fnl_path__3elua_path(full_path)
+          k_17_, v_18_ = full_path, fnl_path__3elua_path(full_path)
         end
-        if ((k_17_auto ~= nil) and (v_18_auto ~= nil)) then
-          tbl_16_auto[k_17_auto] = v_18_auto
+        if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+          tbl_16_[k_17_] = v_18_
         else
         end
       end
-      path_pairs = tbl_16_auto
+      path_pairs = tbl_16_
     end
     local existing_lua_files = {}
     local or_49_ = force_compile_3f
     if not or_49_ then
       local _50_
       do
-        local tbl_21_auto = {}
-        local i_22_auto = 0
+        local tbl_21_ = {}
+        local i_22_ = 0
         for _, lua_file in pairs(path_pairs) do
-          local val_23_auto
+          local val_23_
           if file_readable_3f(lua_file) then
-            val_23_auto = table.insert(existing_lua_files, lua_file)
+            val_23_ = table.insert(existing_lua_files, lua_file)
           else
-            val_23_auto = nil
+            val_23_ = nil
           end
-          if (nil ~= val_23_auto) then
-            i_22_auto = (i_22_auto + 1)
-            tbl_21_auto[i_22_auto] = val_23_auto
+          if (nil ~= val_23_) then
+            i_22_ = (i_22_ + 1)
+            tbl_21_[i_22_] = val_23_
           else
           end
         end
-        _50_ = tbl_21_auto
+        _50_ = tbl_21_
       end
       local and_53_ = _50_
       if and_53_ then

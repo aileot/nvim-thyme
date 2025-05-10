@@ -48,17 +48,17 @@ M["setup!"] = function()
     local prefix_length = (2 + #root)
     local glob_pattern = Path.join(root, (arg_lead .. "**/"))
     local paths = vim.fn.glob(glob_pattern, false, true)
-    local tbl_21_auto = {}
-    local i_22_auto = 0
+    local tbl_21_ = {}
+    local i_22_ = 0
     for _, path in ipairs(paths) do
-      local val_23_auto = path:sub(prefix_length, -2)
-      if (nil ~= val_23_auto) then
-        i_22_auto = (i_22_auto + 1)
-        tbl_21_auto[i_22_auto] = val_23_auto
+      local val_23_ = path:sub(prefix_length, -2)
+      if (nil ~= val_23_) then
+        i_22_ = (i_22_ + 1)
+        tbl_21_[i_22_] = val_23_
       else
       end
     end
-    return tbl_21_auto
+    return tbl_21_
   end
   complete_dirs = _8_
   local function _11_(_10_)

@@ -8,15 +8,15 @@ local cache = {["parinfer-loader"] = nil}
 local vim_var_suffixes
 do
   local vim_var_prefix = "parinfer_"
-  local tbl_16_auto = {}
+  local tbl_16_ = {}
   for k, v in pairs({mode = "mode", enabled = "enabled", trail_highlight = "trail_highlight", trail_highlight_group = "trail_highlight_group", force_balance = "forceBalance", comment_char = "commentChar", string_delimiters = "stringDelimiters", lisp_vline_symbols = "lispVlineSymbols", lisp_block_comments = "lispBlockComments", guile_block_comments = "guileBlockComments", scheme_sexp_comments = "schemeSexpComments", janet_long_strings = "janetLongStrings"}) do
-    local k_17_auto, v_18_auto = (vim_var_prefix .. k), v
-    if ((k_17_auto ~= nil) and (v_18_auto ~= nil)) then
-      tbl_16_auto[k_17_auto] = v_18_auto
+    local k_17_, v_18_ = (vim_var_prefix .. k), v
+    if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+      tbl_16_[k_17_] = v_18_
     else
     end
   end
-  vim_var_suffixes = tbl_16_auto
+  vim_var_suffixes = tbl_16_
 end
 local function vim_var__3elib_opts(_3fval)
   if ("number" == type(_3fval)) then
@@ -26,15 +26,15 @@ local function vim_var__3elib_opts(_3fval)
   end
 end
 local function collect_gvar_options()
-  local tbl_16_auto = {}
+  local tbl_16_ = {}
   for vim_var_suffix, lib_opt_name in pairs(vim_var_suffixes) do
-    local k_17_auto, v_18_auto = lib_opt_name, vim_var__3elib_opts(vim.g[vim_var_suffix])
-    if ((k_17_auto ~= nil) and (v_18_auto ~= nil)) then
-      tbl_16_auto[k_17_auto] = v_18_auto
+    local k_17_, v_18_ = lib_opt_name, vim_var__3elib_opts(vim.g[vim_var_suffix])
+    if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+      tbl_16_[k_17_] = v_18_
     else
     end
   end
-  return tbl_16_auto
+  return tbl_16_
 end
 local function search_parinfer_lib()
   local parinfer_lib

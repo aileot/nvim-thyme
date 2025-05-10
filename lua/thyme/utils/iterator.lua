@@ -75,17 +75,17 @@ end
 local function pairs_from_longer_key(tbl)
   local keys
   do
-    local tbl_21_auto = {}
-    local i_22_auto = 0
+    local tbl_21_ = {}
+    local i_22_ = 0
     for k, _ in pairs(tbl) do
-      local val_23_auto = k
-      if (nil ~= val_23_auto) then
-        i_22_auto = (i_22_auto + 1)
-        tbl_21_auto[i_22_auto] = val_23_auto
+      local val_23_ = k
+      if (nil ~= val_23_) then
+        i_22_ = (i_22_ + 1)
+        tbl_21_[i_22_] = val_23_
       else
       end
     end
-    keys = tbl_21_auto
+    keys = tbl_21_
   end
   local function _13_(a, b)
     return (#b < #a)

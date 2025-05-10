@@ -37,7 +37,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     local raw_msg = _4_
     local raw_msg_body = ("%s is found for the macro module %s, but failed to evaluate it in a compiler environment"):format(fnl_path, module_name)
     local msg_body = SearcherMessenger["wrap-msg"](SearcherMessenger, raw_msg_body)
-    local msg = ("\n%s\n\t%s"):format(msg_body, raw_msg)
+    local msg = ("\n%s\n\9%s"):format(msg_body, raw_msg)
     compiler_options.env = _3fenv
     return nil, msg
   else

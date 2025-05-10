@@ -40,11 +40,11 @@ end
 BackupHandler["determine-active-backup-birthtime"] = function(self)
   local _3_
   do
-    local tmp_3_auto = self["determine-active-backup-path"](self, self["_module-name"])
-    if (nil ~= tmp_3_auto) then
-      local tmp_3_auto0 = fs.stat(tmp_3_auto)
-      if (nil ~= tmp_3_auto0) then
-        _3_ = tmp_3_auto0.birthtime.sec
+    local tmp_3_ = self["determine-active-backup-path"](self, self["_module-name"])
+    if (nil ~= tmp_3_) then
+      local tmp_3_0 = fs.stat(tmp_3_)
+      if (nil ~= tmp_3_0) then
+        _3_ = tmp_3_0.birthtime.sec
       else
         _3_ = nil
       end
