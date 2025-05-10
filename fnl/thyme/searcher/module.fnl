@@ -137,8 +137,13 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (or Config.?error-msg ;
           (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)
-                ?chunk (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
-                         searcher (searcher module-name))]
+                ?chunk (case (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
+                               searcher (searcher module-name))
+                         msg|chunk (case (type msg|chunk)
+                                     ;; NOTE: Discard unwothy msg in the edge
+                                     ;; cases on initializations.
+                                     :function
+                                     msg|chunk))]
             (or ?chunk ;
                 (case (case (module-name->fnl-file-on-rtp! module-name)
                         fnl-path (let [fennel (require :fennel)
