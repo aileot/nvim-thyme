@@ -30,32 +30,40 @@
                                          :upward false
                                          :path lua-cache-prefix})))))
   (describe* ":ThymeUninstall"
-    (after_each (fn []
-                  (remove-context-files!)))
-    (it* "deletes all the thyme's cache, state, and data files"
-      (let [ctx1 "{:foo :bar}"
-            mod :foobar
-            fnl-path (.. mod ".fnl")]
-        (prepare-config-fnl-file! fnl-path ctx1)
-        (require mod)
-        (tset package.loaded mod nil)
-        (->> (+ (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
-                                                     :thyme))
-                (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :data)
-                                                     :thyme))
-                (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :state)
-                                                     :thyme)))
-             (assert.not_equals 0))
-        (vim.cmd "silent ThymeUninstall")
-        (assert.equals 0 (vim.fn.isdirectory lua-cache-prefix))
-        (->> (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
-                                                  :thyme))
-             (assert.equals 0))
-        (->> (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :data) :thyme))
-             (assert.equals 0))
-        (->> (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :state)
-                                                  :thyme))
-             (assert.equals 0))))))
+    (let [raw-confirm vim.fn.confirm]
+      (before_each (fn []
+                     (set vim.fn.confirm
+                          (fn []
+                            (let [idx-yes 2]
+                              idx-yes)))))
+      (after_each (fn []
+                    (set vim.fn.confirm raw-confirm)
+                    (remove-context-files!)))
+      (it* "deletes all the thyme's cache, state, and data files"
+        (let [ctx1 "{:foo :bar}"
+              mod :foobar
+              fnl-path (.. mod ".fnl")]
+          (prepare-config-fnl-file! fnl-path ctx1)
+          (require mod)
+          (tset package.loaded mod nil)
+          (->> (+ (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
+                                                       :thyme))
+                  (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :data)
+                                                       :thyme))
+                  (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :state)
+                                                       :thyme)))
+               (assert.not_equals 0))
+          (vim.cmd "silent ThymeUninstall")
+          (assert.equals 0 (vim.fn.isdirectory lua-cache-prefix))
+          (->> (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
+                                                    :thyme))
+               (assert.equals 0))
+          (->> (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :data)
+                                                    :thyme))
+               (assert.equals 0))
+          (->> (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :state)
+                                                    :thyme))
+               (assert.equals 0)))))))
 
 (describe* "command"
   (describe* ":FnlAlternate"
