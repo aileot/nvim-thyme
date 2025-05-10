@@ -1,7 +1,8 @@
 (local {: state-prefix} (require :thyme.const))
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable? : read-file &as fs} (require :thyme.utils.fs))
+(local {: file-readable? : assert-is-file-readable : read-file &as fs}
+       (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
 (local {: each-file} (require :thyme.utils.iterator))
@@ -19,7 +20,7 @@
 (fn hide-file! [path]
   "Move `path` to its own pool-path.
 @param path string"
-  (assert (file-readable? path))
+  (assert-is-file-readable path)
   (let [pool-path (path->pool-path path)]
     (-> (vim.fs.dirname pool-path)
         (vim.fn.mkdir :p))

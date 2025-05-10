@@ -3,6 +3,7 @@ local state_prefix = _local_1_["state-prefix"]
 local Path = require("thyme.utils.path")
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
+local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local fs = _local_2_
 local _local_3_ = require("thyme.utils.uri")
@@ -15,7 +16,7 @@ local function path__3epool_path(path)
   return Path.join(pool_prefix, uri_encode(path))
 end
 local function hide_file_21(path)
-  assert(file_readable_3f(path))
+  assert_is_file_readable(path)
   local pool_path = path__3epool_path(path)
   vim.fn.mkdir(vim.fs.dirname(pool_path), "p")
   return assert(fs.rename(path, pool_path))
