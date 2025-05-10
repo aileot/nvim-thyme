@@ -1,5 +1,4 @@
-(import-macros {: before-each : after-each : describe* : it*}
-               :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
@@ -16,11 +15,11 @@
                     (vim.fs.joinpath :fnl))
         fnl-path (-> fnl-dir
                      (vim.fs.joinpath "foo.fnl"))]
-    (before-each (fn []
+    (before_each (fn []
                    (-> fnl-dir
                        (vim.fn.mkdir :p))
                    (vim.cmd.write fnl-path)))
-    (after-each (fn []
+    (after_each (fn []
                   (vim.fn.delete fnl-path)
                   (set package.loaded.foo nil)
                   (vim.cmd :ThymeUninstall)))
