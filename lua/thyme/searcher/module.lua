@@ -179,7 +179,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
                 restore_file_21(lua_path)
               else
                 write_lua_file_with_backup_21(lua_path, lua_code, module_name)
-                backup_handler["cleanup-old-backups!"](backup_handler, module_name)
+                backup_handler["cleanup-old-backups!"](backup_handler)
               end
               _27_, _28_ = load(lua_code, lua_path)
             elseif (true and (nil ~= _34_)) then

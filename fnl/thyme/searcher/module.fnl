@@ -157,7 +157,7 @@ cache dir.
                                                              (write-lua-file-with-backup! lua-path
                                                                                           lua-code
                                                                                           module-name)
-                                                             (backup-handler:cleanup-old-backups! module-name)))
+                                                             (backup-handler:cleanup-old-backups!)))
                                                        (load lua-code lua-path))
                                      (_ raw-msg)
                                      (let [raw-msg-body (-> "%s is found for the module %s, but failed to compile it"
