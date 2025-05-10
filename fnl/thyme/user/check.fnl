@@ -4,7 +4,7 @@
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local Messenger (require :thyme.utils.messenger))
-(local RecompilerMessenger (Messenger.new "check.recompiler"))
+(local RecompilerMessenger (Messenger.new "watch/recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
 (local {: pcall-with-logger!} (require :thyme.module-map.callstack))
