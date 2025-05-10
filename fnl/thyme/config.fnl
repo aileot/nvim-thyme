@@ -72,7 +72,7 @@ the active backup, if available.
   ;; NOTE: fennel is likely to get into loop or previous error.
   (let [fennel (require :fennel)
         backup-name "default"
-        backup-handler (ConfigRollbackManager:backupHandlerOf backup-name)
+        backup-handler (ConfigRollbackManager:backup-handler-of backup-name)
         mounted-backup-path (backup-handler:determine-mounted-backup-path)
         config-code (if (file-readable? mounted-backup-path)
                         (let [msg (-> "rollback config to mounted backup (created at %s)"

@@ -49,7 +49,7 @@ local function read_config_with_backup_21(config_file_path)
   assert_is_fnl_file(config_file_path)
   local fennel = require("fennel")
   local backup_name = "default"
-  local backup_handler = ConfigRollbackManager:backupHandlerOf(backup_name)
+  local backup_handler = ConfigRollbackManager["backup-handler-of"](ConfigRollbackManager, backup_name)
   local mounted_backup_path = backup_handler["determine-mounted-backup-path"](backup_handler)
   local config_code
   if file_readable_3f(mounted_backup_path) then

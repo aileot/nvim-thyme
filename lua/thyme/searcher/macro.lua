@@ -20,7 +20,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   local _3_, _4_ = pcall_with_logger_21(fennel.eval, fnl_path, nil, compiler_options, module_name)
   if ((_3_ == true) and (nil ~= _4_)) then
     local result = _4_
-    local backup_handler = MacroRollbackManager:backupHandlerOf(module_name)
+    local backup_handler = MacroRollbackManager["backup-handler-of"](MacroRollbackManager, module_name)
     local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
     if ((fnl_path ~= backup_path) and backup_handler["should-update-backup?"](backup_handler, read_file(fnl_path))) then
       backup_handler["write-backup!"](backup_handler, fnl_path)
@@ -92,7 +92,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
     elseif (true and (nil ~= _16_)) then
       local _ = _15_
       local error_msg = _16_
-      local backup_handler = MacroRollbackManager:backupHandlerOf(module_name)
+      local backup_handler = MacroRollbackManager["backup-handler-of"](MacroRollbackManager, module_name)
       local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
       local Config = require("thyme.config")
       local _24_ = Config["?error-msg"]

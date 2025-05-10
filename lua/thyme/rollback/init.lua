@@ -9,11 +9,11 @@ local Messenger = require("thyme.utils.messenger")
 local BackupHandler = require("thyme.rollback.backup-handler")
 local RollbackManager = {_root = Path.join(state_prefix, "rollbacks"), ["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
 RollbackManager.__index = RollbackManager
-RollbackManager.backupHandlerOf = function(self, module_name)
+RollbackManager["backup-handler-of"] = function(self, module_name)
   return BackupHandler.new(self["_kind-dir"], self["file-extension"], module_name)
 end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
-  local backup_handler = self:backupHandlerOf(module_name)
+  local backup_handler = self["backup-handler-of"](self, module_name)
   local rollback_path = backup_handler["determine-mounted-backup-path"](backup_handler)
   local loader_name = ("mounted-rollback-%s-loader"):format(self._kind)
   local messenger = Messenger.new(loader_name)

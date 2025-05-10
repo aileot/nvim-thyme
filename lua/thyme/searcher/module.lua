@@ -122,7 +122,7 @@ local function update_fennel_paths_21(fennel)
 end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
-  local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
+  local backup_handler = ModuleRollbackManager["backup-handler-of"](ModuleRollbackManager, module_name)
   if backup_handler["should-update-backup?"](backup_handler, lua_code) then
     return backup_handler["write-backup!"](backup_handler, lua_path)
   else
@@ -149,7 +149,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
   else
     local or_22_ = Config["?error-msg"]
     if not or_22_ then
-      local backup_handler = ModuleRollbackManager:backupHandlerOf(module_name)
+      local backup_handler = ModuleRollbackManager["backup-handler-of"](ModuleRollbackManager, module_name)
       local _3fchunk
       do
         local _24_

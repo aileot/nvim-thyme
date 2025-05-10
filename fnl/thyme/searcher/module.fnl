@@ -106,7 +106,7 @@ fennel.lua.
 @param module-name string
 @return undefined"
   (write-lua-file! lua-path lua-code)
-  (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)]
+  (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)]
     (when (backup-handler:should-update-backup? lua-code)
       (backup-handler:write-backup! lua-path))))
 
@@ -136,7 +136,7 @@ cache dir.
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (or Config.?error-msg ;
-          (let [backup-handler (ModuleRollbackManager:backupHandlerOf module-name)
+          (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)
                 ?chunk (case (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
                                searcher (searcher module-name))
                          msg|chunk (case (type msg|chunk)

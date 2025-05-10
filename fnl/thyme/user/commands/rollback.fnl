@@ -26,7 +26,7 @@
 @return boolean true if successfully mounted; false otherwise"
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backupHandlerOf modname))
+                           (: :backup-handler-of modname))
         ok? (backup-handler:mount-backup!)]
     (when (and ok? (= kind :module))
       ;; Hide the corresponding lua cache from &rtp to make sure the
@@ -42,7 +42,7 @@
 @return boolean true if module has been successfully unmounted, false otherwise."
   (let [ext-tmp ".tmp"
         backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backupHandlerOf modname))]
+                           (: :backup-handler-of modname))]
     ;; NOTE: Do NOT mess up lines on unmounting, but leave the `restore-file!`
     ;; tasks to the searchers at runtime instead.
     (backup-handler:unmount-backup!)))

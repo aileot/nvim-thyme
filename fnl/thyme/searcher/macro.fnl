@@ -29,7 +29,7 @@
     (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
                               module-name)
       (true result)
-      (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
+      (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
             backup-path (backup-handler:determine-active-backup-path)]
         (when (and (not= fnl-path backup-path)
                    (backup-handler:should-update-backup? (read-file fnl-path)))
@@ -74,7 +74,7 @@
                 (_ msg) (values nil (SearcherMessenger:wrap-msg msg)))
           chunk chunk
           (_ error-msg)
-          (let [backup-handler (MacroRollbackManager:backupHandlerOf module-name)
+          (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
                 backup-path (backup-handler:determine-active-backup-path)
                 Config (require :thyme.config)]
             (case Config.?error-msg

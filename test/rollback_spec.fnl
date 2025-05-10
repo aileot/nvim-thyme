@@ -25,7 +25,7 @@
     (let [kind "foo"
           module-name "foobar"
           rollback-manager (TestRollbackManager.new kind ".fnl")
-          backup-handler (rollback-manager:backupHandlerOf module-name)
+          backup-handler (rollback-manager:backup-handler-of module-name)
           stored-path (backup-handler:determine-active-backup-path)
           filename (.. module-name ".fnl")
           original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]
@@ -48,7 +48,7 @@
     (let [mod :foobar
           filename (.. mod ".fnl")
           path (prepare-config-fnl-file! filename "ctx1")
-          backup-handler (TestRollbackManager:backupHandlerOf)]
+          backup-handler (TestRollbackManager:backup-handler-of mod)]
       (assert.equals 0 (length (backup-handler:list-backup-files)))
       (backup-handler:write-backup! path)
       (assert.equals 1 (length (backup-handler:list-backup-files)))

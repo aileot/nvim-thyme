@@ -83,7 +83,7 @@
     (it* "limits the number of backups per Fennel module."
       (let [mod :foobar
             filename (.. mod ".fnl")
-            backup-handler (ModuleRollbackManager:backupHandlerOf mod)]
+            backup-handler (ModuleRollbackManager:backup-handler-of mod)]
         (prepare-config-fnl-file! filename ":ctx1")
         (assert.equals 0 (length (backup-handler:list-backup-files)))
         (assert.equals :ctx1 (require mod))

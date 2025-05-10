@@ -19,7 +19,7 @@
 
 ;;; Class Methods
 
-(fn RollbackManager.backupHandlerOf [self module-name]
+(fn RollbackManager.backup-handler-of [self module-name]
   "Create a rollback handler for `module-name`
 @param module-name string
 @return BackupHandler"
@@ -30,7 +30,7 @@
 @param module-name string
 @return string|(fun(): table)|nil a lua chunk, but, for macro searcher, only expects a macro table as its end; otherwise, returns `nil` preceding an error message in the second return value for macro searcher; return error message for module searcher.
 @return nil|string: nil, or (only for macro searcher) an error message."
-  (let [backup-handler (self:backupHandlerOf module-name)
+  (let [backup-handler (self:backup-handler-of module-name)
         rollback-path (backup-handler:determine-mounted-backup-path)
         loader-name (-> "mounted-rollback-%s-loader"
                         (: :format self._kind))
