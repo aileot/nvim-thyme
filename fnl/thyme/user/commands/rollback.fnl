@@ -3,6 +3,8 @@
 (local Path (require :thyme.utils.path))
 (local {: file-readable?} (require :thyme.utils.fs))
 (local {: hide-file!} (require :thyme.utils.pool))
+(local Messenger (require :thyme.utils.messenger))
+(local CommandMessenger (Messenger.new "command/rollback"))
 (local {: determine-lua-path} (require :thyme.compiler.cache))
 (local RollbackManager (require :thyme.rollback))
 
@@ -72,8 +74,10 @@
               glob-pattern (Path.join prefix "*.{lua,fnl}")
               candidates (vim.fn.glob glob-pattern false true)]
           (case (length candidates)
-            0 (vim.notify (.. "Abort. No backup is found for " input))
-            1 (vim.notify (.. "Abort. Only one backup is found for " input))
+            0 (CommandMessenger:notify! (.. "Abort. No backup is found for "
+                                            input))
+            1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
+                                            input))
             _ (do
                 (table.sort candidates #(< $2 $1))
                 (vim.ui.select candidates ;
@@ -89,7 +93,7 @@
                                      (do
                                        (RollbackManager.switch-active-backup! ?backup-path)
                                        (vim.cmd :ThymeCacheClear))
-                                     (vim.notify "Abort selecting rollback target")))))))))
+                                     (CommandMessenger:notify! "Abort selecting rollback target")))))))))
     (command! :ThymeRollbackMount
       {:nargs 1
        :complete complete-dirs
@@ -97,10 +101,12 @@
       (fn [{: args}]
         (case (RollbackCommandBackend.cmdargs->kind-modname args)
           (kind modname) (if (RollbackCommandBackend.mount-backup! kind modname)
-                             (vim.notify (.. "Successfully mounted " args)
-                                         vim.log.levels.INFO)
-                             (vim.notify (.. "Failed to mount " args)
-                                         vim.log.levels.WARN)))))
+                             (CommandMessenger:notify! (.. "Successfully mounted "
+                                                           args)
+                                                       vim.log.levels.INFO)
+                             (CommandMessenger:notify! (.. "Failed to mount "
+                                                           args)
+                                                       vim.log.levels.WARN)))))
     (command! :ThymeRollbackUnmount
       {:nargs "?"
        ;; TODO: Complete only mounted backups.
@@ -110,19 +116,19 @@
         (case (RollbackCommandBackend.cmdargs->kind-modname args)
           (kind modname)
           (case (pcall RollbackCommandBackend.unmount-backup! kind modname)
-            (false msg) (vim.notify (-> "Failed to mount %s:\n%s"
-                                        (: :format args msg))
-                                    vim.log.levels.WARN)
-            _ (vim.notify (.. "Successfully unmounted " args)
-                          vim.log.levels.INFO)))))
+            (false msg) (CommandMessenger:notify! (-> "Failed to mount %s:\n%s")
+                                                  (: :format args msg
+                                                     vim.log.levels.WARN))
+            _ (CommandMessenger:notify! (.. "Successfully unmounted " args)
+                                        vim.log.levels.INFO)))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []
         (case (pcall RollbackManager.unmount-backup-all!)
-          (false msg) (vim.notify (-> "Failed to mount backups:\n%s"
-                                      (: :format msg))
-                                  vim.log.levels.WARN)
-          _ (vim.notify (.. "Successfully unmounted all the backups")
-                        vim.log.levels.INFO))))))
+          (false msg) (CommandMessenger:notify! (-> "Failed to mount backups:\n%s")
+                                                (: :format msg
+                                                   vim.log.levels.WARN))
+          _ (CommandMessenger:notify! (.. "Successfully unmounted all the backups")
+                                      vim.log.levels.INFO))))))
 
 M

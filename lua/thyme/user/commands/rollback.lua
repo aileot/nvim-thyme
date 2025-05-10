@@ -3,13 +3,15 @@ local _local_1_ = require("thyme.utils.fs")
 local file_readable_3f = _local_1_["file-readable?"]
 local _local_2_ = require("thyme.utils.pool")
 local hide_file_21 = _local_2_["hide-file!"]
+local Messenger = require("thyme.utils.messenger")
+local CommandMessenger = Messenger.new("command/rollback")
 local _local_3_ = require("thyme.compiler.cache")
 local determine_lua_path = _local_3_["determine-lua-path"]
 local RollbackManager = require("thyme.rollback")
 local M = {}
 local RollbackCommandBackend = {}
 RollbackCommandBackend.attach = function(kind)
-  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/commands/rollback.fnl:13")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/commands/rollback.fnl:15")
   local ext_tmp = ".tmp"
   return RollbackManager.new(kind, ext_tmp)
 end
@@ -67,9 +69,9 @@ M["setup!"] = function()
     local candidates = vim.fn.glob(glob_pattern, false, true)
     local _12_ = #candidates
     if (_12_ == 0) then
-      return vim.notify(("Abort. No backup is found for " .. input))
+      return CommandMessenger["notify!"](CommandMessenger, ("Abort. No backup is found for " .. input))
     elseif (_12_ == 1) then
-      return vim.notify(("Abort. Only one backup is found for " .. input))
+      return CommandMessenger["notify!"](CommandMessenger, ("Abort. Only one backup is found for " .. input))
     else
       local _ = _12_
       local function _13_(_241, _242)
@@ -89,7 +91,7 @@ M["setup!"] = function()
           RollbackManager["switch-active-backup!"](_3fbackup_path)
           return vim.cmd("ThymeCacheClear")
         else
-          return vim.notify("Abort selecting rollback target")
+          return CommandMessenger["notify!"](CommandMessenger, "Abort selecting rollback target")
         end
       end
       return vim.ui.select(candidates, {prompt = ("Select rollback for %s: "):format(input), format_item = _14_}, _16_)
@@ -103,9 +105,9 @@ M["setup!"] = function()
       local kind = _21_
       local modname = _22_
       if RollbackCommandBackend["mount-backup!"](kind, modname) then
-        return vim.notify(("Successfully mounted " .. args), vim.log.levels.INFO)
+        return CommandMessenger["notify!"](CommandMessenger, ("Successfully mounted " .. args), vim.log.levels.INFO)
       else
-        return vim.notify(("Failed to mount " .. args), vim.log.levels.WARN)
+        return CommandMessenger["notify!"](CommandMessenger, ("Failed to mount " .. args), vim.log.levels.WARN)
       end
     else
       return nil
@@ -121,26 +123,28 @@ M["setup!"] = function()
       local _29_, _30_ = pcall(RollbackCommandBackend["unmount-backup!"], kind, modname)
       if ((_29_ == false) and (nil ~= _30_)) then
         local msg = _30_
-        return vim.notify(("Failed to mount %s:\n%s"):format(args, msg), vim.log.levels.WARN)
+        local tgt_31_ = "format"
+        return CommandMessenger["notify!"](CommandMessenger, "Failed to mount %s:\n%s", (tgt_31_)[args](tgt_31_, msg, vim.log.levels.WARN))
       else
         local _ = _29_
-        return vim.notify(("Successfully unmounted " .. args), vim.log.levels.INFO)
+        return CommandMessenger["notify!"](CommandMessenger, ("Successfully unmounted " .. args), vim.log.levels.INFO)
       end
     else
       return nil
     end
   end
   vim.api.nvim_create_user_command("ThymeRollbackUnmount", _26_, {nargs = "?", complete = complete_dirs, desc = "[thyme] Unmount mounted backup"})
-  local function _33_()
-    local _34_, _35_ = pcall(RollbackManager["unmount-backup-all!"])
-    if ((_34_ == false) and (nil ~= _35_)) then
-      local msg = _35_
-      return vim.notify(("Failed to mount backups:\n%s"):format(msg), vim.log.levels.WARN)
+  local function _34_()
+    local _35_, _36_ = pcall(RollbackManager["unmount-backup-all!"])
+    if ((_35_ == false) and (nil ~= _36_)) then
+      local msg = _36_
+      local tgt_37_ = "format"
+      return CommandMessenger["notify!"](CommandMessenger, "Failed to mount backups:\n%s", (tgt_37_)[msg](tgt_37_, vim.log.levels.WARN))
     else
-      local _ = _34_
-      return vim.notify("Successfully unmounted all the backups", vim.log.levels.INFO)
+      local _ = _35_
+      return CommandMessenger["notify!"](CommandMessenger, "Successfully unmounted all the backups", vim.log.levels.INFO)
     end
   end
-  return vim.api.nvim_create_user_command("ThymeRollbackUnmountAll", _33_, {nargs = 0, desc = "[thyme] Unmount all the mounted backups"})
+  return vim.api.nvim_create_user_command("ThymeRollbackUnmountAll", _34_, {nargs = 0, desc = "[thyme] Unmount all the mounted backups"})
 end
 return M
