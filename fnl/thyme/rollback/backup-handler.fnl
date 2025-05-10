@@ -36,7 +36,7 @@
   "Return a list of backup files for `module-name`. The special files like `.active` and
 `.mounted` are ignored.
 @return string[] backup files"
-  (let [backup-dir (self:determine-backup-dir self._module-name)]
+  (let [backup-dir (self:determine-backup-dir)]
     (-> (Path.join backup-dir "*")
         (vim.fn.glob false true))))
 
@@ -48,14 +48,14 @@ path by itself.
                         ;; NOTE: os.date does not interpret `%N` for nanoseconds.
                         (.. "_" (vim.uv.hrtime)))
         backup-filename (.. rollback-id self._file-extension)
-        backup-dir (self:determine-backup-dir self._module-name)]
+        backup-dir (self:determine-backup-dir)]
     (vim.fn.mkdir backup-dir :p)
     (Path.join backup-dir backup-filename)))
 
 (fn BackupHandler.determine-active-backup-path [self]
   "Return the active backup path for `module-name`.
 @return string? the active backup path, or nil if not found"
-  (let [backup-dir (self:determine-backup-dir self._module-name)
+  (let [backup-dir (self:determine-backup-dir)
         filename self._active-backup-filename]
     (Path.join backup-dir filename)))
 
@@ -72,7 +72,7 @@ path by itself.
 Note that mounted backup is linked to an active backup so that the contents are
 always the same.
 @return string? the mounted backup path, or nil if not found"
-  (let [backup-dir (self:determine-backup-dir self._module-name)
+  (let [backup-dir (self:determine-backup-dir)
         filename self._mounted-backup-filename]
     (Path.join backup-dir filename)))
 

@@ -22,18 +22,18 @@ BackupHandler["determine-backup-dir"] = function(self)
   return dir
 end
 BackupHandler["list-backup-files"] = function(self)
-  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
+  local backup_dir = self["determine-backup-dir"](self)
   return vim.fn.glob(Path.join(backup_dir, "*"), false, true)
 end
 BackupHandler["suggest-new-backup-path"] = function(self)
   local rollback_id = (os.date("%Y-%m-%d_%H-%M-%S") .. "_" .. vim.uv.hrtime())
   local backup_filename = (rollback_id .. self["_file-extension"])
-  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
+  local backup_dir = self["determine-backup-dir"](self)
   vim.fn.mkdir(backup_dir, "p")
   return Path.join(backup_dir, backup_filename)
 end
 BackupHandler["determine-active-backup-path"] = function(self)
-  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
+  local backup_dir = self["determine-backup-dir"](self)
   local filename = self["_active-backup-filename"]
   return Path.join(backup_dir, filename)
 end
@@ -60,7 +60,7 @@ BackupHandler["determine-active-backup-birthtime"] = function(self)
   end
 end
 BackupHandler["determine-mounted-backup-path"] = function(self)
-  local backup_dir = self["determine-backup-dir"](self, self["_module-name"])
+  local backup_dir = self["determine-backup-dir"](self)
   local filename = self["_mounted-backup-filename"]
   return Path.join(backup_dir, filename)
 end
