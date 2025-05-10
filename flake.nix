@@ -5,6 +5,8 @@
     systems.url = "github:nix-systems/default";
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    fennel-ls.url = "git+https://git.sr.ht/~xerool/fennel-ls";
+    fennel-ls.flake = false;
   };
   outputs = inputs @ {
     nixpkgs,
@@ -25,7 +27,14 @@
           cargo # for parinfer-rust integration tests
           fennel
           luajit
-          fennel-ls
+          (fennel-ls.overrideAttrs (prevAttrs: {
+            src = inputs.fennel-ls;
+            buildInputs = with pkgs;
+              prevAttrs.buildInputs
+              ++ [
+                pandoc
+              ];
+          }))
 
           luajitPackages.vusted
         ];
