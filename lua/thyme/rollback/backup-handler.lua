@@ -7,36 +7,8 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local fs = _local_2_
-local _local_3_ = require("thyme.utils.pool")
-local hide_file_21 = _local_3_["hide-file!"]
-local has_hidden_file_3f = _local_3_["has-hidden-file?"]
-local restore_file_21 = _local_3_["restore-file!"]
 local BackupHandler = {}
 BackupHandler.__index = BackupHandler
-local function symlink_21(path, new_path, ...)
-  if file_readable_3f(new_path) then
-    hide_file_21(new_path)
-  else
-  end
-  local _5_, _6_ = nil, nil
-  local function _7_()
-    return vim.uv.fs_symlink(path, new_path)
-  end
-  _5_, _6_ = pcall(assert(_7_))
-  if ((_5_ == false) and (nil ~= _6_)) then
-    local msg = _6_
-    if has_hidden_file_3f(new_path) then
-      return true
-    else
-      restore_file_21(new_path)
-      vim.notify(msg, vim.log.levels.ERROR)
-      return false
-    end
-  else
-    local _ = _5_
-    return true
-  end
-end
 BackupHandler.new = function(root_dir, file_extension, module_name)
   local attrs = {["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
   local self = setmetatable(attrs, BackupHandler)
@@ -66,22 +38,22 @@ BackupHandler["determine-active-backup-path"] = function(self)
   return Path.join(backup_dir, filename)
 end
 BackupHandler["determine-active-backup-birthtime"] = function(self)
-  local _10_
+  local _3_
   do
     local tmp_3_auto = self["determine-active-backup-path"](self, self["_module-name"])
     if (nil ~= tmp_3_auto) then
       local tmp_3_auto0 = fs.stat(tmp_3_auto)
       if (nil ~= tmp_3_auto0) then
-        _10_ = tmp_3_auto0.birthtime.sec
+        _3_ = tmp_3_auto0.birthtime.sec
       else
-        _10_ = nil
+        _3_ = nil
       end
     else
-      _10_ = nil
+      _3_ = nil
     end
   end
-  if (nil ~= _10_) then
-    local time = _10_
+  if (nil ~= _3_) then
+    local time = _3_
     return os.date("%c", time)
   else
     return nil
@@ -102,7 +74,7 @@ BackupHandler["mount-backup!"] = function(self)
   local backup_dir = Path.join(self["_root-dir"], self["_module-name"])
   local active_backup_path = Path.join(backup_dir, self["_active-backup-filename"])
   local mounted_backup_path = Path.join(backup_dir, self["_mounted-backup-filename"])
-  return symlink_21(active_backup_path, mounted_backup_path)
+  return fs["symlink!"](active_backup_path, mounted_backup_path)
 end
 BackupHandler["unmount-backup!"] = function(self)
   local backup_dir = Path.join(self["_root-dir"], self["_module-name"])
@@ -130,6 +102,6 @@ BackupHandler["write-backup!"] = function(self, path)
   local active_backup_path = self["determine-active-backup-path"](self, module_name)
   vim.fn.mkdir(vim.fs.dirname(active_backup_path), "p")
   assert(fs.copyfile(path, backup_path))
-  return symlink_21(backup_path, active_backup_path)
+  return fs["symlink!"](backup_path, active_backup_path)
 end
 return BackupHandler
