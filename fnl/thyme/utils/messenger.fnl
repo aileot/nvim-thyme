@@ -40,8 +40,4 @@
   (let [new-msg (self:wrap-msg old-msg)]
     (vim.notify_once new-msg ...)))
 
-(fn Messenger.warn! [self msg]
-  (self:_validate-raw-msg! msg)
-  (self:notify! msg vim.log.levels.WARN))
-
 Messenger

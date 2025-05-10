@@ -26,8 +26,4 @@ Messenger["notify-once!"] = function(self, old_msg, ...)
   local new_msg = self["wrap-msg"](self, old_msg)
   return vim.notify_once(new_msg, ...)
 end
-Messenger["warn!"] = function(self, msg)
-  self["_validate-raw-msg!"](self, msg)
-  return self["notify!"](self, msg, vim.log.levels.WARN)
-end
 return Messenger
