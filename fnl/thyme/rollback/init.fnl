@@ -43,8 +43,9 @@
           (messenger:notify-once! msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
           (loadfile resolved-path))
-        (let [error-msg (-> "%s: no mounted backup is found for %s %s"
-                            (: :format loader-name self._kind module-name))]
+        (let [error-msg (-> "no mounted backup is found for %s %s"
+                            (: :format self._kind module-name)
+                            (messenger:wrap-msg))]
           (if (= self._kind "macro")
               ;; TODO: Better implementation independent of `self._kind`.
               (values nil error-msg)
