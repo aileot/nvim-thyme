@@ -1,6 +1,8 @@
 (import-macros {: command!} :thyme.macros)
 
 (local {: lua-cache-prefix} (require :thyme.const))
+(local Messenger (require :thyme.utils.messenger))
+(local CommandMessenger (Messenger.new "command/cache"))
 (local {: clear-cache!} (require :thyme.compiler.cache))
 
 (local CmdCache {})
@@ -29,6 +31,10 @@
     {:desc "[thyme] clear the lua cache and dependency map logs"}
     ;; TODO: Or `:confirm` prefix to ask?
     (fn []
-      (CmdCache.clear))))
+      (let [cleared-any? (CmdCache.clear)
+            msg (if cleared-any?
+                    (.. "clear all the cache under " lua-cache-prefix)
+                    (.. "no cache files detected at " lua-cache-prefix))]
+        (CommandMessenger:notify! msg)))))
 
 CmdCache
