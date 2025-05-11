@@ -8,11 +8,6 @@
 
 (local cache {:stackframes {}})
 
-(fn log! [module-name fnl-path lua-path]
-  (let [stackframe {: module-name : fnl-path : lua-path}]
-    (tset cache.stackframes module-name stackframe)
-    (log-module-map! stackframe (Callstack:get))))
-
 (fn observe! [callback fnl-path ?lua-path compiler-options module-name]
   "Apply `pcall` to `callback` logging dependency `module-map` with the current
 callstacks.
@@ -37,7 +32,8 @@ callstacks.
                                fennel.traceback)]
       (Callstack:pop!)
       (when ok?
-        (log! module-name fnl-path ?lua-path))
+        (tset cache.stackframes module-name stackframe)
+        (log-module-map! stackframe (Callstack:get)))
       (values ok? result))))
 
 (fn is-logged? [module-name]

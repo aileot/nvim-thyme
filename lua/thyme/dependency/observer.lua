@@ -8,11 +8,6 @@ local _local_3_ = require("thyme.dependency.logger")
 local log_module_map_21 = _local_3_["log-module-map!"]
 local Callstack = Stack.new()
 local cache = {stackframes = {}}
-local function log_21(module_name, fnl_path, lua_path)
-  local stackframe = {["module-name"] = module_name, ["fnl-path"] = fnl_path, ["lua-path"] = lua_path}
-  cache.stackframes[module_name] = stackframe
-  return log_module_map_21(stackframe, Callstack:get())
-end
 local function observe_21(callback, fnl_path, _3flua_path, compiler_options, module_name)
   assert(file_readable_3f(fnl_path), ("expected readable file, got " .. fnl_path))
   validate_type("string", module_name)
@@ -29,7 +24,8 @@ local function observe_21(callback, fnl_path, _3flua_path, compiler_options, mod
   ok_3f, result = xpcall(_4_, fennel.traceback)
   Callstack["pop!"](Callstack)
   if ok_3f then
-    log_21(module_name, fnl_path, _3flua_path)
+    cache.stackframes[module_name] = stackframe
+    log_module_map_21(stackframe, Callstack:get())
   else
   end
   return ok_3f, result
