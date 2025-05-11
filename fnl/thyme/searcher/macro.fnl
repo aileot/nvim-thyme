@@ -6,8 +6,7 @@
 (local SearcherMessenger (Messenger.new "macro-searcher"))
 (local RollbackLoaderMessenger (Messenger.new "macro-rollback-loader"))
 
-(local {: observe! : is-logged? : log-again!}
-       (require :thyme.dependency.observer))
+(local Observer (require :thyme.dependency.observer))
 
 (local RollbackManager (require :thyme.rollback))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
@@ -26,7 +25,8 @@
     ;; macro definitions depend. Note that, for macro modules, either
     ;; "compilerEnv" or "compiler-env" should be used instead of "env" field.
     (set compiler-options.env :_COMPILER)
-    (case (observe! fennel.eval fnl-path nil compiler-options module-name)
+    (case (Observer:observe! fennel.eval fnl-path nil compiler-options
+                             module-name)
       (true result)
       (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
             backup-path (backup-handler:determine-active-backup-path)]
@@ -108,7 +108,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                    ;; to fennel.macro-loaded.
                    ;; NOTE: The value at fennel.macro-loaded cannot be reset
                    ;; in __index.
-                   (if (is-logged? module-name)
+                   (if (Observer:observed? module-name)
                        (do
                          (rawset self module-name nil)
                          (tset cache-table module-name val))
@@ -117,7 +117,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 ;; NOTE: __index runs after __newindex runs.
                 (case (. cache-table module-name)
                   cached (do
-                           (log-again! module-name)
+                           (Observer:log-dependent! module-name)
                            cached)))}))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
