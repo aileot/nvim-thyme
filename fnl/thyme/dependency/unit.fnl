@@ -99,7 +99,7 @@
   self._entry-map)
 
 (fn ModuleMap.get-module-name [self]
-  self._entry-map.module-name)
+  (?. self._entry-map :module-name))
 
 (fn ModuleMap.get-fnl-path [self]
   self._entry-map.fnl-path)

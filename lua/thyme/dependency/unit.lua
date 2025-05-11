@@ -90,7 +90,12 @@ ModuleMap["get-entry-map"] = function(self)
   return self["_entry-map"]
 end
 ModuleMap["get-module-name"] = function(self)
-  return self["_entry-map"]["module-name"]
+  local t_13_ = self["_entry-map"]
+  if (nil ~= t_13_) then
+    t_13_ = t_13_["module-name"]
+  else
+  end
+  return t_13_
 end
 ModuleMap["get-fnl-path"] = function(self)
   return self["_entry-map"]["fnl-path"]
