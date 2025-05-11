@@ -34,7 +34,7 @@ local function log_module_map_21(dependency, dependent_callstack)
     if (nil ~= _9_) then
       local dependent = _9_
       if not module_map["get-dependent-maps"](module_map)[dependency["fnl-path"]] then
-        return module_map["add-dependent"](module_map, dependent)
+        return module_map["log-dependent!"](module_map, dependent)
       else
         return nil
       end

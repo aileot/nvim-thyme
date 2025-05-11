@@ -27,7 +27,7 @@
     module-map (case (last dependent-callstack)
                  dependent (when-not (-> (module-map:get-dependent-maps)
                                          (. dependency.fnl-path))
-                             (module-map:add-dependent dependent)))))
+                             (module-map:log-dependent! dependent)))))
 
 (fn fnl-path->entry-map [fnl-path]
   "Get dependency map of `fnl-path`.
