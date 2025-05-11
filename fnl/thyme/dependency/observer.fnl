@@ -46,7 +46,7 @@ callstacks.
         (log-module-map! stackframe (self.callstack:get)))
       (values ok? result))))
 
-(fn Observer.is-logged? [self module-name]
+(fn Observer.observed? [self module-name]
   (not= nil (. self.module-name->stackframe module-name)))
 
 (fn Observer.log-depedent! [self module-name]

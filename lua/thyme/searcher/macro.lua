@@ -134,7 +134,7 @@ local function overwrite_metatable_21(original_table, cache_table)
     end
   end
   local function _40_(self, module_name, val)
-    if Observer["is-logged?"](Observer, module_name) then
+    if Observer["observed?"](Observer, module_name) then
       rawset(self, module_name, nil)
       cache_table[module_name] = val
       return nil

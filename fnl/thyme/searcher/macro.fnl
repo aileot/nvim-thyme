@@ -108,7 +108,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                    ;; to fennel.macro-loaded.
                    ;; NOTE: The value at fennel.macro-loaded cannot be reset
                    ;; in __index.
-                   (if (Observer:is-logged? module-name)
+                   (if (Observer:observed? module-name)
                        (do
                          (rawset self module-name nil)
                          (tset cache-table module-name val))

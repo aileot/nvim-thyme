@@ -36,7 +36,7 @@ Observer["observe!"] = function(self, callback, fnl_path, _3flua_path, compiler_
   end
   return ok_3f, result
 end
-Observer["is-logged?"] = function(self, module_name)
+Observer["observed?"] = function(self, module_name)
   return (nil ~= self["module-name->stackframe"][module_name])
 end
 Observer["log-depedent!"] = function(self, module_name)
