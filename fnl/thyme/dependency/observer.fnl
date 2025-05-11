@@ -44,6 +44,8 @@ callstacks.
       (self.callstack:pop!)
       (when ok?
         (tset self.module-name->stackframe module-name stackframe)
+        ;; NOTE: It must NOT refresh dependency map for macro; only ThymeWatch
+        ;; should refresh dependency map log.
         (DependencyLogger:log-module-map! stackframe (self.callstack:get)))
       (values ok? result))))
 
