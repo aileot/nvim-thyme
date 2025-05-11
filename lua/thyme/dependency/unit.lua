@@ -13,7 +13,7 @@ local _local_5_ = require("thyme.utils.pool")
 local hide_file_21 = _local_5_["hide-file!"]
 local restore_file_21 = _local_5_["restore-file!"]
 local can_restore_file_3f = _local_5_["can-restore-file?"]
-local _local_6_ = require("thyme.module-map.format")
+local _local_6_ = require("thyme.dependency.io")
 local modmap__3eline = _local_6_["modmap->line"]
 local read_module_map_file = _local_6_["read-module-map-file"]
 local modmap_prefix = Path.join(state_prefix, "modmap")
@@ -84,7 +84,7 @@ end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dep-map"]
 end
-ModuleMap["add-dependent"] = function(self, dependent)
+ModuleMap["log-dependent!"] = function(self, dependent)
   if not self["_dep-map"][dependent["fnl-path"]] then
     local modmap_line = modmap__3eline(dependent)
     local log_path = self["get-log-path"](self)

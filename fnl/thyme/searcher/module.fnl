@@ -21,7 +21,7 @@
 
 (local Config (require :thyme.config))
 
-(local {: pcall-with-logger!} (require :thyme.module-map.callstack))
+(local {: observe!} (require :thyme.dependency.observer))
 
 (local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro))
 
@@ -150,10 +150,9 @@ cache dir.
                                        {: determine-lua-path} (require :thyme.compiler.cache)
                                        lua-path (determine-lua-path module-name)
                                        compiler-options Config.compiler-options]
-                                   (case (pcall-with-logger! fennel.compile-string
-                                                             fnl-path lua-path
-                                                             compiler-options
-                                                             module-name)
+                                   (case (observe! fennel.compile-string
+                                                   fnl-path lua-path
+                                                   compiler-options module-name)
                                      (true lua-code) (do
                                                        (if (can-restore-file? lua-path
                                                                               lua-code)

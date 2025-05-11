@@ -1,6 +1,6 @@
 (import-macros {: when-not : last} :thyme.macros)
 
-(local ModuleMap (require :thyme.module-map.unit))
+(local ModuleMap (require :thyme.dependency.unit))
 
 (local {: uri-encode} (require :thyme.utils.uri))
 
@@ -13,16 +13,21 @@
           (tset module-maps fnl-path modmap))
         modmap)))
 
-(fn log-module-map! [dependency]
+(fn log-module-map! [dependency dependent-callstack]
   "Log module map.
-@param dependency table"
+@param dependency table
+@param dependent-callstack Callstack"
   ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
-  (or (rawget module-maps dependency.fnl-path)
-      (let [modmap (ModuleMap.new dependency.fnl-path)]
-        (when-not (modmap:logged?)
-          (modmap:initialize-module-map! dependency))
-        (tset module-maps dependency.fnl-path modmap)
-        modmap)))
+  (case (or (rawget module-maps dependency.fnl-path)
+            (let [modmap (ModuleMap.new dependency.fnl-path)]
+              (when-not (modmap:logged?)
+                (modmap:initialize-module-map! dependency))
+              (tset module-maps dependency.fnl-path modmap)
+              modmap))
+    module-map (case (last dependent-callstack)
+                 dependent (when-not (-> (module-map:get-dependent-maps)
+                                         (. dependency.fnl-path))
+                             (module-map:log-dependent! dependent)))))
 
 (fn fnl-path->entry-map [fnl-path]
   "Get dependency map of `fnl-path`.
