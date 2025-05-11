@@ -1,6 +1,7 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
+(local {: remove-context-files!} (include :test.helper.utils))
 
 (local thyme (require :thyme))
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
@@ -18,7 +19,7 @@
     (before_each (fn []
                    (-> fnl-dir
                        (vim.fn.mkdir :p))
-                   (vim.cmd :ThymeUninstall)
+                   (remove-context-files!)
                    (vim.cmd.write fnl-path)))
     (after_each (fn []
                   (vim.fn.delete fnl-path)
@@ -28,7 +29,7 @@
                          (fn []
                            (let [idx-yes 2]
                              idx-yes)))
-                    (vim.cmd :ThymeUninstall)
+                    (remove-context-files!)
                     (set vim.fn.confirm raw-confirm))))
     (describe* "should find a fennel file in fnl/ dir on vim.o.rtp;"
       (it* "thus, searcher returns a chunk function."
