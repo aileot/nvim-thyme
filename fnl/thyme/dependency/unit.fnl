@@ -49,6 +49,24 @@
     (set self._logged? logged?)
     (values self logged?)))
 
+(fn ModuleMap.try-read-from-file [raw-fnl-path]
+  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
+  ;; unlikely to be either re-set to another file or replaced with a general
+  ;; file. Even in such cases, just executing :CacheClear would be the simple
+  ;; answer. The symbolic link issue does not belong to dependent-map, but
+  ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
+  (let [self (setmetatable {} ModuleMap)
+        fnl-path (vim.fn.resolve raw-fnl-path)
+        log-path (fnl-path->log-path fnl-path)]
+    (when (file-readable? log-path)
+      (case (read-module-map-file log-path)
+        modmap (do
+                 (set self._log-path log-path)
+                 (set self._entry-map (. modmap fnl-path))
+                 (tset modmap fnl-path nil)
+                 (set self._dep-map modmap)
+                 self)))))
+
 (fn ModuleMap.logged? [self]
   "Tell if module has been logged in cache."
   self._logged?)

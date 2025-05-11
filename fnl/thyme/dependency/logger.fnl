@@ -4,6 +4,8 @@
 
 (local {: uri-encode} (require :thyme.utils.uri))
 
+(local {: validate-stackframe!} (require :thyme.dependency.stackframe))
+
 (local module-maps {})
 
 (λ fnl-path->module-map [fnl-path]
@@ -13,21 +15,23 @@
           (tset module-maps fnl-path modmap))
         modmap)))
 
-(fn log-module-map! [dependency dependent-callstack]
+(fn log-module-map! [dependency-stackframe dependent-callstack]
   "Log module map.
-@param dependency table
-@param dependent-callstack Callstack"
+@param dependency Stackframe
+@param dependent-callstack Callstack<Stackframe>"
   ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
-  (case (or (rawget module-maps dependency.fnl-path)
-            (let [modmap (ModuleMap.new dependency.fnl-path)]
-              (when-not (modmap:logged?)
-                (modmap:initialize-module-map! dependency))
-              (tset module-maps dependency.fnl-path modmap)
-              modmap))
-    module-map (case (last dependent-callstack)
-                 dependent (when-not (-> (module-map:get-dependent-maps)
-                                         (. dependency.fnl-path))
-                             (module-map:log-dependent! dependent)))))
+  (validate-stackframe! dependency-stackframe)
+  (let [dependency-fnl-path (dependency-stackframe:get-fnl-path)]
+    (case (or (. module-maps dependency-fnl-path)
+              (let [modmap (ModuleMap.new dependency-fnl-path)]
+                (when-not (modmap:logged?)
+                  (modmap:initialize-module-map! dependency-stackframe))
+                (tset module-maps dependency-fnl-path modmap)
+                modmap))
+      module-map (case (last dependent-callstack)
+                   dependent-stackframe (when-not (-> (module-map:get-dependent-maps)
+                                                      (. dependency-fnl-path))
+                                          (module-map:log-dependent! dependent-stackframe))))))
 
 (fn fnl-path->entry-map [fnl-path]
   "Get dependency map of `fnl-path`.
