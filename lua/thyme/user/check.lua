@@ -78,14 +78,11 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
     local _14_ = DependencyLogger["fnl-path->dependent-maps"](DependencyLogger, fnl_path)
     if (nil ~= _14_) then
       local dependent_maps = _14_
-      local async = nil
       for dependent_fnl_path, dependent in pairs(dependent_maps) do
         local function _15_()
-          update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
-          return async:close()
+          return update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
         end
-        async = vim.uv.new_async(_15_)
-        async:send()
+        vim.schedule(_15_)
       end
       return nil
     else

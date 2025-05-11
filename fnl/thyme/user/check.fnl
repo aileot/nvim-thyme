@@ -78,17 +78,13 @@
     (case strategy
       (where (or :clear-all :clear :recompile :reload))
       (case (DependencyLogger:fnl-path->dependent-maps fnl-path)
-        dependent-maps (do
-                         (var async nil)
-                         (each [dependent-fnl-path dependent (pairs dependent-maps)]
-                           (set async
-                                (-> (fn []
-                                      (update-module-dependencies! dependent-fnl-path
-                                                                   dependent.lua-path
-                                                                   opts)
-                                      (async:close))
-                                    (vim.uv.new_async)))
-                           (async:send))))
+        dependent-maps (each [dependent-fnl-path dependent (pairs dependent-maps)]
+                         ;; TODO: Wrap `update-module-dependencies!` into
+                         ;; `uv.new_async`, but does it keep the consistency?
+                         (-> #(update-module-dependencies! dependent-fnl-path
+                                                           dependent.lua-path
+                                                           opts)
+                             (vim.schedule))))
       _ (error (.. "unsupported strategy: " strategy)))))
 
 (fn check-to-update! [fnl-path ?opts]
