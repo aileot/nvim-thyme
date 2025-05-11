@@ -6,7 +6,7 @@
 ;; NOTE: The Callstack instance is shared by all the modmap instances.
 (local Callstack (Stack.new))
 
-(local cache {:stackframes {}})
+(local cache {:module-name->stackframe {}})
 
 (fn observe! [callback fnl-path ?lua-path compiler-options module-name]
   "Apply `pcall` to `callback` logging dependency `module-map` with the current
@@ -32,15 +32,15 @@ callstacks.
                                fennel.traceback)]
       (Callstack:pop!)
       (when ok?
-        (tset cache.stackframes module-name stackframe)
+        (tset cache.module-name->stackframe module-name stackframe)
         (log-module-map! stackframe (Callstack:get)))
       (values ok? result))))
 
 (fn is-logged? [module-name]
-  (not= nil (. cache.stackframes module-name)))
+  (not= nil (. cache.module-name->stackframe module-name)))
 
 (fn log-again! [module-name]
-  (case (. cache.stackframes module-name)
+  (case (. cache.module-name->stackframe module-name)
     stackframe (log-module-map! stackframe (Callstack:get))
     _ (error (.. "the module " module-name " is not logged yet."))))
 
