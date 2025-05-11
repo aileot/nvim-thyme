@@ -4,6 +4,7 @@ local validate_type = _local_1_["validate-type"]
 local _local_2_ = require("thyme.utils.fs")
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
+local Stackframe = require("thyme.dependency.stackframe")
 local _local_3_ = require("thyme.dependency.logger")
 local log_module_map_21 = _local_3_["log-module-map!"]
 local Observer = {}
@@ -19,7 +20,7 @@ Observer["observe!"] = function(self, callback, fnl_path, _3flua_path, compiler_
   validate_type("string", module_name)
   local fennel = require("fennel")
   local fnl_code = read_file(fnl_path)
-  local stackframe = {["module-name"] = module_name, ["fnl-path"] = fnl_path, ["lua-path"] = _3flua_path}
+  local stackframe = Stackframe.new({["module-name"] = module_name, ["fnl-path"] = fnl_path, ["?lua-path"] = _3flua_path})
   self.callstack["push!"](self.callstack, stackframe)
   compiler_options["module-name"] = module_name
   compiler_options.filename = fnl_path

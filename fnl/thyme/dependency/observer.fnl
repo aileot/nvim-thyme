@@ -1,6 +1,8 @@
 (local Stack (require :thyme.utils.stack))
 (local {: validate-type} (require :thyme.utils.general))
 (local {: assert-is-file-readable : read-file} (require :thyme.utils.fs))
+
+(local Stackframe (require :thyme.dependency.stackframe))
 (local {: log-module-map!} (require :thyme.dependency.logger))
 
 (local Observer {})
@@ -32,7 +34,7 @@ callstacks.
   (validate-type :string module-name)
   (let [fennel (require :fennel)
         fnl-code (read-file fnl-path)
-        stackframe {: module-name : fnl-path :lua-path ?lua-path}]
+        stackframe (Stackframe.new {: module-name : fnl-path : ?lua-path})]
     (self.callstack:push! stackframe)
     (set compiler-options.module-name module-name)
     (set compiler-options.filename fnl-path)
