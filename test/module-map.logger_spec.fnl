@@ -4,7 +4,7 @@
 (include :test.helper.prerequisites)
 
 (local thyme (require :thyme))
-(local {: fnl-path->lua-path} (require :thyme.dependency.logger))
+(local DependencyLogger (require :thyme.dependency.logger))
 
 (local default-fnl-dir (-> (vim.fn.stdpath :config)
                            (vim.fs.joinpath :fnl)))
@@ -23,6 +23,6 @@
         (vim.cmd.write fnl-path)
         (require :foo)
         (assert.equals "foo.lua"
-                       (-> (fnl-path->lua-path fnl-path)
+                       (-> (DependencyLogger:fnl-path->lua-path fnl-path)
                            (vim.fn.fnamemodify ":t")))
         (vim.fn.delete fnl-path)))))

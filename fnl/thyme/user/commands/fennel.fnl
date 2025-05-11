@@ -16,7 +16,7 @@
 
 (local {: config-file? &as Config} (require :thyme.config))
 
-(local {: fnl-path->lua-path} (require :thyme.dependency.logger))
+(local DependencyLogger (require :thyme.dependency.logger))
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
@@ -240,7 +240,7 @@
                                 (vim.fn.flatten 1)))
               path-pairs (collect [_ path (ipairs fnl-paths)]
                            (let [full-path (vim.fn.fnamemodify path ":p")]
-                             (values full-path (fnl-path->lua-path full-path))))
+                             (values full-path (DependencyLogger:fnl-path->lua-path full-path))))
               existing-lua-files []]
           (when (or force-compile?
                     (and (icollect [_ lua-file (pairs path-pairs)]
@@ -280,7 +280,7 @@
       (fn [{:fargs [?path] :smods mods}]
         (let [input-path (vim.fn.expand (or ?path "%:p"))
               output-path (case (input-path:sub -4)
-                            :.fnl (case (fnl-path->lua-path input-path)
+                            :.fnl (case (DependencyLogger:fnl-path->lua-path input-path)
                                     lua-path
                                     lua-path
                                     _

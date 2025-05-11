@@ -3,7 +3,7 @@
 (local {: assert-is-file-readable : read-file} (require :thyme.utils.fs))
 
 (local Stackframe (require :thyme.dependency.stackframe))
-(local {: log-module-map!} (require :thyme.dependency.logger))
+(local DependencyLogger (require :thyme.dependency.logger))
 
 (local Observer {})
 
@@ -44,7 +44,7 @@ callstacks.
       (self.callstack:pop!)
       (when ok?
         (tset self.module-name->stackframe module-name stackframe)
-        (log-module-map! stackframe (self.callstack:get)))
+        (DependencyLogger:log-module-map! stackframe (self.callstack:get)))
       (values ok? result))))
 
 (fn Observer.observed? [self module-name]
@@ -52,7 +52,8 @@ callstacks.
 
 (fn Observer.log-dependent! [self module-name]
   (case (. self.module-name->stackframe module-name)
-    stackframe (log-module-map! stackframe (self.callstack:get))
+    stackframe (DependencyLogger:log-module-map! stackframe
+                                                 (self.callstack:get))
     _ (error (.. "the module " module-name " is not logged yet."))))
 
 (local SingletonObserver (Observer._new))
