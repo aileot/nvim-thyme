@@ -17,7 +17,8 @@
 (fn validate-type [expected val]
   (let [t (type val)]
     (when-not (= t expected)
-      (error (.. "expected " expected t)))))
+      (error (-> "expected %s, got %s"
+                 (: :format expected t))))))
 
 (fn new-matrix [row col val]
   "Create a new metatable to build an two-dimensional array.

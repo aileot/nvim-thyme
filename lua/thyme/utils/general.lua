@@ -12,7 +12,7 @@ end
 local function validate_type(expected, val)
   local t = type(val)
   if not (t == expected) then
-    return error(("expected " .. expected .. t))
+    return error(("expected %s, got %s"):format(expected, t))
   else
     return nil
   end
