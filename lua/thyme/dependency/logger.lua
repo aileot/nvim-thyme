@@ -55,27 +55,31 @@ end
 ModuleMapLogger["module-name->fnl-path"] = function(self, module_name)
   return self["_module-name->fnl-path"][module_name]
 end
+ModuleMapLogger["fnl-path->module-name"] = function(self, raw_fnl_path)
+  local tgt_14_ = self["fnl-path->module-map"](self, raw_fnl_path)
+  return (tgt_14_)["get-module-name"](tgt_14_)
+end
 ModuleMapLogger["module-name->module-map"] = function(self, module_name)
-  local _14_ = self["module-name->fnl-path"](self, module_name)
-  if (nil ~= _14_) then
-    local fnl_path = _14_
+  local _15_ = self["module-name->fnl-path"](self, module_name)
+  if (nil ~= _15_) then
+    local fnl_path = _15_
     return self["_fnl-path->module-map"][fnl_path]
   else
     return nil
   end
 end
 ModuleMapLogger["_fnl-path->entry-map"] = function(self, fnl_path)
-  local tgt_16_ = self["fnl-path->module-map"](self, fnl_path)
-  return (tgt_16_)["get-entry-map"](tgt_16_)
+  local tgt_17_ = self["fnl-path->module-map"](self, fnl_path)
+  return (tgt_17_)["get-entry-map"](tgt_17_)
 end
 ModuleMapLogger["fnl-path->dependent-maps"] = function(self, fnl_path)
-  local tgt_17_ = self["fnl-path->module-map"](self, fnl_path)
-  return (tgt_17_)["get-dependent-maps"](tgt_17_)[fnl_path]
+  local tgt_18_ = self["fnl-path->module-map"](self, fnl_path)
+  return (tgt_18_)["get-dependent-maps"](tgt_18_)[fnl_path]
 end
 ModuleMapLogger["fnl-path->lua-path"] = function(self, fnl_path)
-  local _18_ = self["_fnl-path->entry-map"](self, fnl_path)
-  if (nil ~= _18_) then
-    local modmap = _18_
+  local _19_ = self["_fnl-path->entry-map"](self, fnl_path)
+  if (nil ~= _19_) then
+    local modmap = _19_
     return modmap["lua-path"]
   else
     return nil

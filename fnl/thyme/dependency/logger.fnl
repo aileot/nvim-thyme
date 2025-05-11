@@ -47,6 +47,11 @@
 (fn ModuleMapLogger.module-name->fnl-path [self module-name]
   (. self._module-name->fnl-path module-name))
 
+(fn ModuleMapLogger.fnl-path->module-name [self raw-fnl-path]
+  ;; This method can be called before logging in an nvim runtime.
+  (-> (self:fnl-path->module-map raw-fnl-path)
+      (: :get-module-name)))
+
 (fn ModuleMapLogger.module-name->module-map [self module-name]
   (case (self:module-name->fnl-path module-name)
     fnl-path (. self._fnl-path->module-map fnl-path)))
