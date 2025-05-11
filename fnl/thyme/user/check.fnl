@@ -119,7 +119,6 @@ How to update is to be determined by `strategy` option.
                                      user-strategy)]
                     (set opts._always-recompile? always-recompile?)
                     (set opts._strategy strategy)
-                    (update-module-dependencies! fnl-path lua-path opts)
-                    (set opts._strategy nil)))))
+                    (update-module-dependencies! fnl-path lua-path opts)))))
 
 {: check-to-update!}

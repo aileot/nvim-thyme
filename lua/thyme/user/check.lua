@@ -131,9 +131,7 @@ local function check_to_update_21(fnl_path, _3fopts)
     end
     opts["_always-recompile?"] = always_recompile_3f
     opts._strategy = strategy
-    update_module_dependencies_21(fnl_path, lua_path, opts)
-    opts._strategy = nil
-    return nil
+    return update_module_dependencies_21(fnl_path, lua_path, opts)
   else
     return nil
   end
