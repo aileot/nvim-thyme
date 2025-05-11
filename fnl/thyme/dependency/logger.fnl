@@ -72,8 +72,7 @@
   ;; NOTE: This function is not intended to be used in this module itself, but
   ;; to be used by other internal modules.
   (-> (self:fnl-path->module-map fnl-path)
-      (: :get-dependent-maps)
-      (. fnl-path)))
+      (: :get-dependent-maps)))
 
 (fn ModuleMapLogger.fnl-path->lua-path [self fnl-path]
   "Convert `fnl-path` into the `lua-path`.

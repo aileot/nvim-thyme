@@ -74,7 +74,7 @@ ModuleMapLogger["_fnl-path->entry-map"] = function(self, fnl_path)
 end
 ModuleMapLogger["fnl-path->dependent-maps"] = function(self, fnl_path)
   local tgt_18_ = self["fnl-path->module-map"](self, fnl_path)
-  return (tgt_18_)["get-dependent-maps"](tgt_18_)[fnl_path]
+  return (tgt_18_)["get-dependent-maps"](tgt_18_)
 end
 ModuleMapLogger["fnl-path->lua-path"] = function(self, fnl_path)
   local _19_ = self["_fnl-path->entry-map"](self, fnl_path)
