@@ -21,7 +21,7 @@
 
 (local Config (require :thyme.config))
 
-(local {: observe!} (require :thyme.dependency.callstack))
+(local {: observe!} (require :thyme.dependency.observer))
 
 (local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro))
 

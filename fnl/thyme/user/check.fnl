@@ -7,7 +7,7 @@
 (local RecompilerMessenger (Messenger.new "watch/recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
-(local {: observe!} (require :thyme.dependency.callstack))
+(local {: observe!} (require :thyme.dependency.observer))
 (local {: fnl-path->lua-path
         : fnl-path->entry-map
         : fnl-path->dependent-map
