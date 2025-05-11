@@ -15,11 +15,11 @@ local _local_4_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_4_["clear-cache!"]
 local default_strategy = "recompile"
 local function fnl_path__3edependent_count(fnl_path)
-  local _5_ = DependencyLogger["fnl-path->dependent-map"](DependencyLogger, fnl_path)
+  local _5_ = DependencyLogger["fnl-path->dependent-maps"](DependencyLogger, fnl_path)
   if (nil ~= _5_) then
-    local dependent_map = _5_
+    local dependent_maps = _5_
     local i = 0
-    for _ in pairs(dependent_map) do
+    for _ in pairs(dependent_maps) do
       i = i
     end
     return i
@@ -75,11 +75,11 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
   else
   end
   if ((strategy == "clear-all") or (strategy == "clear") or (strategy == "recompile") or (strategy == "reload")) then
-    local _14_ = DependencyLogger["fnl-path->dependent-map"](DependencyLogger, fnl_path)
+    local _14_ = DependencyLogger["fnl-path->dependent-maps"](DependencyLogger, fnl_path)
     if (nil ~= _14_) then
-      local dependent_map = _14_
+      local dependent_maps = _14_
       local async = nil
-      for dependent_fnl_path, dependent in pairs(dependent_map) do
+      for dependent_fnl_path, dependent in pairs(dependent_maps) do
         local function _15_()
           update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
           return async:close()

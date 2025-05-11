@@ -17,9 +17,9 @@
 (local default-strategy :recompile)
 
 (fn fnl-path->dependent-count [fnl-path]
-  (case (DependencyLogger:fnl-path->dependent-map fnl-path)
-    dependent-map (accumulate [i 0 _ (pairs dependent-map)]
-                    i)
+  (case (DependencyLogger:fnl-path->dependent-maps fnl-path)
+    dependent-maps (accumulate [i 0 _ (pairs dependent-maps)]
+                     i)
     _ 0))
 
 (fn should-recompile-lua-cache? [fnl-path ?lua-path]
@@ -77,18 +77,18 @@
           (recompile! fnl-path ?lua-path module-name))))
     (case strategy
       (where (or :clear-all :clear :recompile :reload))
-      (case (DependencyLogger:fnl-path->dependent-map fnl-path)
-        dependent-map (do
-                        (var async nil)
-                        (each [dependent-fnl-path dependent (pairs dependent-map)]
-                          (set async
-                               (-> (fn []
-                                     (update-module-dependencies! dependent-fnl-path
-                                                                  dependent.lua-path
-                                                                  opts)
-                                     (async:close))
-                                   (vim.uv.new_async)))
-                          (async:send))))
+      (case (DependencyLogger:fnl-path->dependent-maps fnl-path)
+        dependent-maps (do
+                         (var async nil)
+                         (each [dependent-fnl-path dependent (pairs dependent-maps)]
+                           (set async
+                                (-> (fn []
+                                      (update-module-dependencies! dependent-fnl-path
+                                                                   dependent.lua-path
+                                                                   opts)
+                                      (async:close))
+                                    (vim.uv.new_async)))
+                           (async:send))))
       _ (error (.. "unsupported strategy: " strategy)))))
 
 (fn check-to-update! [fnl-path ?opts]

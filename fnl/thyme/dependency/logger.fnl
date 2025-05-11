@@ -60,8 +60,8 @@
   (-> (self:fnl-path->module-map fnl-path)
       (: :get-entry-map)))
 
-(fn ModuleMapLogger.fnl-path->dependent-map [self fnl-path]
-  "Get dependent map of `fnl-path`.
+(fn ModuleMapLogger.fnl-path->dependent-maps [self fnl-path]
+  "Get dependent maps of `fnl-path`.
 @param fnl-path string
 @return table"
   ;; NOTE: This function is not intended to be used in this module itself, but
