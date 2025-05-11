@@ -51,7 +51,7 @@
   (case (self:module-name->fnl-path module-name)
     fnl-path (. self._fnl-path->module-map fnl-path)))
 
-(fn ModuleMapLogger.fnl-path->entry-map [self fnl-path]
+(fn ModuleMapLogger._fnl-path->entry-map [self fnl-path]
   "Get dependency map of `fnl-path`.
 @param fnl-path string
 @return table"
@@ -74,7 +74,7 @@
   "Convert `fnl-path` into the `lua-path`.
 @param fnl-path string
 @return string? lua path where the compiled result of `fnl-path` should be written."
-  (case (self:fnl-path->entry-map fnl-path)
+  (case (self:_fnl-path->entry-map fnl-path)
     modmap modmap.lua-path))
 
 ;; (fn lua-path->module-name [lua-path]
