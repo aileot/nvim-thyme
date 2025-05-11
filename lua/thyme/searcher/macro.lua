@@ -4,8 +4,8 @@ local read_file = _local_1_["read-file"]
 local Messenger = require("thyme.utils.messenger")
 local SearcherMessenger = Messenger.new("macro-searcher")
 local RollbackLoaderMessenger = Messenger.new("macro-rollback-loader")
-local _local_2_ = require("thyme.module-map.callstack")
-local pcall_with_logger_21 = _local_2_["pcall-with-logger!"]
+local _local_2_ = require("thyme.dependency.observer")
+local observe_21 = _local_2_["observe!"]
 local is_logged_3f = _local_2_["is-logged?"]
 local log_again_21 = _local_2_["log-again!"]
 local RollbackManager = require("thyme.rollback")
@@ -17,7 +17,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   local compiler_options = Config["compiler-options"]
   local _3fenv = compiler_options.env
   compiler_options.env = "_COMPILER"
-  local _3_, _4_ = pcall_with_logger_21(fennel.eval, fnl_path, nil, compiler_options, module_name)
+  local _3_, _4_ = observe_21(fennel.eval, fnl_path, nil, compiler_options, module_name)
   if ((_3_ == true) and (nil ~= _4_)) then
     local result = _4_
     local backup_handler = MacroRollbackManager["backup-handler-of"](MacroRollbackManager, module_name)

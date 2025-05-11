@@ -6,8 +6,8 @@
 (local SearcherMessenger (Messenger.new "macro-searcher"))
 (local RollbackLoaderMessenger (Messenger.new "macro-rollback-loader"))
 
-(local {: pcall-with-logger! : is-logged? : log-again!}
-       (require :thyme.module-map.callstack))
+(local {: observe! : is-logged? : log-again!}
+       (require :thyme.dependency.observer))
 
 (local RollbackManager (require :thyme.rollback))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
@@ -26,8 +26,7 @@
     ;; macro definitions depend. Note that, for macro modules, either
     ;; "compilerEnv" or "compiler-env" should be used instead of "env" field.
     (set compiler-options.env :_COMPILER)
-    (case (pcall-with-logger! fennel.eval fnl-path nil compiler-options
-                              module-name)
+    (case (observe! fennel.eval fnl-path nil compiler-options module-name)
       (true result)
       (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
             backup-path (backup-handler:determine-active-backup-path)]

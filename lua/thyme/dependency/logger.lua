@@ -1,9 +1,9 @@
-local ModuleMap = require("thyme.module-map.unit")
+local ModuleMap = require("thyme.dependency.unit")
 local _local_1_ = require("thyme.utils.uri")
 local uri_encode = _local_1_["uri-encode"]
 local module_maps = {}
 local function fnl_path__3emodule_map(fnl_path)
-  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/module-map/logger.fnl:9")
+  _G.assert((nil ~= fnl_path), "Missing argument fnl-path on fnl/thyme/dependency/logger.fnl:9")
   local or_2_ = rawget(module_maps, fnl_path)
   if not or_2_ then
     local modmap = ModuleMap.new(fnl_path)
