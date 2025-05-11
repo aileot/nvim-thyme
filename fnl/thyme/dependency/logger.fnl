@@ -4,6 +4,8 @@
 
 (local {: uri-encode} (require :thyme.utils.uri))
 
+(local {: validate-stackframe!} (require :thyme.dependency.stackframe))
+
 (local module-maps {})
 
 (λ fnl-path->module-map [fnl-path]
@@ -18,6 +20,7 @@
 @param dependency Stackframe
 @param dependent-callstack Callstack<Stackframe>"
   ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
+  (validate-stackframe! dependency-stackframe)
   (let [dependency-fnl-path (dependency-stackframe:get-fnl-path)]
     (case (or (. module-maps dependency-fnl-path)
               (let [modmap (ModuleMap.new dependency-fnl-path)]
