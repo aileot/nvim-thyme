@@ -1,6 +1,6 @@
 (import-macros {: when-not : last} :thyme.macros)
 
-(local ModuleMap (require :thyme.module-map.unit))
+(local ModuleMap (require :thyme.dependency.unit))
 
 (local {: uri-encode} (require :thyme.utils.uri))
 

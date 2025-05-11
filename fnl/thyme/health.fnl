@@ -8,9 +8,9 @@
 (local {:get-root get-root-of-pool} (require :thyme.utils.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 (local {: macro-recorded? : peek-module-name : peek-fnl-path}
-       (require :thyme.module-map.format))
+       (require :thyme.dependency.format))
 
-(local {:get-root get-root-of-modmap} (require :thyme.module-map.unit))
+(local {:get-root get-root-of-modmap} (require :thyme.dependency.unit))
 
 (local RollbackManager (require :thyme.rollback))
 

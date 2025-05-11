@@ -4,7 +4,7 @@ local validate_type = _local_1_["validate-type"]
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local read_file = _local_2_["read-file"]
-local _local_3_ = require("thyme.module-map.logger")
+local _local_3_ = require("thyme.dependency.logger")
 local log_module_map_21 = _local_3_["log-module-map!"]
 local Callstack = Stack.new()
 local cache = {stackframes = {}}

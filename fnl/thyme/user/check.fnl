@@ -7,12 +7,12 @@
 (local RecompilerMessenger (Messenger.new "watch/recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
-(local {: observe!} (require :thyme.module-map.callstack))
+(local {: observe!} (require :thyme.dependency.callstack))
 (local {: fnl-path->lua-path
         : fnl-path->entry-map
         : fnl-path->dependent-map
         : clear-module-map!
-        : restore-module-map!} (require :thyme.module-map.logger))
+        : restore-module-map!} (require :thyme.dependency.logger))
 
 (local {: write-lua-file-with-backup!} (require :thyme.searcher.module))
 (local {: clear-cache!} (require :thyme.compiler.cache))

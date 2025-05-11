@@ -4,7 +4,7 @@
 (include :test.helper.prerequisites)
 
 (local thyme (require :thyme))
-(local {: fnl-path->lua-path} (require :thyme.module-map.logger))
+(local {: fnl-path->lua-path} (require :thyme.dependency.logger))
 
 (local default-fnl-dir (-> (vim.fn.stdpath :config)
                            (vim.fs.joinpath :fnl)))

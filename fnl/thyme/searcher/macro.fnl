@@ -7,7 +7,7 @@
 (local RollbackLoaderMessenger (Messenger.new "macro-rollback-loader"))
 
 (local {: observe! : is-logged? : log-again!}
-       (require :thyme.module-map.callstack))
+       (require :thyme.dependency.callstack))
 
 (local RollbackManager (require :thyme.rollback))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))

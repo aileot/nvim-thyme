@@ -1,7 +1,7 @@
 (local Stack (require :thyme.utils.stack))
 (local {: validate-type} (require :thyme.utils.general))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
-(local {: log-module-map!} (require :thyme.module-map.logger))
+(local {: log-module-map!} (require :thyme.dependency.logger))
 
 ;; NOTE: The Callstack instance is shared by all the modmap instances.
 (local Callstack (Stack.new))

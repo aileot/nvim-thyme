@@ -14,7 +14,7 @@
        (require :thyme.utils.pool))
 
 (local {: modmap->line : read-module-map-file}
-       (require :thyme.module-map.format))
+       (require :thyme.dependency.format))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
 
@@ -108,9 +108,10 @@
 
 (fn ModuleMap.clear! [self]
   "Clear dependency map of `dependency-fnl-path`:
+
 - Remove module-map log file.
 - Set module-map in memory for `dependency-fnl-path` to `nil`.
-@param dependency-fnl-path string"
+  @param dependency-fnl-path string"
   (let [log-path (self:get-log-path)]
     (set self.__entry-map self._entry-map)
     (set self.__dep-map self._dep-map)

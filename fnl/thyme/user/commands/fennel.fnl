@@ -16,7 +16,7 @@
 
 (local {: config-file? &as Config} (require :thyme.config))
 
-(local {: fnl-path->lua-path} (require :thyme.module-map.logger))
+(local {: fnl-path->lua-path} (require :thyme.dependency.logger))
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
