@@ -16,15 +16,16 @@ local function fnl_path__3emodule_map(fnl_path)
   return or_2_
 end
 local function log_module_map_21(dependency_stackframe, dependent_callstack)
+  local dependency_fnl_path = dependency_stackframe["get-fnl-path"](dependency_stackframe)
   local _5_
-  local or_6_ = module_maps[dependency_stackframe["fnl-path"]]
+  local or_6_ = module_maps[dependency_fnl_path]
   if not or_6_ then
-    local modmap = ModuleMap.new(dependency_stackframe["fnl-path"])
+    local modmap = ModuleMap.new(dependency_fnl_path)
     if not modmap["logged?"](modmap) then
       modmap["initialize-module-map!"](modmap, dependency_stackframe)
     else
     end
-    module_maps[dependency_stackframe["fnl-path"]] = modmap
+    module_maps[dependency_fnl_path] = modmap
     or_6_ = modmap
   end
   _5_ = or_6_
@@ -33,7 +34,7 @@ local function log_module_map_21(dependency_stackframe, dependent_callstack)
     local _9_ = dependent_callstack[#dependent_callstack]
     if (nil ~= _9_) then
       local dependent = _9_
-      if not module_map["get-dependent-maps"](module_map)[dependency_stackframe["fnl-path"]] then
+      if not module_map["get-dependent-maps"](module_map)[dependency_fnl_path] then
         return module_map["log-dependent!"](module_map, dependent)
       else
         return nil
