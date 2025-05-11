@@ -1,6 +1,6 @@
 (local Stack (require :thyme.utils.stack))
 (local {: validate-type} (require :thyme.utils.general))
-(local {: file-readable? : read-file} (require :thyme.utils.fs))
+(local {: assert-is-file-readable : read-file} (require :thyme.utils.fs))
 (local {: log-module-map!} (require :thyme.dependency.logger))
 
 (local Observer {})
@@ -28,8 +28,7 @@ callstacks.
 @param module-name string
 @return boolean the result of `pcall` to `callback`
 @return false|any false if `callback` failed; otherwise, return `callback` results"
-  (assert (file-readable? fnl-path)
-          (.. "expected readable file, got " fnl-path))
+  (assert-is-file-readable fnl-path)
   (validate-type :string module-name)
   (let [fennel (require :fennel)
         fnl-code (read-file fnl-path)

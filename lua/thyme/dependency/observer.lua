@@ -2,7 +2,7 @@ local Stack = require("thyme.utils.stack")
 local _local_1_ = require("thyme.utils.general")
 local validate_type = _local_1_["validate-type"]
 local _local_2_ = require("thyme.utils.fs")
-local file_readable_3f = _local_2_["file-readable?"]
+local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local _local_3_ = require("thyme.dependency.logger")
 local log_module_map_21 = _local_3_["log-module-map!"]
@@ -15,7 +15,7 @@ Observer._new = function()
   return self
 end
 Observer["observe!"] = function(self, callback, fnl_path, _3flua_path, compiler_options, module_name)
-  assert(file_readable_3f(fnl_path), ("expected readable file, got " .. fnl_path))
+  assert_is_file_readable(fnl_path)
   validate_type("string", module_name)
   local fennel = require("fennel")
   local fnl_code = read_file(fnl_path)
