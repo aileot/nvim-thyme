@@ -13,8 +13,7 @@
 (local {: hide-file! : restore-file! : can-restore-file?}
        (require :thyme.utils.pool))
 
-(local {: modmap->line : read-module-map-file}
-       (require :thyme.dependency.format))
+(local {: modmap->line : read-module-map-file} (require :thyme.dependency.io))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
 
