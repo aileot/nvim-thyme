@@ -11,21 +11,21 @@ local function _1_(self, key)
 end
 uv = setmetatable({}, {__index = _1_})
 local function file_readable_3f(path)
-  return (1 == vim.fn.filereadable(path))
+  return (("string" == type(path)) and (1 == vim.fn.filereadable(path)))
 end
 local function directory_3f(path)
-  return (1 == vim.fn.isdirectory(path))
+  return (("string" == type(path)) and (1 == vim.fn.isdirectory(path)))
 end
 local function assert_is_file_readable(path)
   if not file_readable_3f(path) then
-    return error(("not a readable file: " .. path))
+    return error(("not a readable file, got %s as type %s"):format(vim.inspect(path), type(path)))
   else
     return nil
   end
 end
 local function assert_is_directory(path)
   if not directory_3f(path) then
-    return error(("not a directory: " .. path))
+    return error(("not a directory, got %s as type %s"):format(vim.inspect(path), type(path)))
   else
     return nil
   end

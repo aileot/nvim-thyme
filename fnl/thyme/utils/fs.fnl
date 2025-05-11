@@ -13,18 +13,22 @@
                             (call ...))))}))
 
 (fn file-readable? [path]
-  (= 1 (vim.fn.filereadable path)))
+  (and (= :string (type path)) ;
+       (= 1 (vim.fn.filereadable path))))
 
 (fn directory? [path]
-  (= 1 (vim.fn.isdirectory path)))
+  (and (= :string (type path)) ;
+       (= 1 (vim.fn.isdirectory path))))
 
 (fn assert-is-file-readable [path]
   (when-not (file-readable? path)
-    (error (.. "not a readable file: " path))))
+    (error (-> "not a readable file, got %s as type %s"
+               (: :format (vim.inspect path) (type path))))))
 
 (fn assert-is-directory [path]
   (when-not (directory? path)
-    (error (.. "not a directory: " path))))
+    (error (-> "not a directory, got %s as type %s"
+               (: :format (vim.inspect path) (type path))))))
 
 (fn assert-is-full-path [full-path]
   (-> (if (= "/" Path.sep)
