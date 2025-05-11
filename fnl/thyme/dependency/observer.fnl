@@ -3,12 +3,22 @@
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
 (local {: log-module-map!} (require :thyme.dependency.logger))
 
-;; NOTE: The Callstack instance is shared by all the modmap instances.
-(local Callstack (Stack.new))
+(local Observer {})
 
-(local cache {:module-name->stackframe {}})
+(set Observer.__index Observer)
 
-(fn observe! [callback fnl-path ?lua-path compiler-options module-name]
+(fn Observer._new []
+  (let [self (setmetatable {} Observer)]
+    (set self.callstack (Stack.new))
+    (set self.module-name->stackframe {})
+    self))
+
+(fn Observer.observe! [self
+                       callback
+                       fnl-path
+                       ?lua-path
+                       compiler-options
+                       module-name]
   "Apply `pcall` to `callback` logging dependency `module-map` with the current
 callstacks.
 @param callback function
@@ -24,24 +34,26 @@ callstacks.
   (let [fennel (require :fennel)
         fnl-code (read-file fnl-path)
         stackframe {: module-name : fnl-path :lua-path ?lua-path}]
-    (Callstack:push! stackframe)
+    (self.callstack:push! stackframe)
     (set compiler-options.module-name module-name)
     (set compiler-options.filename fnl-path)
     ;; NOTE: callback only expects fennel.compile-string or fennel.eval.
     (let [(ok? result) (xpcall #(callback fnl-code compiler-options module-name)
                                fennel.traceback)]
-      (Callstack:pop!)
+      (self.callstack:pop!)
       (when ok?
-        (tset cache.module-name->stackframe module-name stackframe)
-        (log-module-map! stackframe (Callstack:get)))
+        (tset self.module-name->stackframe module-name stackframe)
+        (log-module-map! stackframe (self.callstack:get)))
       (values ok? result))))
 
-(fn is-logged? [module-name]
-  (not= nil (. cache.module-name->stackframe module-name)))
+(fn Observer.is-logged? [self module-name]
+  (not= nil (. self.module-name->stackframe module-name)))
 
-(fn log-depedent! [module-name]
-  (case (. cache.module-name->stackframe module-name)
-    stackframe (log-module-map! stackframe (Callstack:get))
+(fn Observer.log-depedent! [self module-name]
+  (case (. self.module-name->stackframe module-name)
+    stackframe (log-module-map! stackframe (self.callstack:get))
     _ (error (.. "the module " module-name " is not logged yet."))))
 
-{: observe! : is-logged? : log-depedent!}
+(local SingletonObserver (Observer._new))
+
+SingletonObserver

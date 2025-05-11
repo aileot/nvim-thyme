@@ -21,7 +21,7 @@
 
 (local Config (require :thyme.config))
 
-(local {: observe!} (require :thyme.dependency.observer))
+(local Observer (require :thyme.dependency.observer))
 
 (local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro))
 
@@ -150,7 +150,7 @@ cache dir.
                                        {: determine-lua-path} (require :thyme.compiler.cache)
                                        lua-path (determine-lua-path module-name)
                                        compiler-options Config.compiler-options]
-                                   (case (observe! fennel.compile-string
+                                   (case (Observer:observe! fennel.compile-string
                                                    fnl-path lua-path
                                                    compiler-options module-name)
                                      (true lua-code) (do
