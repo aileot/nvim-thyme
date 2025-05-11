@@ -48,7 +48,7 @@ callstacks.
 (fn Observer.observed? [self module-name]
   (not= nil (. self.module-name->stackframe module-name)))
 
-(fn Observer.log-depedent! [self module-name]
+(fn Observer.log-dependent! [self module-name]
   (case (. self.module-name->stackframe module-name)
     stackframe (log-module-map! stackframe (self.callstack:get))
     _ (error (.. "the module " module-name " is not logged yet."))))

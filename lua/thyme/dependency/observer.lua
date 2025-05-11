@@ -39,7 +39,7 @@ end
 Observer["observed?"] = function(self, module_name)
   return (nil ~= self["module-name->stackframe"][module_name])
 end
-Observer["log-depedent!"] = function(self, module_name)
+Observer["log-dependent!"] = function(self, module_name)
   local _6_ = self["module-name->stackframe"][module_name]
   if (nil ~= _6_) then
     local stackframe = _6_
