@@ -19,8 +19,8 @@ local RollbackLoaderMessenger = Messenger.new("rollback-loader")
 local _local_5_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_5_["get-runtime-files"]
 local Config = require("thyme.config")
-local _local_6_ = require("thyme.module-map.callstack")
-local pcall_with_logger_21 = _local_6_["pcall-with-logger!"]
+local _local_6_ = require("thyme.dependency.callstack")
+local observe_21 = _local_6_["observe!"]
 local _local_7_ = require("thyme.searcher.macro")
 local initialize_macro_searcher_on_rtp_21 = _local_7_["initialize-macro-searcher-on-rtp!"]
 local RollbackManager = require("thyme.rollback")
@@ -186,7 +186,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
             local determine_lua_path = _let_36_["determine-lua-path"]
             local lua_path = determine_lua_path(module_name)
             local compiler_options = Config["compiler-options"]
-            local _37_, _38_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+            local _37_, _38_ = observe_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
             if ((_37_ == true) and (nil ~= _38_)) then
               local lua_code = _38_
               if can_restore_file_3f(lua_path, lua_code) then

@@ -4,7 +4,7 @@ local validate_type = _local_1_["validate-type"]
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local read_file = _local_2_["read-file"]
-local _local_3_ = require("thyme.module-map.logger")
+local _local_3_ = require("thyme.dependency.logger")
 local log_module_map_21 = _local_3_["log-module-map!"]
 local Callstack = Stack.new()
 local cache = {stackframes = {}}
@@ -13,7 +13,7 @@ local function log_21(module_name, fnl_path, lua_path)
   cache.stackframes[module_name] = stackframe
   return log_module_map_21(stackframe, Callstack:get())
 end
-local function pcall_with_logger_21(callback, fnl_path, _3flua_path, compiler_options, module_name)
+local function observe_21(callback, fnl_path, _3flua_path, compiler_options, module_name)
   assert(file_readable_3f(fnl_path), ("expected readable file, got " .. fnl_path))
   validate_type("string", module_name)
   local fennel = require("fennel")
@@ -47,4 +47,4 @@ local function log_again_21(module_name)
     return error(("the module " .. module_name .. " is not logged yet."))
   end
 end
-return {["pcall-with-logger!"] = pcall_with_logger_21, ["is-logged?"] = is_logged_3f, ["log-again!"] = log_again_21}
+return {["observe!"] = observe_21, ["is-logged?"] = is_logged_3f, ["log-again!"] = log_again_21}
