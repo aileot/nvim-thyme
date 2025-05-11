@@ -33,9 +33,9 @@ local function log_module_map_21(dependency_stackframe, dependent_callstack)
     local module_map = _5_
     local _9_ = dependent_callstack[#dependent_callstack]
     if (nil ~= _9_) then
-      local dependent = _9_
+      local dependent_stackframe = _9_
       if not module_map["get-dependent-maps"](module_map)[dependency_fnl_path] then
-        return module_map["log-dependent!"](module_map, dependent)
+        return module_map["log-dependent!"](module_map, dependent_stackframe)
       else
         return nil
       end
