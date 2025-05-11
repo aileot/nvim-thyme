@@ -39,9 +39,9 @@ callstacks.
 (fn is-logged? [module-name]
   (not= nil (. cache.module-name->stackframe module-name)))
 
-(fn log-again! [module-name]
+(fn log-depedent! [module-name]
   (case (. cache.module-name->stackframe module-name)
     stackframe (log-module-map! stackframe (Callstack:get))
     _ (error (.. "the module " module-name " is not logged yet."))))
 
-{: observe! : is-logged? : log-again!}
+{: observe! : is-logged? : log-depedent!}

@@ -7,7 +7,7 @@ local RollbackLoaderMessenger = Messenger.new("macro-rollback-loader")
 local _local_2_ = require("thyme.dependency.observer")
 local observe_21 = _local_2_["observe!"]
 local is_logged_3f = _local_2_["is-logged?"]
-local log_again_21 = _local_2_["log-again!"]
+local log_dependent_21 = _local_2_["log-dependent!"]
 local RollbackManager = require("thyme.rollback")
 local MacroRollbackManager = RollbackManager.new("macro", ".fnl")
 local cache = {["macro-loaded"] = {}}
@@ -149,7 +149,7 @@ local function overwrite_metatable_21(original_table, cache_table)
     local _44_ = cache_table[module_name]
     if (nil ~= _44_) then
       local cached = _44_
-      log_again_21(module_name)
+      log_dependent_21(module_name)
       return cached
     else
       return nil

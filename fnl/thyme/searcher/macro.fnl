@@ -6,7 +6,7 @@
 (local SearcherMessenger (Messenger.new "macro-searcher"))
 (local RollbackLoaderMessenger (Messenger.new "macro-rollback-loader"))
 
-(local {: observe! : is-logged? : log-again!}
+(local {: observe! : is-logged? : log-dependent!}
        (require :thyme.dependency.observer))
 
 (local RollbackManager (require :thyme.rollback))
@@ -117,7 +117,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 ;; NOTE: __index runs after __newindex runs.
                 (case (. cache-table module-name)
                   cached (do
-                           (log-again! module-name)
+                           (log-dependent! module-name)
                            cached)))}))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]

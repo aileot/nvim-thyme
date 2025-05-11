@@ -33,7 +33,7 @@ end
 local function is_logged_3f(module_name)
   return (nil ~= cache["module-name->stackframe"][module_name])
 end
-local function log_again_21(module_name)
+local function log_depedent_21(module_name)
   local _6_ = cache["module-name->stackframe"][module_name]
   if (nil ~= _6_) then
     local stackframe = _6_
@@ -43,4 +43,4 @@ local function log_again_21(module_name)
     return error(("the module " .. module_name .. " is not logged yet."))
   end
 end
-return {["observe!"] = observe_21, ["is-logged?"] = is_logged_3f, ["log-again!"] = log_again_21}
+return {["observe!"] = observe_21, ["is-logged?"] = is_logged_3f, ["log-depedent!"] = log_depedent_21}
