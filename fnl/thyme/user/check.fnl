@@ -7,7 +7,7 @@
 (local RecompilerMessenger (Messenger.new "watch/recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
-(local {: pcall-with-logger!} (require :thyme.module-map.callstack))
+(local {: observe!} (require :thyme.module-map.callstack))
 (local {: fnl-path->lua-path
         : fnl-path->entry-map
         : fnl-path->dependent-map
@@ -43,8 +43,8 @@
     ;; NOTE: module-map must be cleared before logging, but after getting
     ;; its maps.
     (clear-module-map! fnl-path)
-    (case (pcall-with-logger! fennel.compile-string fnl-path lua-path
-                              compiler-options module-name)
+    (case (observe! fennel.compile-string fnl-path lua-path compiler-options
+                    module-name)
       (true lua-code) (let [msg (.. "successfully recompile " fnl-path)]
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)

@@ -8,7 +8,7 @@ local Config = require("thyme.config")
 local _local_2_ = require("thyme.wrapper.fennel")
 local compile_file = _local_2_["compile-file"]
 local _local_3_ = require("thyme.module-map.callstack")
-local pcall_with_logger_21 = _local_3_["pcall-with-logger!"]
+local observe_21 = _local_3_["observe!"]
 local _local_4_ = require("thyme.module-map.logger")
 local fnl_path__3elua_path = _local_4_["fnl-path->lua-path"]
 local fnl_path__3eentry_map = _local_4_["fnl-path->entry-map"]
@@ -41,7 +41,7 @@ local function recompile_21(fnl_path, lua_path, module_name)
   local compiler_options = Config["compiler-options"]
   compiler_options["module-name"] = module_name
   clear_module_map_21(fnl_path)
-  local _9_, _10_ = pcall_with_logger_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+  local _9_, _10_ = observe_21(fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
   if ((_9_ == true) and (nil ~= _10_)) then
     local lua_code = _10_
     local msg = ("successfully recompile " .. fnl_path)
