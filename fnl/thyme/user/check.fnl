@@ -81,9 +81,17 @@
     (case strategy
       (where (or :clear-all :clear :recompile :reload))
       (case (fnl-path->dependent-map fnl-path)
-        dependent-map (each [dependent-fnl-path dependent (pairs dependent-map)]
-                        (update-module-dependencies! dependent-fnl-path
-                                                     dependent.lua-path opts)))
+        dependent-map (do
+                        (var async nil)
+                        (each [dependent-fnl-path dependent (pairs dependent-map)]
+                          (set async
+                               (-> (fn []
+                                     (update-module-dependencies! dependent-fnl-path
+                                                                  dependent.lua-path
+                                                                  opts)
+                                     (async:close))
+                                   (vim.uv.new_async)))
+                          (async:send))))
       _ (error (.. "unsupported strategy: " strategy)))))
 
 (fn check-to-update! [fnl-path ?opts]

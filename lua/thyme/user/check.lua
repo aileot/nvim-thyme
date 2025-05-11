@@ -85,8 +85,14 @@ local function update_module_dependencies_21(fnl_path, _3flua_path, opts)
     local _17_ = fnl_path__3edependent_map(fnl_path)
     if (nil ~= _17_) then
       local dependent_map = _17_
+      local async = nil
       for dependent_fnl_path, dependent in pairs(dependent_map) do
-        update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
+        local function _18_()
+          update_module_dependencies_21(dependent_fnl_path, dependent["lua-path"], opts)
+          return async:close()
+        end
+        async = vim.uv.new_async(_18_)
+        async:send()
       end
       return nil
     else
@@ -100,22 +106,22 @@ end
 local function check_to_update_21(fnl_path, _3fopts)
   local opts = (_3fopts or {})
   local lua_path = fnl_path__3elua_path(fnl_path)
-  local _20_ = fnl_path__3eentry_map(fnl_path)
-  if (nil ~= _20_) then
-    local modmap = _20_
+  local _21_ = fnl_path__3eentry_map(fnl_path)
+  if (nil ~= _21_) then
+    local modmap = _21_
     local dependent_count = fnl_path__3edependent_count(fnl_path)
     local user_strategy
     do
-      local _21_ = type(opts.strategy)
-      if (_21_ == "string") then
+      local _22_ = type(opts.strategy)
+      if (_22_ == "string") then
         user_strategy = opts.strategy
-      elseif (_21_ == "function") then
+      elseif (_22_ == "function") then
         local context = {["module-name"] = modmap["module-name"]}
         user_strategy = opts.strategy(dependent_count, context)
-      elseif (_21_ == "nil") then
+      elseif (_22_ == "nil") then
         user_strategy = default_strategy
-      elseif (nil ~= _21_) then
-        local _else = _21_
+      elseif (nil ~= _22_) then
+        local _else = _22_
         user_strategy = error(("expected string or function, got " .. _else))
       else
         user_strategy = nil
