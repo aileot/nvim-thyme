@@ -98,7 +98,7 @@
 (fn ModuleMap.get-dependent-maps [self]
   self._dep-map)
 
-(fn ModuleMap.add-dependent [self dependent]
+(fn ModuleMap.log-dependent! [self dependent]
   (when-not (. self._dep-map dependent.fnl-path)
     (let [modmap-line (modmap->line dependent)
           log-path (self:get-log-path)]
