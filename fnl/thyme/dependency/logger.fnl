@@ -13,20 +13,20 @@
           (tset module-maps fnl-path modmap))
         modmap)))
 
-(fn log-module-map! [dependency dependent-callstack]
+(fn log-module-map! [dependency-stackframe dependent-callstack]
   "Log module map.
-@param dependency table
-@param dependent-callstack Callstack"
+@param dependency Stackframe
+@param dependent-callstack Callstack<Stackframe>"
   ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
-  (case (or (rawget module-maps dependency.fnl-path)
-            (let [modmap (ModuleMap.new dependency.fnl-path)]
+  (case (or (rawget module-maps dependency-stackframe.fnl-path)
+            (let [modmap (ModuleMap.new dependency-stackframe.fnl-path)]
               (when-not (modmap:logged?)
-                (modmap:initialize-module-map! dependency))
-              (tset module-maps dependency.fnl-path modmap)
+                (modmap:initialize-module-map! dependency-stackframe))
+              (tset module-maps dependency-stackframe.fnl-path modmap)
               modmap))
     module-map (case (last dependent-callstack)
                  dependent (when-not (-> (module-map:get-dependent-maps)
-                                         (. dependency.fnl-path))
+                                         (. dependency-stackframe.fnl-path))
                              (module-map:log-dependent! dependent)))))
 
 (fn fnl-path->entry-map [fnl-path]
