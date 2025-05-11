@@ -42,15 +42,35 @@ ModuleMap.new = function(raw_fnl_path)
   self["_logged?"] = logged_3f
   return self, logged_3f
 end
+ModuleMap["try-read-from-file"] = function(raw_fnl_path)
+  local self = setmetatable({}, ModuleMap)
+  local fnl_path = vim.fn.resolve(raw_fnl_path)
+  local log_path = fnl_path__3elog_path(fnl_path)
+  if file_readable_3f(log_path) then
+    local _8_ = read_module_map_file(log_path)
+    if (nil ~= _8_) then
+      local modmap = _8_
+      self["_log-path"] = log_path
+      self["_entry-map"] = modmap[fnl_path]
+      modmap[fnl_path] = nil
+      self["_dep-map"] = modmap
+      return self
+    else
+      return nil
+    end
+  else
+    return nil
+  end
+end
 ModuleMap["logged?"] = function(self)
   return self["_logged?"]
 end
-ModuleMap["initialize-module-map!"] = function(self, _8_)
-  local module_name = _8_["module-name"]
-  local fnl_path = _8_["fnl-path"]
-  local _lua_path = _8_["lua-path"]
-  local _macro_3f = _8_["macro?"]
-  local modmap = _8_
+ModuleMap["initialize-module-map!"] = function(self, _11_)
+  local module_name = _11_["module-name"]
+  local fnl_path = _11_["fnl-path"]
+  local _lua_path = _11_["lua-path"]
+  local _macro_3f = _11_["macro?"]
+  local modmap = _11_
   modmap["fnl-path"] = vim.fn.resolve(fnl_path)
   local modmap_line = modmap__3eline(modmap)
   local log_path = self["get-log-path"](self)
