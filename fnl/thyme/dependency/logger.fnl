@@ -18,7 +18,7 @@
 @param dependency Stackframe
 @param dependent-callstack Callstack<Stackframe>"
   ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
-  (case (or (rawget module-maps dependency-stackframe.fnl-path)
+  (case (or (. module-maps dependency-stackframe.fnl-path)
             (let [modmap (ModuleMap.new dependency-stackframe.fnl-path)]
               (when-not (modmap:logged?)
                 (modmap:initialize-module-map! dependency-stackframe))

@@ -17,7 +17,7 @@ local function fnl_path__3emodule_map(fnl_path)
 end
 local function log_module_map_21(dependency_stackframe, dependent_callstack)
   local _5_
-  local or_6_ = rawget(module_maps, dependency_stackframe["fnl-path"])
+  local or_6_ = module_maps[dependency_stackframe["fnl-path"]]
   if not or_6_ then
     local modmap = ModuleMap.new(dependency_stackframe["fnl-path"])
     if not modmap["logged?"](modmap) then
