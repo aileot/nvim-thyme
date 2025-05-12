@@ -36,13 +36,14 @@
                         (: :format self._kind))
         messenger (Messenger.new loader-name)]
     (if (file-readable? rollback-path)
-        (let [resolved-path (fs.readlink rollback-path)
-              msg (-> "rollback to backup for %s/%s (created at %s)"
+        (let [msg (-> "rollback to backup for %s/%s (created at %s)"
                       (: :format self._kind module-name
                          (backup-handler:determine-active-backup-birthtime module-name)))]
           (messenger:notify-once! msg vim.log.levels.WARN)
-          ;; TODO: Is it redundant to resolve path for error message?
-          (loadfile resolved-path))
+          ;; HACK: For module searcher, the Lua builtin `loadfile` does not
+          ;; interpret the second param, but just ignore it; for macro searcher,
+          ;; `fennel.eval` wrapper require both `module-name` and `fnl-path`.
+          (self._file-loader rollback-path module-name))
         (let [error-msg (-> "no mounted backup is found for %s %s"
                             (: :format self._kind module-name)
                             (messenger:wrap-msg))]
@@ -51,9 +52,10 @@
               (values nil error-msg)
               error-msg)))))
 
-(fn RollbackManager.inject-mounted-backup-searcher! [self searchers]
+(fn RollbackManager.inject-mounted-backup-searcher! [self searchers loader]
   "Inject mounted backup searcher into `searchers` in the highest priority.
 @param searchers function[]
+@param loader fun(path, nil, compiler-options, module-name)
 @return function? the mounted searcher if `searchers` is not yet injected."
   ;; TODO: Add option to avoid injecting searcher more than once in case where
   ;; some other plugin injects other searchers only to fall into infinite loop.
@@ -65,6 +67,7 @@
              ;; as the first argument, but only get module-name as the first
              ;; argument and `nil` as the second argument.
              (partial self.search-module-from-mounted-backups self))
+        (set self._file-loader loader)
         (table.insert searchers 1 self._injected-searcher)
         self._injected-searcher)
       (not= (first searchers) self._injected-searcher)
@@ -87,6 +90,7 @@
     (vim.fn.mkdir root :p)
     (set self._kind kind)
     (set self._kind-dir root)
+    (set self._file-loader {})
     (assert (= "." (file-extension:sub 1 1))
             "file-extension must start with `.`")
     (set self.file-extension file-extension)
