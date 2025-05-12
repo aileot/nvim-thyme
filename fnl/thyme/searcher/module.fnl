@@ -164,7 +164,7 @@ cache dir.
                                                              (backup-handler:cleanup-old-backups!)))
                                                        (load lua-code lua-path))
                                      (_ raw-msg)
-                                     (let [raw-msg-body (-> "%s is found for the module %s, but failed to compile it"
+                                     (let [raw-msg-body (-> "%s is found for the module/%s, but failed to compile it"
                                                             (: :format fnl-path
                                                                module-name))
                                            msg-body (LoaderMessenger:wrap-msg raw-msg-body)
@@ -181,7 +181,7 @@ cache dir.
                         max-rollbacks Config.max-rollbacks
                         rollback-enabled? (< 0 max-rollbacks)]
                     (if (and rollback-enabled? (file-readable? backup-path))
-                        (let [msg (: "temporarily restore backup for the module %s (created at %s) due to the following error: %s
+                        (let [msg (: "temporarily restore backup for the module/%s (created at %s) due to the following error: %s
 HINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                      :format module-name

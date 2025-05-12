@@ -37,7 +37,7 @@
         (set compiler-options.env ?env)
         #result)
       (_ raw-msg)
-      (let [raw-msg-body (-> "%s is found for the macro module %s, but failed to evaluate it in a compiler environment"
+      (let [raw-msg-body (-> "%s is found for the macro/%s, but failed to evaluate it in a compiler environment"
                              (: :format fnl-path module-name))
             msg-body (SearcherMessenger:wrap-msg raw-msg-body)
             msg (-> "
@@ -85,7 +85,7 @@
                         chunk
                         ;; TODO: As described in the error message below, append
                         ;; thyme-backup-loader independently to fennel.macro-searchers?
-                        (let [msg (: "temporarily restore backup for the module %s (created at %s) due to the following error: %s
+                        (let [msg (: "temporarily restore backup for the macro/%s (created at %s) due to the following error: %s
 HINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                      :format module-name

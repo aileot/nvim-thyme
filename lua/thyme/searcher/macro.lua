@@ -32,7 +32,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
   elseif (true and (nil ~= _3_)) then
     local _ = _2_
     local raw_msg = _3_
-    local raw_msg_body = ("%s is found for the macro module %s, but failed to evaluate it in a compiler environment"):format(fnl_path, module_name)
+    local raw_msg_body = ("%s is found for the macro/%s, but failed to evaluate it in a compiler environment"):format(fnl_path, module_name)
     local msg_body = SearcherMessenger["wrap-msg"](SearcherMessenger, raw_msg_body)
     local msg = ("\n%s\n\9%s"):format(msg_body, raw_msg)
     compiler_options.env = _3fenv
@@ -104,7 +104,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
           local _28_, _29_ = macro_module__3e_3fchunk(module_name, backup_path)
           if (nil ~= _28_) then
             local chunk = _28_
-            local msg = ("temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
+            local msg = ("temporarily restore backup for the macro/%s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
             RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
             or_13_ = chunk
           elseif (true and (nil ~= _29_)) then

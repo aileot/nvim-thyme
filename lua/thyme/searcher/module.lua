@@ -198,7 +198,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
             elseif (true and (nil ~= _37_)) then
               local _ = _36_
               local raw_msg = _37_
-              local raw_msg_body = ("%s is found for the module %s, but failed to compile it"):format(fnl_path, module_name)
+              local raw_msg_body = ("%s is found for the module/%s, but failed to compile it"):format(fnl_path, module_name)
               local msg_body = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg_body)
               local msg = ("\n%s\n\9%s"):format(msg_body, raw_msg)
               _30_, _31_ = nil, msg
@@ -224,7 +224,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
           local max_rollbacks = Config["max-rollbacks"]
           local rollback_enabled_3f = (0 < max_rollbacks)
           if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-            local msg = ("temporarily restore backup for the module %s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
+            local msg = ("temporarily restore backup for the module/%s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
             RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
             or_29_ = loadfile(backup_path)
           else
