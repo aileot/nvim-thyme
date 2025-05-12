@@ -164,11 +164,15 @@ Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
 The commands are defined by [thyme.setup][].
 
-### `:ThymeConfigOpen`
+### Config Command
+
+#### `:ThymeConfigOpen`
 
 Open your [.nvim-thyme.fnl][] file.
 
-### `:ThymeCacheClear`
+### Cache Command
+
+#### `:ThymeCacheClear`
 
 Clear all the Lua caches managed by [nvim-thyme][].
 
@@ -176,18 +180,20 @@ If you failed to define the command [:ThymeCacheClear][] for some reasons,
 please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
 manually in Command line instead.
 
-### `:ThymeCacheOpen`
+#### `:ThymeCacheOpen`
 
 Open the root directory of the Lua caches managed by [nvim-thyme][].
 
-### `:ThymeRollbackSwitch {target}`
+### Rollback Command
+
+#### `:ThymeRollbackSwitch {target}`
 
 Prompt to switch to the active backup of the {target}.
 
 Any compile errors of the {target} of Fennel module will be rolled back to the active backup.
 This switch also affects the mounted backup of {target}.
 
-### `:ThymeRollbackMount {target}`
+#### `:ThymeRollbackMount {target}`
 
 Mount the active backup of the {target}.
 
@@ -195,11 +201,11 @@ Neovim will load the mounted backups instead of your modules with the same name.
 You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
 to restore the mount state.
 
-### `:ThymeRollbackUnmount {target}`
+#### `:ThymeRollbackUnmount {target}`
 
 Unmount the mounted backups for the {target}.
 
-### `:ThymeRollbackUnmountAll`
+#### `:ThymeRollbackUnmountAll`
 
 Unmount all the mounted backups.
 
