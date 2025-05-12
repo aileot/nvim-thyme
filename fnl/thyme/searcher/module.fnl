@@ -137,8 +137,13 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (or Config.?error-msg ;
           (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)
-                ?chunk (case (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
-                                                                                          loadfile)
+                ?chunk (case (case (let [file-loader (fn [path ...]
+                                                       ;; Explicitly discard
+                                                       ;; the rest params, or
+                                                       ;; tests could fail.
+                                                       (loadfile path))]
+                                     (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
+                                                                                            file-loader))
                                searcher (searcher module-name))
                          msg|chunk (case (type msg|chunk)
                                      ;; NOTE: Discard unwothy msg in the edge
