@@ -13,6 +13,28 @@
 
 (local cache {:macro-loaded {}})
 
+(fn overwrite-metatable! [original-table cache-table]
+  (case (getmetatable original-table)
+    mt (setmetatable cache-table mt))
+  (setmetatable original-table
+    {:__newindex (fn [self module-name val]
+                   ;; NOTE: In spite of __index, it is redundant to filter out
+                   ;; the module named :fennel.macros, which will never be set
+                   ;; to fennel.macro-loaded.
+                   ;; NOTE: The value at fennel.macro-loaded cannot be reset
+                   ;; in __index.
+                   (if (Observer:observed? module-name)
+                       (do
+                         (rawset self module-name nil)
+                         (tset cache-table module-name val))
+                       (rawset self module-name val)))
+     :__index (fn [_ module-name]
+                ;; NOTE: __index runs after __newindex runs.
+                (case (. cache-table module-name)
+                  cached (do
+                           (Observer:log-dependent! module-name)
+                           cached)))}))
+
 (fn macro-module->?chunk [module-name fnl-path]
   (let [fennel (require :fennel)
         Config (require :thyme.config)
@@ -97,28 +119,6 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                         (_ msg)
                         (values nil msg))
                       (values nil error-msg)))))))))
-
-(fn overwrite-metatable! [original-table cache-table]
-  (case (getmetatable original-table)
-    mt (setmetatable cache-table mt))
-  (setmetatable original-table
-    {:__newindex (fn [self module-name val]
-                   ;; NOTE: In spite of __index, it is redundant to filter out
-                   ;; the module named :fennel.macros, which will never be set
-                   ;; to fennel.macro-loaded.
-                   ;; NOTE: The value at fennel.macro-loaded cannot be reset
-                   ;; in __index.
-                   (if (Observer:observed? module-name)
-                       (do
-                         (rawset self module-name nil)
-                         (tset cache-table module-name val))
-                       (rawset self module-name val)))
-     :__index (fn [_ module-name]
-                ;; NOTE: __index runs after __newindex runs.
-                (case (. cache-table module-name)
-                  cached (do
-                           (Observer:log-dependent! module-name)
-                           cached)))}))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
   ;; Ref: src/fennel/specials.fnl @1276
