@@ -3,7 +3,7 @@ Messenger.__index = Messenger
 Messenger.new = function(scope)
   assert(not scope:find("^thyme"), ("`scope` must not starts with `thyme`: " .. scope))
   assert(not scope:find("^%[thyme"), ("`scope` must not starts with `[thyme`: " .. scope))
-  assert(not scope:find("[%^%(%)%%%.%*%+%?]"), ("`scope` cannot contain any magic character like `.` other than `-`: " .. scope))
+  assert(not scope:find("[%^%(%)%%%.%*%+%-%?]"), ("`scope` cannot contain any magic character like `.` and `-`: " .. scope))
   local self = setmetatable({}, Messenger)
   self._role = scope
   self._prefix = ("thyme(%s): "):format(scope)

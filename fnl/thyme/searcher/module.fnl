@@ -15,7 +15,7 @@
 
 (local Messenger (require :thyme.utils.messenger))
 (local LoaderMessenger (Messenger.new "loader"))
-(local RollbackLoaderMessenger (Messenger.new "rollback-loader"))
+(local RollbackLoaderMessenger (Messenger.new "loader/rollback"))
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 

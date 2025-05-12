@@ -10,9 +10,8 @@
           (.. "`scope` must not starts with `thyme`: " scope))
   (assert (not (scope:find "^%[thyme")) ;
           (.. "`scope` must not starts with `[thyme`: " scope))
-  (assert (not (scope:find "[%^%(%)%%%.%*%+%?]"))
-          ;; NOTE: It feels ugly to replace `-` with `_` or ` ` in scope.
-          (.. "`scope` cannot contain any magic character like `.` other than `-`: "
+  (assert (not (scope:find "[%^%(%)%%%.%*%+%-%?]"))
+          (.. "`scope` cannot contain any magic character like `.` and `-`: "
               scope))
   (let [self (setmetatable {} Messenger)]
     (set self._role scope)
