@@ -37,8 +37,8 @@
         messenger (Messenger.new loader-name)]
     (if (file-readable? rollback-path)
         (let [resolved-path (fs.readlink rollback-path)
-              msg (-> "rollback to backup for %s (created at %s)"
-                      (: :format module-name
+              msg (-> "rollback to backup for %s/%s (created at %s)"
+                      (: :format self._kind module-name
                          (backup-handler:determine-active-backup-birthtime module-name)))]
           (messenger:notify-once! msg vim.log.levels.WARN)
           ;; TODO: Is it redundant to resolve path for error message?
