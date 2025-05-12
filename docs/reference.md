@@ -164,7 +164,7 @@ Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
 The commands are defined by [thyme.setup][].
 
-### General Command
+### Thyme General Command
 
 #### `:ThymeUninstall`
 
@@ -181,13 +181,13 @@ then try this command [:ThymeUninstall][].
 (This command is safe
 since it does NOT affect your [.nvim-thyme.fnl][] and any of your configuration files.)
 
-### Config Command
+### Thyme Config Command
 
 #### `:ThymeConfigOpen`
 
 Open your [.nvim-thyme.fnl][] file.
 
-### Cache Command
+### Thyme Cache Command
 
 #### `:ThymeCacheClear`
 
@@ -201,7 +201,7 @@ manually in Command line instead.
 
 Open the root directory of the Lua caches managed by [nvim-thyme][].
 
-### Rollback Command
+### Thyme Rollback Command
 
 #### `:ThymeRollbackSwitch {target}`
 
