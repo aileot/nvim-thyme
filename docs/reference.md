@@ -164,6 +164,51 @@ Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
 The commands are defined by [thyme.setup][].
 
+### Fennel Wrapper Commands
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlEval` (alias `:Fnl`)
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:Fnl ~                                                           *thyme-:Fnl*
+:FnlEval ~                                                   *thyme-:FnlEval*
+-->
+
+Display the result of [fennel.eval][],
+but respects your [&runtimepath][].
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlEvalFile {file}`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlEvalFile ~                                           *thyme-:FnlEvalFile*
+-->
+
+Display the result of applying [fennel.dofile][] to {file},
+but respects your [&runtimepath][].
+
+#### `:FnlEvalBuffer`
+
+TODO
+
+#### `:FnlCompileString`
+
+TODO
+
+#### `:FnlCompileBuffer`
+
+TODO
+
+### Fennel Misc. Commands
+
+#### `:FnlAlternate`
+
+TODO
+
 ### Thyme General Command
 
 #### `:ThymeUninstall`
@@ -234,6 +279,8 @@ Unmount all the mounted backups.
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-nvim-thymefnl
 [thyme.setup]: #thymesetup-or-thymesetup
+[&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
+[fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
