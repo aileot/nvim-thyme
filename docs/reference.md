@@ -176,6 +176,29 @@ manually in Command line instead.
 
 Open the root directory of the Lua caches managed by [nvim-thyme][].
 
+### `:ThymeRollbackSwitch {target}`
+
+Prompt to switch to the active backup of the {target}.
+
+Any compile errors of the {target} of Fennel module will be rolled back to the active backup.
+This switch also affects the mounted backup of {target}.
+
+### `:ThymeRollbackMount {target}`
+
+Mount the active backup of the {target}.
+
+Neovim will load the mounted backups instead of your modules with the same name.
+You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
+to restore the mount state.
+
+### `:ThymeRollbackUnmount {target}`
+
+Unmount the mounted backups for the {target}.
+
+### `:ThymeRollbackUnmountAll`
+
+Unmount all the mounted backups.
+
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
@@ -186,3 +209,5 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [thyme.setup]: #thymesetup-or-thymesetup
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
+[:ThymeRollbackUnmount]: #thymerollbackunmount-target
+[:ThymeRollbackUnmountAll]: #thymerollbackunmountall
