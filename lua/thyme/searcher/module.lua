@@ -153,7 +153,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       do
         local _23_
         do
-          local _24_ = ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders)
+          local _24_ = ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders, loadfile)
           if (nil ~= _24_) then
             local searcher = _24_
             _23_ = searcher(module_name)

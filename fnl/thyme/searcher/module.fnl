@@ -137,7 +137,8 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (or Config.?error-msg ;
           (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)
-                ?chunk (case (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders)
+                ?chunk (case (case (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
+                                                                                          loadfile)
                                searcher (searcher module-name))
                          msg|chunk (case (type msg|chunk)
                                      ;; NOTE: Discard unwothy msg in the edge
@@ -151,8 +152,9 @@ cache dir.
                                        lua-path (determine-lua-path module-name)
                                        compiler-options Config.compiler-options]
                                    (case (Observer:observe! fennel.compile-string
-                                                   fnl-path lua-path
-                                                   compiler-options module-name)
+                                                            fnl-path lua-path
+                                                            compiler-options
+                                                            module-name)
                                      (true lua-code) (do
                                                        (if (can-restore-file? lua-path
                                                                               lua-code)

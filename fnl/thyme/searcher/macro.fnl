@@ -1,7 +1,7 @@
 (import-macros {: when-not} :thyme.macros)
 
+(local {: validate-type} (require :thyme.utils.general))
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
-
 (local Messenger (require :thyme.utils.messenger))
 (local SearcherMessenger (Messenger.new "macro-searcher"))
 (local RollbackLoaderMessenger (Messenger.new "macro-rollback-loader"))
@@ -11,7 +11,7 @@
 (local RollbackManager (require :thyme.rollback))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
-(local cache {:macro-loaded {}})
+(local cache {:macro-loaded {} :mounted-rollback-searcher nil})
 
 (fn overwrite-metatable! [original-table cache-table]
   (case (getmetatable original-table)
@@ -82,13 +82,20 @@
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
   (let [fennel (require :fennel)
-        ?chunk (case (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers)
-                       searcher (searcher module-name))
-                 msg|chunk (case (type msg|chunk)
-                             ;; NOTE: Discard unwothy msg in the edge
-                             ;; cases on initializations.
-                             :function
-                             msg|chunk))]
+        ?chunk (if cache.mounted-rollback-searcher
+                   (cache.mounted-rollback-searcher module-name)
+                   (let [macro-file-loader (fn [fnl-path module-name]
+                                             (macro-module->?chunk module-name
+                                                                   fnl-path))]
+                     (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers
+                                                                                 macro-file-loader)
+                       searcher (do
+                                  ;; NOTE: Unlike Lua package.loaders,
+                                  ;; Fennel.macro-searchers should return `nil` at
+                                  ;; the first value for error messages.
+                                  (validate-type :function searcher)
+                                  (set cache.mounted-rollback-searcher searcher)
+                                  (searcher module-name)))))]
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
