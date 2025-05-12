@@ -7,12 +7,9 @@
 (local RecompilerMessenger (Messenger.new "watch/recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))
+
 (local Observer (require :thyme.dependency.observer))
-(local {: fnl-path->lua-path
-        : fnl-path->entry-map
-        : fnl-path->dependent-map
-        : clear-module-map!
-        : restore-module-map!} (require :thyme.dependency.logger))
+(local DependencyLogger (require :thyme.dependency.logger))
 
 (local {: write-lua-file-with-backup!} (require :thyme.searcher.module))
 (local {: clear-cache!} (require :thyme.compiler.cache))
@@ -20,9 +17,9 @@
 (local default-strategy :recompile)
 
 (fn fnl-path->dependent-count [fnl-path]
-  (case (fnl-path->dependent-map fnl-path)
-    dependent-map (accumulate [i 0 _ (pairs dependent-map)]
-                    i)
+  (case (DependencyLogger:fnl-path->dependent-maps fnl-path)
+    dependent-maps (accumulate [i 0 _ (pairs dependent-maps)]
+                     i)
     _ 0))
 
 (fn should-recompile-lua-cache? [fnl-path ?lua-path]
@@ -42,7 +39,7 @@
     (set compiler-options.module-name module-name)
     ;; NOTE: module-map must be cleared before logging, but after getting
     ;; its maps.
-    (clear-module-map! fnl-path)
+    (DependencyLogger:clear-module-map! fnl-path)
     (case (Observer:observe! fennel.compile-string fnl-path lua-path
                              compiler-options module-name)
       (true lua-code) (let [msg (.. "successfully recompile " fnl-path)]
@@ -54,7 +51,7 @@
 %s"
                                   (: :format fnl-path error-msg))]
                       (RecompilerMessenger:notify! msg vim.log.levels.WARN)
-                      (restore-module-map! fnl-path)
+                      (DependencyLogger:restore-module-map! fnl-path)
                       false))))
 
 (λ update-module-dependencies! [fnl-path ?lua-path opts]
@@ -64,7 +61,7 @@
 @param opts table"
   (let [always-recompile? opts._always-recompile?
         strategy (or opts._strategy (error "no strategy is specified"))
-        {: module-name} (fnl-path->entry-map fnl-path)]
+        module-name (DependencyLogger:fnl-path->module-name fnl-path)]
     (when ?lua-path
       (case strategy
         ;; TODO: Activate the strategies:
@@ -80,18 +77,14 @@
           (recompile! fnl-path ?lua-path module-name))))
     (case strategy
       (where (or :clear-all :clear :recompile :reload))
-      (case (fnl-path->dependent-map fnl-path)
-        dependent-map (do
-                        (var async nil)
-                        (each [dependent-fnl-path dependent (pairs dependent-map)]
-                          (set async
-                               (-> (fn []
-                                     (update-module-dependencies! dependent-fnl-path
-                                                                  dependent.lua-path
-                                                                  opts)
-                                     (async:close))
-                                   (vim.uv.new_async)))
-                          (async:send))))
+      (case (DependencyLogger:fnl-path->dependent-maps fnl-path)
+        dependent-maps (each [dependent-fnl-path dependent (pairs dependent-maps)]
+                         ;; TODO: Wrap `update-module-dependencies!` into
+                         ;; `uv.new_async`, but does it keep the consistency?
+                         (-> #(update-module-dependencies! dependent-fnl-path
+                                                           dependent.lua-path
+                                                           opts)
+                             (vim.schedule))))
       _ (error (.. "unsupported strategy: " strategy)))))
 
 (fn check-to-update! [fnl-path ?opts]
@@ -101,28 +94,27 @@ How to update is to be determined by `strategy` option.
 @param ?opts table
 @param ?opts.strategy nil|string|fun(dependent-count: number, context: table): string the `context` only provides `module-name` at present."
   (let [opts (or ?opts {})
-        lua-path (fnl-path->lua-path fnl-path)]
-    (case (fnl-path->entry-map fnl-path)
-      modmap (let [dependent-count (fnl-path->dependent-count fnl-path)
-                   user-strategy (case (type opts.strategy)
-                                   :string opts.strategy
-                                   :function (let [context {:module-name modmap.module-name}]
-                                               (opts.strategy dependent-count
-                                                              context))
-                                   :nil default-strategy
-                                   else (error (.. "expected string or function, got "
-                                                   else)))
-                   always-prefix :always-
-                   always-prefix-length (length always-prefix)
-                   always-recompile? (= always-prefix
-                                        (user-strategy:sub 1
-                                                           always-prefix-length))
-                   strategy (if always-recompile?
-                                (user-strategy:sub (inc always-prefix-length))
-                                user-strategy)]
-               (set opts._always-recompile? always-recompile?)
-               (set opts._strategy strategy)
-               (update-module-dependencies! fnl-path lua-path opts)
-               (set opts._strategy nil)))))
+        lua-path (DependencyLogger:fnl-path->lua-path fnl-path)]
+    (case (DependencyLogger:fnl-path->module-name fnl-path)
+      module-name (let [dependent-count (fnl-path->dependent-count fnl-path)
+                        user-strategy (case (type opts.strategy)
+                                        :string opts.strategy
+                                        :function (let [context {:module-name module-name}]
+                                                    (opts.strategy dependent-count
+                                                                   context))
+                                        :nil default-strategy
+                                        else (error (.. "expected string or function, got "
+                                                        else)))
+                        always-prefix :always-
+                        always-prefix-length (length always-prefix)
+                        always-recompile? (= always-prefix
+                                             (user-strategy:sub 1
+                                                                always-prefix-length))
+                        strategy (if always-recompile?
+                                     (user-strategy:sub (inc always-prefix-length))
+                                     user-strategy)]
+                    (set opts._always-recompile? always-recompile?)
+                    (set opts._strategy strategy)
+                    (update-module-dependencies! fnl-path lua-path opts)))))
 
 {: check-to-update!}

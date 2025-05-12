@@ -1,3 +1,4 @@
+local fennel = require("fennel")
 local _local_1_ = require("thyme.const")
 local config_path = _local_1_["config-path"]
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
@@ -33,7 +34,11 @@ local function watch_files_21(_3fopts)
       else
       end
     else
-      local _9_, _10_ = pcall(check_to_update_21, resolved_path, opts)
+      local _9_, _10_ = nil, nil
+      local function _11_()
+        return check_to_update_21(resolved_path, opts)
+      end
+      _9_, _10_ = xpcall(_11_, fennel.traceback)
       if ((_9_ == false) and (nil ~= _10_)) then
         local msg = _10_
         WatchMessenger["notify-once!"](WatchMessenger, msg, vim.log.levels.ERROR)

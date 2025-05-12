@@ -2,6 +2,8 @@
 ;;; It only helps users write shorter than with vim.api.nvim_create_augroup
 ;;; and vim.api.nvim_create_autocmd.
 
+(local fennel (require :fennel))
+
 (local {: config-path : lua-cache-prefix} (require :thyme.const))
 (local Messenger (require :thyme.utils.messenger))
 (local WatchMessenger (Messenger.new "watch"))
@@ -39,7 +41,8 @@ the same.
                            (let [msg (.. "clear all the cache under "
                                          lua-cache-prefix)]
                              (WatchMessenger:notify! msg)))
-                         (case (pcall check-to-update! resolved-path opts)
+                         (case (xpcall #(check-to-update! resolved-path opts)
+                                       fennel.traceback)
                            (false msg) (WatchMessenger:notify-once! msg
                                                                     vim.log.levels.ERROR)))
                      ;; Prevent not to destroy the autocmd.
