@@ -164,6 +164,10 @@ Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
 The commands are defined by [thyme.setup][].
 
+### `:ThymeConfigOpen`
+
+Open your [.nvim-thyme.fnl][] file.
+
 ### `:ThymeCacheClear`
 
 Clear all the Lua caches managed by [nvim-thyme][].
