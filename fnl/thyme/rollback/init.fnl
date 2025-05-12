@@ -32,9 +32,8 @@
 @return nil|string: nil, or (only for macro searcher) an error message."
   (let [backup-handler (self:backup-handler-of module-name)
         rollback-path (backup-handler:determine-mounted-backup-path)
-        loader-name (-> "mounted-rollback-%s-loader"
-                        (: :format self._kind))
-        messenger (Messenger.new loader-name)]
+        messenger (Messenger.new (-> "rollback/mounted/loader/%s"
+                                     (: :format self._kind)))]
     (if (file-readable? rollback-path)
         (let [msg (-> "rollback to backup for %s/%s (created at %s)"
                       (: :format self._kind module-name
