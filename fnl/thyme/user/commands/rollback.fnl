@@ -1,11 +1,8 @@
 (import-macros {: command!} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable?} (require :thyme.utils.fs))
-(local {: hide-file!} (require :thyme.utils.pool))
 (local Messenger (require :thyme.utils.messenger))
 (local CommandMessenger (Messenger.new "command/rollback"))
-(local {: determine-lua-path} (require :thyme.compiler.cache))
 (local RollbackManager (require :thyme.rollback.manager))
 
 (local M {})
@@ -29,30 +26,17 @@
 (fn RollbackCommander.mount-backup! [kind modname]
   "Mount currently active backup for `modname` of the `kind`.
 @param kind string
-@param modname string an empty string indicates all the backups in the `kind`
-@return boolean true if successfully mounted; false otherwise"
-  (let [ext-tmp ".tmp"
-        backup-handler (-> (RollbackCommander.attach kind ext-tmp)
-                           (: :backup-handler-of modname))
-        ok? (backup-handler:mount-backup!)]
-    (when (and ok? (= kind :module))
-      ;; Hide the corresponding lua cache from &rtp to make sure the
-      ;; `mounted-rollback-loader` to be injected in `package.loaders` first.
-      (case (determine-lua-path modname)
-        lua-path (when (file-readable? lua-path)
-                   (hide-file! lua-path))))
-    ok?))
+@param modname string an empty string indicates all the backups in the `kind`"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :mount-backup!)))
 
 (fn RollbackCommander.unmount-backup! [kind modname]
   "Unmount previously mounted backup for `backup-dir`.
-@param backup-dir string
-@return boolean true if module has been successfully unmounted, false otherwise."
-  (let [ext-tmp ".tmp"
-        backup-handler (-> (RollbackCommander.attach kind ext-tmp)
-                           (: :backup-handler-of modname))]
-    ;; NOTE: Do NOT mess up lines on unmounting, but leave the `restore-file!`
-    ;; tasks to the searchers at runtime instead.
-    (backup-handler:unmount-backup!)))
+@param backup-dir string"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :unmount-backup!)))
 
 (fn M.setup! []
   "Define thyme rollback commands."
@@ -100,13 +84,7 @@
        :desc "[thyme] Mount currently active backup"}
       (fn [{: args}]
         (case (RollbackCommander.cmdargs->kind-modname args)
-          (kind modname) (if (RollbackCommander.mount-backup! kind modname)
-                             (CommandMessenger:notify! (.. "Successfully mounted "
-                                                           args)
-                                                       vim.log.levels.INFO)
-                             (CommandMessenger:notify! (.. "Failed to mount "
-                                                           args)
-                                                       vim.log.levels.WARN)))))
+          (kind modname) (RollbackCommander.mount-backup! kind modname))))
     (command! :ThymeRollbackUnmount
       {:nargs "?"
        ;; TODO: Complete only mounted backups.
@@ -114,15 +92,7 @@
        :desc "[thyme] Unmount mounted backup"}
       (fn [{: args}]
         (case (RollbackCommander.cmdargs->kind-modname args)
-          (kind modname) (case (pcall RollbackCommander.unmount-backup! kind
-                                      modname)
-                           (false msg) (CommandMessenger:notify! (-> "Failed to mount %s:\n%s")
-                                                                 (: :format
-                                                                    args msg
-                                                                    vim.log.levels.WARN))
-                           _ (CommandMessenger:notify! (.. "Successfully unmounted "
-                                                           args)
-                                                       vim.log.levels.INFO)))))
+          (kind modname) (RollbackCommander.unmount-backup! kind modname))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []
