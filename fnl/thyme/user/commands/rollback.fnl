@@ -23,6 +23,15 @@
   (let [ext-tmp ".tmp"]
     (RollbackManager.new kind ext-tmp)))
 
+(fn RollbackCommander.switch-active-backup! [kind modname path]
+  "Mount currently active backup for `modname` of the `kind`.
+@param kind string
+@param modname string an empty string indicates all the backups in the `kind`
+@param path string the path to the new active backup"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :switch-active-backup! path)))
+
 (fn RollbackCommander.mount-backup! [kind modname]
   "Mount currently active backup for `modname` of the `kind`.
 @param kind string
