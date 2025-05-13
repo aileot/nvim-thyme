@@ -73,7 +73,7 @@ M["setup!"] = function()
     local candidates = vim.fn.glob(glob_pattern, false, true)
     local _14_ = #candidates
     if (_14_ == 0) then
-      return CommandMessenger["notify!"](CommandMessenger, ("Abort. No backup is found for " .. input))
+      return error(("Abort. No backup is found for " .. input))
     elseif (_14_ == 1) then
       return CommandMessenger["notify!"](CommandMessenger, ("Abort. Only one backup is found for " .. input))
     else
