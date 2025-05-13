@@ -10,7 +10,7 @@ local fs = _local_2_
 local BackupHandler = {}
 BackupHandler.__index = BackupHandler
 BackupHandler.new = function(root_dir, file_extension, module_name)
-  local attrs = {["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
+  local attrs = {["_latest-cache-linkname"] = ".latest", ["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
   local self = setmetatable(attrs, BackupHandler)
   self["_root-dir"] = root_dir
   self["_file-extension"] = file_extension
@@ -31,6 +31,15 @@ BackupHandler["suggest-new-backup-path"] = function(self)
   local backup_dir = self["determine-backup-dir"](self)
   vim.fn.mkdir(backup_dir, "p")
   return Path.join(backup_dir, backup_filename)
+end
+BackupHandler["determine-latest-cache-link-path"] = function(self)
+  local backup_dir = self["determine-backup-dir"](self)
+  local filename = self["_latest-cache-linkname"]
+  return Path.join(backup_dir, filename)
+end
+BackupHandler["update-latest-cache-link!"] = function(self, cache_path)
+  local link_path = self["determine-latest-cache-link-path"](self)
+  return fs["symlink!"](cache_path, link_path)
 end
 BackupHandler["determine-active-backup-path"] = function(self)
   local backup_dir = self["determine-backup-dir"](self)
@@ -110,6 +119,7 @@ BackupHandler["write-backup!"] = function(self, path)
   local backup_path = self["suggest-new-backup-path"](self, module_name)
   local active_backup_path = self["determine-active-backup-path"](self, module_name)
   vim.fn.mkdir(vim.fs.dirname(active_backup_path), "p")
+  self["update-latest-cache-link!"](self, path)
   assert(fs.copyfile(path, backup_path))
   return fs["symlink!"](backup_path, active_backup_path)
 end
