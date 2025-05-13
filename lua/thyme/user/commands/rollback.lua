@@ -90,8 +90,7 @@ M["setup!"] = function()
               end
               local function _22_(_3fbackup_path)
                 if _3fbackup_path then
-                  RollbackCommander["switch-active-backup!"](kind, modname, _3fbackup_path)
-                  return vim.cmd("ThymeCacheClear")
+                  return RollbackCommander["switch-active-backup!"](kind, modname, _3fbackup_path)
                 else
                   return CommandMessenger["notify!"](CommandMessenger, "Abort selecting rollback target")
                 end

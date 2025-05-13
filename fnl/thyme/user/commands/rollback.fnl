@@ -94,11 +94,9 @@
                                                                 basename)))}
                                           (fn [?backup-path]
                                             (if ?backup-path
-                                                (do
-                                                  (RollbackCommander.switch-active-backup! kind
-                                                                                           modname
-                                                                                           ?backup-path)
-                                                  (vim.cmd :ThymeCacheClear))
+                                                (RollbackCommander.switch-active-backup! kind
+                                                                                         modname
+                                                                                         ?backup-path)
                                                 (CommandMessenger:notify! "Abort selecting rollback target")))))))))
     (command! :ThymeRollbackMount
       {:nargs 1
