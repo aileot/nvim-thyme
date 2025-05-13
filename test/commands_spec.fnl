@@ -117,6 +117,9 @@
            (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
+  ;; (it* "throws error if no backup exists for specified module."
+  ;;   ;; FIXME: pcall cannot suppress Vim command error.
+  ;;   (assert.has_error #(vim.cmd.ThymeRollbackSwitch "unexisted")))
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
     (let [backup-label "module/"]
