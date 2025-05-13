@@ -74,10 +74,10 @@
               glob-pattern (Path.join prefix "*.{lua,fnl}")
               candidates (vim.fn.glob glob-pattern false true)]
           (case (length candidates)
-            0 (CommandMessenger:notify! (.. "Abort. No backup is found for "
-                                            input))
+            0 (error (.. "Abort. No backup is found for " input))
             1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
-                                            input))
+                                            input)
+                                        vim.log.levels.WARN)
             _ (do
                 (table.sort candidates #(< $2 $1))
                 (vim.ui.select candidates ;

@@ -70,15 +70,18 @@ BackupHandler["should-update-backup?"] = function(self, expected_contents)
   local backup_path = self["determine-active-backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
+BackupHandler["has-mounted?"] = function(self)
+  local mounted_backup_path = self["determine-mounted-backup-path"](self)
+  return file_readable_3f(mounted_backup_path)
+end
 BackupHandler["mount-backup!"] = function(self)
-  local backup_dir = Path.join(self["_root-dir"], self["_module-name"])
-  local active_backup_path = Path.join(backup_dir, self["_active-backup-filename"])
-  local mounted_backup_path = Path.join(backup_dir, self["_mounted-backup-filename"])
+  local active_backup_path = self["determine-active-backup-path"](self)
+  local mounted_backup_path = self["determine-mounted-backup-path"](self)
+  assert_is_file_readable(active_backup_path)
   return fs["symlink!"](active_backup_path, mounted_backup_path)
 end
 BackupHandler["unmount-backup!"] = function(self)
-  local backup_dir = Path.join(self["_root-dir"], self["_module-name"])
-  local mounted_backup_path = Path.join(backup_dir, self["_mounted-backup-filename"])
+  local mounted_backup_path = self["determine-mounted-backup-path"](self)
   assert_is_file_readable(mounted_backup_path)
   return assert(fs.unlink(mounted_backup_path))
 end
