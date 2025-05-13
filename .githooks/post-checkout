@@ -9,4 +9,4 @@
 set -Ceu -o pipefail
 
 # Make compiled lua files up-to-date to reduce blocking process on pre-commit.
-make build >/dev/null &
+make -j $(($(nproc) - 1)) build >/dev/null &

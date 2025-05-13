@@ -13,7 +13,7 @@ root=$(git rev-parse --show-toplevel)
 fnl_dir="$root/fnl"
 lua_dir="$root/lua"
 
-make build >/dev/null
+make -j $(($(nproc) - 1)) build >/dev/null
 
 # Unstage all the compiled lua files except deleted ones.
 while read -r lua_file; do
