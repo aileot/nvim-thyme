@@ -73,6 +73,7 @@ end
 BackupHandler["mount-backup!"] = function(self)
   local active_backup_path = self["determine-active-backup-path"](self)
   local mounted_backup_path = self["determine-mounted-backup-path"](self)
+  assert_is_file_readable(active_backup_path)
   return fs["symlink!"](active_backup_path, mounted_backup_path)
 end
 BackupHandler["unmount-backup!"] = function(self)

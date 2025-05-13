@@ -99,6 +99,7 @@ Return `true` if the following conditions are met:
 @return boolean true if module has been successfully mounted, false otherwise."
   (let [active-backup-path (self:determine-active-backup-path)
         mounted-backup-path (self:determine-mounted-backup-path)]
+    (assert-is-file-readable active-backup-path)
     (fs.symlink! active-backup-path mounted-backup-path)))
 
 (fn BackupHandler.unmount-backup! [self]
