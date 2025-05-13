@@ -9,16 +9,16 @@ local _local_3_ = require("thyme.compiler.cache")
 local determine_lua_path = _local_3_["determine-lua-path"]
 local RollbackManager = require("thyme.rollback.manager")
 local M = {}
-local RollbackCommandBackend = {}
-RollbackCommandBackend.attach = function(kind)
+local RollbackCommander = {}
+RollbackCommander.attach = function(kind)
   _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/commands/rollback.fnl:15")
   local ext_tmp = ".tmp"
   return RollbackManager.new(kind, ext_tmp)
 end
-RollbackCommandBackend["mount-backup!"] = function(kind, modname)
+RollbackCommander["mount-backup!"] = function(kind, modname)
   local ext_tmp = ".tmp"
   local backup_handler
-  local tgt_4_ = RollbackCommandBackend.attach(kind, ext_tmp)
+  local tgt_4_ = RollbackCommander.attach(kind, ext_tmp)
   backup_handler = (tgt_4_)["backup-handler-of"](tgt_4_, modname)
   local ok_3f = backup_handler["mount-backup!"](backup_handler)
   if (ok_3f and (kind == "module")) then
@@ -35,14 +35,14 @@ RollbackCommandBackend["mount-backup!"] = function(kind, modname)
   end
   return ok_3f
 end
-RollbackCommandBackend["unmount-backup!"] = function(kind, modname)
+RollbackCommander["unmount-backup!"] = function(kind, modname)
   local ext_tmp = ".tmp"
   local backup_handler
-  local tgt_9_ = RollbackCommandBackend.attach(kind, ext_tmp)
+  local tgt_9_ = RollbackCommander.attach(kind, ext_tmp)
   backup_handler = (tgt_9_)["backup-handler-of"](tgt_9_, modname)
   return backup_handler["unmount-backup!"](backup_handler)
 end
-RollbackCommandBackend["cmdargs->kind-modname"] = function(cmdargs)
+RollbackCommander["cmdargs->kind-modname"] = function(cmdargs)
   return cmdargs:match("([^/]+)/?([^/]*)")
 end
 M["setup!"] = function()
@@ -104,11 +104,11 @@ M["setup!"] = function()
   vim.api.nvim_create_user_command("ThymeRollbackSwitch", _13_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Prompt to select rollback for compile error"})
   local function _22_(_21_)
     local args = _21_["args"]
-    local _23_, _24_ = RollbackCommandBackend["cmdargs->kind-modname"](args)
+    local _23_, _24_ = RollbackCommander["cmdargs->kind-modname"](args)
     if ((nil ~= _23_) and (nil ~= _24_)) then
       local kind = _23_
       local modname = _24_
-      if RollbackCommandBackend["mount-backup!"](kind, modname) then
+      if RollbackCommander["mount-backup!"](kind, modname) then
         return CommandMessenger["notify!"](CommandMessenger, ("Successfully mounted " .. args), vim.log.levels.INFO)
       else
         return CommandMessenger["notify!"](CommandMessenger, ("Failed to mount " .. args), vim.log.levels.WARN)
@@ -120,11 +120,11 @@ M["setup!"] = function()
   vim.api.nvim_create_user_command("ThymeRollbackMount", _22_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Mount currently active backup"})
   local function _28_(_27_)
     local args = _27_["args"]
-    local _29_, _30_ = RollbackCommandBackend["cmdargs->kind-modname"](args)
+    local _29_, _30_ = RollbackCommander["cmdargs->kind-modname"](args)
     if ((nil ~= _29_) and (nil ~= _30_)) then
       local kind = _29_
       local modname = _30_
-      local _31_, _32_ = pcall(RollbackCommandBackend["unmount-backup!"], kind, modname)
+      local _31_, _32_ = pcall(RollbackCommander["unmount-backup!"], kind, modname)
       if ((_31_ == false) and (nil ~= _32_)) then
         local msg = _32_
         local tgt_33_ = "format"

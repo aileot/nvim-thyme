@@ -10,22 +10,22 @@
 
 (local M {})
 
-(local RollbackCommandBackend {})
+(local RollbackCommander {})
 
-(λ RollbackCommandBackend.attach [kind]
+(λ RollbackCommander.attach [kind]
   "Create a RollbackManager instance only to attach to the data stored for
 `kind`.
 @return RollbackManager"
   (let [ext-tmp ".tmp"]
     (RollbackManager.new kind ext-tmp)))
 
-(fn RollbackCommandBackend.mount-backup! [kind modname]
+(fn RollbackCommander.mount-backup! [kind modname]
   "Mount currently active backup for `modname` of the `kind`.
 @param kind string
 @param modname string an empty string indicates all the backups in the `kind`
 @return boolean true if successfully mounted; false otherwise"
   (let [ext-tmp ".tmp"
-        backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
+        backup-handler (-> (RollbackCommander.attach kind ext-tmp)
                            (: :backup-handler-of modname))
         ok? (backup-handler:mount-backup!)]
     (when (and ok? (= kind :module))
@@ -36,18 +36,18 @@
                    (hide-file! lua-path))))
     ok?))
 
-(fn RollbackCommandBackend.unmount-backup! [kind modname]
+(fn RollbackCommander.unmount-backup! [kind modname]
   "Unmount previously mounted backup for `backup-dir`.
 @param backup-dir string
 @return boolean true if module has been successfully unmounted, false otherwise."
   (let [ext-tmp ".tmp"
-        backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
+        backup-handler (-> (RollbackCommander.attach kind ext-tmp)
                            (: :backup-handler-of modname))]
     ;; NOTE: Do NOT mess up lines on unmounting, but leave the `restore-file!`
     ;; tasks to the searchers at runtime instead.
     (backup-handler:unmount-backup!)))
 
-(fn RollbackCommandBackend.cmdargs->kind-modname [cmdargs]
+(fn RollbackCommander.cmdargs->kind-modname [cmdargs]
   "Parse cmdargs (slash-separated) into two strings: `kind` and `modname`.
 @param cmdargs string
 @return kind string
@@ -99,8 +99,8 @@
        :complete complete-dirs
        :desc "[thyme] Mount currently active backup"}
       (fn [{: args}]
-        (case (RollbackCommandBackend.cmdargs->kind-modname args)
-          (kind modname) (if (RollbackCommandBackend.mount-backup! kind modname)
+        (case (RollbackCommander.cmdargs->kind-modname args)
+          (kind modname) (if (RollbackCommander.mount-backup! kind modname)
                              (CommandMessenger:notify! (.. "Successfully mounted "
                                                            args)
                                                        vim.log.levels.INFO)
@@ -113,14 +113,16 @@
        :complete complete-dirs
        :desc "[thyme] Unmount mounted backup"}
       (fn [{: args}]
-        (case (RollbackCommandBackend.cmdargs->kind-modname args)
-          (kind modname)
-          (case (pcall RollbackCommandBackend.unmount-backup! kind modname)
-            (false msg) (CommandMessenger:notify! (-> "Failed to mount %s:\n%s")
-                                                  (: :format args msg
-                                                     vim.log.levels.WARN))
-            _ (CommandMessenger:notify! (.. "Successfully unmounted " args)
-                                        vim.log.levels.INFO)))))
+        (case (RollbackCommander.cmdargs->kind-modname args)
+          (kind modname) (case (pcall RollbackCommander.unmount-backup! kind
+                                      modname)
+                           (false msg) (CommandMessenger:notify! (-> "Failed to mount %s:\n%s")
+                                                                 (: :format
+                                                                    args msg
+                                                                    vim.log.levels.WARN))
+                           _ (CommandMessenger:notify! (.. "Successfully unmounted "
+                                                           args)
+                                                       vim.log.levels.INFO)))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []
