@@ -94,6 +94,12 @@ Return `true` if the following conditions are met:
                 (assert expected-contents
                         "expected non empty string for `expected-contents`"))))))
 
+(fn BackupHandler.has-mounted? [self]
+  "Tell if a backup for `module-name` has been mounted.
+@return boolean"
+  (let [mounted-backup-path (self:determine-mounted-backup-path)]
+    (file-readable? mounted-backup-path)))
+
 (fn BackupHandler.mount-backup! [self]
   "Mount currently active backup for `module-name`.
 @return boolean true if module has been successfully mounted, false otherwise."

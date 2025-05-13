@@ -70,6 +70,10 @@ BackupHandler["should-update-backup?"] = function(self, expected_contents)
   local backup_path = self["determine-active-backup-path"](self, module_name)
   return (not file_readable_3f(backup_path) or (read_file(backup_path) ~= assert(expected_contents, "expected non empty string for `expected-contents`")))
 end
+BackupHandler["has-mounted?"] = function(self)
+  local mounted_backup_path = self["determine-mounted-backup-path"](self)
+  return file_readable_3f(mounted_backup_path)
+end
 BackupHandler["mount-backup!"] = function(self)
   local active_backup_path = self["determine-active-backup-path"](self)
   local mounted_backup_path = self["determine-mounted-backup-path"](self)
