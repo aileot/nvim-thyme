@@ -71,19 +71,6 @@ end
 RollbackManager["get-root"] = function()
   return RollbackManager._root
 end
-RollbackManager["switch-active-backup!"] = function(backup_path)
-  _G.assert((nil ~= backup_path), "Missing argument backup-path on fnl/thyme/rollback/manager.fnl:103")
-  assert_is_file_readable(backup_path)
-  local dir = vim.fs.dirname(backup_path)
-  local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
-  return fs["symlink!"](backup_path, active_backup_path)
-end
-RollbackManager["active-backup?"] = function(backup_path)
-  assert_is_file_readable(backup_path)
-  local dir = vim.fs.dirname(backup_path)
-  local active_backup_path = Path.join(dir, RollbackManager["_active-backup-filename"])
-  return (backup_path == fs.readlink(active_backup_path))
-end
 RollbackManager["list-mounted-paths"] = function()
   return vim.fn.glob(Path.join(RollbackManager._root, "*", "*", RollbackManager["_mounted-backup-filename"]), false, true)
 end

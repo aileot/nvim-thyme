@@ -100,24 +100,6 @@
 @return string the root path"
   RollbackManager._root)
 
-(λ RollbackManager.switch-active-backup! [backup-path]
-  "Switch active backup to `backup-path`."
-  (assert-is-file-readable backup-path)
-  (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir
-                                      RollbackManager._active-backup-filename)]
-    (fs.symlink! backup-path active-backup-path)))
-
-(fn RollbackManager.active-backup? [backup-path]
-  "Tell if given `backup-path` is an active backup.
-@param backup-path string
-@return boolean"
-  (assert-is-file-readable backup-path)
-  (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir
-                                      RollbackManager._active-backup-filename)]
-    (= backup-path (fs.readlink active-backup-path))))
-
 (fn RollbackManager.list-mounted-paths []
   "Return all the mounted rollback paths.
 @return string[] the list of mounted paths"
