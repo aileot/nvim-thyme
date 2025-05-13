@@ -76,7 +76,8 @@
           (case (length candidates)
             0 (error (.. "Abort. No backup is found for " input))
             1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
-                                            input))
+                                            input)
+                                        vim.log.levels.WARN)
             _ (do
                 (table.sort candidates #(< $2 $1))
                 (vim.ui.select candidates ;

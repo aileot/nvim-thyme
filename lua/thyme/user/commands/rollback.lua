@@ -75,7 +75,7 @@ M["setup!"] = function()
     if (_14_ == 0) then
       return error(("Abort. No backup is found for " .. input))
     elseif (_14_ == 1) then
-      return CommandMessenger["notify!"](CommandMessenger, ("Abort. Only one backup is found for " .. input))
+      return CommandMessenger["notify!"](CommandMessenger, ("Abort. Only one backup is found for " .. input), vim.log.levels.WARN)
     else
       local _ = _14_
       local function _15_(_241, _242)
