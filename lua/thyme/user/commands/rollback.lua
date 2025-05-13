@@ -10,8 +10,11 @@ local determine_lua_path = _local_3_["determine-lua-path"]
 local RollbackManager = require("thyme.rollback.manager")
 local M = {}
 local RollbackCommander = {}
+RollbackCommander["cmdargs->kind-modname"] = function(cmdargs)
+  return cmdargs:match("([^/]+)/?([^/]*)")
+end
 RollbackCommander.attach = function(kind)
-  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/commands/rollback.fnl:15")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/commands/rollback.fnl:22")
   local ext_tmp = ".tmp"
   return RollbackManager.new(kind, ext_tmp)
 end
@@ -41,9 +44,6 @@ RollbackCommander["unmount-backup!"] = function(kind, modname)
   local tgt_9_ = RollbackCommander.attach(kind, ext_tmp)
   backup_handler = (tgt_9_)["backup-handler-of"](tgt_9_, modname)
   return backup_handler["unmount-backup!"](backup_handler)
-end
-RollbackCommander["cmdargs->kind-modname"] = function(cmdargs)
-  return cmdargs:match("([^/]+)/?([^/]*)")
 end
 M["setup!"] = function()
   local complete_dirs

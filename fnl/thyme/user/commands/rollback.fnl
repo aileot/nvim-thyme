@@ -12,6 +12,13 @@
 
 (local RollbackCommander {})
 
+(fn RollbackCommander.cmdargs->kind-modname [cmdargs]
+  "Parse cmdargs (slash-separated) into two strings: `kind` and `modname`.
+@param cmdargs string
+@return kind string
+@return modname string an empty string will indicates all the stored modulesof the `kind`."
+  (cmdargs:match "([^/]+)/?([^/]*)"))
+
 (λ RollbackCommander.attach [kind]
   "Create a RollbackManager instance only to attach to the data stored for
 `kind`.
@@ -46,13 +53,6 @@
     ;; NOTE: Do NOT mess up lines on unmounting, but leave the `restore-file!`
     ;; tasks to the searchers at runtime instead.
     (backup-handler:unmount-backup!)))
-
-(fn RollbackCommander.cmdargs->kind-modname [cmdargs]
-  "Parse cmdargs (slash-separated) into two strings: `kind` and `modname`.
-@param cmdargs string
-@return kind string
-@return modname string an empty string will indicates all the stored modulesof the `kind`."
-  (cmdargs:match "([^/]+)/?([^/]*)"))
 
 (fn M.setup! []
   "Define thyme rollback commands."
