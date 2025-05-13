@@ -59,6 +59,12 @@ BackupHandler["determine-active-backup-birthtime"] = function(self)
     return nil
   end
 end
+BackupHandler["switch-active-backup!"] = function(self, path)
+  local dir = self["determine-backup-dir"](self)
+  local active_backup_path = self["determine-active-backup-path"](self)
+  assert(path:find(dir, 1, true), ("expected path under backup directory %s, got %s"):format(dir, path))
+  return fs["symlink!"](path, active_backup_path)
+end
 BackupHandler["determine-mounted-backup-path"] = function(self)
   local backup_dir = self["determine-backup-dir"](self)
   local filename = self["_mounted-backup-filename"]

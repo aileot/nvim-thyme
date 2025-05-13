@@ -67,6 +67,16 @@ path by itself.
              (. :birthtime :sec))
     time (os.date "%c" time)))
 
+(fn BackupHandler.switch-active-backup! [self path]
+  "Switch active backup for `module-name` to `path`.
+@param path string"
+  (let [dir (self:determine-backup-dir)
+        active-backup-path (self:determine-active-backup-path)]
+    (assert (path:find dir 1 true)
+            (-> "expected path under backup directory %s, got %s"
+                (: :format dir path)))
+    (fs.symlink! path active-backup-path)))
+
 (fn BackupHandler.determine-mounted-backup-path [self]
   "Return the mounted backup path for `module-name`.
 Note that mounted backup is linked to an active backup so that the contents are
