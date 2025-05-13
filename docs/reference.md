@@ -128,6 +128,18 @@ With [nvim-laurel][],
                (vim.schedule)))
 ```
 
+### Functions at `thyme.fennel`
+
+Provides a set of Fennel wrapper functions
+corresponding to [Fennel Wrapper Commands][].
+
+Unless otherwise noted,
+the functions named with `_` are equivalent to those with `-`.
+
+```vim
+:= require("thyme").fennel
+```
+
 ## Functions `pcall`-able
 
 Some `thyme.call.<foo.bar.baz>`-modules are provided.
