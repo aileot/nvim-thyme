@@ -97,16 +97,14 @@ Return `true` if the following conditions are met:
 (fn BackupHandler.mount-backup! [self]
   "Mount currently active backup for `module-name`.
 @return boolean true if module has been successfully mounted, false otherwise."
-  (let [backup-dir (Path.join self._root-dir self._module-name)
-        active-backup-path (Path.join backup-dir self._active-backup-filename)
-        mounted-backup-path (Path.join backup-dir self._mounted-backup-filename)]
+  (let [active-backup-path (self:determine-active-backup-path)
+        mounted-backup-path (self:determine-mounted-backup-path)]
     (fs.symlink! active-backup-path mounted-backup-path)))
 
 (fn BackupHandler.unmount-backup! [self]
   "Unmount previously mounted backup for `module-name`.
 @return boolean true if module has been successfully unmounted, false otherwise."
-  (let [backup-dir (Path.join self._root-dir self._module-name)
-        mounted-backup-path (Path.join backup-dir self._mounted-backup-filename)]
+  (let [mounted-backup-path (self:determine-mounted-backup-path)]
     (assert-is-file-readable mounted-backup-path)
     (assert (fs.unlink mounted-backup-path))))
 
