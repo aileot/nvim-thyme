@@ -1,12 +1,14 @@
-local _local_1_ = require("thyme.utils.general")
-local validate_type = _local_1_["validate-type"]
-local sorter_2ffiles_to_oldest_by_birthtime = _local_1_["sorter/files-to-oldest-by-birthtime"]
+local _local_1_ = require("thyme.const")
+local lua_cache_prefix = _local_1_["lua-cache-prefix"]
+local _local_2_ = require("thyme.utils.general")
+local validate_type = _local_2_["validate-type"]
+local sorter_2ffiles_to_oldest_by_birthtime = _local_2_["sorter/files-to-oldest-by-birthtime"]
 local Path = require("thyme.utils.path")
-local _local_2_ = require("thyme.utils.fs")
-local file_readable_3f = _local_2_["file-readable?"]
-local assert_is_file_readable = _local_2_["assert-is-file-readable"]
-local read_file = _local_2_["read-file"]
-local fs = _local_2_
+local _local_3_ = require("thyme.utils.fs")
+local file_readable_3f = _local_3_["file-readable?"]
+local assert_is_file_readable = _local_3_["assert-is-file-readable"]
+local read_file = _local_3_["read-file"]
+local fs = _local_3_
 local BackupHandler = {}
 BackupHandler.__index = BackupHandler
 BackupHandler.new = function(root_dir, file_extension, module_name)
@@ -41,28 +43,37 @@ BackupHandler["update-latest-cache-link!"] = function(self, cache_path)
   local link_path = self["determine-latest-cache-link-path"](self)
   return fs["symlink!"](cache_path, link_path)
 end
+BackupHandler["clear-latest-cache!"] = function(self)
+  local link_path = self["determine-latest-cache-link-path"](self)
+  local cache_path = fs.readlink(link_path)
+  if ((1 == cache_path:find(lua_cache_prefix, 1, true)) and fs.stat(cache_path)) then
+    return assert(fs.unlink(cache_path))
+  else
+    return nil
+  end
+end
 BackupHandler["determine-active-backup-path"] = function(self)
   local backup_dir = self["determine-backup-dir"](self)
   local filename = self["_active-backup-filename"]
   return Path.join(backup_dir, filename)
 end
 BackupHandler["determine-active-backup-birthtime"] = function(self)
-  local _3_
+  local _5_
   do
     local tmp_3_ = self["determine-active-backup-path"](self, self["_module-name"])
     if (nil ~= tmp_3_) then
       local tmp_3_0 = fs.stat(tmp_3_)
       if (nil ~= tmp_3_0) then
-        _3_ = tmp_3_0.birthtime.sec
+        _5_ = tmp_3_0.birthtime.sec
       else
-        _3_ = nil
+        _5_ = nil
       end
     else
-      _3_ = nil
+      _5_ = nil
     end
   end
-  if (nil ~= _3_) then
-    local time = _3_
+  if (nil ~= _5_) then
+    local time = _5_
     return os.date("%c", time)
   else
     return nil
@@ -93,7 +104,8 @@ BackupHandler["mount-backup!"] = function(self)
   local active_backup_path = self["determine-active-backup-path"](self)
   local mounted_backup_path = self["determine-mounted-backup-path"](self)
   assert_is_file_readable(active_backup_path)
-  return fs["symlink!"](active_backup_path, mounted_backup_path)
+  fs["symlink!"](active_backup_path, mounted_backup_path)
+  return self["clear-latest-cache!"](self)
 end
 BackupHandler["unmount-backup!"] = function(self)
   local mounted_backup_path = self["determine-mounted-backup-path"](self)

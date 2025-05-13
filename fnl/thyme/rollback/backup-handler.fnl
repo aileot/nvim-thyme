@@ -1,5 +1,7 @@
 (import-macros {: inc} :thyme.macros)
 
+(local {: lua-cache-prefix} (require :thyme.const))
+
 (local {: validate-type : sorter/files-to-oldest-by-birthtime}
        (require :thyme.utils.general))
 
@@ -69,6 +71,15 @@ path by itself.
     ;;             (: :format lua-cache-prefix cache-path)))
     (fs.symlink! cache-path link-path)))
 
+(fn BackupHandler.clear-latest-cache! [self]
+  "Clear the cache for `module-name` in order to make sure that the `mounted`
+backup will be loaded on the next attempt."
+  (let [link-path (self:determine-latest-cache-link-path)
+        cache-path (fs.readlink link-path)]
+    (when (and (= 1 (cache-path:find lua-cache-prefix 1 true))
+               (fs.stat cache-path))
+      (assert (fs.unlink cache-path)))))
+
 (fn BackupHandler.determine-active-backup-path [self]
   "Return the active backup path for `module-name`.
 @return string? the active backup path, or nil if not found"
@@ -133,7 +144,9 @@ Return `true` if the following conditions are met:
   (let [active-backup-path (self:determine-active-backup-path)
         mounted-backup-path (self:determine-mounted-backup-path)]
     (assert-is-file-readable active-backup-path)
-    (fs.symlink! active-backup-path mounted-backup-path)))
+    (fs.symlink! active-backup-path mounted-backup-path)
+    ;; esp. for package.loaders.
+    (self:clear-latest-cache!)))
 
 (fn BackupHandler.unmount-backup! [self]
   "Unmount previously mounted backup for `module-name`.
