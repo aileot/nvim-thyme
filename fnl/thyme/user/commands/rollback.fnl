@@ -61,21 +61,21 @@
       {:nargs 1
        :complete complete-dirs
        :desc "[thyme] Prompt to select rollback for compile error"}
-      (fn [{:args input}]
+      (fn [{: args}]
         (let [root (RollbackManager.get-root)
-              prefix (Path.join root input)
+              prefix (Path.join root args)
               glob-pattern (Path.join prefix "*.{lua,fnl}")
               candidates (vim.fn.glob glob-pattern false true)]
           (case (length candidates)
-            0 (error (.. "Abort. No backup is found for " input))
+            0 (error (.. "Abort. No backup is found for " args))
             1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
-                                            input)
+                                            args)
                                         vim.log.levels.WARN)
             _ (do
                 (table.sort candidates #(< $2 $1))
                 (vim.ui.select candidates ;
                                {:prompt (-> "Select rollback for %s: "
-                                            (: :format input))
+                                            (: :format args))
                                 :format_item (fn [path]
                                                (let [basename (vim.fs.basename path)]
                                                  (if (RollbackManager.active-backup? path)

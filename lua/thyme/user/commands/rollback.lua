@@ -48,16 +48,16 @@ M["setup!"] = function()
   end
   complete_dirs = _7_
   local function _10_(_9_)
-    local input = _9_["args"]
+    local args = _9_["args"]
     local root = RollbackManager["get-root"]()
-    local prefix = Path.join(root, input)
+    local prefix = Path.join(root, args)
     local glob_pattern = Path.join(prefix, "*.{lua,fnl}")
     local candidates = vim.fn.glob(glob_pattern, false, true)
     local _11_ = #candidates
     if (_11_ == 0) then
-      return error(("Abort. No backup is found for " .. input))
+      return error(("Abort. No backup is found for " .. args))
     elseif (_11_ == 1) then
-      return CommandMessenger["notify!"](CommandMessenger, ("Abort. Only one backup is found for " .. input), vim.log.levels.WARN)
+      return CommandMessenger["notify!"](CommandMessenger, ("Abort. Only one backup is found for " .. args), vim.log.levels.WARN)
     else
       local _ = _11_
       local function _12_(_241, _242)
@@ -80,7 +80,7 @@ M["setup!"] = function()
           return CommandMessenger["notify!"](CommandMessenger, "Abort selecting rollback target")
         end
       end
-      return vim.ui.select(candidates, {prompt = ("Select rollback for %s: "):format(input), format_item = _13_}, _15_)
+      return vim.ui.select(candidates, {prompt = ("Select rollback for %s: "):format(args), format_item = _13_}, _15_)
     end
   end
   vim.api.nvim_create_user_command("ThymeRollbackSwitch", _10_, {nargs = 1, complete = complete_dirs, desc = "[thyme] Prompt to select rollback for compile error"})
