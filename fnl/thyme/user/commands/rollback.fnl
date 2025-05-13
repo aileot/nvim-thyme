@@ -74,31 +74,32 @@
        :complete complete-dirs
        :desc "[thyme] Prompt to select rollback for compile error"}
       (fn [{: args}]
-        (let [root (RollbackManager.get-root)
-              prefix (Path.join root args)
-              glob-pattern (Path.join prefix "*.{lua,fnl}")
-              candidates (vim.fn.glob glob-pattern false true)]
-          (case (length candidates)
-            0 (error (.. "Abort. No backup is found for " args))
-            1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
-                                            args)
-                                        vim.log.levels.WARN)
-            _ (do
-                (table.sort candidates #(< $2 $1))
-                (vim.ui.select candidates ;
-                               {:prompt (-> "Select rollback for %s: "
-                                            (: :format args))
-                                :format_item (fn [path]
-                                               (let [basename (vim.fs.basename path)]
-                                                 (if (RollbackManager.active-backup? path)
-                                                     (.. basename " (current)")
-                                                     basename)))}
-                               (fn [?backup-path]
-                                 (if ?backup-path
-                                     (do
-                                       (RollbackManager.switch-active-backup! ?backup-path)
-                                       (vim.cmd :ThymeCacheClear))
-                                     (CommandMessenger:notify! "Abort selecting rollback target")))))))))
+        (case-try (RollbackCommander.cmdargs->kind-modname args)
+          (kind modname) (RollbackCommander.list-backups kind modname)
+          candidates (case (length candidates)
+                       0 (error (.. "Abort. No backup is found for " args))
+                       1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
+                                                       args)
+                                                   vim.log.levels.WARN)
+                       _ (do
+                           (table.sort candidates #(< $2 $1))
+                           (vim.ui.select candidates ;
+                                          {:prompt (-> "Select rollback for %s: "
+                                                       (: :format args))
+                                           :format_item (fn [path]
+                                                          (let [basename (vim.fs.basename path)]
+                                                            (if (RollbackManager.active-backup? path)
+                                                                (.. basename
+                                                                    " (current)")
+                                                                basename)))}
+                                          (fn [?backup-path]
+                                            (if ?backup-path
+                                                (do
+                                                  (RollbackCommander.switch-active-backup! kind
+                                                                                           modname
+                                                                                           ?backup-path)
+                                                  (vim.cmd :ThymeCacheClear))
+                                                (CommandMessenger:notify! "Abort selecting rollback target")))))))))
     (command! :ThymeRollbackMount
       {:nargs 1
        :complete complete-dirs
