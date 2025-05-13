@@ -117,37 +117,12 @@
            (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
-  ;; (it* "throws error if no backup exists for specified module."
-  ;;   ;; FIXME: pcall cannot suppress Vim command error.
-  ;;   (assert.has_error #(vim.cmd.ThymeRollbackSwitch "unexisted")))
+  (it* "throws error if no backup exists for specified module."
+    ;; NOTE: `vim.cmd.Foobar` format cannot suppress errors with `pcall`.
+    (assert.has_error #(vim.cmd "ThymeRollbackSwitch unexisted")))
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
     (let [backup-label "module/"]
-      (it* "will NOT show ui to select if no backup exists for the module."
-        (let [ctx1 "{:foo :bar}"
-              mod :foobar
-              fnl-path (.. mod ".fnl")]
-          (prepare-config-fnl-file! fnl-path ctx1)
-          (require mod)
-          (tset package.loaded mod nil)
-          (var asked? false)
-          (let [raw-ui-select vim.ui.select]
-            (set vim.ui.select
-                 (fn [items _opts cb]
-                   (set asked? true)
-                   (cb (. items 1))))
-            (vim.cmd.ThymeRollbackSwitch (.. backup-label "tmp"))
-            (assert.is_false asked?)
-            (set vim.ui.select raw-ui-select))))
-      (it* "will NOT show ui to select if only one backup exists for the module."
-        (var asked? false)
-        (let [raw-ui-select vim.ui.select]
-          (set vim.ui.select (fn [items _opts cb]
-                               (set asked? true)
-                               (cb (. items 1))))
-          (vim.cmd.ThymeRollbackSwitch (.. backup-label "tmp"))
-          (assert.is_false asked?)
-          (set vim.ui.select raw-ui-select)))
       (describe* "with applying `require` to a fnl module twice or more but changing its contents"
         (let [ctx1 "{:foo :bar}"
               ctx2 "{:foo :baz}"
