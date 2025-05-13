@@ -9,7 +9,7 @@
         : remove-context-files!} (include :test.helper.utils))
 
 (local {: lua-cache-prefix} (require :thyme.const))
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 (local thyme (require :thyme))
 
 (describe* "command"

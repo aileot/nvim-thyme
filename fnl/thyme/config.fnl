@@ -4,7 +4,7 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 ;; NOTE: Please keep this security check simple.

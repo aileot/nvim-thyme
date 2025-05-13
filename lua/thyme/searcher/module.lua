@@ -22,7 +22,7 @@ local Config = require("thyme.config")
 local Observer = require("thyme.dependency.observer")
 local _local_6_ = require("thyme.searcher.macro")
 local initialize_macro_searcher_on_rtp_21 = _local_6_["initialize-macro-searcher-on-rtp!"]
-local RollbackManager = require("thyme.rollback")
+local RollbackManager = require("thyme.rollback.manager")
 local ModuleRollbackManager = RollbackManager.new("module", ".lua")
 local cache = {rtp = nil}
 local function compile_fennel_into_rtp_21()

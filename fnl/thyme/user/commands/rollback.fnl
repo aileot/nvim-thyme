@@ -6,7 +6,7 @@
 (local Messenger (require :thyme.utils.messenger))
 (local CommandMessenger (Messenger.new "command/rollback"))
 (local {: determine-lua-path} (require :thyme.compiler.cache))
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 
 (local M {})
 
