@@ -23,6 +23,18 @@
   (let [ext-tmp ".tmp"]
     (RollbackManager.new kind ext-tmp)))
 
+(fn RollbackCommander.get-root [kind modname]
+  "Get the root directory of the backup files for `modname` of the `kind`."
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :determine-backup-dir)))
+
+(fn RollbackCommander.list-backups [kind modname]
+  (let [dir (RollbackCommander.get-root kind modname)
+        glob-pattern (Path.join dir "*.{lua,fnl}")
+        candidates (vim.fn.glob glob-pattern false true)]
+    candidates))
+
 (fn RollbackCommander.switch-active-backup! [kind modname path]
   "Mount currently active backup for `modname` of the `kind`.
 @param kind string
