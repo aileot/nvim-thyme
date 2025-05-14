@@ -7,7 +7,7 @@ local Messenger = require("thyme.utils.messenger")
 local SearcherMessenger = Messenger.new("searcher/macro")
 local RollbackLoaderMessenger = Messenger.new("rollback/loader/macro")
 local Observer = require("thyme.dependency.observer")
-local RollbackManager = require("thyme.rollback")
+local RollbackManager = require("thyme.rollback.manager")
 local MacroRollbackManager = RollbackManager.new("macro", ".fnl")
 local cache = {["macro-loaded"] = {}, ["mounted-rollback-searcher"] = nil}
 local function overwrite_metatable_21(original_table, cache_table)

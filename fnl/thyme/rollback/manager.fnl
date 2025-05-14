@@ -77,6 +77,21 @@
               false))
         (table.insert searchers 1 self._injected-searcher))))
 
+(fn RollbackManager.list-backup-dirs [self]
+  "List the backup dir paths for `modules` of `kind`.
+@return string[] the list of paths"
+  ;; NOTE: Ignore dot files using `glob`.
+  (-> (Path.join self._kind-dir "*")
+      (vim.fn.glob false true)))
+
+(fn RollbackManager.list-backup-modules [self]
+  "List the backup module names.
+@return string[] the list of module names"
+  ;; NOTE: Ignore dot files using `glob`.
+  (let [paths (self:list-backup-dirs)]
+    (icollect [_ path (ipairs paths)]
+      (vim.fs.basename path))))
+
 ;;; Static Methods
 
 (λ RollbackManager.new [kind file-extension]
@@ -99,24 +114,6 @@
   "Return the root directory of backup files.
 @return string the root path"
   RollbackManager._root)
-
-(λ RollbackManager.switch-active-backup! [backup-path]
-  "Switch active backup to `backup-path`."
-  (assert-is-file-readable backup-path)
-  (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir
-                                      RollbackManager._active-backup-filename)]
-    (fs.symlink! backup-path active-backup-path)))
-
-(fn RollbackManager.active-backup? [backup-path]
-  "Tell if given `backup-path` is an active backup.
-@param backup-path string
-@return boolean"
-  (assert-is-file-readable backup-path)
-  (let [dir (vim.fs.dirname backup-path)
-        active-backup-path (Path.join dir
-                                      RollbackManager._active-backup-filename)]
-    (= backup-path (fs.readlink active-backup-path))))
 
 (fn RollbackManager.list-mounted-paths []
   "Return all the mounted rollback paths.
