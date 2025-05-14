@@ -75,7 +75,9 @@
        :desc "[thyme] Prompt to select rollback for compile error"}
       (fn [{: args}]
         (case-try (RollbackCommander.cmdargs->kind-modname args)
-          (kind modname) (RollbackCommander.list-backups kind modname)
+          (kind modname) (-> (RollbackCommander.attach kind)
+                             (: :backup-handler-of modname)
+                             (: :list-backup-files))
           candidates (case (length candidates)
                        0 (error (.. "Abort. No backup is found for " args))
                        1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
