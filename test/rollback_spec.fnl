@@ -5,7 +5,7 @@
 (local {: prepare-config-fnl-file! : remove-context-files!}
        (include :test.helper.utils))
 
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 (local TestRollbackManager (RollbackManager.new :test ".fnl"))
 
 (local Config (require :thyme.config))

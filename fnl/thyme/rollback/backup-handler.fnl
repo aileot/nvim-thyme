@@ -1,5 +1,7 @@
 (import-macros {: inc} :thyme.macros)
 
+(local {: lua-cache-prefix} (require :thyme.const))
+
 (local {: validate-type : sorter/files-to-oldest-by-birthtime}
        (require :thyme.utils.general))
 
@@ -18,7 +20,8 @@
 @param file-extension string
 @param module-name string
 @return BackupHandler"
-  (let [attrs {:_active-backup-filename ".active"
+  (let [attrs {:_latest-cache-linkname ".latest"
+               :_active-backup-filename ".active"
                :_mounted-backup-filename ".mounted"}
         self (setmetatable attrs BackupHandler)]
     (set self._root-dir root-dir)
@@ -52,6 +55,31 @@ path by itself.
     (vim.fn.mkdir backup-dir :p)
     (Path.join backup-dir backup-filename)))
 
+(fn BackupHandler.determine-latest-cache-link-path [self]
+  "Determine the link path to the latest cache for `module-name`.
+@return string the link path"
+  (let [backup-dir (self:determine-backup-dir)
+        filename self._latest-cache-linkname]
+    (Path.join backup-dir filename)))
+
+(fn BackupHandler.update-latest-cache-link! [self cache-path]
+  "Update the link to the `cache-path` for `module-name`."
+  (let [link-path (self:determine-latest-cache-link-path)]
+    ;; NOTE: The config .nvim-thyme.fnl also can be backed up.
+    ;; (assert (cache-path:find lua-cache-prefix 1 true)
+    ;;         (-> "expected a path under %s, got %s"
+    ;;             (: :format lua-cache-prefix cache-path)))
+    (fs.symlink! cache-path link-path)))
+
+(fn BackupHandler.clear-latest-cache! [self]
+  "Clear the cache for `module-name` in order to make sure that the `mounted`
+backup will be loaded on the next attempt."
+  (let [link-path (self:determine-latest-cache-link-path)
+        cache-path (fs.readlink link-path)]
+    (when (and (= 1 (cache-path:find lua-cache-prefix 1 true))
+               (fs.stat cache-path))
+      (assert (fs.unlink cache-path)))))
+
 (fn BackupHandler.determine-active-backup-path [self]
   "Return the active backup path for `module-name`.
 @return string? the active backup path, or nil if not found"
@@ -66,6 +94,16 @@ path by itself.
              (fs.stat)
              (. :birthtime :sec))
     time (os.date "%c" time)))
+
+(fn BackupHandler.switch-active-backup! [self path]
+  "Switch active backup for `module-name` to `path`.
+@param path string"
+  (let [dir (self:determine-backup-dir)
+        active-backup-path (self:determine-active-backup-path)]
+    (assert (path:find dir 1 true)
+            (-> "expected path under backup directory %s, got %s"
+                (: :format dir path)))
+    (fs.symlink! path active-backup-path)))
 
 (fn BackupHandler.determine-mounted-backup-path [self]
   "Return the mounted backup path for `module-name`.
@@ -106,7 +144,9 @@ Return `true` if the following conditions are met:
   (let [active-backup-path (self:determine-active-backup-path)
         mounted-backup-path (self:determine-mounted-backup-path)]
     (assert-is-file-readable active-backup-path)
-    (fs.symlink! active-backup-path mounted-backup-path)))
+    (fs.symlink! active-backup-path mounted-backup-path)
+    ;; esp. for package.loaders.
+    (self:clear-latest-cache!)))
 
 (fn BackupHandler.unmount-backup! [self]
   "Unmount previously mounted backup for `module-name`.
@@ -138,6 +178,7 @@ Return `true` if the following conditions are met:
         active-backup-path (self:determine-active-backup-path module-name)]
     (-> (vim.fs.dirname active-backup-path)
         (vim.fn.mkdir :p))
+    (self:update-latest-cache-link! path)
     (assert (fs.copyfile path backup-path))
     (fs.symlink! backup-path active-backup-path)))
 

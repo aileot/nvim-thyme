@@ -8,7 +8,7 @@
 
 (local Observer (require :thyme.dependency.observer))
 
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
 (local cache {:macro-loaded {} :mounted-rollback-searcher nil})

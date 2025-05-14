@@ -6,7 +6,7 @@ local _local_2_ = require("thyme.config")
 local get_config = _local_2_["get-config"]
 local _local_3_ = require("thyme.utils.iterator")
 local each_file = _local_3_["each-file"]
-local _local_4_ = require("thyme.rollback")
+local _local_4_ = require("thyme.rollback.manager")
 local get_root_of_backup = _local_4_["get-root"]
 local _local_5_ = require("thyme.utils.pool")
 local get_root_of_pool = _local_5_["get-root"]
@@ -18,7 +18,7 @@ local peek_module_name = _local_7_["peek-module-name"]
 local peek_fnl_path = _local_7_["peek-fnl-path"]
 local _local_8_ = require("thyme.dependency.unit")
 local get_root_of_modmap = _local_8_["get-root"]
-local RollbackManager = require("thyme.rollback")
+local RollbackManager = require("thyme.rollback.manager")
 local report_start, report_info, report_ok, report_warn, report_error = nil, nil, nil, nil, nil
 do
   local health = vim.health

@@ -1,58 +1,66 @@
 (import-macros {: command!} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local {: file-readable?} (require :thyme.utils.fs))
-(local {: hide-file!} (require :thyme.utils.pool))
 (local Messenger (require :thyme.utils.messenger))
 (local CommandMessenger (Messenger.new "command/rollback"))
-(local {: determine-lua-path} (require :thyme.compiler.cache))
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 
 (local M {})
 
-(local RollbackCommandBackend {})
+(local RollbackCommander {})
 
-(λ RollbackCommandBackend.attach [kind]
+(fn RollbackCommander.cmdargs->kind-modname [cmdargs]
+  "Parse cmdargs (slash-separated) into two strings: `kind` and `modname`.
+@param cmdargs string
+@return kind string
+@return modname string an empty string will indicates all the stored modulesof the `kind`."
+  (cmdargs:match "([^/]+)/?([^/]*)"))
+
+(λ RollbackCommander.attach [kind]
   "Create a RollbackManager instance only to attach to the data stored for
 `kind`.
 @return RollbackManager"
   (let [ext-tmp ".tmp"]
     (RollbackManager.new kind ext-tmp)))
 
-(fn RollbackCommandBackend.mount-backup! [kind modname]
+(fn RollbackCommander.get-root [kind modname]
+  "Get the root directory of the backup files for `modname` of the `kind`.
+@param kind string
+@param modname string an empty string indicates all the backups in the `kind`
+@return string"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :determine-backup-dir)))
+
+(fn RollbackCommander.list-backups [kind modname]
+  (let [dir (RollbackCommander.get-root kind modname)
+        glob-pattern (Path.join dir "*.{lua,fnl}")
+        candidates (vim.fn.glob glob-pattern false true)]
+    candidates))
+
+(fn RollbackCommander.switch-active-backup! [kind modname path]
   "Mount currently active backup for `modname` of the `kind`.
 @param kind string
 @param modname string an empty string indicates all the backups in the `kind`
-@return boolean true if successfully mounted; false otherwise"
-  (let [ext-tmp ".tmp"
-        backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backup-handler-of modname))
-        ok? (backup-handler:mount-backup!)]
-    (when (and ok? (= kind :module))
-      ;; Hide the corresponding lua cache from &rtp to make sure the
-      ;; `mounted-rollback-loader` to be injected in `package.loaders` first.
-      (case (determine-lua-path modname)
-        lua-path (when (file-readable? lua-path)
-                   (hide-file! lua-path))))
-    ok?))
+@param path string the path to the new active backup"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :switch-active-backup! path)))
 
-(fn RollbackCommandBackend.unmount-backup! [kind modname]
+(fn RollbackCommander.mount-backup! [kind modname]
+  "Mount currently active backup for `modname` of the `kind`.
+@param kind string
+@param modname string an empty string indicates all the backups in the `kind`"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :mount-backup!)))
+
+(fn RollbackCommander.unmount-backup! [kind modname]
   "Unmount previously mounted backup for `backup-dir`.
-@param backup-dir string
-@return boolean true if module has been successfully unmounted, false otherwise."
-  (let [ext-tmp ".tmp"
-        backup-handler (-> (RollbackCommandBackend.attach kind ext-tmp)
-                           (: :backup-handler-of modname))]
-    ;; NOTE: Do NOT mess up lines on unmounting, but leave the `restore-file!`
-    ;; tasks to the searchers at runtime instead.
-    (backup-handler:unmount-backup!)))
-
-(fn RollbackCommandBackend.cmdargs->kind-modname [cmdargs]
-  "Parse cmdargs (slash-separated) into two strings: `kind` and `modname`.
-@param cmdargs string
-@return kind string
-@return modname string an empty string will indicates all the stored modulesof the `kind`."
-  (cmdargs:match "([^/]+)/?([^/]*)"))
+@param backup-dir string"
+  (-> (RollbackCommander.attach kind)
+      (: :backup-handler-of modname)
+      (: :unmount-backup!)))
 
 (fn M.setup! []
   "Define thyme rollback commands."
@@ -68,59 +76,62 @@
       {:nargs 1
        :complete complete-dirs
        :desc "[thyme] Prompt to select rollback for compile error"}
-      (fn [{:args input}]
-        (let [root (RollbackManager.get-root)
-              prefix (Path.join root input)
-              glob-pattern (Path.join prefix "*.{lua,fnl}")
-              candidates (vim.fn.glob glob-pattern false true)]
-          (case (length candidates)
-            0 (error (.. "Abort. No backup is found for " input))
-            1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
-                                            input)
-                                        vim.log.levels.WARN)
-            _ (do
-                (table.sort candidates #(< $2 $1))
-                (vim.ui.select candidates ;
-                               {:prompt (-> "Select rollback for %s: "
-                                            (: :format input))
-                                :format_item (fn [path]
-                                               (let [basename (vim.fs.basename path)]
-                                                 (if (RollbackManager.active-backup? path)
-                                                     (.. basename " (current)")
-                                                     basename)))}
-                               (fn [?backup-path]
-                                 (if ?backup-path
-                                     (do
-                                       (RollbackManager.switch-active-backup! ?backup-path)
-                                       (vim.cmd :ThymeCacheClear))
-                                     (CommandMessenger:notify! "Abort selecting rollback target")))))))))
+      (fn [{: args}]
+        (case-try (RollbackCommander.cmdargs->kind-modname args)
+          (kind modname) (-> (RollbackCommander.attach kind)
+                             (: :backup-handler-of modname)
+                             (: :list-backup-files))
+          candidates (case (length candidates)
+                       0 (error (.. "Abort. No backup is found for " args))
+                       1 (CommandMessenger:notify! (.. "Abort. Only one backup is found for "
+                                                       args)
+                                                   vim.log.levels.WARN)
+                       _ (do
+                           (table.sort candidates #(< $2 $1))
+                           (vim.ui.select candidates ;
+                                          {:prompt (-> "Select rollback for %s: "
+                                                       (: :format args))
+                                           :format_item (fn [path]
+                                                          (let [basename (vim.fs.basename path)]
+                                                            (if (RollbackManager.active-backup? path)
+                                                                (.. basename
+                                                                    " (current)")
+                                                                basename)))}
+                                          (fn [?backup-path]
+                                            (if ?backup-path
+                                                (RollbackCommander.switch-active-backup! kind
+                                                                                         modname
+                                                                                         ?backup-path)
+                                                (CommandMessenger:notify! "Abort selecting rollback target")))))))))
     (command! :ThymeRollbackMount
       {:nargs 1
        :complete complete-dirs
        :desc "[thyme] Mount currently active backup"}
       (fn [{: args}]
-        (case (RollbackCommandBackend.cmdargs->kind-modname args)
-          (kind modname) (if (RollbackCommandBackend.mount-backup! kind modname)
-                             (CommandMessenger:notify! (.. "Successfully mounted "
-                                                           args)
-                                                       vim.log.levels.INFO)
-                             (CommandMessenger:notify! (.. "Failed to mount "
-                                                           args)
-                                                       vim.log.levels.WARN)))))
+        (case (RollbackCommander.cmdargs->kind-modname args)
+          (kind modname) (RollbackCommander.mount-backup! kind modname)))))
+  (let [complete-mounted (fn [arg-lead _cmdline _cursorpos]
+                           ;; HACK: Every expressions are hardcoded apart from
+                           ;; the class methods, but does it so matter for
+                           ;; dedicated command-complete functions?
+                           (let [root (RollbackManager.get-root)
+                                 prefix-length (+ 2 (length root))
+                                 mounted-filename ".mounted"
+                                 glob-patternn (Path.join root
+                                                          (.. arg-lead "**/"
+                                                              mounted-filename))
+                                 paths (vim.fn.glob glob-patternn false true)]
+                             (icollect [_ path (ipairs paths)]
+                               ;; Trim root prefix, and trailing `/` and the .mounted filename.
+                               (path:sub prefix-length
+                                         (- -2 (length mounted-filename))))))]
     (command! :ThymeRollbackUnmount
       {:nargs "?"
-       ;; TODO: Complete only mounted backups.
-       :complete complete-dirs
+       :complete complete-mounted
        :desc "[thyme] Unmount mounted backup"}
       (fn [{: args}]
-        (case (RollbackCommandBackend.cmdargs->kind-modname args)
-          (kind modname)
-          (case (pcall RollbackCommandBackend.unmount-backup! kind modname)
-            (false msg) (CommandMessenger:notify! (-> "Failed to mount %s:\n%s")
-                                                  (: :format args msg
-                                                     vim.log.levels.WARN))
-            _ (CommandMessenger:notify! (.. "Successfully unmounted " args)
-                                        vim.log.levels.INFO)))))
+        (case (RollbackCommander.cmdargs->kind-modname args)
+          (kind modname) (RollbackCommander.unmount-backup! kind modname))))
     (command! :ThymeRollbackUnmountAll
       {:nargs 0 :desc "[thyme] Unmount all the mounted backups"}
       (fn []

@@ -25,7 +25,7 @@
 
 (local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro))
 
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 (local ModuleRollbackManager (RollbackManager.new :module ".lua"))
 
 ;; NOTE: To initialize fennel.path and fennel.macro-path, cache.rtp must not

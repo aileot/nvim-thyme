@@ -7,7 +7,7 @@
 
 (local Config (require :thyme.config))
 
-(local RollbackManager (require :thyme.rollback))
+(local RollbackManager (require :thyme.rollback.manager))
 ;; TODO: Avoid hardcoding params to use ModuleRollbackManager methods.
 (local ModuleRollbackManager (RollbackManager.new :module ".lua"))
 
