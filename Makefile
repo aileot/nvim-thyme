@@ -55,7 +55,7 @@ FNL_PCALLABLE_FILES+=$(wildcard $(FNL_PCALLABLE_DIR)/*/*/*.fnl)
 FNL_PCALLABLE_FILES+=$(wildcard $(FNL_PCALLABLE_DIR)/*/*/*/*.fnl)
 LUA_PCALLABLE_DIR:=$(FNL_PCALLABLE_DIR:fnl/%=lua/%)
 
-VUSTED_FLAGS ?= --shuffle --output=utfTerminal
+VUSTED_FLAGS ?= --shuffle --output=utfTerminal --verbose
 VUSTED_EXTRA_FLAGS ?=
 
 VUSTED_EXTRA_ARGS ?= -Es
