@@ -8,7 +8,7 @@
 (local {:get-root get-root-of-pool} (require :thyme.utils.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 (local {: macro-recorded? : peek-module-name : peek-fnl-path}
-       (require :thyme.dependency.format))
+       (require :thyme.dependency.io))
 
 (local {:get-root get-root-of-modmap} (require :thyme.dependency.unit))
 
