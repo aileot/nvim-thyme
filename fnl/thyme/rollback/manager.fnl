@@ -77,6 +77,21 @@
               false))
         (table.insert searchers 1 self._injected-searcher))))
 
+(fn RollbackManager.list-backup-dirs [self]
+  "List the backup dir paths for `modules` of `kind`.
+@return string[] the list of paths"
+  ;; NOTE: Ignore dot files using `glob`.
+  (-> (Path.join self._kind-dir "*")
+      (vim.fn.glob false true)))
+
+(fn RollbackManager.list-backup-modules [self]
+  "List the backup module names.
+@return string[] the list of module names"
+  ;; NOTE: Ignore dot files using `glob`.
+  (let [paths (self:list-backup-dirs)]
+    (icollect [_ path (ipairs paths)]
+      (vim.fs.basename path))))
+
 ;;; Static Methods
 
 (λ RollbackManager.new [kind file-extension]

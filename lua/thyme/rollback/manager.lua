@@ -55,11 +55,11 @@ RollbackManager["inject-mounted-backup-searcher!"] = function(self, searchers, l
     return nil
   end
 end
-RollbackManager["list-backup-paths"] = function(self)
+RollbackManager["list-backup-dirs"] = function(self)
   return vim.fn.glob(Path.join(self["_kind-dir"], "*"), false, true)
 end
 RollbackManager["list-backup-modules"] = function(self)
-  local paths = self["list-backup-paths"](self)
+  local paths = self["list-backup-dirs"](self)
   local tbl_21_ = {}
   local i_22_ = 0
   for _, path in ipairs(paths) do
