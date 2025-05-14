@@ -78,16 +78,17 @@ by default) for `vim.api.nvim_echo`.
   ;; line to vim.go.columns here does not make sense.
   (let [opts (or ?opts {})
         base-lang (or opts.lang :fennel)
-        tmp-text (case base-lang
-                   ;; Temporarily replace address indicators in pretty print
-                   ;; to keep valid syntax tree.
-                   :fennel
-                   (text:gsub "#<(%a+):(%s+0x%x+)>" "#(%1_%2)")
-                   :lua
-                   ;; TODO: Why does @field not affect in {%1=%2}?
-                   (text:gsub "<(%a+%s+%d+)>" "\"%1\"")
-                   _
-                   text)]
+        tmp-text (-> (case base-lang
+                       ;; Temporarily replace address indicators in pretty print
+                       ;; to keep valid syntax tree.
+                       :fennel
+                       (text:gsub "#<(%a+):(%s+0x%x+)>" "#(%1_%2)")
+                       :lua
+                       ;; TODO: Why does @field not affect in {%1=%2}?
+                       (text:gsub "<(%a+%s+%d+)>" "\"%1\"")
+                       _
+                       text)
+                     (: :gsub "\\" "\\\\"))]
     (validate-type :table opts)
     (case (pcall ts.get_string_parser tmp-text base-lang)
       (false msg)
