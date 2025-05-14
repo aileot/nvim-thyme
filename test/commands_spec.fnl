@@ -9,7 +9,6 @@
         : remove-context-files!} (include :test.helper.utils))
 
 (local {: lua-cache-prefix} (require :thyme.const))
-(local RollbackManager (require :thyme.rollback.manager))
 (local thyme (require :thyme))
 
 (describe* "command"
@@ -183,14 +182,21 @@
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
     (let [backup-label "module/"]
-      (it* "removes all mounted rollbacks."
-        (let [mod :foobar
-              fnl-path (.. mod ".fnl")
-              ctx1 "1"]
-          (prepare-config-fnl-file! fnl-path ctx1)
-          (require mod)
-          (tset package.loaded mod nil)
-          (vim.cmd.ThymeRollbackMount (.. backup-label mod))
-          (assert.not_equals 0 (length (RollbackManager.list-mounted-paths)))
-          (vim.cmd.ThymeRollbackUnmountAll)
-          (assert.equals 0 (length (RollbackManager.list-mounted-paths))))))))
+      (describe* "removes all mounted rollbacks;"
+        (it* "thus, `:UmountAll` should make `nvim` ignore the last mounted module"
+          (let [mod :foobar
+                filename (.. mod ".fnl")
+                ctx1 "1"
+                ctx2 "2"
+                path (prepare-config-fnl-file! filename ctx1)]
+            (assert.equals 1 (require mod))
+            (tset package.loaded mod nil)
+            (vim.cmd :ThymeCacheClear)
+            (vim.cmd.ThymeRollbackMount (.. backup-label mod))
+            (prepare-config-fnl-file! filename ctx2)
+            (assert.equals 1 (require mod))
+            (tset package.loaded mod nil)
+            (vim.cmd.ThymeRollbackUnmountAll)
+            (assert.equals 2 (require mod))
+            (tset package.loaded mod nil)
+            (vim.fn.delete path)))))))
