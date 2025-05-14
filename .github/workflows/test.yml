@@ -29,4 +29,4 @@ jobs:
           neovim: true
           version: ${{ matrix.nvim_version }}
       - name: Run tests
-        run: make test
+        run: make -j test
