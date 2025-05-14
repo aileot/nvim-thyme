@@ -22,38 +22,37 @@
 
 (local M {})
 
+(fn make-new-cmd [new-fnl-code {: trailing-parens}]
+  "Suggest a new Vim command line to replace the last command with parinfer-ed
+`new-fnl-code` in Vim command history.
+@param new-fnl-code string expecting a fnl code balanced by parinfer
+@param opts.trailing-parens 'omit'|'keep'
+@return string a new Vim command line to be substituted to the last command"
+  (let [trimmed-new-fnl-code (new-fnl-code:gsub "%s*[%]}%)]*$" "")
+        last-cmd (vim.fn.histget ":" -1)]
+    (case (last-cmd:find trimmed-new-fnl-code 1 true)
+      (idx-start idx-end) (let [prefix (-> last-cmd
+                                           (: :sub 1 (dec idx-start)))
+                                suffix (-> new-fnl-code
+                                           (: :gsub "%s*$" "")
+                                           (: :sub (- idx-end idx-start -2)))
+                                trimmed-suffix (case trailing-parens
+                                                 :omit (suffix:gsub "^[%]}%)]*"
+                                                                    "")
+                                                 :keep suffix
+                                                 ?val
+                                                 (error (.. "expected one of `omit` or `keep`; got unknown value for trailing-parens: "
+                                                            (vim.inspect ?val))))
+                                new-cmd (.. prefix trimmed-new-fnl-code
+                                            trimmed-suffix)]
+                            new-cmd))))
+
 (fn edit-cmd-history! [new-fnl-code opts]
   "Edit Vim command history with `new-fnl-code`.
 @param new-fnl-code string expecting a fnl code balanced by parinfer
 @param opts.method 'overwrite'|'append'|'ignore'
 @param opts.trailing-parens 'omit'|'keep'"
-  (let [make-new-cmd (fn [new-fnl-code]
-                       (let [trimmed-new-fnl-code (new-fnl-code:gsub "%s*[%]}%)]*$"
-                                                                     "")
-                             last-cmd (vim.fn.histget ":" -1)]
-                         (case (last-cmd:find trimmed-new-fnl-code 1 true)
-                           (idx-start idx-end) (let [prefix (-> last-cmd
-                                                                (: :sub 1
-                                                                   (dec idx-start)))
-                                                     suffix (-> new-fnl-code
-                                                                (: :gsub "%s*$"
-                                                                   "")
-                                                                (: :sub
-                                                                   (- idx-end
-                                                                      idx-start
-                                                                      -2)))
-                                                     trimmed-suffix (case opts.trailing-parens
-                                                                      :omit (suffix:gsub "^[%]}%)]*"
-                                                                                         "")
-                                                                      :keep suffix
-                                                                      ?val
-                                                                      (error (.. "expected one of `omit` or `keep`; got unknown value for trailing-parens: "
-                                                                                 (vim.inspect ?val))))
-                                                     new-cmd (.. prefix
-                                                                 trimmed-new-fnl-code
-                                                                 trimmed-suffix)]
-                                                 new-cmd))))
-        methods {:overwrite (fn [new-cmd]
+  (let [methods {:overwrite (fn [new-cmd]
                               (assert (= 1 (vim.fn.histadd ":" new-cmd))
                                       "failed to add new fnl code")
                               ;; NOTE: Delete history entry after adding the
@@ -65,7 +64,7 @@
                                    "failed to add new fnl code"))
                  :ignore #(comment "Do nothing")}]
     (case (. methods opts.method)
-      apply-method (let [new-cmd (make-new-cmd new-fnl-code)]
+      apply-method (let [new-cmd (make-new-cmd new-fnl-code opts)]
                      (apply-method new-cmd))
       _
       (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
@@ -240,7 +239,8 @@
                                 (vim.fn.flatten 1)))
               path-pairs (collect [_ path (ipairs fnl-paths)]
                            (let [full-path (vim.fn.fnamemodify path ":p")]
-                             (values full-path (DependencyLogger:fnl-path->lua-path full-path))))
+                             (values full-path
+                                     (DependencyLogger:fnl-path->lua-path full-path))))
               existing-lua-files []]
           (when (or force-compile?
                     (and (icollect [_ lua-file (pairs path-pairs)]
