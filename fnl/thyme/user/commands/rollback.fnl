@@ -24,7 +24,10 @@
     (RollbackManager.new kind ext-tmp)))
 
 (fn RollbackCommander.get-root [kind modname]
-  "Get the root directory of the backup files for `modname` of the `kind`."
+  "Get the root directory of the backup files for `modname` of the `kind`.
+@param kind string
+@param modname string an empty string indicates all the backups in the `kind`
+@return string"
   (-> (RollbackCommander.attach kind)
       (: :backup-handler-of modname)
       (: :determine-backup-dir)))
