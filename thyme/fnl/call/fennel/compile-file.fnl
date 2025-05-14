@@ -1,1 +1,0 @@
-((-> (require :thyme) (. :fennel :compile-file)))
