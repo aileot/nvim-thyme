@@ -87,21 +87,11 @@ local function report_imported_macros()
   reporter = _13_
   return each_file(reporter, root)
 end
-local function report_mounted_paths()
-  report_start("Thyme Mounted Paths")
-  local mounted_paths = RollbackManager["list-mounted-paths"]()
-  if next(mounted_paths) then
-    return report_info(("Th mounted paths:\n- `%s`"):format(table.concat(mounted_paths, "`\n- `")))
-  else
-    return report_info("No paths are mounted.")
-  end
-end
-local function _16_()
+local function _15_()
   report_integrations()
   report_thyme_disk_info()
   report_fennel_paths()
   report_imported_macros()
-  report_thyme_config()
-  return report_mounted_paths()
+  return report_thyme_config()
 end
-return {check = _16_}
+return {check = _15_}
