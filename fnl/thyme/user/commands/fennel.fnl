@@ -47,7 +47,7 @@
                                             trimmed-suffix)]
                             new-cmd))))
 
-(fn edit-cmd-history! [new-fnl-code opts]
+(fn edit-cmd-history! [new-fnl-code {: method &as opts}]
   "Edit Vim command history with `new-fnl-code`.
 @param new-fnl-code string expecting a fnl code balanced by parinfer
 @param opts.method 'overwrite'|'append'|'ignore'
@@ -63,12 +63,12 @@
                            (assert (= 1 (vim.fn.histadd ":" new-cmd))
                                    "failed to add new fnl code"))
                  :ignore #(comment "Do nothing")}]
-    (case (. methods opts.method)
+    (case (. methods method)
       apply-method (let [new-cmd (make-new-cmd new-fnl-code opts)]
                      (apply-method new-cmd))
       _
       (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
-                 opts.method)))))
+                 method)))))
 
 (fn wrap-fennel-wrapper-for-command [callback
                                      {: lang
