@@ -109,11 +109,25 @@
        :desc "[thyme] Mount currently active backup"}
       (fn [{: args}]
         (case (RollbackCommander.cmdargs->kind-modname args)
-          (kind modname) (RollbackCommander.mount-backup! kind modname))))
+          (kind modname) (RollbackCommander.mount-backup! kind modname)))))
+  (let [complete-mounted (fn [arg-lead _cmdline _cursorpos]
+                           ;; HACK: Every expressions are hardcoded apart from
+                           ;; the class methods, but does it so matter for
+                           ;; dedicated command-complete functions?
+                           (let [root (RollbackManager.get-root)
+                                 prefix-length (+ 2 (length root))
+                                 mounted-filename ".mounted"
+                                 glob-patternn (Path.join root
+                                                          (.. arg-lead "**/"
+                                                              mounted-filename))
+                                 paths (vim.fn.glob glob-patternn false true)]
+                             (icollect [_ path (ipairs paths)]
+                               ;; Trim root prefix, and trailing `/` and the .mounted filename.
+                               (path:sub prefix-length
+                                         (- -2 (length mounted-filename))))))]
     (command! :ThymeRollbackUnmount
       {:nargs "?"
-       ;; TODO: Complete only mounted backups.
-       :complete complete-dirs
+       :complete complete-mounted
        :desc "[thyme] Unmount mounted backup"}
       (fn [{: args}]
         (case (RollbackCommander.cmdargs->kind-modname args)
