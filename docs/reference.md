@@ -12,6 +12,13 @@ options ~                                                     *thyme-options*
 .nvim-thyme.fnl ~                                           *.nvim-thyme.fnl*
 -->
 
+The configurations for [nvim-thyme][] should be managed in `.nvim-thyme.fnl`
+at the path `vim.fn.stdpath('config')` returns.
+
+When `.nvim-thyme.fnl` is missing at the directory on nvim startup,
+[nvim-thyme][] will ask you to generate it with recommended settings:
+See the file [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
+
 ### compiler-options
 
 (default: `{}`)
