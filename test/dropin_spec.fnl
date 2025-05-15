@@ -7,7 +7,8 @@
 
 (describe* "thyme.setup"
   (it* "maps `<CR>` on dropin function in Cmdline mode by default"
-    (vim.keymap.del :c "<CR>")
+    (when (not= "" (vim.fn.maparg "<CR>" :c))
+      (vim.keymap.del :c "<CR>"))
     (assert.equals "" (vim.fn.maparg "<CR>" :c))
     (thyme.setup)
     (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))
