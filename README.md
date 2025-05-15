@@ -8,6 +8,13 @@ A runtime compiler for faster nvim startup. Faster!\
 Not for pure lispers, but for the addicts to optimize nvim-startuptime who
 still need a Fennel runtime compiler.
 
+_Also welcome, **non-lispers**_\
+who are tired to balance quotes and parentheses
+for handy tests in Cmdline mode.\
+Try **`:(vim.tbl_extend :force {:foo :bar} {:foo :qux`**
+(_typos...?_ ¯\\\_(ツ)\_/¯)\
+instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
+
 </div>
 
 ## Main Features
