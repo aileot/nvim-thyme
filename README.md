@@ -33,12 +33,14 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
   - Implicit paren-completions on [parinfer][].
   - Colorful output on [the builtin treesitter][].
 
-## Motivation
+## Motivations
 
-To cut down startuptime, checking Fennel should be skipped at startup if
-possible.
-And I don't like to mess up `lua/` as I still write Lua when it seems to be
-more suitable than Fennel. (Type annotation helps us very much.)
+- To cut down startuptime, checking Fennel should be skipped at startup if
+  possible.
+- I don't like to mess up `lua/` as I still write Lua when it seems to be
+  more suitable than Fennel. (Type annotation helps us very much.)
+- ...and more features!
+
 The project started from scratch. _Now in Beta!_
 
 ## Disclosure
