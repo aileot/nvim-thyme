@@ -19,9 +19,9 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 
 ## Main Features
 
-- Compile Fennel source just as a Lua failback.
-- Get optimized with `vim.loader` out of box.
-- Roll back to the last successfully compiled backup.
+- Compile Fennel source just as Lua fallback **at nvim runtime**.
+- Get optimized with `vim.loader` **out of box**.
+- Safely **roll back** to the last successfully compiled backups if compilation fails.
 
 ## Optional Features
 
