@@ -29,7 +29,7 @@
           luajit
           (fennel-ls.overrideAttrs (prevAttrs: {
             src = inputs.fennel-ls;
-            buildInputs = with pkgs;
+            buildInputs =
               prevAttrs.buildInputs
               ++ [
                 pandoc
