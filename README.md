@@ -170,7 +170,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
 { "aileot/nvim-laurel",
   {
-    build = ":FnlCacheClear!",
+    build = ":ThymeCacheClear",
     -- and other settings
   },
 },
@@ -186,13 +186,13 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 _please clear the Lua cache_ on the updates!
 You can automate it either on spec hook like above,
 on user event hook like below;
-otherwise, please run `:FnlCacheClear!` manually.)
+otherwise, please run `:ThymeCacheClear` manually.)
 
 ```lua
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
 vim.api.nvim_create_autocmd("User", {
   pattern = "LazyUpdate",
-  command = "FnlCacheClear!",
+  command = "ThymeCacheClear",
 })
 ```
 
@@ -338,10 +338,8 @@ with its default `cmd-prefix` option `Fnl`.
 
 - `:Fnl` is an alias of `:FnlEval`.
   (It'll be undefined if `cmd-prefix` is an empty string.)
-- `:FnlEval` evaluates its following Fennel expression.
-- `:FnlCompileString` prints the Lua compiled results of its following Fennel expression.
-- `:FnlCacheClear` clears Lua caches of Fennel files, and their dependency map logs.
-- `:FnlConfigOpen` opens the config file `.nvim-thyme.fnl`.
+- `:ThymeCacheClear` clears Lua caches of Fennel files, and their dependency map logs.
+- `:ThymeConfigOpen` opens the config file `.nvim-thyme.fnl`.
 
 ## Migration Guide
 
@@ -381,7 +379,7 @@ require([[tangerine]]).setup({})
 
 ### From nfnl.nvim
 
-1. Rename `lua/` at `vim.fn.stdpath('config')`,
+1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
    like`mv lua/ lua.bk/`.\
    Otherwise, there's some chances that nvim would unquestionably
    load lua files under the `lua/` directory apart from
@@ -399,9 +397,11 @@ for performance as described in [Commands](#commands) section above.
 
 ### Evaluate expression and print the result
 
+With [parinfer-rust][] and [nvim-thyme][]'s [paren-cmd-map][] option enabled,
+
 ```vim
 " nvim-thyme
-:Fnl (+ 1 1)
+:(+ 1 1)
 " hotpot.nvim
 :Fnl= (+ 1 1)
 " tangerine.nvim
@@ -412,7 +412,7 @@ for performance as described in [Commands](#commands) section above.
 
 ```vim
 " nvim-thyme
-:silent Fnl (+ 1 1)
+:silent (+ 1 1)
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
@@ -456,6 +456,8 @@ Thanks to [Shougo](https://github.com/Shougo) for
 the legendary.
 The design heavily inspires nvim-thyme.
 
+Thanks to [nix][] for rollback system inspirations using symbolic links.
+
 Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
 The integration of nvim-thyme with [parinfer][]
@@ -471,6 +473,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[call stack]: https://en.wikipedia.org/wiki/Call_stack
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl
@@ -479,7 +482,9 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 [parinfer]: https://shaunlebron.github.io/parinfer/
 [parinfer-rust]: https://github.com/eraserhd/parinfer-rust
 [nvim-parinfer-rust]: https://github.com/harrygallagher4/nvim-parinfer-rust
-[the builtin treesitter]: https://neovim.io/doc/user/treesitter.html
+[builtin treesitter]: https://neovim.io/doc/user/treesitter.html
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
+[paren-cmd-map]: ./docs/reference#paren-cmd-map
+[nvim-thyme]: https://github.com/aileot/nvim-thyme
