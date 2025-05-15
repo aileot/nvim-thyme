@@ -30,7 +30,9 @@
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
-                :strategy "recompile"}})
+                :strategy "recompile"}
+        ;; (experimental)
+        :dropin-paren {:cmdline-maps ["<CR>"]}})
 
 (local cache {})
 

@@ -42,9 +42,11 @@ M.setup = function(_3fopts)
   local watch = require("thyme.user.watch")
   local keymaps = require("thyme.user.keymaps")
   local commands = require("thyme.user.commands")
+  local dropin = require("thyme.user.dropin")
   watch["watch-files!"](config.watch)
   keymaps["define-keymaps!"]()
   commands["define-commands!"]()
+  dropin["enable-dropin-paren!"](config["dropin-paren"])
   return self
 end
 for k, v in pairs(M) do

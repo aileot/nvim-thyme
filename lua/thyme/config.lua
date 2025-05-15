@@ -11,7 +11,7 @@ local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["fnl-cmd-prefix"] = "Fnl", ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}}
+local default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["fnl-cmd-prefix"] = "Fnl", ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-maps"] = {"<CR>"}}}
 local cache = {}
 if not file_readable_3f(config_path) then
   local _3_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
