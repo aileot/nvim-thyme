@@ -41,21 +41,4 @@
                            (. :Fnl)))
         (thyme.setup)
         (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                               (. :Fnl))))
-      (describe* "with arbitrary prefix"
-        (it* "e.g., with prefix `Foobar`, it defines `:FoobarEval`"
-          (let [last-fnl-cmd-prefix Config.command.fnl-cmd-prefix]
-            (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                               (. :FoobarEval)))
-            (set Config.command.fnl-cmd-prefix "Foobar")
-            (thyme.setup)
-            (assert.is_not_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                                   (. :FoobarEval)))
-            (set Config.command.fnl-cmd-prefix last-fnl-cmd-prefix)
-            (thyme.setup)
-            (let [commands (vim.api.nvim_get_commands {:builtin false})]
-              (each [name _map (pairs commands)]
-                (when (vim.startswith name "Foobar")
-                  (vim.api.nvim_del_user_command name))))
-            (assert.is_nil (-> (vim.api.nvim_get_commands {:builtin false})
-                               (. :FoobarEval)))))))))
+                               (. :Fnl)))))))

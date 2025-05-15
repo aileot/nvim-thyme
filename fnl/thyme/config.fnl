@@ -26,7 +26,6 @@
                         (table.concat ";"))
         :notifier vim.notify
         :command {:compiler-options nil
-                  :fnl-cmd-prefix "Fnl"
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"

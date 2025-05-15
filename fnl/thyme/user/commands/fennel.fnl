@@ -117,25 +117,14 @@
 
 (fn M.setup! [?opts]
   "Define fennel wrapper commands.
-@param ?opts.fnl-cmd-prefix string (default: \"Fnl\")
 @param ?opts.compiler-options table? (default: same values as main config)
 @param ?opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
   (let [opts (if ?opts
                  (vim.tbl_deep_extend :force Config.command ?opts)
                  Config.command)
-        fnl-cmd-prefix opts.fnl-cmd-prefix
         compiler-options opts.compiler-options
         cmd-history-opts opts.cmd-history]
-    (when-not (= "" fnl-cmd-prefix)
-      (command! fnl-cmd-prefix
-        {:nargs "*"
-         :complete :lua
-         :desc "[thyme] evaluate the following fennel expression, and display the results"}
-        (wrap-fennel-wrapper-for-command fennel-wrapper.eval
-                                         {:lang :fennel
-                                          : compiler-options
-                                          : cmd-history-opts})))
-    (command! (.. fnl-cmd-prefix :Eval)
+    (command! :Fnl
       {:nargs "*"
        :complete :lua
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
@@ -143,7 +132,15 @@
                                        {:lang :fennel
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! (.. fnl-cmd-prefix :CompileString)
+    (command! :FnlEval
+      {:nargs "*"
+       :complete :lua
+       :desc "[thyme] evaluate the following fennel expression, and display the results"}
+      (wrap-fennel-wrapper-for-command fennel-wrapper.eval
+                                       {:lang :fennel
+                                        : compiler-options
+                                        : cmd-history-opts}))
+    (command! :FnlCompileString
       {:nargs "*"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
@@ -151,7 +148,7 @@
                                         :discard-last? true
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! (.. fnl-cmd-prefix :EvalFile)
+    (command! :FnlEvalFile
       {:range "%"
        :nargs "?"
        :complete :file
@@ -172,7 +169,7 @@
                                                          : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
-    (command! (.. fnl-cmd-prefix :EvalBuffer)
+    (command! :FnlEvalBuffer
       {:range "%"
        :nargs "?"
        :complete :buffer
@@ -188,7 +185,7 @@
                                                          : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
-    (command! (.. fnl-cmd-prefix :CompileBuffer)
+    (command! :FnlCompileBuffer
       {:range "%"
        :nargs "?"
        :complete :buffer
@@ -205,7 +202,7 @@
                                                          : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
-    ;; (command! (.. fnl-cmd-prefix :ReplOnRtp)
+    ;; (command! :FnlReplOnRtp)
     ;;   {:nargs "*" :desc "WIP: Start REPL in thyme"}
     ;;   (fn [a]
     ;;     "Start REPL in thyme.
@@ -223,7 +220,7 @@
     ;;       (if floating-window?
     ;;           (vim.api.nvim_open_win buf true win-opts)
     ;;           (open-buffer! buf opts.mods)))))
-    (command! (.. fnl-cmd-prefix :CompileFile)
+    (command! :FnlCompileFile
       {:nargs "*"
        :bang true
        :complete :file
@@ -274,7 +271,7 @@
                         ;; TODO: Remove dependent files.
                         (write-lua-file! lua-path lua-lines)
                         (CommandMessenger:notify! msg))))))))))
-    (command! (.. fnl-cmd-prefix :Alternate)
+    (command! :FnlAlternate
       ;; TODO: Alternate lua-file to fennel-file.
       {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
       (fn [{:fargs [?path] :smods mods}]

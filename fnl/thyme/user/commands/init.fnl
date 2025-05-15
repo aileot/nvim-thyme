@@ -36,7 +36,6 @@
 
 (fn define-commands! [?opts]
   "Define user commands.
-@param opts.fnl-cmd-prefix string (default: \"Fnl\")
 @param opts.compiler-options table? (default: same values as main config)
 @param opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
   (command! :ThymeConfigOpen
