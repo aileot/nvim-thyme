@@ -4,8 +4,8 @@
   "Reserve `replacement` to replace invalid cmdline when `pattern` is
 detected with E492. The fallback command will pretend that the substrings
 matched by `pattern`, and the rests behind, are the arguments of `replacement`.
-@param replacement string The dropin command
-@param pattern string Lua patterns to be support dropin fallback."
+@param pattern string Lua patterns to be support dropin fallback.
+@param replacement string The dropin command"
   (let [cmdtype (vim.fn.getcmdtype)
         old-cmdline (vim.fn.getcmdline)]
     ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
