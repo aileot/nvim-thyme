@@ -89,27 +89,31 @@
           (vim.cmd.edit path)
           (vim.cmd "silent FnlAlternate")
           (assert.is_not_same (vim.fn.expand "%:t") "foo.lua")
-          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")))
+          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
+          (vim.cmd.bdelete path)))
       (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exists."
         (let [path (prepare-context-lua-file! "foo.lua" :foo)]
           (vim.cmd.edit path)
           (vim.cmd "silent FnlAlternate")
           (assert.is_not_same (vim.fn.expand "%:t") "foo.fnl")
-          (assert.is_same (vim.fn.expand "%:t") "foo.lua")))
+          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
+          (vim.cmd.bdelete path)))
       (it* "opens /path/to/foo.lua for /path/to/foo.fnl"
         (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]
           (prepare-context-lua-file! "foo.lua" :foo)
           (vim.cmd.edit path)
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
           (vim.cmd "silent FnlAlternate")
-          (assert.is_same (vim.fn.expand "%:t") "foo.lua")))
+          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
+          (vim.cmd.bdelete path)))
       (it* "opens /path/to/foo.fnl for /path/to/foo.lua"
         (let [path (prepare-context-lua-file! "foo.lua" :foo)]
           (prepare-context-fnl-file! "foo.fnl" :foo)
           (vim.cmd.edit path)
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
           (vim.cmd "silent FnlAlternate")
-          (assert.is_same (vim.fn.expand "%:t") "foo.fnl"))))))
+          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
+          (vim.cmd.bdelete path))))))
 
 (describe* "command :ThymeRollbackSwitch"
   (setup (fn []
