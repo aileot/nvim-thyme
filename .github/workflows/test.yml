@@ -15,6 +15,8 @@ jobs:
           - nightly
     steps:
       - uses: actions/checkout@v4
+      - name: Install cargo for parinfer-rust dependenct test
+        uses: moonrepo/setup-rust@v1
       - uses: leafo/gh-actions-lua@v10
         with:
           luaVersion: "luajit-openresty"
@@ -29,5 +31,9 @@ jobs:
           neovim: true
           version: ${{ matrix.nvim_version }}
       - name: Run tests
+        env:
+          # FIXME: Remove `--filter-out` when successfully build `libparinfer_rust.so` in GitHub Actions.
+          VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending --filter-out=parinfer"
+          VUSTED_EXTRA_ARGS: ""
         run: |
           make -j test
