@@ -56,10 +56,12 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
         config (require :thyme.config)
         watch (require :thyme.user.watch)
         keymaps (require :thyme.user.keymaps)
-        commands (require :thyme.user.commands)]
+        commands (require :thyme.user.commands)
+        dropin (require :thyme.user.dropin)]
     (watch.watch-files! config.watch)
     (keymaps.define-keymaps!)
     (commands.define-commands!)
+    (dropin.enable-dropin-paren! config.dropin-paren)
     self))
 
 (each [k v (pairs M)]

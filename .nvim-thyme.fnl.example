@@ -4,6 +4,7 @@
                     ;; Comment out below to enable `vim` APIs and any others in
                     ;; compile time.
                     ;; :compilerEnv _G
+                    ;; Pinpoint the error position with the pair of the strings.
                     :error-pinpoint ["|>>" "<<|"]}
  ;; The directory relative to `(stdpath :config)` to manage your Fennel modules
  ;; like you manage Lua modules under lua/. The value only affects non-macro
@@ -30,4 +31,7 @@
  :watch {:event [:BufWritePost :FileChangedShellPost]
          :pattern "*.fnlm?"
          :notifier vim.notify
-         :strategy "recompile"}}
+         :strategy "recompile"}
+ ;; (Experimental) Override the keymaps on cmdline to execute Fennel
+ ;; expressions without `:Fnl` command, e.g., typing `:(+ 1 2)<CR>`.
+ :dropin-paren {:cmdline-maps ["<CR>"]}}
