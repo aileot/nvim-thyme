@@ -249,7 +249,7 @@ you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 ## Interfaces
 
 This section lists out the interfaces with a summary.
-For the details, please read the [Reference](./docs/REFERENCE.md).
+For the details and additional features, please read the [reference](./docs/REFERENCE.md).
 
 ### Options in `.nvim-thyme.fnl`
 
