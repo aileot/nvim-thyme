@@ -283,6 +283,17 @@ Unmount the mounted backups for the {target}.
 
 ### Keymaps
 
+<!-- panvimdoc-include-comment
+<Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
+<Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
+<Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
+<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
+<Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
+<Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
+<Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
+<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
+-->
+
 The keymaps are defined with [thyme.setup][].
 
 The `echo` versions do not mess up cmdline-history as `:echo` does not.
