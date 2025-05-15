@@ -2,10 +2,10 @@
 
 # 🕛 nvim-thyme
 
-_Once compiled, **ZERO** overhead._
+_Once compiled, **ZERO** overhead_
 
 A runtime compiler for faster nvim startup. Faster!\
-Not for pure lispers, but for the addicts to optimize nvim-startuptime who
+Not for pure lispers, but for the enthusiasts to optimize nvim-startuptime who
 still need a Fennel runtime compiler.
 
 _Also welcome, **non-lispers**_\
