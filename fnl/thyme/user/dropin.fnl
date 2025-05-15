@@ -30,6 +30,13 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
                         new-cmdline)
           _ old-cmdline)))))
 
+(fn M.complete [pattern replacement completion-type]
+  "Complete cmdline pretending `replacement` to replace invalid cmdline when
+`pattern` is detected with E492.
+@param pattern string string Lua patterns to be support dropin fallback.
+@param replacement string The dropin command
+@param completion-type string The completion type")
+
 (λ M.enable-dropin-paren! [opts]
   "Realize dropin-paren feature.
 @param opts.cmap string (default \"<CR>\") The keys to be mapped in Cmdline mode."
@@ -42,6 +49,11 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
   (each [_ key (ipairs opts.cmdline-maps)]
     (vim.api.nvim_set_keymap :c key
       "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('[%[%(%{]].*','Fnl %0')<CR><CR>"
-      {:noremap true})))
+      {:noremap true}))
+  (case opts.cmdline-completion-key
+    false nil
+    key (vim.api.nvim_set_keymap :c key
+          "<C-BSlash>ev:lua.require('thyme.user.dropin').complete('[%[%(%{]].*','Fnl %0','lua')<CR><CR>"
+          {:noremap true})))
 
 M

@@ -27,11 +27,22 @@ M.reserve = function(pattern, replacement)
     return nil
   end
 end
+M.complete = function(pattern, replacement, completion_type)
+  return "Complete cmdline pretending `replacement` to replace invalid cmdline when\n`pattern` is detected with E492.\n@param pattern string string Lua patterns to be support dropin fallback.\n@param replacement string The dropin command\n@param completion-type string The completion type"
+end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:33")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:40")
   for _, key in ipairs(opts["cmdline-maps"]) do
     vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('[%[%(%{]].*','Fnl %0')<CR><CR>", {noremap = true})
   end
-  return nil
+  local _7_ = opts["cmdline-completion-key"]
+  if (_7_ == false) then
+    return nil
+  elseif (nil ~= _7_) then
+    local key = _7_
+    return vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').complete('[%[%(%{]].*','Fnl %0','lua')<CR><CR>", {noremap = true})
+  else
+    return nil
+  end
 end
 return M
