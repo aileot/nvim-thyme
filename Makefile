@@ -25,6 +25,7 @@ TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
 FNL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
 LUA_ALL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.lua)
+LUA_OLD_SPECS:=$(filter-out $(LUA_SPECS),$(LUA_ALL_SPECS))
 TEST_DEPS:=$(wildcard $(TEST_ROOT)/*/*.fnl)
 TEST_DEPS+=$(wildcard $(TEST_ROOT)/*/*.lua)
 
@@ -88,6 +89,9 @@ clean: ## Remove generated files
 prune: ## Remove stale lua files
 	@if [ -n "$(LUA_OLD)" ]; then
 	@	rm $(LUA_OLD) && echo "Pruned $(LUA_OLD)"
+	@fi
+	@if [ -n "$(LUA_OLD_SPECS)" ]; then
+	@	rm $(LUA_OLD_SPECS) && echo "Pruned $(LUA_OLD_SPECS)"
 	@fi
 
 $(FNL_INIT_MOD_FILE): # Just to trigger pcallable re-generations as export functions could be changed.
