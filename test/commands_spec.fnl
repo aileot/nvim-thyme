@@ -84,14 +84,14 @@
           (vim.cmd.bdelete path)
           (vim.fn.delete path))))
     (describe* "(for the files not compiled by thyme)"
-      (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exists."
+      (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exist."
         (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]
           (vim.cmd.edit path)
           (vim.cmd "silent FnlAlternate")
           (assert.is_not_same (vim.fn.expand "%:t") "foo.lua")
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
           (vim.cmd.bdelete path)))
-      (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exists."
+      (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exist."
         (let [path (prepare-context-lua-file! "foo.lua" :foo)]
           (vim.cmd.edit path)
           (vim.cmd "silent FnlAlternate")
