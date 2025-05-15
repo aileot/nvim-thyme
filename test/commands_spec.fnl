@@ -82,6 +82,7 @@
           (vim.cmd "silent FnlAlternate")
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
           (vim.cmd.bdelete path)
+          (vim.cmd :bdelete)
           (vim.fn.delete path))))
     (describe* "(for the files not compiled by thyme)"
       (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exist."
@@ -90,14 +91,16 @@
           (vim.cmd "silent FnlAlternate")
           (assert.is_not_same (vim.fn.expand "%:t") "foo.lua")
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
-          (vim.cmd.bdelete path)))
+          (vim.cmd.bdelete path)
+          (vim.cmd :bdelete)))
       (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exist."
         (let [path (prepare-context-lua-file! "foo.lua" :foo)]
           (vim.cmd.edit path)
           (vim.cmd "silent FnlAlternate")
           (assert.is_not_same (vim.fn.expand "%:t") "foo.fnl")
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
-          (vim.cmd.bdelete path)))
+          (vim.cmd.bdelete path)
+          (vim.cmd :bdelete)))
       (it* "opens /path/to/foo.lua for /path/to/foo.fnl"
         (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]
           (prepare-context-lua-file! "foo.lua" :foo)
@@ -105,7 +108,8 @@
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
           (vim.cmd "silent FnlAlternate")
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
-          (vim.cmd.bdelete path)))
+          (vim.cmd.bdelete path)
+          (vim.cmd :bdelete)))
       (it* "opens /path/to/foo.fnl for /path/to/foo.lua"
         (let [path (prepare-context-lua-file! "foo.lua" :foo)]
           (prepare-context-fnl-file! "foo.fnl" :foo)
@@ -113,7 +117,8 @@
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
           (vim.cmd "silent FnlAlternate")
           (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
-          (vim.cmd.bdelete path))))))
+          (vim.cmd.bdelete path)
+          (vim.cmd :bdelete))))))
 
 (describe* "command :ThymeRollbackSwitch"
   (setup (fn []
