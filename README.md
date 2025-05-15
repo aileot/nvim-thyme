@@ -28,10 +28,13 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
 (For the details, please read the [Installation](#installation) guide below.)
 
-- Recompile on autocmd events, tracking macro dependencies.
+- **Recompile** on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
-  - Implicit paren-completions on [parinfer][].
-  - Colorful output on [the builtin treesitter][].
+  - Colorful output on [the builtin **treesitter**][builtin treesitter].
+  - Implicit paren-completions on **[parinfer][]**:
+    _Evaluate `(+ 1 2` as if `(+ 1 2)`!_
+  - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be builtin commands:\
+    _Type `:(+ 1 2)<CR>` as if `:Fnl (+ 1 2)<CR>`!_
 
 ## Motivations
 
