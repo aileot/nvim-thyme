@@ -31,5 +31,9 @@ jobs:
           neovim: true
           version: ${{ matrix.nvim_version }}
       - name: Run tests
+        env:
+          # FIXME: Remove `--filter-out` when successfully build `libparinfer_rust.so` in GitHub Actions.
+          VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending --filter-out=parinfer"
+          VUSTED_EXTRA_ARGS: ""
         run: |
           make -j test
