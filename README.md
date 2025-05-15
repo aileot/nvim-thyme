@@ -25,7 +25,7 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 
 ## Optional Features
 
-The optional features can be enabled with few startup overhead.\
+The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
 (For the details, please read the [Installation](#installation) guide below.)
 
 - Recompile on autocmd events, tracking macro dependencies.
