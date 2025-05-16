@@ -31,7 +31,4 @@
  :watch {:event [:BufWritePost :FileChangedShellPost]
          :pattern "*.fnlm?"
          :notifier vim.notify
-         :strategy "recompile"}
- ;; (Experimental) Override the keymaps on cmdline to execute Fennel
- ;; expressions without `:Fnl` command, e.g., typing `:(+ 1 2)<CR>`.
- :dropin-paren {:cmdline-maps ["<CR>"]}}
+         :strategy "recompile"}}
