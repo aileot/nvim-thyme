@@ -1,16 +1,60 @@
 # Reference
 
-TODO
+<!--toc:start-->
+
+- [Reference](#reference)
+  - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
+    - [compiler-options](#compiler-options)
+    - [macro-path](#macro-path)
+    - [max-rollbacks](#max-rollbacks)
+  - [Functions](#functions)
+    - [`thyme.loader`](#thymeloader)
+    - [`thyme.setup` or `thyme:setup`](#thymesetup-or-thymesetup)
+    - [Functions at `thyme.fennel`](#functions-at-thymefennel)
+    - [Functions `pcall`-able](#functions-pcall-able)
+      - [`thyme.call.cache.clear`](#thymecallcacheclear)
+      - [`thyme.call.cache.open`](#thymecallcacheopen)
+    - [Keymaps](#keymaps)
+  - [Commands](#commands)
+    - [Fennel Wrapper Commands](#fennel-wrapper-commands)
+      - [`:FnlEval` (alias `:Fnl`)](#fnleval-alias-fnl)
+      - [`:FnlEvalFile {file}`](#fnlevalfile-file)
+      - [`:FnlEvalBuffer`](#fnlevalbuffer)
+      - [`:FnlCompileString`](#fnlcompilestring)
+      - [`:FnlCompileBuffer`](#fnlcompilebuffer)
+    - [Fennel Misc. Commands](#fennel-misc-commands)
+      - [`:FnlAlternate`](#fnlalternate)
+    - [Thyme General Commands](#thyme-general-commands)
+      - [`:ThymeUninstall`](#thymeuninstall)
+    - [Thyme Config Commands](#thyme-config-commands)
+      - [`:ThymeConfigOpen`](#thymeconfigopen)
+    - [Thyme Cache Commands](#thyme-cache-commands)
+      - [`:ThymeCacheClear`](#thymecacheclear)
+      - [`:ThymeCacheOpen`](#thymecacheopen)
+    - [Thyme Rollback Commands](#thyme-rollback-commands)
+      - [`:ThymeRollbackSwitch {target}`](#thymerollbackswitch-target)
+      - [`:ThymeRollbackMount {target}`](#thymerollbackmount-target)
+      - [`:ThymeRollbackUnmount {target}`](#thymerollbackunmount-target)
+      - [`:ThymeRollbackUnmountAll`](#thymerollbackunmountall)
+
+<!--toc:end-->
 
 <!-- panvimdoc-ignore-start -->
 
-## Options for `.nvim-thyme.fnl`
+## Options in `.nvim-thyme.fnl`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 options ~                                                     *thyme-options*
 .nvim-thyme.fnl ~                                           *.nvim-thyme.fnl*
 -->
+
+The configurations for [nvim-thyme][] should be managed in `.nvim-thyme.fnl`
+at the path `vim.fn.stdpath('config')` returns.
+
+When `.nvim-thyme.fnl` is missing at the directory on nvim startup,
+[nvim-thyme][] will ask you to generate it with recommended settings:
+See the file [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
 
 ### compiler-options
 
@@ -23,7 +67,7 @@ See the official Fennel API documentation: <https://fennel-lang.org/api>
 
 ### macro-path
 
-(default: `"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
+(default: `"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
 
 The path patterns for `fennel.macro-path` to find Fennel macro module path.
 
@@ -128,7 +172,23 @@ With [nvim-laurel][],
                (vim.schedule)))
 ```
 
-## Functions `pcall`-able
+### Functions at `thyme.fennel`
+
+<!--
+TODO: Describe every `thyme.fennel.<foobar>` functions?
+-->
+
+Provides a set of Fennel wrapper functions
+corresponding to [Fennel Wrapper Commands][].
+
+Unless otherwise noted,
+the functions named with `_` are equivalent to those with `-`.
+
+```vim
+:= require("thyme").fennel
+```
+
+### Functions `pcall`-able
 
 Some `thyme.call.<foo.bar.baz>`-modules are provided.
 
@@ -137,7 +197,7 @@ without worrying about [thyme]'s validity,
 and about the interface dependencies
 when you are considering another Fennel compiler system.
 
-### `thyme.call.cache.clear`
+#### `thyme.call.cache.clear`
 
 Equivalent to [:ThymeCacheClear][], but it should work without [thyme.setup].
 
@@ -156,15 +216,114 @@ if type nvim >/dev/null; then
 fi
 ```
 
-### `thyme.call.cache.open`
+#### `thyme.call.cache.open`
 
 Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
+
+### Keymaps
+
+<!-- panvimdoc-include-comment
+<Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
+<Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
+<Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
+<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
+<Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
+<Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
+<Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
+<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
+-->
+
+The keymaps are defined with [thyme.setup][].
+
+The `echo` versions do not mess up cmdline-history as `:echo` does not.
+
+- `<Plug>(thyme-operator-echo-eval)`
+- `<Plug>(thyme-operator-echo-eval-compiler)`
+- `<Plug>(thyme-operator-echo-macrodebug)`
+- `<Plug>(thyme-operator-echo-compile-string)`
+
+The `print` versions leave its results in cmdline-history as `vim.print` does.
+
+- `<Plug>(thyme-operator-print-eval)`
+- `<Plug>(thyme-operator-print-eval-compiler)`
+- `<Plug>(thyme-operator-print-macrodebug)`
+- `<Plug>(thyme-operator-print-compile-string)`
 
 ## Commands
 
 The commands are defined by [thyme.setup][].
 
-### `:ThymeCacheClear`
+### Fennel Wrapper Commands
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlEval` (alias `:Fnl`)
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:Fnl ~                                                           *thyme-:Fnl*
+:FnlEval ~                                                   *thyme-:FnlEval*
+-->
+
+Display the result of [fennel.eval][],
+but respects your [&runtimepath][].
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlEvalFile {file}`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlEvalFile ~                                           *thyme-:FnlEvalFile*
+-->
+
+Display the result of applying [fennel.dofile][] to {file},
+but respects your [&runtimepath][].
+
+#### `:FnlEvalBuffer`
+
+TODO
+
+#### `:FnlCompileString`
+
+TODO
+
+#### `:FnlCompileBuffer`
+
+TODO
+
+### Fennel Misc. Commands
+
+#### `:FnlAlternate`
+
+TODO
+
+### Thyme General Commands
+
+#### `:ThymeUninstall`
+
+Uninstall [nvim-thyme][].
+
+This command remove all the cache, data, state, and log files,
+which are implicitly managed by [nvim-thyme][].
+
+When you have some issues with [nvim-thyme][],
+try [:ThymeCacheClear][] first instead.
+When the command does not resolve your issue,
+then try this command [:ThymeUninstall][].
+
+(This command is safe
+since it does NOT affect your [.nvim-thyme.fnl][] and any of your configuration files.)
+
+### Thyme Config Commands
+
+#### `:ThymeConfigOpen`
+
+Open your [.nvim-thyme.fnl][] file.
+
+### Thyme Cache Commands
+
+#### `:ThymeCacheClear`
 
 Clear all the Lua caches managed by [nvim-thyme][].
 
@@ -172,9 +331,32 @@ If you failed to define the command [:ThymeCacheClear][] for some reasons,
 please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
 manually in Command line instead.
 
-### `:ThymeCacheOpen`
+#### `:ThymeCacheOpen`
 
 Open the root directory of the Lua caches managed by [nvim-thyme][].
+
+### Thyme Rollback Commands
+
+#### `:ThymeRollbackSwitch {target}`
+
+Prompt to switch to the active backup of the {target}.
+
+Any compile errors of the {target} of Fennel module will be rolled back to the active backup.
+This switch also affects the mounted backup of {target}.
+
+#### `:ThymeRollbackMount {target}`
+
+Mount the active backup of the {target}.
+
+Neovim will load the mounted backups instead of your modules with the same name.
+You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
+to restore the mount state.
+
+#### `:ThymeRollbackUnmount {target}`
+
+Unmount the mounted backups for the {target}.
+
+#### `:ThymeRollbackUnmountAll`
 
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
@@ -184,5 +366,10 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 [nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-nvim-thymefnl
 [thyme.setup]: #thymesetup-or-thymesetup
+[&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
+[fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
+[:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
+[:ThymeRollbackUnmount]: #thymerollbackunmount-target
+[:ThymeRollbackUnmountAll]: #thymerollbackunmountall

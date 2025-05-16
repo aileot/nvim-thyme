@@ -2,58 +2,75 @@
 
 # 🕛 nvim-thyme
 
-_Once compiled, **ZERO** overhead._
+_Once compiled, **ZERO** overhead_
 
 A runtime compiler for faster nvim startup. Faster!\
-Not for pure lispers, but for the addicts to optimize nvim-startuptime who
+Not for pure lispers, but for the enthusiasts to optimize nvim-startuptime who
 still need a Fennel runtime compiler.
+
+_Also welcome, **non-lispers**_\
+who are tired to balance quotes and parentheses
+for handy tests in Cmdline mode.\
+Try **`:(vim.tbl_extend :force {:foo :bar} {:foo :qux`**
+(_typos...?_ ¯\\\_(ツ)\_/¯)\
+instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 
 </div>
 
 ## Main Features
 
-- Compile Fennel source just as a Lua failback.
-- Get optimized with `vim.loader` out of box.
-- Roll back to the last successfully compiled backup.
+- Compile Fennel source just as Lua fallback **at nvim runtime**.
+- Get optimized with `vim.loader` **out of box**.
+- Safely **roll back** to the last successfully compiled backups if compilation fails.
 
 ## Optional Features
 
-The optional features can be enabled with few startup overhead.\
+The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
 (For the details, please read the [Installation](#installation) guide below.)
 
-- Recompile on autocmd events, tracking macro dependencies.
+- **Recompile** on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
-  - Implicit paren-completions on [parinfer][].
-  - Colorful output on [the builtin treesitter][].
+  - Colorful output on [the builtin **treesitter**][builtin treesitter].
+  - Implicit paren-completions on **[parinfer][]**:
+    _Evaluate `(+ 1 2` as if `(+ 1 2)`!_
+  - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be builtin commands:\
+    _Type `:(+ 1 2)<CR>` as if `:Fnl (+ 1 2)<CR>`!_
 
-## Motivation
+## Motivations
 
-To cut down startuptime, checking Fennel should be skipped at startup if
-possible.
-And I don't like to mess up `lua/` as I still write Lua when it seems to be
-more suitable than Fennel. (Type annotation helps us very much.)
+- To cut down startuptime, checking Fennel should be skipped at startup if
+  possible.
+- I don't like to mess up `lua/` as I still write Lua when it seems to be
+  more suitable than Fennel. (Type annotation helps us very much.)
+- ...and more features!
+
 The project started from scratch. _Now in Beta!_
 
 ## Disclosure
-
-- As you may have noticed, the term of _Zero overhead_ only means it does not
-  affect startup time once compiled.
-- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
-  misleading due to the convention.
-  The _JIT_ in this project is more like JIT in
-  [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
-  than in
-  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
-  it compiles missing modules, and optionally recompiles them on
-  `BufWritePost`, etc.
-- The _macro dependency tracker_ is based on the nature that module callstacks
-  represent the dependencies of the modules as is. No `fennel.plugins`
-  dependency!
 
 ### Limitations
 
 - `nvim-thyme` only support Lua/Fennel loader like `require`;
   it does not support Vim commands (e.g., `:source` and `:runtime`) to load your Fennel files.
+
+### Macro Dependency Tracking
+
+- The _macro dependency tracker_ is based on the nature that
+  the [call stack][] of a module represents the dependencies of the module as is.
+  No `fennel.plugins` dependency!
+
+### Misleading...?
+
+- As you may have noticed, the term of _Zero overhead_ only means it does not
+  affect startup time once compiled.
+- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
+  misleading due to the convention.\
+  The _JIT_ in this project is more like JIT in
+  [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
+  than in
+  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
+  it compiles missing modules, and optionally recompiles them on
+  `BufWritePost` and `FileChangedShellPost`.
 
 ## Requirements
 
@@ -153,7 +170,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
 { "aileot/nvim-laurel",
   {
-    build = ":FnlCacheClear!",
+    build = ":ThymeCacheClear",
     -- and other settings
   },
 },
@@ -169,13 +186,13 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 _please clear the Lua cache_ on the updates!
 You can automate it either on spec hook like above,
 on user event hook like below;
-otherwise, please run `:FnlCacheClear!` manually.)
+otherwise, please run `:ThymeCacheClear` manually.)
 
 ```lua
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
 vim.api.nvim_create_autocmd("User", {
   pattern = "LazyUpdate",
-  command = "FnlCacheClear!",
+  command = "ThymeCacheClear",
 })
 ```
 
@@ -232,7 +249,7 @@ you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 ## Interfaces
 
 This section lists out the interfaces with a summary.
-For the details, please read the [Reference](./docs/REFERENCE.md).
+For the details and additional features, please read the [reference](./docs/REFERENCE.md).
 
 ### Options in `.nvim-thyme.fnl`
 
@@ -278,54 +295,6 @@ loaded once a session of nvim. For example,
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
-### Functions
-
-All the interfaces are provided from the "thyme" module: get them from
-`require("thyme")`.
-
-- [loader](./docs/reference.md#loader)
-  is to be appended to `package.loaders`.
-- [watch-files!](./docs/reference.md#watch-files!)
-  or [watch_files](./docs/reference.md#watch_files)
-  creates a set of autocmds to watch files.
-- [define-keymaps!](./docs/reference.md#define-keymaps!)
-  or [define_keymaps](./docs/reference.md#define_keymaps)
-  defines a set of keymaps in the [list](#keymaps) below.
-- [define-commands!](./docs/reference.md#define-commands!)
-  or [define_commands](./docs/reference.md#define_commands)
-  defines a set of command in the [list](#commands) below.
-
-### Keymaps
-
-The keymaps are defined with either `define_keymaps` or `define-keymaps!`.
-
-The `echo` versions do not mess up cmdline-history as `:echo` does not.
-
-- `<Plug>(thyme-operator-echo-eval)`
-- `<Plug>(thyme-operator-echo-eval-compiler)`
-- `<Plug>(thyme-operator-echo-macrodebug)`
-- `<Plug>(thyme-operator-echo-compile-string)`
-
-The `print` versions leave its results in cmdline-history as `vim.print` does.
-
-- `<Plug>(thyme-operator-print-eval)`
-- `<Plug>(thyme-operator-print-eval-compiler)`
-- `<Plug>(thyme-operator-print-macrodebug)`
-- `<Plug>(thyme-operator-print-compile-string)`
-
-### Commands
-
-The commands are defined with either `define_commands` or `define-commands!`.
-The following command list is an example defined by the functions,
-with its default `cmd-prefix` option `Fnl`.
-
-- `:Fnl` is an alias of `:FnlEval`.
-  (It'll be undefined if `cmd-prefix` is an empty string.)
-- `:FnlEval` evaluates its following Fennel expression.
-- `:FnlCompileString` prints the Lua compiled results of its following Fennel expression.
-- `:FnlCacheClear` clears Lua caches of Fennel files, and their dependency map logs.
-- `:FnlConfigOpen` opens the config file `.nvim-thyme.fnl`.
-
 ## Migration Guide
 
 ### From hotpot.nvim
@@ -364,7 +333,7 @@ require([[tangerine]]).setup({})
 
 ### From nfnl.nvim
 
-1. Rename `lua/` at `vim.fn.stdpath('config')`,
+1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
    like`mv lua/ lua.bk/`.\
    Otherwise, there's some chances that nvim would unquestionably
    load lua files under the `lua/` directory apart from
@@ -382,9 +351,11 @@ for performance as described in [Commands](#commands) section above.
 
 ### Evaluate expression and print the result
 
+With [parinfer-rust][] and [nvim-thyme][]'s [paren-cmd-map][] option enabled,
+
 ```vim
 " nvim-thyme
-:Fnl (+ 1 1)
+:(+ 1 1)
 " hotpot.nvim
 :Fnl= (+ 1 1)
 " tangerine.nvim
@@ -395,7 +366,7 @@ for performance as described in [Commands](#commands) section above.
 
 ```vim
 " nvim-thyme
-:silent Fnl (+ 1 1)
+:silent (+ 1 1)
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
@@ -439,6 +410,8 @@ Thanks to [Shougo](https://github.com/Shougo) for
 the legendary.
 The design heavily inspires nvim-thyme.
 
+Thanks to [nix][] for rollback system inspirations using symbolic links.
+
 Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
 The integration of nvim-thyme with [parinfer][]
@@ -454,6 +427,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[call stack]: https://en.wikipedia.org/wiki/Call_stack
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl
@@ -462,7 +436,9 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 [parinfer]: https://shaunlebron.github.io/parinfer/
 [parinfer-rust]: https://github.com/eraserhd/parinfer-rust
 [nvim-parinfer-rust]: https://github.com/harrygallagher4/nvim-parinfer-rust
-[the builtin treesitter]: https://neovim.io/doc/user/treesitter.html
+[builtin treesitter]: https://neovim.io/doc/user/treesitter.html
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
+[paren-cmd-map]: ./docs/reference#paren-cmd-map
+[nvim-thyme]: https://github.com/aileot/nvim-thyme
