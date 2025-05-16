@@ -334,6 +334,20 @@ Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [file] (or current file),
 but only returns the compiled lua results.
 
+<!-- panvimdoc-ignore-start -->
+<!--
+TODO: Add the spec tests first.
+
+#### `:FnlCompileFile[!] [src-file] [dest-file]`
+
+With `!`, it will write the compiled lua results to `[dest-file]`.
+-->
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileFile ~                                     *thyme-:FnlCompileFile*
+-->
+
 ### Fennel Misc. Commands
 
 <!-- panvimdoc-ignore-start -->
