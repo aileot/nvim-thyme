@@ -360,18 +360,17 @@ This command will search in the following order:
 
 #### `:ThymeUninstall`
 
-Uninstall [nvim-thyme][].
-
-This command remove all the cache, data, state, and log files,
+Remove all the cache, data, state, and log files,
 which are implicitly managed by [nvim-thyme][].
+
+This command is so safe
+as it does **not** affect your [.nvim-thyme.fnl][]
+and any of your configuration files.
 
 When you have some issues with [nvim-thyme][],
 try [:ThymeCacheClear][] first instead.
 When the command does not resolve your issue,
 then try this command [:ThymeUninstall][].
-
-(This command is safe
-since it does NOT affect your [.nvim-thyme.fnl][] and any of your configuration files.)
 
 ### Thyme Config Commands
 
