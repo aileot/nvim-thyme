@@ -229,7 +229,7 @@ Please read the [reference][] for the details and additional features.
 But here is a rough list:
 
 <!--
-NOTE: Dump rough list from reference.md via `let @a = execute('g/^### ')`.
+NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
 -->
 
 - `thyme.loader`
