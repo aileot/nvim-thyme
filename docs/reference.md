@@ -336,7 +336,14 @@ but only returns the compiled lua results.
 
 ### Fennel Misc. Commands
 
+<!-- panvimdoc-ignore-start -->
+
 #### `:FnlAlternate`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlAlternate ~                                         *thyme-:FnlAlternate*
+-->
 
 Try to open the alternate file of current buffer:
 
