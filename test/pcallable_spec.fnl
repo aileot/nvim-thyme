@@ -19,7 +19,7 @@
   ;;     (vim.cmd :new)
   ;;     (assert.not_equals buf-name (vim.api.nvim_buf_get_name 0))
   ;;     (require "thyme.call.cache.open")
-  ;;     ;; FIXME: Why the buffer name gets empty?
+  ;;     ;; FIXME: Why the buf name gets empty?
   ;;     (assert.equals buf-name (vim.api.nvim_buf_get_name 0))))
   (it* "should open the cache directory."
     (assert.not_equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))

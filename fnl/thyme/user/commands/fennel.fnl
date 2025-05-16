@@ -104,8 +104,8 @@
         (-> #(edit-cmd-history! new-fnl-code cmd-history-opts)
             (vim.schedule))))))
 
-(fn open-buffer! [buf|path {: split : tab &as mods}]
-  "Open buffer as `mods.split` value.
+(fn open-buf! [buf|path {: split : tab &as mods}]
+  "Open buf as `mods.split` value.
 @param buf|path number|string buffer-number or path
 @param mods table
 @param mods.split string"
@@ -169,7 +169,7 @@
                                                          : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
-    (command! :FnlEvalBuffer
+    (command! :FnlEvalBuf
       {:range "%"
        :nargs "?"
        :complete :buffer
@@ -185,7 +185,7 @@
                                                          : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
-    (command! :FnlCompileBuffer
+    (command! :FnlCompileBuf
       {:range "%"
        :nargs "?"
        :complete :buffer
@@ -219,7 +219,7 @@
     ;;           win-opts (or opts.win-opts {:title "REPL in thyme"})]
     ;;       (if floating-window?
     ;;           (vim.api.nvim_open_win buf true win-opts)
-    ;;           (open-buffer! buf opts.mods)))))
+    ;;           (open-buf! buf opts.mods)))))
     (command! :FnlCompileFile
       {:nargs "*"
        :bang true
@@ -303,7 +303,7 @@
                                      input-path))]
           ;; TODO: Set smods.noswapfile=true?
           (if (file-readable? output-path)
-              (open-buffer! output-path mods)
+              (open-buf! output-path mods)
               (when-not mods.emsg_silent
                 (-> (.. "failed to find the alternate file of " input-path)
                     (CommandMessenger:notify! vim.log.levels.WARN)))))))))

@@ -110,7 +110,7 @@ local function wrap_fennel_wrapper_for_command(callback, _16_)
   end
   return _18_
 end
-local function open_buffer_21(buf_7cpath, _24_)
+local function open_buf_21(buf_7cpath, _24_)
   local split = _24_["split"]
   local tab = _24_["tab"]
   local mods = _24_
@@ -184,7 +184,7 @@ M["setup!"] = function(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlEvalBuffer", _35_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  vim.api.nvim_create_user_command("FnlEvalBuf", _35_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
   local function _39_(_37_)
     local _arg_38_ = _37_["fargs"]
     local _3fpath = _arg_38_[1]
@@ -205,7 +205,7 @@ M["setup!"] = function(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlCompileBuffer", _39_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
+  vim.api.nvim_create_user_command("FnlCompileBuf", _39_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
   local function _42_(_41_)
     local glob_paths = _41_["fargs"]
     local force_compile_3f = _41_["bang"]
@@ -342,7 +342,7 @@ M["setup!"] = function(_3fopts)
       end
     end
     if file_readable_3f(output_path) then
-      return open_buffer_21(output_path, mods)
+      return open_buf_21(output_path, mods)
     else
       if not mods.emsg_silent then
         return CommandMessenger["notify!"](CommandMessenger, ("failed to find the alternate file of " .. input_path), vim.log.levels.WARN)

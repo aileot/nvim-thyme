@@ -74,8 +74,8 @@
   (let [(new-fnl-code compiler-options) (fnl-code->fennel-ready fnl-code ?opts)]
     (fennel.compile-string new-fnl-code compiler-options)))
 
-(fn compile-buffer [bufnr ?opts]
-  "Compile buffer of `bufnr` into lua string lines.
+(fn compile-buf [bufnr ?opts]
+  "Compile buf of `bufnr` into lua string lines.
 It does not affect file system.
 @param bufnr number
 @return string compiled lua code"
@@ -115,6 +115,6 @@ It does not affect file system.
  :eval-compiler eval-compiler*
  :macrodebug macrodebug*
  : compile-string
- : compile-buffer
+ : compile-buf
  : compile-file
  : compile-file!}

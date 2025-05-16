@@ -17,8 +17,8 @@ of vim.api.nvim_buf_get_mark.
       (table.concat "\n")))
 
 (fn buf-marks->text [...]
-  "Extract `text` within given marks from a buffer.
-@param buf number? if omitted, current buffer is the target
+  "Extract `text` within given marks from a buf.
+@param buf number? if omitted, current buf is the target
 @param mark1 string
 @param mark2 string
 @return string"
