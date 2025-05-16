@@ -264,7 +264,7 @@ The commands are defined by [thyme.setup][].
 :Fnl ~                                                           *thyme-:Fnl*
 -->
 
-Display the result of applying [fennel.eval][] to {fnl-expr},
+Display the result of applying [fennel.eval][] to `{fnl-expr}`,
 but respects your [&runtimepath][].
 
 <!-- panvimdoc-ignore-start -->
@@ -398,14 +398,14 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 
 #### `:ThymeRollbackSwitch {target}`
 
-Prompt to switch to the active backup of the {target}.
+Prompt to switch to the active backup of the `{target}`.
 
-Any compile errors of the {target} of Fennel module will be rolled back to the active backup.
-This switch also affects the mounted backup of {target}.
+Any compile errors of the `{target}` of Fennel module will be rolled back to the active backup.
+This switch also affects the mounted backup of `{target}`.
 
 #### `:ThymeRollbackMount {target}`
 
-Mount the active backup of the {target}.
+Mount the active backup of the `{target}`.
 
 Neovim will load the mounted backups instead of your modules with the same name.
 You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
@@ -413,7 +413,7 @@ to restore the mount state.
 
 #### `:ThymeRollbackUnmount {target}`
 
-Unmount the mounted backups for the {target}.
+Unmount the mounted backups for the `{target}`.
 
 #### `:ThymeRollbackUnmountAll`
 
