@@ -281,26 +281,54 @@ but respects your [&runtimepath][].
 
 If no `[file]` is given, it evaluates the current file.
 
+<!-- panvimdoc-ignore-start -->
+
 #### `:FnlBuf [bufname]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlBuf ~                                                     *thyme-:FnlBuf*
+-->
 
 Display the result of applying [fennel.dofile][] but to `[bufname]`,
 but respects your [&runtimepath][].
 
 If no `[bufname]` is given, it evaluates the current buffer.
 
+<!-- panvimdoc-ignore-start -->
+
 #### `:FnlCompileString {fnl-expr}`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileString ~                                 *thyme-:FnlCompileString*
+-->
 
 Almost equivalent to [:Fnl][],
 however, it does not evaluate the {fnl-expr},
 but only returns the compiled lua results.
 
+<!-- panvimdoc-ignore-start -->
+
 #### `:FnlCompileFile [file]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileFile ~                                     *thyme-:FnlCompileFile*
+-->
 
 Almost equivalent to [:FnlBuf][],
 however, it does not evaluate the [file] (or current file),
 but only returns the compiled lua results.
 
+<!-- panvimdoc-ignore-start -->
+
 #### `:FnlCompileBuf [bufname]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileBuf ~                                       *thyme-:FnlCompileBuf*
+-->
 
 Almost equivalent to [:FnlBuf][],
 however, it does not evaluate the [bufname] (or current buffer),
