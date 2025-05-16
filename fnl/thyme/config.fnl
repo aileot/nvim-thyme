@@ -31,7 +31,7 @@
                 :pattern "*.{fnl,fnlm}"
                 :strategy "recompile"}
         ;; (experimental)
-        :dropin-paren {:cmdline-maps ["<CR>"]
+        :dropin-paren {:cmdline-key "<CR>"
                        :cmdline-completion-key "<Tab>"}})
 
 (local cache {})

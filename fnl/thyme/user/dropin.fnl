@@ -71,10 +71,11 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
   ;;     {:noremap true}))
   ;; (vim.api.nvim_set_keymap :c "<C-j>" "<Plug>(thyme-precede-paren-by-Fnl)"
   ;;   {})
-  (each [_ key (ipairs opts.cmdline-maps)]
-    (vim.api.nvim_set_keymap :c key
-      "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
-      {:noremap true}))
+  (case opts.cmdline-key
+    false nil
+    key (vim.api.nvim_set_keymap :c key
+          "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
+          {:noremap true}))
   (case opts.cmdline-completion-key
     false nil
     key (vim.api.nvim_set_keymap :c key ;
