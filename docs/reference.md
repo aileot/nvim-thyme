@@ -151,7 +151,7 @@ the functions named with `_` are equivalent to those with `-`.
 := require("thyme").fennel
 ```
 
-## Functions `pcall`-able
+### Functions `pcall`-able
 
 Some `thyme.call.<foo.bar.baz>`-modules are provided.
 
@@ -160,7 +160,7 @@ without worrying about [thyme]'s validity,
 and about the interface dependencies
 when you are considering another Fennel compiler system.
 
-### `thyme.call.cache.clear`
+#### `thyme.call.cache.clear`
 
 Equivalent to [:ThymeCacheClear][], but it should work without [thyme.setup].
 
@@ -179,7 +179,7 @@ if type nvim >/dev/null; then
 fi
 ```
 
-### `thyme.call.cache.open`
+#### `thyme.call.cache.open`
 
 Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
