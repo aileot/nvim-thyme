@@ -60,12 +60,12 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
   ;;   {})
   (each [_ key (ipairs opts.cmdline-maps)]
     (vim.api.nvim_set_keymap :c key
-      "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('[%[%(%{]].*','Fnl %0')<CR><CR>"
+      "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
       {:noremap true}))
   (case opts.cmdline-completion-key
     false nil
-    key (vim.api.nvim_set_keymap :c key
-          "<C-BSlash>ev:lua.require('thyme.user.dropin').complete('[%[%(%{]].*','Fnl %0','lua')<CR><CR>"
+    key (vim.api.nvim_set_keymap :c key ;
+          "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>"
           {:noremap true})))
 
 M

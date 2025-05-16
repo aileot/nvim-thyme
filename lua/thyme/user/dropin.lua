@@ -43,14 +43,14 @@ end
 M["enable-dropin-paren!"] = function(opts)
   _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:52")
   for _, key in ipairs(opts["cmdline-maps"]) do
-    vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('[%[%(%{]].*','Fnl %0')<CR><CR>", {noremap = true})
+    vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
   end
   local _7_ = opts["cmdline-completion-key"]
   if (_7_ == false) then
     return nil
   elseif (nil ~= _7_) then
     local key = _7_
-    return vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').complete('[%[%(%{]].*','Fnl %0','lua')<CR><CR>", {noremap = true})
+    return vim.api.nvim_set_keymap("c", key, "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>", {noremap = true})
   else
     return nil
   end
