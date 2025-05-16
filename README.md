@@ -295,52 +295,6 @@ loaded once a session of nvim. For example,
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
-### Functions
-
-All the interfaces are provided from the "thyme" module: get them from
-`require("thyme")`.
-
-- [loader](./docs/reference.md#loader)
-  is to be appended to `package.loaders`.
-- [watch-files!](./docs/reference.md#watch-files!)
-  or [watch_files](./docs/reference.md#watch_files)
-  creates a set of autocmds to watch files.
-- [define-keymaps!](./docs/reference.md#define-keymaps!)
-  or [define_keymaps](./docs/reference.md#define_keymaps)
-  defines a set of keymaps in the [list](#keymaps) below.
-- [define-commands!](./docs/reference.md#define-commands!)
-  or [define_commands](./docs/reference.md#define_commands)
-  defines a set of command in the [list](#commands) below.
-
-### Keymaps
-
-The keymaps are defined with either `define_keymaps` or `define-keymaps!`.
-
-The `echo` versions do not mess up cmdline-history as `:echo` does not.
-
-- `<Plug>(thyme-operator-echo-eval)`
-- `<Plug>(thyme-operator-echo-eval-compiler)`
-- `<Plug>(thyme-operator-echo-macrodebug)`
-- `<Plug>(thyme-operator-echo-compile-string)`
-
-The `print` versions leave its results in cmdline-history as `vim.print` does.
-
-- `<Plug>(thyme-operator-print-eval)`
-- `<Plug>(thyme-operator-print-eval-compiler)`
-- `<Plug>(thyme-operator-print-macrodebug)`
-- `<Plug>(thyme-operator-print-compile-string)`
-
-### Commands
-
-The commands are defined with either `define_commands` or `define-commands!`.
-The following command list is an example defined by the functions,
-with its default `cmd-prefix` option `Fnl`.
-
-- `:Fnl` is an alias of `:FnlEval`.
-  (It'll be undefined if `cmd-prefix` is an empty string.)
-- `:ThymeCacheClear` clears Lua caches of Fennel files, and their dependency map logs.
-- `:ThymeConfigOpen` opens the config file `.nvim-thyme.fnl`.
-
 ## Migration Guide
 
 ### From hotpot.nvim

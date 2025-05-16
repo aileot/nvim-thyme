@@ -281,7 +281,23 @@ Unmount the mounted backups for the {target}.
 
 #### `:ThymeRollbackUnmountAll`
 
-Unmount all the mounted backups.
+### Keymaps
+
+The keymaps are defined with [thyme.setup][].
+
+The `echo` versions do not mess up cmdline-history as `:echo` does not.
+
+- `<Plug>(thyme-operator-echo-eval)`
+- `<Plug>(thyme-operator-echo-eval-compiler)`
+- `<Plug>(thyme-operator-echo-macrodebug)`
+- `<Plug>(thyme-operator-echo-compile-string)`
+
+The `print` versions leave its results in cmdline-history as `vim.print` does.
+
+- `<Plug>(thyme-operator-print-eval)`
+- `<Plug>(thyme-operator-print-eval-compiler)`
+- `<Plug>(thyme-operator-print-macrodebug)`
+- `<Plug>(thyme-operator-print-compile-string)`
 
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
