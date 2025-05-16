@@ -17,9 +17,9 @@
     - [Keymaps](#keymaps)
   - [Commands](#commands)
     - [Fennel Wrapper Commands](#fennel-wrapper-commands)
-      - [`:FnlEval` (alias `:Fnl`)](#fnleval-alias-fnl)
-      - [`:FnlEvalFile {file}`](#fnlevalfile-file)
-      - [`:FnlEvalBuf`](#fnlevalbuf)
+      - [`:Fnl` (alias `:Fnl`)](#fnl-alias-fnl)
+      - [`:FnlFile {file}`](#fnlfile-file)
+      - [`:FnlBuf`](#fnlbuf)
       - [`:FnlCompileString`](#fnlcompilestring)
       - [`:FnlCompileBuf`](#fnlcompilebuf)
     - [Fennel Misc. Commands](#fennel-misc-commands)
@@ -257,12 +257,11 @@ The commands are defined by [thyme.setup][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlEval` (alias `:Fnl`)
+#### `:Fnl` (alias `:Fnl`)
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 :Fnl ~                                                           *thyme-:Fnl*
-:FnlEval ~                                                   *thyme-:FnlEval*
 -->
 
 Display the result of [fennel.eval][],
@@ -270,17 +269,17 @@ but respects your [&runtimepath][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlEvalFile {file}`
+#### `:FnlFile {file}`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
-:FnlEvalFile ~                                           *thyme-:FnlEvalFile*
+:FnlFile ~                                                   *thyme-:FnlFile*
 -->
 
 Display the result of applying [fennel.dofile][] to {file},
 but respects your [&runtimepath][].
 
-#### `:FnlEvalBuf`
+#### `:FnlBuf`
 
 TODO
 
