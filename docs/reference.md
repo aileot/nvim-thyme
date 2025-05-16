@@ -388,6 +388,8 @@ If you failed to define the command [:ThymeCacheClear][] for some reasons,
 please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
 manually in Command line instead.
 
+See also [:ThymeUninstall][].
+
 #### `:ThymeCacheOpen`
 
 Open the root directory of the Lua caches managed by [nvim-thyme][].
