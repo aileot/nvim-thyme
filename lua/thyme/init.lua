@@ -49,14 +49,27 @@ M.setup = function(_3fopts)
   dropin["enable-dropin-paren!"](config["dropin-paren"])
   return self
 end
-for k, v in pairs(M) do
-  if k:find("[^-!]") then
-    local new_key = k:gsub("!", ""):gsub("%-", "_")
-    if (nil == M[new_key]) then
-      M[new_key] = v
+local function propagate_underscored_keys_21(tbl, key)
+  local val = tbl[key]
+  if key:find("[^-!]") then
+    local new_key = key:gsub("!", ""):gsub("%-", "_")
+    if (nil == tbl[new_key]) then
+      tbl[new_key] = val
     else
     end
   else
   end
+  local _14_ = type(val)
+  if (_14_ == "table") then
+    for k in pairs(val) do
+      propagate_underscored_keys_21(val, k)
+    end
+    return nil
+  else
+    return nil
+  end
+end
+for k in pairs(M) do
+  propagate_underscored_keys_21(M, k)
 end
 return setmetatable(M, {__index = M})

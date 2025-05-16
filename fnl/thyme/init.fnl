@@ -64,14 +64,22 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
     (dropin.enable-dropin-paren! config.dropin-paren)
     self))
 
-(each [k v (pairs M)]
-  ;; Generate keys compatible with Lua format addition to the Fennel-styled
-  ;; keys, e.g., add `M.foo_bar` addition to `M.foo-bar!`.
-  (when (k:find "[^-!]")
-    (let [new-key (-> k
-                      (: :gsub "!" "")
-                      (: :gsub "%-" "_"))]
-      (when (= nil (. M new-key))
-        (tset M new-key v)))))
+(fn propagate-underscored-keys! [tbl key]
+  "Supplement underscored keys, which are compatible with Lua format in
+addition to the Fennel-styled keys, e.g., add `tbl.foo_bar` in addition to
+`tbl.foo-bar!`."
+  (let [val (. tbl key)]
+    (when (key:find "[^-!]")
+      (let [new-key (-> key
+                        (: :gsub "!" "")
+                        (: :gsub "%-" "_"))]
+        (when (= nil (. tbl new-key))
+          (tset tbl new-key val))))
+    (case (type val)
+      :table (each [k (pairs val)]
+               (propagate-underscored-keys! val k)))))
+
+(each [k (pairs M)]
+  (propagate-underscored-keys! M k))
 
 (setmetatable M {:__index M})
