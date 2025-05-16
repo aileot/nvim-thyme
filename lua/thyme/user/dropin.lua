@@ -35,31 +35,44 @@ M.reserve = function(pattern, replacement)
   end
 end
 M.complete = function(pattern, replacement)
+  local old_cmdline = vim.fn.getcmdline()
   local new_cmdline = M.reserve(pattern, replacement)
   local last_wcm = vim.o.wildcharm
   local tmp_wcm = "\26"
-  local keys = (vim.keycode(("<C-BSlash>e%q<CR>"):format(new_cmdline)) .. tmp_wcm)
+  local right_keys
+  do
+    local _7_ = new_cmdline:find(old_cmdline, 1, true)
+    if (_7_ == nil) then
+      right_keys = ""
+    elseif (nil ~= _7_) then
+      local shift = _7_
+      right_keys = string.rep("<Right>", (shift - 1))
+    else
+      right_keys = nil
+    end
+  end
+  local keys = (vim.keycode((("<C-BSlash>e%q<CR>"):format(new_cmdline) .. right_keys)) .. tmp_wcm)
   vim.o.wcm = vim.fn.str2nr(tmp_wcm)
   vim.api.nvim_feedkeys(keys, "ni", false)
   vim.o.wcm = last_wcm
   return nil
 end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:65")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:71")
   do
-    local _7_ = opts["cmdline-key"]
-    if (_7_ == false) then
-    elseif (nil ~= _7_) then
-      local key = _7_
+    local _9_ = opts["cmdline-key"]
+    if (_9_ == false) then
+    elseif (nil ~= _9_) then
+      local key = _9_
       vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
     else
     end
   end
-  local _9_ = opts["cmdline-completion-key"]
-  if (_9_ == false) then
+  local _11_ = opts["cmdline-completion-key"]
+  if (_11_ == false) then
     return nil
-  elseif (nil ~= _9_) then
-    local key = _9_
+  elseif (nil ~= _11_) then
+    local key = _11_
     return vim.api.nvim_set_keymap("c", key, "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>", {noremap = true})
   else
     return nil

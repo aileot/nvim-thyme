@@ -1,3 +1,5 @@
+(import-macros {: dec} :thyme.macros)
+
 (local M {})
 
 (fn extract-?invalid-cmd [cmdline]
@@ -50,16 +52,20 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param pattern string string Lua patterns to be support dropin fallback.
 @param replacement string The dropin command
 @param completion-type string The completion type"
-  (let [new-cmdline (M.reserve pattern replacement)
+  (let [old-cmdline (vim.fn.getcmdline)
+        new-cmdline (M.reserve pattern replacement)
         last-wcm vim.o.wildcharm
         tmp-wcm "\26"
+        right-keys (case (new-cmdline:find old-cmdline 1 true)
+                     nil ""
+                     shift (string.rep "<Right>" (dec shift)))
         keys (-> (.. "<C-BSlash>e%q<CR>")
                  (: :format new-cmdline)
+                 (.. right-keys)
                  (vim.keycode)
                  (.. tmp-wcm))]
     (set vim.o.wcm (vim.fn.str2nr tmp-wcm))
     (vim.api.nvim_feedkeys keys "ni" false)
-    ;; TODO: Restore cursor position
     (set vim.o.wcm last-wcm)))
 
 (λ M.enable-dropin-paren! [opts]
