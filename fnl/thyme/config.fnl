@@ -31,8 +31,8 @@
                 :pattern "*.{fnl,fnlm}"
                 :strategy "recompile"}
         ;; (experimental)
-        :dropin-paren {:cmdline-key "<CR>"
-                       :cmdline-completion-key "<Tab>"}})
+        ;; TODO: Set the default keys once stable a bit.
+        :dropin-paren {:cmdline-key false :cmdline-completion-key false}})
 
 (local cache {})
 
