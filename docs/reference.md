@@ -17,11 +17,12 @@
     - [Keymaps](#keymaps)
   - [Commands](#commands)
     - [Fennel Wrapper Commands](#fennel-wrapper-commands)
-      - [`:FnlEval` (alias `:Fnl`)](#fnleval-alias-fnl)
-      - [`:FnlEvalFile {file}`](#fnlevalfile-file)
-      - [`:FnlEvalBuf`](#fnlevalbuf)
-      - [`:FnlCompileString`](#fnlcompilestring)
-      - [`:FnlCompileBuf`](#fnlcompilebuf)
+      - [`:Fnl {fnl-expr}`](#fnl-fnl-expr)
+      - [`:FnlBuf [bufname]`](#fnlbuf-bufname)
+      - [`:FnlFile [file]`](#fnlfile-file)
+      - [`:FnlCompileString {fnl-expr}`](#fnlcompilestring-fnl-expr)
+      - [`:FnlCompileBuf [bufname]`](#fnlcompilebuf-bufname)
+      - [`:FnlCompileFile [file]`](#fnlcompilefile-file)
     - [Fennel Misc. Commands](#fennel-misc-commands)
       - [`:FnlAlternate`](#fnlalternate)
     - [Thyme General Commands](#thyme-general-commands)
@@ -54,7 +55,7 @@ at the path `vim.fn.stdpath('config')` returns.
 
 When `.nvim-thyme.fnl` is missing at the directory on nvim startup,
 [nvim-thyme][] will ask you to generate it with recommended settings:
-See the file [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
+See the file [.nvim-thyme.fnl.example][].
 
 ### compiler-options
 
@@ -257,63 +258,134 @@ The commands are defined by [thyme.setup][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlEval` (alias `:Fnl`)
+#### `:Fnl {fnl-expr}`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 :Fnl ~                                                           *thyme-:Fnl*
-:FnlEval ~                                                   *thyme-:FnlEval*
 -->
 
-Display the result of [fennel.eval][],
+Display the result of applying [fennel.eval][] to `{fnl-expr}`,
 but respects your [&runtimepath][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlEvalFile {file}`
+#### `:FnlBuf [bufname]`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
-:FnlEvalFile ~                                           *thyme-:FnlEvalFile*
+:FnlBuf ~                                                     *thyme-:FnlBuf*
 -->
 
-Display the result of applying [fennel.dofile][] to {file},
+Display the result of applying [fennel.dofile][] but to `[bufname]`,
 but respects your [&runtimepath][].
 
-#### `:FnlEvalBuf`
+If no `[bufname]` is given, it evaluates the current buffer.
 
-TODO
+<!-- panvimdoc-ignore-start -->
 
-#### `:FnlCompileString`
+<!-- panvimdoc-ignore-start -->
 
-TODO
+#### `:FnlFile [file]`
 
-#### `:FnlCompileBuf`
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlFile ~                                                   *thyme-:FnlFile*
+-->
 
-TODO
+Display the result of applying [fennel.dofile][] to `[file]`,
+but respects your [&runtimepath][].
+
+If no `[file]` is given, it evaluates the current file.
+
+#### `:FnlCompileString {fnl-expr}`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileString ~                                 *thyme-:FnlCompileString*
+-->
+
+Almost equivalent to [:Fnl][];
+however, it does not evaluate the {fnl-expr},
+but only returns the compiled lua results.
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlCompileBuf [bufname]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileBuf ~                                       *thyme-:FnlCompileBuf*
+-->
+
+Almost equivalent to [:FnlBuf][];
+however, it does not evaluate the [bufname] (or current buffer),
+but only returns the compiled lua results.
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlCompileFile [file]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileFile ~                                     *thyme-:FnlCompileFile*
+-->
+
+Almost equivalent to [:FnlBuf][];
+however, it does not evaluate the [file] (or current file),
+but only returns the compiled lua results.
+
+<!-- panvimdoc-ignore-start -->
+<!--
+TODO: Add the spec tests first.
+
+#### `:FnlCompileFile[!] [src-file] [dest-file]`
+
+With `!`, it will write the compiled lua results to `[dest-file]`.
+-->
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileFile ~                                     *thyme-:FnlCompileFile*
+-->
 
 ### Fennel Misc. Commands
 
+<!-- panvimdoc-ignore-start -->
+
 #### `:FnlAlternate`
 
-TODO
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlAlternate ~                                         *thyme-:FnlAlternate*
+-->
+
+Try to open the alternate file of current buffer:
+
+- For a Fennel file, find the corresponding Lua file.
+- For a Lua file, find the corresponding Fennel file.
+
+This command will search in the following order:
+
+1. The thyme's Lua caches
+2. The directory of the target file
+3. The corresponding `/fnl/` or `/lua/` directory
 
 ### Thyme General Commands
 
 #### `:ThymeUninstall`
 
-Uninstall [nvim-thyme][].
-
-This command remove all the cache, data, state, and log files,
+Remove all the cache, data, state, and log files,
 which are implicitly managed by [nvim-thyme][].
+
+This command is so safe
+as it does **not** affect your [.nvim-thyme.fnl][]
+and any of your configuration files.
 
 When you have some issues with [nvim-thyme][],
 try [:ThymeCacheClear][] first instead.
 When the command does not resolve your issue,
 then try this command [:ThymeUninstall][].
-
-(This command is safe
-since it does NOT affect your [.nvim-thyme.fnl][] and any of your configuration files.)
 
 ### Thyme Config Commands
 
@@ -328,8 +400,10 @@ Open your [.nvim-thyme.fnl][] file.
 Clear all the Lua caches managed by [nvim-thyme][].
 
 If you failed to define the command [:ThymeCacheClear][] for some reasons,
-please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
+please execute [:lua require('thyme.call.cache.clear')](#thymecallcacheclear)
 manually in Command line instead.
+
+See also [:ThymeUninstall][].
 
 #### `:ThymeCacheOpen`
 
@@ -339,14 +413,14 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 
 #### `:ThymeRollbackSwitch {target}`
 
-Prompt to switch to the active backup of the {target}.
+Prompt to switch to the active backup of the `{target}`.
 
-Any compile errors of the {target} of Fennel module will be rolled back to the active backup.
-This switch also affects the mounted backup of {target}.
+Any compile errors of the `{target}` of Fennel module will be rolled back to the active backup.
+This switch also affects the mounted backup of `{target}`.
 
 #### `:ThymeRollbackMount {target}`
 
-Mount the active backup of the {target}.
+Mount the active backup of the `{target}`.
 
 Neovim will load the mounted backups instead of your modules with the same name.
 You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
@@ -354,10 +428,13 @@ to restore the mount state.
 
 #### `:ThymeRollbackUnmount {target}`
 
-Unmount the mounted backups for the {target}.
+Unmount the mounted backups for the `{target}`.
 
 #### `:ThymeRollbackUnmountAll`
 
+Unmount the mounted backups.
+
+[.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
@@ -368,6 +445,10 @@ Unmount the mounted backups for the {target}.
 [thyme.setup]: #thymesetup-or-thymesetup
 [&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
+[fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
+[Fennel Wrapper Commands]: #fennel-wrapper-commands
+[:Fnl]: #fnlfnl-expr
+[:FnlBuf]: #fnlbuf-bufname
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear

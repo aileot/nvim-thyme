@@ -225,11 +225,11 @@ See the [Configuration](#configuration) section below.
 
 ## 🎉 Interfaces
 
-Please read the [reference](./docs/REFERENCE.md) for the details and additional features.
+Please read the [reference][] for the details and additional features.
 But here is a rough list:
 
 <!--
-NOTE: Dump rough list from reference.md via `let @a = execute('g/^### ')`.
+NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
 -->
 
 - `thyme.loader`
@@ -240,11 +240,13 @@ NOTE: Dump rough list from reference.md via `let @a = execute('g/^### ')`.
   - `thyme.call.cache.open`
 - Keymaps
 - Fennel Wrapper Commands
-  - `:FnlEval` (alias `:Fnl`)
-  - `:FnlEvalFile {file}`
-  - `:FnlEvalBuf`
-  - `:FnlCompileString`
-  - `:FnlCompileBuf`
+  - `:Fnl {fnl-expr}`
+  - `:FnlBuf [bufname]`
+  - `:FnlFile [file]`
+  - `:FnlCompileString {fnl-expr}`
+  - `:FnlCompileBuf [bufname]`
+  - `:FnlCompileFile [file]`
+  - `:FnlCompileFile[!] [src-file] [dest-file]`
 - Fennel Misc. Commands
   - `:FnlAlternate`
 - Thyme General Commands
@@ -464,6 +466,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[reference]: ./docs/reference.md
 [call stack]: https://en.wikipedia.org/wiki/Call_stack
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
