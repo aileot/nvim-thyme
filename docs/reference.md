@@ -55,7 +55,7 @@ at the path `vim.fn.stdpath('config')` returns.
 
 When `.nvim-thyme.fnl` is missing at the directory on nvim startup,
 [nvim-thyme][] will ask you to generate it with recommended settings:
-See the file [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
+See the file [.nvim-thyme.fnl.example][].
 
 ### compiler-options
 
@@ -400,7 +400,7 @@ Open your [.nvim-thyme.fnl][] file.
 Clear all the Lua caches managed by [nvim-thyme][].
 
 If you failed to define the command [:ThymeCacheClear][] for some reasons,
-please execute [:lua require('thyme.call.cache.clear')](#thyme-call-cache-clear)
+please execute [:lua require('thyme.call.cache.clear')](#thymecallcacheclear)
 manually in Command line instead.
 
 See also [:ThymeUninstall][].
@@ -432,6 +432,7 @@ Unmount the mounted backups for the `{target}`.
 
 #### `:ThymeRollbackUnmountAll`
 
+[.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
@@ -442,6 +443,10 @@ Unmount the mounted backups for the `{target}`.
 [thyme.setup]: #thymesetup-or-thymesetup
 [&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
+[fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
+[Fennel Wrapper Commands]: #fennel-wrapper-commands
+[:Fnl]: #fnlfnl-expr
+[:FnlBuf]: #fnlbuf-bufname
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
