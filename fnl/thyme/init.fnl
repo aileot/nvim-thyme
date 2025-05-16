@@ -10,6 +10,8 @@
 (local M {:loader search-fnl-module-on-rtp!
           :fennel {:view (lazy-require-with-key :thyme.wrapper.fennel :view)
                    :eval (lazy-require-with-key :thyme.wrapper.fennel :eval)
+                   :compile-string (lazy-require-with-key :thyme.wrapper.fennel
+                                                          :compile-string)
                    :compile_file (fn [...]
                                    (let [key (if (select 3 ...) :compile-file!
                                                  :compile-file)]
@@ -19,8 +21,8 @@
                                                         :compile-file)
                    :compile-file! (lazy-require-with-key :thyme.wrapper.fennel
                                                          :compile-file!)
-                   :compile-string (lazy-require-with-key :thyme.wrapper.fennel
-                                                          :compile-string)
+                   :compile-buf (lazy-require-with-key :thyme.wrapper.fennel
+                                                       :compile-buf)
                    :macrodebug (lazy-require-with-key :thyme.wrapper.fennel
                                                       :macrodebug)}
           :cache {:open (lazy-require-with-key :thyme.user.commands.cache :open)

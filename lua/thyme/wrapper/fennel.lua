@@ -40,7 +40,7 @@ local function compile_string(fnl_code, _3fopts)
   local new_fnl_code, compiler_options = fnl_code__3efennel_ready(fnl_code, _3fopts)
   return fennel["compile-string"](new_fnl_code, compiler_options)
 end
-local function compile_buffer(bufnr, _3fopts)
+local function compile_buf(bufnr, _3fopts)
   assert_is_fnl_file(bufnr)
   local buf_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, true)
   local new_fnl_code, compiler_options = fnl_code__3efennel_ready(buf_lines, _3fopts)
@@ -62,4 +62,4 @@ local function compile_file_21(fnl_path, lua_path, _3fopts)
   assert(load(lua_lines))
   return write_lua_file_21(lua_path, lua_lines)
 end
-return {view = view, eval = eval, ["eval-compiler"] = eval_compiler_2a, macrodebug = macrodebug_2a, ["compile-string"] = compile_string, ["compile-buffer"] = compile_buffer, ["compile-file"] = compile_file, ["compile-file!"] = compile_file_21}
+return {view = view, eval = eval, ["eval-compiler"] = eval_compiler_2a, macrodebug = macrodebug_2a, ["compile-string"] = compile_string, ["compile-buf"] = compile_buf, ["compile-file"] = compile_file, ["compile-file!"] = compile_file_21}

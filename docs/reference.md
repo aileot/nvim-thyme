@@ -19,9 +19,9 @@
     - [Fennel Wrapper Commands](#fennel-wrapper-commands)
       - [`:FnlEval` (alias `:Fnl`)](#fnleval-alias-fnl)
       - [`:FnlEvalFile {file}`](#fnlevalfile-file)
-      - [`:FnlEvalBuffer`](#fnlevalbuffer)
+      - [`:FnlEvalBuf`](#fnlevalbuf)
       - [`:FnlCompileString`](#fnlcompilestring)
-      - [`:FnlCompileBuffer`](#fnlcompilebuffer)
+      - [`:FnlCompileBuf`](#fnlcompilebuf)
     - [Fennel Misc. Commands](#fennel-misc-commands)
       - [`:FnlAlternate`](#fnlalternate)
     - [Thyme General Commands](#thyme-general-commands)
@@ -280,7 +280,7 @@ but respects your [&runtimepath][].
 Display the result of applying [fennel.dofile][] to {file},
 but respects your [&runtimepath][].
 
-#### `:FnlEvalBuffer`
+#### `:FnlEvalBuf`
 
 TODO
 
@@ -288,7 +288,7 @@ TODO
 
 TODO
 
-#### `:FnlCompileBuffer`
+#### `:FnlCompileBuf`
 
 TODO
 

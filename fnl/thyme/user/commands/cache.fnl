@@ -9,7 +9,7 @@
 
 (fn CmdCache.open []
   "Open the cache root directory in a new tabpage."
-  ;; NOTE: Filer plugin like oil.nvim usually modifies the buffer name
+  ;; NOTE: Filer plugin like oil.nvim usually modifies the buf name
   ;; so that `:tab drop` is unlikely to work expectedly.
   ;; NOTE: For unknown reasons, with `vim.cmd` instead of `nvim_exec2` fails to
   ;; open the dir when directly calling this function, though the wrapper
