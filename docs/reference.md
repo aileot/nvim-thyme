@@ -261,7 +261,7 @@ TODO
 
 TODO
 
-### Thyme General Command
+### Thyme General Commands
 
 #### `:ThymeUninstall`
 
@@ -278,13 +278,13 @@ then try this command [:ThymeUninstall][].
 (This command is safe
 since it does NOT affect your [.nvim-thyme.fnl][] and any of your configuration files.)
 
-### Thyme Config Command
+### Thyme Config Commands
 
 #### `:ThymeConfigOpen`
 
 Open your [.nvim-thyme.fnl][] file.
 
-### Thyme Cache Command
+### Thyme Cache Commands
 
 #### `:ThymeCacheClear`
 
@@ -298,7 +298,7 @@ manually in Command line instead.
 
 Open the root directory of the Lua caches managed by [nvim-thyme][].
 
-### Thyme Rollback Command
+### Thyme Rollback Commands
 
 #### `:ThymeRollbackSwitch {target}`
 
