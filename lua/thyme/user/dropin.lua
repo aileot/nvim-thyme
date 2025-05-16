@@ -11,15 +11,19 @@ local function extract__3finvalid_cmd(cmdline)
     return nil
   end
 end
+local function replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replacement)
+  local prefix = old_cmdline:sub(1, (-1 - #invalid_cmd))
+  local fallback_cmd = invalid_cmd:gsub(pattern, replacement)
+  local new_cmdline = (prefix .. fallback_cmd)
+  return new_cmdline
+end
 M.reserve = function(pattern, replacement)
   local old_cmdline = vim.fn.getcmdline()
   local _4_ = extract__3finvalid_cmd(old_cmdline)
   if (nil ~= _4_) then
     local invalid_cmd = _4_
     local cmdtype = vim.fn.getcmdtype()
-    local prefix = old_cmdline:sub(1, (-1 - #invalid_cmd))
-    local fallback_cmd = invalid_cmd:gsub(pattern, replacement)
-    local new_cmdline = (prefix .. fallback_cmd)
+    local new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replacement)
     local function _5_()
       return assert((1 == vim.fn.histadd(cmdtype, old_cmdline)), ("failed to add old command " .. old_cmdline))
     end
@@ -41,7 +45,7 @@ M.complete = function(pattern, replacement)
   return nil
 end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:52")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:65")
   for _, key in ipairs(opts["cmdline-maps"]) do
     vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
   end

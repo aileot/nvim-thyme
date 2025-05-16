@@ -10,6 +10,18 @@
     (let [expected-error-msg-prefix "Parsing command%-line: E492: Not an editor command: (.*)"]
       (msg:match expected-error-msg-prefix))))
 
+(fn replace-invalid-cmdline [old-cmdline invalid-cmd pattern replacement]
+  "Replace `pattern` matched in `old-cmdline` at `invalid-cmd` with `replacement`
+@param invalid-cmd string Expected a substring of `old-cmdline`
+@param old-cmdline string The original cmdline
+@param pattern string Lua pattern to be replaced
+@param replacement string The replacement
+@return string A new cmdline"
+  (let [prefix (old-cmdline:sub 1 (- -1 (length invalid-cmd)))
+        fallback-cmd (invalid-cmd:gsub pattern replacement)
+        new-cmdline (.. prefix fallback-cmd)]
+    new-cmdline))
+
 (fn M.reserve [pattern replacement]
   "Reserve `replacement` to replace invalid cmdline when `pattern` is
 detected with E492. The fallback command will pretend that the substrings
@@ -19,9 +31,10 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
   (let [old-cmdline (vim.fn.getcmdline)]
     (case (extract-?invalid-cmd old-cmdline)
       invalid-cmd (let [cmdtype (vim.fn.getcmdtype)
-                        prefix (old-cmdline:sub 1 (- -1 (length invalid-cmd)))
-                        fallback-cmd (invalid-cmd:gsub pattern replacement)
-                        new-cmdline (.. prefix fallback-cmd)]
+                        new-cmdline (replace-invalid-cmdline old-cmdline ;
+                                                             invalid-cmd ;
+                                                             pattern ;
+                                                             replacement)]
                     ;; `<Up>` in cmdline.
                     ;; NOTE: vim.schedule is required to modify the cmdline
                     ;; history when the attempt runs in cmdline.
