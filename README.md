@@ -17,13 +17,13 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 
 </div>
 
-## Main Features
+## ✨ Main Features
 
 - Compile Fennel source just as Lua fallback **at nvim runtime**.
 - Get optimized with `vim.loader` **out of box**.
 - Safely **roll back** to the last successfully compiled backups if compilation fails.
 
-## Optional Features
+## 🔌 Optional Features
 
 The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
 (For the details, please read the [Installation](#installation) guide below.)
@@ -36,43 +36,19 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
   - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be builtin commands:\
     _Type `:(+ 1 2)<CR>` as if `:Fnl (+ 1 2)<CR>`!_
 
-## Motivations
+## 🔥 Motivations
 
-- To cut down startuptime, checking Fennel should be skipped at startup if
-  possible.
-- I don't like to mess up `lua/` as I still write Lua when it seems to be
-  more suitable than Fennel. (Type annotation helps us very much.)
+- To cut down startuptime,
+  checking Fennel should be skipped at startup if possible.
+- I don't like to mess up `lua/`
+  as I still write Lua when it seems to be
+  more comfortable than Fennel.
+  (Type annotation helps us very much.)
 - ...and more features!
 
 The project started from scratch. _Now in Beta!_
 
-## Disclosure
-
-### Limitations
-
-- `nvim-thyme` only support Lua/Fennel loader like `require`;
-  it does not support Vim commands (e.g., `:source` and `:runtime`) to load your Fennel files.
-
-### Macro Dependency Tracking
-
-- The _macro dependency tracker_ is based on the nature that
-  the [call stack][] of a module represents the dependencies of the module as is.
-  No `fennel.plugins` dependency!
-
-### Misleading...?
-
-- As you may have noticed, the term of _Zero overhead_ only means it does not
-  affect startup time once compiled.
-- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
-  misleading due to the convention.\
-  The _JIT_ in this project is more like JIT in
-  [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
-  than in
-  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
-  it compiles missing modules, and optionally recompiles them on
-  `BufWritePost` and `FileChangedShellPost`.
-
-## Requirements
+## ✔️ Requirements
 
 - Neovim v0.10.0+
 - [Fennel][] on your `&runtimepath`, in short, `&rtp`.
@@ -84,7 +60,7 @@ The project started from scratch. _Now in Beta!_
 - (Optional) [parinfer-rust][] on `&rtp`
   (to improve UX on the commands and keymaps)
 
-## Installation
+## 📦 Installation
 
 ### 1. Ensure to Install Plugins (3 steps)
 
@@ -245,11 +221,46 @@ vim.api.nvim_create_autocmd("VimEnter", {
 If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
 generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
+See the [Configuration](#configuration) section below.
 
-## Interfaces
+## 🎉 Interfaces
 
-This section lists out the interfaces with a summary.
-For the details and additional features, please read the [reference](./docs/REFERENCE.md).
+Please read the [reference](./docs/REFERENCE.md) for the details and additional features.
+But here is a rough list:
+
+<!--
+NOTE: Dump rough list from reference.md via `let @a = execute('g/^### ')`.
+-->
+
+- `thyme.loader`
+- `thyme.setup` or `thyme:setup`
+- Functions at `thyme.fennel`
+- Functions `pcall`-able
+  - `thyme.call.cache.clear`
+  - `thyme.call.cache.open`
+- Keymaps
+- Fennel Wrapper Commands
+  - `:FnlEval` (alias `:Fnl`)
+  - `:FnlEvalFile {file}`
+  - `:FnlEvalBuf`
+  - `:FnlCompileString`
+  - `:FnlCompileBuf`
+- Fennel Misc. Commands
+  - `:FnlAlternate`
+- Thyme General Commands
+  - `:ThymeUninstall`
+- Thyme Config Commands
+  - `:ThymeConfigOpen`
+- Thyme Cache Commands
+  - `:ThymeCacheClear`
+  - `:ThymeCacheOpen`
+- Thyme Rollback Commands
+  - `:ThymeRollbackSwitch {target}`
+  - `:ThymeRollbackMount {target}`
+  - `:ThymeRollbackUnmount {target}`
+  - `:ThymeRollbackUnmountAll`
+
+## ⚙️ Configuration
 
 ### Options in `.nvim-thyme.fnl`
 
@@ -257,12 +268,14 @@ As described in the [Installation](#installation), all the settings of
 `nvim-thyme` is set up with a config file `.nvim-thyme.fnl`;
 no conventional `setup` function is provided by `nvim-thyme`.
 
-Note: You don't have to prepare it by yourself!
-If missing the config file, you will be asked to generate it with recommended
-settings.
+You don't have to prepare it by yourself!
+If missing the config file on nvim startup,
+you will be asked to generate it with recommended settings:
+See [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
 
 ```fennel
-{:rollback true
+;; WARN: See .nvim-thyme.fnl.example instead. This snippet might be outdated.
+{:max-rollback 5
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
                     :error-pinpoint ["|>>" "<<|"]}
@@ -295,7 +308,7 @@ loaded once a session of nvim. For example,
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
-## Migration Guide
+## 🚚 Migration Guide
 
 ### From hotpot.nvim
 
@@ -343,7 +356,7 @@ require([[tangerine]]).setup({})
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
-## Ex Command Comparisons
+## 💥 Ex Command Comparisons
 
 Note: nvim-thyme only provides user commands when you call
 [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
@@ -355,7 +368,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
-:(+ 1 1)
+:Fnl (+ 1 1)
 " hotpot.nvim
 :Fnl= (+ 1 1)
 " tangerine.nvim
@@ -366,7 +379,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
-:silent (+ 1 1)
+:silent Fnl (+ 1 1)
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
@@ -386,40 +399,64 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 :NfnlFile (vim.fn.expand "%:p")
 ```
 
-## Not in Plan
+## 🕶️ Disclosure
+
+### Macro Dependency Tracking
+
+- The _macro dependency tracker_ is based on the nature that
+  the [call stack][] of a module represents the dependencies of the module as is.
+  No `fennel.plugins` dependency!
+
+### Misleading...?
+
+- As you may have noticed, the term of _Zero overhead_ only means it does not
+  affect startup time once compiled.
+- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
+  misleading due to the convention.\
+  The _JIT_ in this project is more like JIT in
+  [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
+  than in
+  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
+  it compiles missing modules, and optionally recompiles them on
+  `BufWritePost` and `FileChangedShellPost`.
+
+### Not in Plan
 
 - Unlike [tangerine.nvim][],
-  `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
+  `nvim-thyme` does _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
 - Unlike [hotpot.nvim][],
-  `nvim-thyme` will _**not** load `plugin/*.fnl`, `ftplugin/*.fnl`, and so on._
-- Unlike [nfnl][] and other compiler plugins,
-  `nvim-thyme` will _**not** compile Fennel files which is not loaded in nvim
-  runtime by default._
+  `nvim-thyme` does _**not** load_
+  `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on;
+  `nvim-thyme` does _**not** support_ Vim commands
+  (e.g., `:source` and `:runtime`)
+  to load your Fennel files.
+  `nvim-thyme` _**only** supports_ Lua/Fennel loader like `require`.
+- Unlike [nfnl][],
+  `nvim-thyme` does _**not** compile_ Fennel files which is not loaded in nvim
+  runtime by default.
   If you still need to compile Fennel files in a project apart from nvim
   runtime, you have several options:
-  - Define some `autocmd`s in your config or in .nvim.fnl.
+  - Define some `autocmd`s in your config or in .nvim.lua.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
   - Use git hooks.
     (See the [.githooks](./.githooks) in this project as a WIP example. Help wanted.)
 
-## Acknowledgement
+## 📚 Acknowledgement
 
 Thanks to [Shougo](https://github.com/Shougo) for
 [dein.vim](https://github.com/Shougo/dein.vim)
 the legendary.
 The design heavily inspires `nvim-thyme`.
 
-Thanks to [nix][] for rollback system inspirations using symbolic links.
-
 Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
 The integration of `nvim-thyme` with [parinfer][]
 is based in part on copy extracted from the project,
-so the [file](./fnl/thyme/api/parinfer.fnl) on parinfer is also
+so the [file](./fnl/thyme/api/parinfer.fnl) on `parinfer` is also
 on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
 
-## Alternatives
+## 🤔 Alternatives
 
 - [aniseed][] provides Clojure-like interfaces. I've never used it.
 - [hotpot.nvim][] loads fennel first. I've been indebted so long. Big thanks.
