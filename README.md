@@ -223,10 +223,44 @@ generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 See the [Configuration](#configuration) section below.
 
-## ⚙️ Configuration
+## 🎉 Interfaces
 
-This section lists out the interfaces with a summary.
-For the details and additional features, please read the [reference](./docs/REFERENCE.md).
+Please read the [reference](./docs/REFERENCE.md) for the details and additional features.
+But here is a rough list:
+
+<!--
+NOTE: Dump rough list from reference.md via `let @a = execute('g/^### ')`.
+-->
+
+- `thyme.loader`
+- `thyme.setup` or `thyme:setup`
+- Functions at `thyme.fennel`
+- Functions `pcall`-able
+  - `thyme.call.cache.clear`
+  - `thyme.call.cache.open`
+- Keymaps
+- Fennel Wrapper Commands
+  - `:FnlEval` (alias `:Fnl`)
+  - `:FnlEvalFile {file}`
+  - `:FnlEvalBuf`
+  - `:FnlCompileString`
+  - `:FnlCompileBuf`
+- Fennel Misc. Commands
+  - `:FnlAlternate`
+- Thyme General Commands
+  - `:ThymeUninstall`
+- Thyme Config Commands
+  - `:ThymeConfigOpen`
+- Thyme Cache Commands
+  - `:ThymeCacheClear`
+  - `:ThymeCacheOpen`
+- Thyme Rollback Commands
+  - `:ThymeRollbackSwitch {target}`
+  - `:ThymeRollbackMount {target}`
+  - `:ThymeRollbackUnmount {target}`
+  - `:ThymeRollbackUnmountAll`
+
+## ⚙️ Configuration
 
 ### Options in `.nvim-thyme.fnl`
 
