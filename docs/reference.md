@@ -257,37 +257,39 @@ The commands are defined by [thyme.setup][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:Fnl` (alias `:Fnl`)
+#### `:Fnl {fnl-expr}`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 :Fnl ~                                                           *thyme-:Fnl*
 -->
 
-Display the result of [fennel.eval][],
+Display the result of applying [fennel.eval][] to {fnl-expr},
 but respects your [&runtimepath][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlFile {file}`
+#### `:FnlFile [file]`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 :FnlFile ~                                                   *thyme-:FnlFile*
 -->
 
-Display the result of applying [fennel.dofile][] to {file},
+Display the result of applying [fennel.dofile][] to `[file]`,
 but respects your [&runtimepath][].
 
-#### `:FnlBuf`
+#### `:FnlBuf [bufname]`
 
 TODO
 
-#### `:FnlCompileString`
+#### `:FnlCompileString {fnl-expr}`
 
 TODO
 
-#### `:FnlCompileBuf`
+#### `:FnlCompileBuf [bufname]`
+
+#### `:FnlCompileFile [file]`
 
 TODO
 
