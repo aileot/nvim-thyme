@@ -132,14 +132,6 @@
                                        {:lang :fennel
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! :FnlEval
-      {:nargs "*"
-       :complete :lua
-       :desc "[thyme] evaluate the following fennel expression, and display the results"}
-      (wrap-fennel-wrapper-for-command fennel-wrapper.eval
-                                       {:lang :fennel
-                                        : compiler-options
-                                        : cmd-history-opts}))
     (command! :FnlCompileString
       {:nargs "*"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
@@ -148,7 +140,7 @@
                                         :discard-last? true
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! :FnlEvalFile
+    (command! :FnlFile
       {:range "%"
        :nargs "?"
        :complete :file
@@ -169,7 +161,7 @@
                                                          : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
-    (command! :FnlEvalBuf
+    (command! :FnlBuf
       {:range "%"
        :nargs "?"
        :complete :buffer

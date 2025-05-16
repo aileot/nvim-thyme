@@ -146,7 +146,6 @@ M["setup!"] = function(_3fopts)
   local compiler_options = opts["compiler-options"]
   local cmd_history_opts = opts["cmd-history"]
   vim.api.nvim_create_user_command("Fnl", wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
-  vim.api.nvim_create_user_command("FnlEval", wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   vim.api.nvim_create_user_command("FnlCompileString", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   local function _32_(_30_)
     local _arg_31_ = _30_["fargs"]
@@ -163,7 +162,7 @@ M["setup!"] = function(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlEvalFile", _32_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
+  vim.api.nvim_create_user_command("FnlFile", _32_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
   local function _35_(_33_)
     local _arg_34_ = _33_["fargs"]
     local _3fpath = _arg_34_[1]
@@ -184,7 +183,7 @@ M["setup!"] = function(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlEvalBuf", _35_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  vim.api.nvim_create_user_command("FnlBuf", _35_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
   local function _39_(_37_)
     local _arg_38_ = _37_["fargs"]
     local _3fpath = _arg_38_[1]
