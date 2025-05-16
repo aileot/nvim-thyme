@@ -72,7 +72,8 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 (λ M.enable-dropin-paren! [opts]
   "Realize dropin-paren feature.
 @param opts.cmap string (default \"<CR>\") The keys to be mapped in Cmdline mode."
-  (let [plug-map "<Plug>(thyme-dropin-Fnl)"]
+  (let [plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
+        plug-map-complete "<Plug>(thyme-dropin-complete-Fnl)"]
     ;; TODO: Support cmdwin.
     ;; (each [_ key (ipairs opts.dropin-parens.cmdwin)]
     ;;   (vim.api.nvim_set_keymap :n key "<Plug>(thyme-precede-paren-by-Fnl)"
@@ -83,18 +84,18 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
       false nil
       "" nil
       key (do
-            (vim.api.nvim_set_keymap :c plug-map
+            (vim.api.nvim_set_keymap :c plug-map-insert
               "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
               {:noremap true})
             ;; TODO: Expose `<Plug>` keymaps once stable a bit.
-            (vim.api.nvim_set_keymap :c key plug-map {:noremap true})))
+            (vim.api.nvim_set_keymap :c key plug-map-insert {:noremap true})))
     (case opts.cmdline-completion-key
       false nil
       "" nil
       key (do
-            (vim.api.nvim_set_keymap :c plug-map
+            (vim.api.nvim_set_keymap :c plug-map-complete
               "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>"
               {:noremap true})
-            (vim.api.nvim_set_keymap :c key plug-map {:noremap true})))))
+            (vim.api.nvim_set_keymap :c key plug-map-complete {:noremap true})))))
 
 M
