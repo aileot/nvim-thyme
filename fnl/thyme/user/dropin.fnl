@@ -72,23 +72,29 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 (λ M.enable-dropin-paren! [opts]
   "Realize dropin-paren feature.
 @param opts.cmap string (default \"<CR>\") The keys to be mapped in Cmdline mode."
-  ;; TODO: Support cmdwin.
-  ;; (each [_ key (ipairs opts.dropin-parens.cmdwin)]
-  ;;   (vim.api.nvim_set_keymap :n key "<Plug>(thyme-precede-paren-by-Fnl)"
-  ;;     {:noremap true}))
-  ;; (vim.api.nvim_set_keymap :c "<C-j>" "<Plug>(thyme-precede-paren-by-Fnl)"
-  ;;   {})
-  (case opts.cmdline-key
-    false nil
-    "" nil
-    key (vim.api.nvim_set_keymap :c key
-          "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
-          {:noremap true}))
-  (case opts.cmdline-completion-key
-    false nil
-    "" nil
-    key (vim.api.nvim_set_keymap :c key ;
-          "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>"
-          {:noremap true})))
+  (let [plug-map "<Plug>(thyme-dropin-Fnl)"]
+    ;; TODO: Support cmdwin.
+    ;; (each [_ key (ipairs opts.dropin-parens.cmdwin)]
+    ;;   (vim.api.nvim_set_keymap :n key "<Plug>(thyme-precede-paren-by-Fnl)"
+    ;;     {:noremap true}))
+    ;; (vim.api.nvim_set_keymap :c "<C-j>" "<Plug>(thyme-precede-paren-by-Fnl)"
+    ;;   {})
+    (case opts.cmdline-key
+      false nil
+      "" nil
+      key (do
+            (vim.api.nvim_set_keymap :c plug-map
+              "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
+              {:noremap true})
+            ;; TODO: Expose `<Plug>` keymaps once stable a bit.
+            (vim.api.nvim_set_keymap :c key plug-map {:noremap true})))
+    (case opts.cmdline-completion-key
+      false nil
+      "" nil
+      key (do
+            (vim.api.nvim_set_keymap :c plug-map
+              "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>"
+              {:noremap true})
+            (vim.api.nvim_set_keymap :c key plug-map {:noremap true})))))
 
 M
