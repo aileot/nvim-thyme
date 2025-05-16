@@ -240,11 +240,13 @@ NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
   - `thyme.call.cache.open`
 - Keymaps
 - Fennel Wrapper Commands
-  - `:FnlEval` (alias `:Fnl`)
-  - `:FnlEvalFile {file}`
-  - `:FnlEvalBuf`
-  - `:FnlCompileString`
-  - `:FnlCompileBuf`
+  - `:Fnl {fnl-expr}`
+  - `:FnlBuf [bufname]`
+  - `:FnlFile [file]`
+  - `:FnlCompileString {fnl-expr}`
+  - `:FnlCompileBuf [bufname]`
+  - `:FnlCompileFile [file]`
+  - `:FnlCompileFile[!] [src-file] [dest-file]`
 - Fennel Misc. Commands
   - `:FnlAlternate`
 - Thyme General Commands
