@@ -331,7 +331,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
-:(+ 1 1)
+:Fnl (+ 1 1)
 " hotpot.nvim
 :Fnl= (+ 1 1)
 " tangerine.nvim
@@ -342,7 +342,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
-:silent (+ 1 1)
+:silent Fnl (+ 1 1)
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
