@@ -17,13 +17,13 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 
 </div>
 
-## Main Features
+## ✨ Main Features
 
 - Compile Fennel source just as Lua fallback **at nvim runtime**.
 - Get optimized with `vim.loader` **out of box**.
 - Safely **roll back** to the last successfully compiled backups if compilation fails.
 
-## Optional Features
+## 🔌 Optional Features
 
 The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
 (For the details, please read the [Installation](#installation) guide below.)
@@ -36,7 +36,7 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
   - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be builtin commands:\
     _Type `:(+ 1 2)<CR>` as if `:Fnl (+ 1 2)<CR>`!_
 
-## Motivations
+## 🔥 Motivations
 
 - To cut down startuptime, checking Fennel should be skipped at startup if
   possible.
@@ -46,7 +46,7 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
 
 The project started from scratch. _Now in Beta!_
 
-## Requirements
+## ✔️ Requirements
 
 - Neovim v0.10.0+
 - [Fennel][] on your `&runtimepath`, in short, `&rtp`.
@@ -58,7 +58,7 @@ The project started from scratch. _Now in Beta!_
 - (Optional) [parinfer-rust][] on `&rtp`
   (to improve UX on the commands and keymaps)
 
-## Installation
+## 📦 Installation
 
 ### 1. Ensure to Install Plugins (3 steps)
 
@@ -220,7 +220,7 @@ If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
 generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 
-## Interfaces
+## ⚙️ Configuration
 
 This section lists out the interfaces with a summary.
 For the details and additional features, please read the [reference](./docs/REFERENCE.md).
@@ -271,7 +271,7 @@ loaded once a session of nvim. For example,
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
 
-## Migration Guide
+## 🚚 Migration Guide
 
 ### From hotpot.nvim
 
@@ -319,7 +319,7 @@ require([[tangerine]]).setup({})
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
-## Ex Command Comparisons
+## 💥 Ex Command Comparisons
 
 Note: nvim-thyme only provides user commands when you call
 [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
@@ -362,7 +362,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 :NfnlFile (vim.fn.expand "%:p")
 ```
 
-## Disclosure
+## 🕶️ Disclosure
 
 ### Macro Dependency Tracking
 
@@ -405,7 +405,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
   - Use git hooks.
     (See the [.githooks](./.githooks) in this project as a WIP example. Help wanted.)
 
-## Acknowledgement
+## 📚 Acknowledgement
 
 Thanks to [Shougo](https://github.com/Shougo) for
 [dein.vim](https://github.com/Shougo/dein.vim)
@@ -419,7 +419,7 @@ is based in part on copy extracted from the project,
 so the [file](./fnl/thyme/api/parinfer.fnl) on `parinfer` is also
 on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
 
-## Alternatives
+## 🤔 Alternatives
 
 - [aniseed][] provides Clojure-like interfaces. I've never used it.
 - [hotpot.nvim][] loads fennel first. I've been indebted so long. Big thanks.
