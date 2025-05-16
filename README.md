@@ -362,11 +362,6 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ## Disclosure
 
-### Limitations
-
-- `nvim-thyme` only support Lua/Fennel loader like `require`;
-  it does not support Vim commands (e.g., `:source` and `:runtime`) to load your Fennel files.
-
 ### Macro Dependency Tracking
 
 - The _macro dependency tracker_ is based on the nature that
@@ -391,7 +386,12 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 - Unlike [tangerine.nvim][],
   `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
 - Unlike [hotpot.nvim][],
-  `nvim-thyme` will _**not** load `plugin/*.fnl`, `ftplugin/*.fnl`, and so on._
+  `nvim-thyme` will _**not** load_
+  `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on;
+  `nvim-thyme` does _**not** support_ Vim commands
+  (e.g., `:source` and `:runtime`)
+  to load your Fennel files.
+  `nvim-thyme` _**only** supports_ Lua/Fennel loader like `require`.
 - Unlike [nfnl][] and other compiler plugins,
   `nvim-thyme` will _**not** compile Fennel files which is not loaded in nvim
   runtime by default._
