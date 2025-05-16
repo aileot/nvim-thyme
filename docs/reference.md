@@ -269,20 +269,6 @@ but respects your [&runtimepath][].
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlFile [file]`
-
-<!-- panvimdoc-ignore-end -->
-<!-- panvimdoc-include-comment
-:FnlFile ~                                                   *thyme-:FnlFile*
--->
-
-Display the result of applying [fennel.dofile][] to `[file]`,
-but respects your [&runtimepath][].
-
-If no `[file]` is given, it evaluates the current file.
-
-<!-- panvimdoc-ignore-start -->
-
 #### `:FnlBuf [bufname]`
 
 <!-- panvimdoc-ignore-end -->
@@ -297,6 +283,20 @@ If no `[bufname]` is given, it evaluates the current buffer.
 
 <!-- panvimdoc-ignore-start -->
 
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlFile [file]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlFile ~                                                   *thyme-:FnlFile*
+-->
+
+Display the result of applying [fennel.dofile][] to `[file]`,
+but respects your [&runtimepath][].
+
+If no `[file]` is given, it evaluates the current file.
+
 #### `:FnlCompileString {fnl-expr}`
 
 <!-- panvimdoc-ignore-end -->
@@ -310,19 +310,6 @@ but only returns the compiled lua results.
 
 <!-- panvimdoc-ignore-start -->
 
-#### `:FnlCompileFile [file]`
-
-<!-- panvimdoc-ignore-end -->
-<!-- panvimdoc-include-comment
-:FnlCompileFile ~                                     *thyme-:FnlCompileFile*
--->
-
-Almost equivalent to [:FnlBuf][];
-however, it does not evaluate the [file] (or current file),
-but only returns the compiled lua results.
-
-<!-- panvimdoc-ignore-start -->
-
 #### `:FnlCompileBuf [bufname]`
 
 <!-- panvimdoc-ignore-end -->
@@ -332,6 +319,19 @@ but only returns the compiled lua results.
 
 Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [bufname] (or current buffer),
+but only returns the compiled lua results.
+
+<!-- panvimdoc-ignore-start -->
+
+#### `:FnlCompileFile [file]`
+
+<!-- panvimdoc-ignore-end -->
+<!-- panvimdoc-include-comment
+:FnlCompileFile ~                                     *thyme-:FnlCompileFile*
+-->
+
+Almost equivalent to [:FnlBuf][];
+however, it does not evaluate the [file] (or current file),
 but only returns the compiled lua results.
 
 ### Fennel Misc. Commands
