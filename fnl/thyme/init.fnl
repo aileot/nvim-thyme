@@ -19,6 +19,8 @@
                                                         :compile-file)
                    :compile-file! (lazy-require-with-key :thyme.wrapper.fennel
                                                          :compile-file!)
+                   :compile-buf (lazy-require-with-key :thyme.wrapper.fennel
+                                                       :compile-buf)
                    :compile-string (lazy-require-with-key :thyme.wrapper.fennel
                                                           :compile-string)
                    :macrodebug (lazy-require-with-key :thyme.wrapper.fennel

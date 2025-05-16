@@ -23,18 +23,21 @@ local function _7_(...)
   return require("thyme.wrapper.fennel")["compile-file!"](...)
 end
 local function _8_(...)
-  return require("thyme.wrapper.fennel")["compile-string"](...)
+  return require("thyme.wrapper.fennel")["compile-buf"](...)
 end
 local function _9_(...)
-  return require("thyme.wrapper.fennel").macrodebug(...)
+  return require("thyme.wrapper.fennel")["compile-string"](...)
 end
 local function _10_(...)
-  return require("thyme.user.commands.cache").open(...)
+  return require("thyme.wrapper.fennel").macrodebug(...)
 end
 local function _11_(...)
+  return require("thyme.user.commands.cache").open(...)
+end
+local function _12_(...)
   return require("thyme.user.commands.cache").clear(...)
 end
-M = {loader = search_fnl_module_on_rtp_21, fennel = {view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-string"] = _8_, macrodebug = _9_}, cache = {open = _10_, clear = _11_}}
+M = {loader = search_fnl_module_on_rtp_21, fennel = {view = _2_, eval = _3_, compile_file = _4_, ["compile-file"] = _6_, ["compile-file!"] = _7_, ["compile-buf"] = _8_, ["compile-string"] = _9_, macrodebug = _10_}, cache = {open = _11_, clear = _12_}}
 M.setup = function(_3fopts)
   assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
   local self = setmetatable({}, M)
@@ -59,8 +62,8 @@ local function propagate_underscored_keys_21(tbl, key)
     end
   else
   end
-  local _14_ = type(val)
-  if (_14_ == "table") then
+  local _15_ = type(val)
+  if (_15_ == "table") then
     for k in pairs(val) do
       propagate_underscored_keys_21(val, k)
     end
