@@ -62,6 +62,7 @@ M["enable-dropin-paren!"] = function(opts)
   do
     local _9_ = opts["cmdline-key"]
     if (_9_ == false) then
+    elseif (_9_ == "") then
     elseif (nil ~= _9_) then
       local key = _9_
       vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
@@ -70,6 +71,8 @@ M["enable-dropin-paren!"] = function(opts)
   end
   local _11_ = opts["cmdline-completion-key"]
   if (_11_ == false) then
+    return nil
+  elseif (_11_ == "") then
     return nil
   elseif (nil ~= _11_) then
     local key = _11_
