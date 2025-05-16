@@ -41,7 +41,7 @@
   (command! :ThymeConfigOpen
     {:desc (.. "[thyme] open the main config file " config-filename)}
     (fn []
-      (vim.cmd (.. "tab drop " config-path))))
+      (vim.cmd (.. "edit " config-path))))
   (command! :ThymeUninstall
     {:desc "[thyme] delete all the thyme's cache, state, and data files"}
     (fn []

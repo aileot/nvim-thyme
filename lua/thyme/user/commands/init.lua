@@ -17,7 +17,7 @@ local function assert_is_file_of_thyme(path)
 end
 local function define_commands_21(_3fopts)
   local function _3_()
-    return vim.cmd(("tab drop " .. config_path))
+    return vim.cmd(("edit " .. config_path))
   end
   vim.api.nvim_create_user_command("ThymeConfigOpen", _3_, {desc = ("[thyme] open the main config file " .. config_filename)})
   local function _4_()
