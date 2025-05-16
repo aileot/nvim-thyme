@@ -200,7 +200,7 @@ vim.api.nvim_create_autocmd("User", {
 
 ### 3. Setup Optional Interfaces
 
-To optimize the nvim startuptime, nvim-thyme suggests to define the Ex command
+To optimize the nvim startuptime, `nvim-thyme` suggests to define the Ex command
 interfaces and its fnl file state checker some time
 after `VimEnter` or `UIEnter`.
 When to enable them is up to you. The following snippets are examples:
@@ -351,7 +351,7 @@ for performance as described in [Commands](#commands) section above.
 
 ### Evaluate expression and print the result
 
-With [parinfer-rust][] and [nvim-thyme][]'s [paren-cmd-map][] option enabled,
+With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
@@ -408,13 +408,13 @@ With [parinfer-rust][] and [nvim-thyme][]'s [paren-cmd-map][] option enabled,
 Thanks to [Shougo](https://github.com/Shougo) for
 [dein.vim](https://github.com/Shougo/dein.vim)
 the legendary.
-The design heavily inspires nvim-thyme.
+The design heavily inspires `nvim-thyme`.
 
 Thanks to [nix][] for rollback system inspirations using symbolic links.
 
 Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
-The integration of nvim-thyme with [parinfer][]
+The integration of `nvim-thyme` with [parinfer][]
 is based in part on copy extracted from the project,
 so the [file](./fnl/thyme/api/parinfer.fnl) on parinfer is also
 on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
@@ -441,4 +441,3 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
 [paren-cmd-map]: ./docs/reference#paren-cmd-map
-[nvim-thyme]: https://github.com/aileot/nvim-thyme
