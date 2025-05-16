@@ -42,7 +42,7 @@ path of `(vim.fn.stdpath :config)`.
 
 ### max-rollbacks
 
-(default: `10`)
+(default: `5`)
 
 Keep the number of backups for rollback at most. Set `0` to disable it.
 
