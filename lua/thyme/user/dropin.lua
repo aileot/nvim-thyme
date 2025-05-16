@@ -58,7 +58,7 @@ M.complete = function(pattern, replacement)
   return nil
 end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:71")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:72")
   do
     local _9_ = opts["cmdline-key"]
     if (_9_ == false) then

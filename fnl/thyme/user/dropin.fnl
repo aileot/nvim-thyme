@@ -6,6 +6,7 @@
   "Extract the invalid command from cmdline from E492 message."
   ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
   ;; "Parsing command-line: E492: Not an editor command: (foobar)"
+  ;; TODO: Parse "nextcmd" recursively.
   (case (pcall vim.api.nvim_parse_cmd cmdline {})
     true cmdline
     (false msg)
