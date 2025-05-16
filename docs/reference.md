@@ -4,7 +4,7 @@ TODO
 
 <!-- panvimdoc-ignore-start -->
 
-## Options for `.nvim-thyme.fnl`
+## Options in `.nvim-thyme.fnl`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
