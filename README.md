@@ -225,7 +225,7 @@ See the [Configuration](#configuration) section below.
 
 ## 🎉 Interfaces
 
-Please read the [reference](./docs/REFERENCE.md) for the details and additional features.
+Please read the [reference][] for the details and additional features.
 But here is a rough list:
 
 <!--
@@ -464,6 +464,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[reference]: ./docs/reference.md
 [call stack]: https://en.wikipedia.org/wiki/Call_stack
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
