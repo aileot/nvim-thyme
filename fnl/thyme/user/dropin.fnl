@@ -2,6 +2,13 @@
 
 (local M {})
 
+(fn get-cmdtype []
+  "A wrapper to tell the current command type."
+  ;; TODO: Does it support cmdbuf-like plugins?
+  (if (= "command" (vim.fn.win_gettype))
+      (vim.fn.getcmdwintype)
+      (vim.fn.getcmdtype)))
+
 (fn extract-?invalid-cmd [cmdline]
   "Extract the invalid command from cmdline from E492 message."
   ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
@@ -31,7 +38,7 @@ detected with E492. The fallback command will pretend that the substrings
 matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param pattern string Lua patterns to be support dropin fallback.
 @param replacement string The dropin command"
-  (let [cmdtype (vim.fn.getcmdtype)
+  (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)]
     (if (= ":" cmdtype)
         (case (extract-?invalid-cmd old-cmdline)
@@ -56,7 +63,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param pattern string string Lua patterns to be support dropin fallback.
 @param replacement string The dropin command
 @param completion-type string The completion type"
-  (let [cmdtype (vim.fn.getcmdtype)
+  (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)]
     (if (= ":" cmdtype)
         ;; NOTE: Do NOT use .reserve instead. It also overrides history.

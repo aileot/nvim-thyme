@@ -1,10 +1,17 @@
 local M = {}
+local function get_cmdtype()
+  if ("command" == vim.fn.win_gettype()) then
+    return vim.fn.getcmdwintype()
+  else
+    return vim.fn.getcmdtype()
+  end
+end
 local function extract__3finvalid_cmd(cmdline)
-  local _1_, _2_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
-  if (_1_ == true) then
+  local _2_, _3_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
+  if (_2_ == true) then
     return cmdline
-  elseif ((_1_ == false) and (nil ~= _2_)) then
-    local msg = _2_
+  elseif ((_2_ == false) and (nil ~= _3_)) then
+    local msg = _3_
     local expected_error_msg_prefix = "Parsing command%-line: E492: Not an editor command: (.*)"
     return msg:match(expected_error_msg_prefix)
   else
@@ -18,20 +25,20 @@ local function replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replac
   return new_cmdline
 end
 M.reserve = function(pattern, replacement)
-  local cmdtype = vim.fn.getcmdtype()
+  local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
   if (":" == cmdtype) then
-    local _4_ = extract__3finvalid_cmd(old_cmdline)
-    if (nil ~= _4_) then
-      local invalid_cmd = _4_
+    local _5_ = extract__3finvalid_cmd(old_cmdline)
+    if (nil ~= _5_) then
+      local invalid_cmd = _5_
       local new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replacement)
-      local function _5_()
+      local function _6_()
         return assert((1 == vim.fn.histadd(cmdtype, old_cmdline)), ("failed to add old command " .. old_cmdline))
       end
-      vim.schedule(_5_)
+      vim.schedule(_6_)
       return new_cmdline
     else
-      local _ = _4_
+      local _ = _5_
       return old_cmdline
     end
   else
@@ -39,22 +46,22 @@ M.reserve = function(pattern, replacement)
   end
 end
 M.complete = function(pattern, replacement)
-  local cmdtype = vim.fn.getcmdtype()
+  local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
   if (":" == cmdtype) then
-    local _8_ = extract__3finvalid_cmd(old_cmdline)
-    if (nil ~= _8_) then
-      local invalid_cmd = _8_
+    local _9_ = extract__3finvalid_cmd(old_cmdline)
+    if (nil ~= _9_) then
+      local invalid_cmd = _9_
       local new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replacement)
       local last_wcm = vim.o.wildcharm
       local tmp_wcm = "\26"
       local right_keys
       do
-        local _9_ = new_cmdline:find(old_cmdline, 1, true)
-        if (_9_ == nil) then
+        local _10_ = new_cmdline:find(old_cmdline, 1, true)
+        if (_10_ == nil) then
           right_keys = ""
-        elseif (nil ~= _9_) then
-          local shift = _9_
+        elseif (nil ~= _10_) then
+          local shift = _10_
           right_keys = string.rep("<Right>", (shift - 1))
         else
           right_keys = nil
@@ -66,7 +73,7 @@ M.complete = function(pattern, replacement)
       vim.o.wcm = last_wcm
       return nil
     else
-      local _ = _8_
+      local _ = _9_
       return old_cmdline
     end
   else
@@ -74,27 +81,27 @@ M.complete = function(pattern, replacement)
   end
 end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:86")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:93")
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
   do
-    local _13_ = opts["cmdline-key"]
-    if (_13_ == false) then
-    elseif (_13_ == "") then
-    elseif (nil ~= _13_) then
-      local key = _13_
+    local _14_ = opts["cmdline-key"]
+    if (_14_ == false) then
+    elseif (_14_ == "") then
+    elseif (nil ~= _14_) then
+      local key = _14_
       vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
       vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
     else
     end
   end
-  local _15_ = opts["cmdline-completion-key"]
-  if (_15_ == false) then
+  local _16_ = opts["cmdline-completion-key"]
+  if (_16_ == false) then
     return nil
-  elseif (_15_ == "") then
+  elseif (_16_ == "") then
     return nil
-  elseif (nil ~= _15_) then
-    local key = _15_
+  elseif (nil ~= _16_) then
+    local key = _16_
     vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').complete('^[%[%(%{].*','Fnl %0')<CR>", {noremap = true})
     return vim.api.nvim_set_keymap("c", key, plug_map_complete, {noremap = true})
   else
