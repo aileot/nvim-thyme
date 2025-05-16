@@ -432,6 +432,8 @@ Unmount the mounted backups for the `{target}`.
 
 #### `:ThymeRollbackUnmountAll`
 
+Unmount the mounted backups.
+
 [.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
