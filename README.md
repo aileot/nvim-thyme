@@ -46,32 +46,6 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
 
 The project started from scratch. _Now in Beta!_
 
-## Disclosure
-
-### Limitations
-
-- `nvim-thyme` only support Lua/Fennel loader like `require`;
-  it does not support Vim commands (e.g., `:source` and `:runtime`) to load your Fennel files.
-
-### Macro Dependency Tracking
-
-- The _macro dependency tracker_ is based on the nature that
-  the [call stack][] of a module represents the dependencies of the module as is.
-  No `fennel.plugins` dependency!
-
-### Misleading...?
-
-- As you may have noticed, the term of _Zero overhead_ only means it does not
-  affect startup time once compiled.
-- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
-  misleading due to the convention.\
-  The _JIT_ in this project is more like JIT in
-  [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
-  than in
-  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
-  it compiles missing modules, and optionally recompiles them on
-  `BufWritePost` and `FileChangedShellPost`.
-
 ## Requirements
 
 - Neovim v0.10.0+
@@ -386,7 +360,33 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 :NfnlFile (vim.fn.expand "%:p")
 ```
 
-## Not in Plan
+## Disclosure
+
+### Limitations
+
+- `nvim-thyme` only support Lua/Fennel loader like `require`;
+  it does not support Vim commands (e.g., `:source` and `:runtime`) to load your Fennel files.
+
+### Macro Dependency Tracking
+
+- The _macro dependency tracker_ is based on the nature that
+  the [call stack][] of a module represents the dependencies of the module as is.
+  No `fennel.plugins` dependency!
+
+### Misleading...?
+
+- As you may have noticed, the term of _Zero overhead_ only means it does not
+  affect startup time once compiled.
+- As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
+  misleading due to the convention.\
+  The _JIT_ in this project is more like JIT in
+  [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
+  than in
+  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
+  it compiles missing modules, and optionally recompiles them on
+  `BufWritePost` and `FileChangedShellPost`.
+
+### Not in Plan
 
 - Unlike [tangerine.nvim][],
   `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
