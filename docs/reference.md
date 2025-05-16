@@ -304,7 +304,7 @@ If no `[bufname]` is given, it evaluates the current buffer.
 :FnlCompileString ~                                 *thyme-:FnlCompileString*
 -->
 
-Almost equivalent to [:Fnl][],
+Almost equivalent to [:Fnl][];
 however, it does not evaluate the {fnl-expr},
 but only returns the compiled lua results.
 
@@ -317,7 +317,7 @@ but only returns the compiled lua results.
 :FnlCompileFile ~                                     *thyme-:FnlCompileFile*
 -->
 
-Almost equivalent to [:FnlBuf][],
+Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [file] (or current file),
 but only returns the compiled lua results.
 
@@ -330,7 +330,7 @@ but only returns the compiled lua results.
 :FnlCompileBuf ~                                       *thyme-:FnlCompileBuf*
 -->
 
-Almost equivalent to [:FnlBuf][],
+Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [bufname] (or current buffer),
 but only returns the compiled lua results.
 
