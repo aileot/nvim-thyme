@@ -137,6 +137,10 @@ With [nvim-laurel][],
 
 ### Functions at `thyme.fennel`
 
+<!--
+TODO: Describe every `thyme.fennel.<foobar>` functions?
+-->
+
 Provides a set of Fennel wrapper functions
 corresponding to [Fennel Wrapper Commands][].
 
