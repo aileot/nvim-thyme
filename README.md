@@ -221,6 +221,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
 generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
+See the [Configuration](#configuration) section below.
 
 ## ⚙️ Configuration
 
