@@ -30,7 +30,7 @@ See the official Fennel API documentation: <https://fennel-lang.org/api>
 
 ### macro-path
 
-(default: `"./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
+(default: `"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
 
 The path patterns for `fennel.macro-path` to find Fennel macro module path.
 
