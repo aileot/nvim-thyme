@@ -410,8 +410,6 @@ Thanks to [Shougo](https://github.com/Shougo) for
 the legendary.
 The design heavily inspires `nvim-thyme`.
 
-Thanks to [nix][] for rollback system inspirations using symbolic links.
-
 Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
 The integration of `nvim-thyme` with [parinfer][]
