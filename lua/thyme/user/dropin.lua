@@ -30,8 +30,18 @@ M.reserve = function(pattern, replacement)
     return old_cmdline
   end
 end
+M.complete = function(pattern, replacement)
+  local new_cmdline = M.reserve(pattern, replacement)
+  local last_wcm = vim.o.wildcharm
+  local tmp_wcm = "\26"
+  local keys = (vim.keycode(("<C-BSlash>e%q<CR>"):format(new_cmdline)) .. tmp_wcm)
+  vim.o.wcm = vim.fn.str2nr(tmp_wcm)
+  vim.api.nvim_feedkeys(keys, "ni", false)
+  vim.o.wcm = last_wcm
+  return nil
+end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:34")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:52")
   for _, key in ipairs(opts["cmdline-maps"]) do
     vim.api.nvim_set_keymap("c", key, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('[%[%(%{]].*','Fnl %0')<CR><CR>", {noremap = true})
   end

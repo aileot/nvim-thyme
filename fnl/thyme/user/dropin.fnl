@@ -31,6 +31,24 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
                     new-cmdline)
       _ old-cmdline)))
 
+(fn M.complete [pattern replacement]
+  "Complete cmdline pretending `replacement` to replace invalid cmdline when
+`pattern` is detected with E492.
+@param pattern string string Lua patterns to be support dropin fallback.
+@param replacement string The dropin command
+@param completion-type string The completion type"
+  (let [new-cmdline (M.reserve pattern replacement)
+        last-wcm vim.o.wildcharm
+        tmp-wcm "\26"
+        keys (-> (.. "<C-BSlash>e%q<CR>")
+                 (: :format new-cmdline)
+                 (vim.keycode)
+                 (.. tmp-wcm))]
+    (set vim.o.wcm (vim.fn.str2nr tmp-wcm))
+    (vim.api.nvim_feedkeys keys "ni" false)
+    ;; TODO: Restore cursor position
+    (set vim.o.wcm last-wcm)))
+
 (λ M.enable-dropin-paren! [opts]
   "Realize dropin-paren feature.
 @param opts.cmap string (default \"<CR>\") The keys to be mapped in Cmdline mode."
