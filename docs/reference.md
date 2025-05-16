@@ -183,6 +183,35 @@ fi
 
 Equivalent to [:ThymeCacheOpen][], but it should work without [thyme.setup].
 
+### Keymaps
+
+<!-- panvimdoc-include-comment
+<Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
+<Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
+<Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
+<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
+<Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
+<Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
+<Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
+<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
+-->
+
+The keymaps are defined with [thyme.setup][].
+
+The `echo` versions do not mess up cmdline-history as `:echo` does not.
+
+- `<Plug>(thyme-operator-echo-eval)`
+- `<Plug>(thyme-operator-echo-eval-compiler)`
+- `<Plug>(thyme-operator-echo-macrodebug)`
+- `<Plug>(thyme-operator-echo-compile-string)`
+
+The `print` versions leave its results in cmdline-history as `vim.print` does.
+
+- `<Plug>(thyme-operator-print-eval)`
+- `<Plug>(thyme-operator-print-eval-compiler)`
+- `<Plug>(thyme-operator-print-macrodebug)`
+- `<Plug>(thyme-operator-print-compile-string)`
+
 ## Commands
 
 The commands are defined by [thyme.setup][].
@@ -291,35 +320,6 @@ to restore the mount state.
 Unmount the mounted backups for the {target}.
 
 #### `:ThymeRollbackUnmountAll`
-
-### Keymaps
-
-<!-- panvimdoc-include-comment
-<Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
-<Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
-<Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
-<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
-<Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
-<Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
-<Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
-<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
--->
-
-The keymaps are defined with [thyme.setup][].
-
-The `echo` versions do not mess up cmdline-history as `:echo` does not.
-
-- `<Plug>(thyme-operator-echo-eval)`
-- `<Plug>(thyme-operator-echo-eval-compiler)`
-- `<Plug>(thyme-operator-echo-macrodebug)`
-- `<Plug>(thyme-operator-echo-compile-string)`
-
-The `print` versions leave its results in cmdline-history as `vim.print` does.
-
-- `<Plug>(thyme-operator-print-eval)`
-- `<Plug>(thyme-operator-print-eval-compiler)`
-- `<Plug>(thyme-operator-print-macrodebug)`
-- `<Plug>(thyme-operator-print-compile-string)`
 
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
