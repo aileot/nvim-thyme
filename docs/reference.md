@@ -279,19 +279,32 @@ but respects your [&runtimepath][].
 Display the result of applying [fennel.dofile][] to `[file]`,
 but respects your [&runtimepath][].
 
+If no `[file]` is given, it evaluates the current file.
+
 #### `:FnlBuf [bufname]`
 
-TODO
+Display the result of applying [fennel.dofile][] but to `[bufname]`,
+but respects your [&runtimepath][].
+
+If no `[bufname]` is given, it evaluates the current buffer.
 
 #### `:FnlCompileString {fnl-expr}`
 
-TODO
-
-#### `:FnlCompileBuf [bufname]`
+Almost equivalent to [:Fnl][],
+however, it does not evaluate the {fnl-expr},
+but only returns the compiled lua results.
 
 #### `:FnlCompileFile [file]`
 
-TODO
+Almost equivalent to [:FnlBuf][],
+however, it does not evaluate the [file] (or current file),
+but only returns the compiled lua results.
+
+#### `:FnlCompileBuf [bufname]`
+
+Almost equivalent to [:FnlBuf][],
+however, it does not evaluate the [bufname] (or current buffer),
+but only returns the compiled lua results.
 
 ### Fennel Misc. Commands
 
