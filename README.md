@@ -231,12 +231,14 @@ As described in the [Installation](#installation), all the settings of
 `nvim-thyme` is set up with a config file `.nvim-thyme.fnl`;
 no conventional `setup` function is provided by `nvim-thyme`.
 
-Note: You don't have to prepare it by yourself!
-If missing the config file, you will be asked to generate it with recommended
-settings.
+You don't have to prepare it by yourself!
+If missing the config file on nvim startup,
+you will be asked to generate it with recommended settings:
+See [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
 
 ```fennel
-{:rollback true
+;; WARN: See .nvim-thyme.fnl.example instead. This snippet might be outdated.
+{:max-rollback 5
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
                     :error-pinpoint ["|>>" "<<|"]}
