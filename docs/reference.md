@@ -338,7 +338,16 @@ but only returns the compiled lua results.
 
 #### `:FnlAlternate`
 
-TODO
+Try to open the alternate file of current buffer:
+
+- For a Fennel file, find the corresponding Lua file.
+- For a Lua file, find the corresponding Fennel file.
+
+This command will search in the following order:
+
+1. The thyme's Lua caches
+2. The directory of the target file
+3. The corresponding `/fnl/` or `/lua/` directory
 
 ### Thyme General Commands
 
