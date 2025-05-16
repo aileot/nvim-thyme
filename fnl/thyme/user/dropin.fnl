@@ -1,41 +1,35 @@
 (local M {})
 
+(fn extract-?invalid-cmd [cmdline]
+  "Extract the invalid command from cmdline from E492 message."
+  ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
+  ;; "Parsing command-line: E492: Not an editor command: (foobar)"
+  (case (pcall vim.api.nvim_parse_cmd cmdline {})
+    true cmdline
+    (false msg)
+    (let [expected-error-msg-prefix "Parsing command%-line: E492: Not an editor command: (.*)"]
+      (msg:match expected-error-msg-prefix))))
+
 (fn M.reserve [pattern replacement]
   "Reserve `replacement` to replace invalid cmdline when `pattern` is
 detected with E492. The fallback command will pretend that the substrings
 matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param pattern string Lua patterns to be support dropin fallback.
 @param replacement string The dropin command"
-  (let [cmdtype (vim.fn.getcmdtype)
-        old-cmdline (vim.fn.getcmdline)]
-    ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
-    ;; "Parsing command-line: E492: Not an editor command: (foobar)"
-    (case (pcall vim.api.nvim_parse_cmd old-cmdline {})
-      true old-cmdline
-      (false msg)
-      (let [expected-error-msg-prefix "Parsing command%-line: E492: Not an editor command: (.*)"]
-        (case (msg:match expected-error-msg-prefix)
-          invalid-cmd (let [prefix (old-cmdline:sub 1
-                                                    (- -1 (length invalid-cmd)))
-                            fallback-cmd (invalid-cmd:gsub pattern replacement)
-                            new-cmdline (.. prefix fallback-cmd)]
-                        ;; Add the original command to history to match with
-                        ;; `<Up>` in cmdline.
-                        ;; NOTE: vim.schedule is required to modify the cmdline
-                        ;; history when the attempt runs in cmdline.
-                        (-> #(assert (= 1 (vim.fn.histadd cmdtype old-cmdline))
-                                     (.. "failed to add old command "
-                                         old-cmdline))
-                            (vim.schedule))
-                        new-cmdline)
-          _ old-cmdline)))))
-
-(fn M.complete [pattern replacement completion-type]
-  "Complete cmdline pretending `replacement` to replace invalid cmdline when
-`pattern` is detected with E492.
-@param pattern string string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command
-@param completion-type string The completion type")
+  (let [old-cmdline (vim.fn.getcmdline)]
+    (case (extract-?invalid-cmd old-cmdline)
+      invalid-cmd (let [cmdtype (vim.fn.getcmdtype)
+                        prefix (old-cmdline:sub 1 (- -1 (length invalid-cmd)))
+                        fallback-cmd (invalid-cmd:gsub pattern replacement)
+                        new-cmdline (.. prefix fallback-cmd)]
+                    ;; `<Up>` in cmdline.
+                    ;; NOTE: vim.schedule is required to modify the cmdline
+                    ;; history when the attempt runs in cmdline.
+                    (-> #(assert (= 1 (vim.fn.histadd cmdtype old-cmdline))
+                                 (.. "failed to add old command " old-cmdline))
+                        (vim.schedule))
+                    new-cmdline)
+      _ old-cmdline)))
 
 (λ M.enable-dropin-paren! [opts]
   "Realize dropin-paren feature.
