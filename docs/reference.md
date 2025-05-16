@@ -1,6 +1,43 @@
 # Reference
 
-TODO
+<!--toc:start-->
+
+- [Reference](#reference)
+  - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
+    - [compiler-options](#compiler-options)
+    - [macro-path](#macro-path)
+    - [max-rollbacks](#max-rollbacks)
+  - [Functions](#functions)
+    - [`thyme.loader`](#thymeloader)
+    - [`thyme.setup` or `thyme:setup`](#thymesetup-or-thymesetup)
+    - [Functions at `thyme.fennel`](#functions-at-thymefennel)
+    - [Functions `pcall`-able](#functions-pcall-able)
+      - [`thyme.call.cache.clear`](#thymecallcacheclear)
+      - [`thyme.call.cache.open`](#thymecallcacheopen)
+    - [Keymaps](#keymaps)
+  - [Commands](#commands)
+    - [Fennel Wrapper Commands](#fennel-wrapper-commands)
+      - [`:FnlEval` (alias `:Fnl`)](#fnleval-alias-fnl)
+      - [`:FnlEvalFile {file}`](#fnlevalfile-file)
+      - [`:FnlEvalBuffer`](#fnlevalbuffer)
+      - [`:FnlCompileString`](#fnlcompilestring)
+      - [`:FnlCompileBuffer`](#fnlcompilebuffer)
+    - [Fennel Misc. Commands](#fennel-misc-commands)
+      - [`:FnlAlternate`](#fnlalternate)
+    - [Thyme General Commands](#thyme-general-commands)
+      - [`:ThymeUninstall`](#thymeuninstall)
+    - [Thyme Config Commands](#thyme-config-commands)
+      - [`:ThymeConfigOpen`](#thymeconfigopen)
+    - [Thyme Cache Commands](#thyme-cache-commands)
+      - [`:ThymeCacheClear`](#thymecacheclear)
+      - [`:ThymeCacheOpen`](#thymecacheopen)
+    - [Thyme Rollback Commands](#thyme-rollback-commands)
+      - [`:ThymeRollbackSwitch {target}`](#thymerollbackswitch-target)
+      - [`:ThymeRollbackMount {target}`](#thymerollbackmount-target)
+      - [`:ThymeRollbackUnmount {target}`](#thymerollbackunmount-target)
+      - [`:ThymeRollbackUnmountAll`](#thymerollbackunmountall)
+
+<!--toc:end-->
 
 <!-- panvimdoc-ignore-start -->
 
