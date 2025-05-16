@@ -384,20 +384,20 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 ### Not in Plan
 
 - Unlike [tangerine.nvim][],
-  `nvim-thyme` will _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
+  `nvim-thyme` does _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
 - Unlike [hotpot.nvim][],
-  `nvim-thyme` will _**not** load_
+  `nvim-thyme` does _**not** load_
   `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on;
   `nvim-thyme` does _**not** support_ Vim commands
   (e.g., `:source` and `:runtime`)
   to load your Fennel files.
   `nvim-thyme` _**only** supports_ Lua/Fennel loader like `require`.
-- Unlike [nfnl][] and other compiler plugins,
-  `nvim-thyme` will _**not** compile Fennel files which is not loaded in nvim
-  runtime by default._
+- Unlike [nfnl][],
+  `nvim-thyme` does _**not** compile_ Fennel files which is not loaded in nvim
+  runtime by default.
   If you still need to compile Fennel files in a project apart from nvim
   runtime, you have several options:
-  - Define some `autocmd`s in your config or in .nvim.fnl.
+  - Define some `autocmd`s in your config or in .nvim.lua.
   - Use another compiler plugin _together_ like [nfnl][].
   - Use a task runner like [overseer.nvim][].
   - Use git hooks.
