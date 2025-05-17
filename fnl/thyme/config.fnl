@@ -61,7 +61,14 @@
         (when (= config-path (vim.api.nvim_buf_get_name 0))
           (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
                                 "&Yes\n&no" 1 :Question)
-            2 (vim.secure.trust {:action "allow" :path config-path})
+            2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
+                (assert (= config-path buf-name)
+                        (-> "expected %s, got %s"
+                            (: :format config-path buf-name)))
+                ;; NOTE: vim.secure.trust specifing path in its arg cannot
+                ;; set "allow" to the "action" value.
+                ;; NOTE: `:trust` to "allow" cannot take any path as the arg.
+                (vim.cmd :trust))
             _ (do
                 (vim.secure.trust {:action "remove" :path config-path})
                 (case (vim.fn.confirm (-> "Aborted trusting %s. Exit?"
