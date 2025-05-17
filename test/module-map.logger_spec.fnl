@@ -1,5 +1,4 @@
-(import-macros {: setup* : after-each : describe* : it*}
-               :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
@@ -10,9 +9,9 @@
                            (vim.fs.joinpath :fnl)))
 
 (describe* "module-map.logger"
-  (setup* (fn []
-            (thyme.setup)))
-  (after-each (fn []
+  (setup (fn []
+           (thyme.setup)))
+  (after_each (fn []
                 (vim.cmd "ThymeUninstall")
                 (vim.cmd "% bdelete")))
   (describe* "fnl-path->lua-path"
