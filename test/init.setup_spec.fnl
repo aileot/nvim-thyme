@@ -28,6 +28,10 @@
                    (let [commands (vim.api.nvim_get_commands {:builtin false})]
                      (each [name _map (pairs commands)]
                        (vim.api.nvim_del_user_command name)))))
+    (after_each (fn []
+                  ;; Since the other specs depends on `thyme.setup`
+                  ;; only on `setup`, restore the state.
+                  (thyme.setup)))
     (describe* "dedicated to thyme"
       (it* "e.g., :ThymeCacheClear"
         (thyme.setup)
