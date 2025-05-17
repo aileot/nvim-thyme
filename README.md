@@ -273,7 +273,7 @@ no conventional `setup` function is provided by `nvim-thyme`.
 You don't have to prepare it by yourself!
 If missing the config file on nvim startup,
 you will be asked to generate it with recommended settings:
-See [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
+See [.nvim-thyme.fnl.example][].
 
 ```fennel
 ;; WARN: See .nvim-thyme.fnl.example instead. This snippet might be outdated.
@@ -471,6 +471,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
