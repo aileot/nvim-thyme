@@ -110,8 +110,6 @@ do -- A workaround to generate .nvim-thyme.fnl with recommended config.
     local idx_yes = 2
     return idx_yes
   end
-  local config = require("thyme.config")
-  -- Otherwise, it indicates "lua" with the recommended config.
-  config["fnl-dir"] = "fnl"
+  require("thyme.config")
   vim.fn.confirm = raw_confirm
 end
