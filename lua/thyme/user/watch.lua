@@ -2,21 +2,23 @@ local fennel = require("fennel")
 local _local_1_ = require("thyme.const")
 local config_path = _local_1_["config-path"]
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
+local _local_2_ = require("thyme.utils.trust")
+local allowed_3f = _local_2_["allowed?"]
 local Messenger = require("thyme.utils.messenger")
 local WatchMessenger = Messenger.new("watch")
-local _local_2_ = require("thyme.compiler.cache")
-local clear_cache_21 = _local_2_["clear-cache!"]
-local _local_3_ = require("thyme.user.check")
-local check_to_update_21 = _local_3_["check-to-update!"]
+local _local_3_ = require("thyme.compiler.cache")
+local clear_cache_21 = _local_3_["clear-cache!"]
+local _local_4_ = require("thyme.user.check")
+local check_to_update_21 = _local_4_["check-to-update!"]
 local Config = require("thyme.config")
 local _3fgroup = nil
 local function watch_files_21(_3fopts)
   local group
-  local or_4_ = _3fgroup
-  if not or_4_ then
-    or_4_ = vim.api.nvim_create_augroup("ThymeWatch", {})
+  local or_5_ = _3fgroup
+  if not or_5_ then
+    or_5_ = vim.api.nvim_create_augroup("ThymeWatch", {})
   end
-  group = or_4_
+  group = or_5_
   local opts
   if _3fopts then
     opts = vim.tbl_deep_extend("force", Config.watch, _3fopts)
@@ -24,30 +26,35 @@ local function watch_files_21(_3fopts)
     opts = Config.watch
   end
   local callback
-  local function _7_(_6_)
-    local fnl_path = _6_["match"]
+  local function _8_(_7_)
+    local fnl_path = _7_["match"]
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
+      if allowed_3f(config_path) then
+        WatchMessenger["notify-once!"](WatchMessenger, "Trust the config file.")
+        vim.cmd("trust")
+      else
+      end
       if clear_cache_21() then
         local msg = ("clear all the cache under " .. lua_cache_prefix)
         WatchMessenger["notify!"](WatchMessenger, msg)
       else
       end
     else
-      local _9_, _10_ = nil, nil
-      local function _11_()
+      local _11_, _12_ = nil, nil
+      local function _13_()
         return check_to_update_21(resolved_path, opts)
       end
-      _9_, _10_ = xpcall(_11_, fennel.traceback)
-      if ((_9_ == false) and (nil ~= _10_)) then
-        local msg = _10_
+      _11_, _12_ = xpcall(_13_, fennel.traceback)
+      if ((_11_ == false) and (nil ~= _12_)) then
+        local msg = _12_
         WatchMessenger["notify-once!"](WatchMessenger, msg, vim.log.levels.ERROR)
       else
       end
     end
     return nil
   end
-  callback = _7_
+  callback = _8_
   _3fgroup = group
   return vim.api.nvim_create_autocmd(opts.event, {group = group, pattern = opts.pattern, callback = callback})
 end
