@@ -8,6 +8,10 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
+;; NOTE: Please keep this security check simple.
+(local nvim-appname vim.env.NVIM_APPNAME)
+(local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
+
 (local default-opts ;
        {:max-rollbacks 5
         ;; TODO: Inplement :preproc and set the default value to `#$`.
@@ -70,6 +74,8 @@
 ;; HACK: Make sure to use `require` to modules which depend on config in
 ;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
 
+(local {: denied?} (require :thyme.utils.trust))
+
 (local RollbackManager (require :thyme.rollback.manager))
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
@@ -98,7 +104,15 @@ the active backup, if available.
                                          (backup-handler:determine-active-backup-birthtime)))]
                           (notify-once! msg vim.log.levels.WARN)
                           (read-file mounted-backup-path))
-                        (vim.secure.read config-file-path))
+                        (do
+                          (when (and secure-nvim-env?
+                                     (denied? config-file-path))
+                            (vim.secure.trust {:action "remove"
+                                               :path config-file-path})
+                            (notify-once! (: "Previously the attempt to load %s has been denied.
+However, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."
+                                             :format config-filename)))
+                          (vim.secure.read config-file-path)))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
         _ (set cache.evaluating? true)
