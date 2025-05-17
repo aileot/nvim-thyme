@@ -5,8 +5,6 @@
 (local thyme (require :thyme))
 (local {: remove-context-files!} (include :test.helper.utils))
 
-(local Config (require :thyme.config))
-
 (describe* "setup"
   (after_each (fn []
                 (remove-context-files!)))

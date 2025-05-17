@@ -9,6 +9,8 @@
 (describe* "module searcher"
   (setup (fn []
            (thyme.setup)))
+  (after_each (fn []
+                (remove-context-files!)))
   (describe* "can load the module `fennel`;"
     (it* "thus, searcher returns a chunk function."
       (assert.equals :function (type (search-fnl-module-on-rtp! :fennel)))))
@@ -29,7 +31,6 @@
                          (fn []
                            (let [idx-yes 2]
                              idx-yes)))
-                    (remove-context-files!)
                     (set vim.fn.confirm raw-confirm))))
     (describe* "should find a fennel file in fnl/ dir on vim.o.rtp;"
       (it* "thus, searcher returns a chunk function."

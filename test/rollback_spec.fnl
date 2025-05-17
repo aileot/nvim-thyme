@@ -1,4 +1,4 @@
-(import-macros {: before-each : describe* : it*} :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
@@ -14,8 +14,10 @@
   (vim.fn.delete (TestRollbackManager.get-root) :rf))
 
 (describe* "rollback"
-  (before-each (fn []
+  (before_each (fn []
                  (clear-backup-files!)))
+  (after_each (fn []
+                (remove-context-files!)))
   (it* ".new creates a backup directory."
     (let [kind "foo"]
       (TestRollbackManager.new kind ".foobar")
