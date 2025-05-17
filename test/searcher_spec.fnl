@@ -23,6 +23,7 @@
                    (vim.cmd.write fnl-path)))
     (after_each (fn []
                   (vim.fn.delete fnl-path)
+                  (vim.cmd "% bdelete")
                   (set package.loaded.foo nil)
                   (let [raw-confirm vim.fn.confirm]
                     (set vim.fn.confirm
