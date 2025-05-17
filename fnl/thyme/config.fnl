@@ -24,21 +24,7 @@
                          "./fnl/?/init-macros.fnl"
                          "./fnl/?/init.fnl"]
                         (table.concat ";"))
-        :notifier (let [noisy-notifier (case (or (pcall require :fidget)
-                                                 (pcall require :noice)
-                                                 (pcall require :notify))
-                                         (true mod) mod.notify
-                                         _ vim.notify)]
-                    (fn [msg ...]
-                      ;; Extract scope
-                      (case (msg:match "^thyme%((.-)%): ")
-                        "watch/recompiler"
-                        (noisy-notifier msg ...)
-                        ;; You can suppress messages of specific scopes.
-                        ;; scope (if (vim.startswith scope "mounted-rollback") nil
-                        ;;           (vim.notify msg ...))
-                        _
-                        (vim.notify msg ...))))
+        :notifier vim.notify
         :command {:compiler-options nil
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :watch {:event [:BufWritePost :FileChangedShellPost]

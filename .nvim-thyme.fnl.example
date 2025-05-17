@@ -29,7 +29,21 @@
                     (when use-lua-dir? (.. std-config "/lua/?.fnl"))
                     (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                    (table.concat ";"))
-   :notifier vim.notify
+   :notifier (let [noisy-notifier (case (or (pcall require :fidget)
+                                            (pcall require :noice)
+                                            (pcall require :notify))
+                                    (true mod) mod.notify
+                                    _ vim.notify)]
+               (fn [msg ...]
+                 ;; Extract scope
+                 (case (msg:match "^thyme%((.-)%): ")
+                   "watch/recompiler"
+                   (noisy-notifier msg ...)
+                   ;; You can suppress messages of specific scopes.
+                   ;; scope (if (vim.startswith scope "mounted-rollback") nil
+                   ;;           (vim.notify msg ...))
+                   _
+                   (vim.notify msg ...))))
    :command {;; Keep set it to nil to inherit from the root option.
              :compiler-options nil
              :cmd-history {;; With parinfer integration and the options below,
