@@ -101,7 +101,12 @@
                      (let [text (if (= lang :lua) ?text ;
                                     (fennel.view ?text compiler-options))]
                        (tts.print text {: lang}))))
-        (-> #(edit-cmd-history! new-fnl-code cmd-history-opts)
+        (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
+               (true cmdline)
+               ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
+               ;; TODO: More accurate command detection?
+               (when (cmdline.cmd:find "^Fnl")
+                 (edit-cmd-history! new-fnl-code cmd-history-opts)))
             (vim.schedule))))))
 
 (fn open-buf! [buf|path {: split : tab &as mods}]
