@@ -66,6 +66,22 @@ argument: `allowedGlobals`, `correlate`, `useMetadata`, and so on.
 
 See the official Fennel API documentation: <https://fennel-lang.org/api>
 
+### fnl-dir
+
+(default:
+If `fnl/` directory exists at `vim.fn.stdpath('config')`, `"fnl"`;
+otherwise, `"lua"`)
+
+The relative path to `vim.fn.stdpath('config')` directory for your Fennel module files.\
+It only supports `<fnl-dir>/?.fnl` and `<fnl-dir>/?/init.fnl`
+relative to `vim.fn.stdpath('config')`.
+
+> [!NOTE]
+> 3rd-party plugins written in Fennel are supposed to be compiled to `lua/`
+> as general nvim plugins written in Lua.
+
+For the path management of macro files, see [macro-path](#macro-path).
+
 ### macro-path
 
 (default: `"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
