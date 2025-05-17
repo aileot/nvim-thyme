@@ -61,7 +61,7 @@
         (when (= config-path (vim.api.nvim_buf_get_name 0))
           (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
                                 "&Yes\n&no" 1 :Question)
-            2 (vim.secure.trust {:action "allowed" :path config-path})
+            2 (vim.secure.trust {:action "allow" :path config-path})
             _ (do
                 (vim.secure.trust {:action "remove" :path config-path})
                 (case (vim.fn.confirm (-> "Aborted trusting %s. Exit?"

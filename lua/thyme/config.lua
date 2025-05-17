@@ -29,7 +29,7 @@ if not file_readable_3f(config_path) then
     if (config_path == vim.api.nvim_buf_get_name(0)) then
       local _6_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
       if (_6_ == 2) then
-        vim.secure.trust({action = "allowed", path = config_path})
+        vim.secure.trust({action = "allow", path = config_path})
       else
         local _ = _6_
         vim.secure.trust({action = "remove", path = config_path})
