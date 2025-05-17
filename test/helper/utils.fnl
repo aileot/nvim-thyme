@@ -13,6 +13,9 @@ path to the prepared file.
 @return string"
   (assert (not= "/" (filename:sub 1 1))
           (.. "expected a filename, got fullpath " filename))
+  (assert (= :string (type contents))
+          (-> "expected string, got %s: %s "
+              (: :format (type contents) (vim.inspect contents))))
   (let [path (Path.join (vim.fn.stdpath :config) :fnl filename)]
     (write-fnl-file! path contents)
     path))
@@ -24,6 +27,9 @@ path to the prepared file.
 @return string"
   (assert (not= "/" (filename:sub 1 1))
           (.. "expected a filename, got fullpath " filename))
+  (assert (= :string (type contents))
+          (-> "expected string, got %s: %s "
+              (: :format (type contents) (vim.inspect contents))))
   (let [path (Path.join test-context-root filename)]
     (write-fnl-file! path contents)
     path))
