@@ -31,7 +31,7 @@ local function joinpath(...)
   return result
 end
 
-local pack_dir = joinpath(vim.fn.stdpath("data"), "deps")
+local pack_dir = vim.env.DEPS_DIR
 vim.fn.mkdir(pack_dir, "p")
 
 ---@param spec string|table string in url or {url, build?} the format would follow a simplified spec of lazy.nvim.
