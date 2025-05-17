@@ -12,7 +12,6 @@ VUSTED ?= vusted
 
 # Note: The --correlate flag is likely to cause conflicts.
 FNL_FLAGS ?=
-FNL_EXTRA_FLAGS ?=
 
 REPO_ROOT:=$(abspath $(dir $(lastword $(MAKEFILE_LIST))))
 
@@ -74,7 +73,6 @@ lua/%/:
 lua/%.lua: fnl/%.fnl
 	@$(FENNEL) \
 		$(FNL_FLAGS) \
-		$(FNL_EXTRA_FLAGS) \
 		--add-macro-path "$(REPO_MACRO_PATH)" \
 		--compile $< > $@
 	@echo $< "	->	" $@
@@ -113,7 +111,6 @@ build: $(LUA_RES_DIRS) $(FNL_PCALLABLE_FILES) prune $(LUA_RES) ## Compile lua fi
 %_spec.lua: %_spec.fnl $(LUA_RES) $(TEST_DEPS)
 	@$(FENNEL) \
 		$(FNL_FLAGS) \
-		$(FNL_EXTRA_FLAGS) \
 		--add-macro-path "$(REPO_MACRO_PATH);$(REPO_ROOT)/?.fnl" \
 		--add-fennel-path "$(REPO_ROOT)/?.fnl" \
 		--add-package-path "$(REPO_ROOT)/?.lua" \
