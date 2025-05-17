@@ -54,6 +54,9 @@
   (assert-file-extension log-path :.log))
 
 (fn read-file [path]
+  "Read `path`.
+@param path string
+@return contents string"
   ;; NOTE: According to Fennel style guide, functions on IO should ends with
   ;; bang; in this project, however, affix-bang would be only for destructive
   ;; operation functions, but not for reading file with nothing to be modified
