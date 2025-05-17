@@ -302,6 +302,10 @@ The generated file is a copy of [.nvim-thyme.fnl.example][].
 For all the available options,
 see the [section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
 
+<!--
+
+NOTE: The tricks are incompatible with language servers like fennel-ls.
+
 For performance, you can `bootstrap` _macro_ plugins inside `.nvim-thyme.fnl`
 since, on missing a module written in Fennel, `.nvim-thyme.fnl` is always
 loaded once a session of nvim. For example,
@@ -326,6 +330,8 @@ loaded once a session of nvim. For example,
                     :error-pinpoint ["|>>" "<<|"]}
  :macro-path "./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
+
+-->
 
 ## 🚚 Migration Guide
 
@@ -489,7 +495,6 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
   `plugin/`. Not in compiler sandbox.
 
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
-[rtp]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
 [reference]: ./docs/reference.md
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
