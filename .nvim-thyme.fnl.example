@@ -30,5 +30,4 @@
                          :trailing-parens "omit"}}
  :watch {:event [:BufWritePost :FileChangedShellPost]
          :pattern "*.fnlm?"
-         :notifier vim.notify
-         :strategy "recompile"}}
+         :notifier vim.notify}}
