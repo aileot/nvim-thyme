@@ -29,6 +29,8 @@
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
+                ;; TODO: Add :strategy recommended value to
+                ;; .nvim-thyme.fnl.example.
                 :strategy "recompile"}
         ;; (experimental)
         ;; TODO: Set the default keys once stable a bit.
