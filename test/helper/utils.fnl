@@ -1,23 +1,41 @@
 (local Path (require :thyme.utils.path))
 (local {: write-fnl-file! : write-lua-file!} (require :thyme.utils.fs))
+(local Config (require :thyme.config))
 
 (local context-root vim.env.XDG_DATA_HOME)
 
 (local test-context-root (Path.join context-root "test"))
 
-(fn prepare-config-fnl-file! [filename contents]
-  "Prepare a fnl file under test context .config/ for testing. Return the full
-path to the prepared file.
+(λ prepare-config-fnl-file! [filename contents]
+  "Prepare a fnl file in `Config.fnl-dir` under the test context .config/ for testing.
 @param filename string
 @param contents string
-@return string"
+@return string the full path to the generated file"
   (assert (not= "/" (filename:sub 1 1))
           (.. "expected a filename, got fullpath " filename))
+  (assert (filename:find "%.[a-z]+$")
+          (.. "expected a filename with extension, got " filename))
   (assert (= :string (type contents))
           (-> "expected string, got %s: %s "
               (: :format (type contents) (vim.inspect contents))))
-  (let [path (Path.join (vim.fn.stdpath :config) :fnl filename)]
+  (let [path (Path.join (vim.fn.stdpath :config) Config.fnl-dir filename)]
     (write-fnl-file! path contents)
+    path))
+
+(λ prepare-config-lua-file! [filename contents]
+  "Prepare a lua file in `lua` under the test context .config/ for testing.
+@param filename string
+@param contents string
+@return string the full path to the generated file"
+  (assert (not= "/" (filename:sub 1 1))
+          (.. "expected a filename, got fullpath " filename))
+  (assert (filename:find "%.[a-z]+$")
+          (.. "expected a filename with extension, got " filename))
+  (assert (= :string (type contents))
+          (-> "expected string, got %s: %s "
+              (: :format (type contents) (vim.inspect contents))))
+  (let [path (Path.join (vim.fn.stdpath :config) "lua" filename)]
+    (write-lua-file! path contents)
     path))
 
 (fn prepare-context-fnl-file! [filename contents]
@@ -56,6 +74,7 @@ path to the prepared file.
           (vim.fn.delete :rf)))))
 
 {: prepare-config-fnl-file!
+ : prepare-config-lua-file!
  : prepare-context-fnl-file!
  : prepare-context-lua-file!
  : remove-context-files!}
