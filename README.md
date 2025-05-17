@@ -410,6 +410,8 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 - The _macro dependency tracker_ is based on the nature that
   the [call stack][] of a module represents the dependencies of the module as is.
   No `fennel.plugins` dependency!
+
+[call stack]: https://en.wikipedia.org/wiki/Call_stack
 -->
 
 ### Misleading...?
@@ -470,7 +472,6 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
   `plugin/`. Not in compiler sandbox.
 
 [reference]: ./docs/reference.md
-[call stack]: https://en.wikipedia.org/wiki/Call_stack
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl
