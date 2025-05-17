@@ -133,7 +133,8 @@ It also defines an autocmd group `ThymeWatch` to keep compiled lua files
 up-to-date.
 
 > [!IMPORTANT]
-> No arguments are allowed. You should manage all the options in [.nvim-thyme.fnl][] instead.
+> No arguments are allowed by `thyme.setup`.\
+> You should manage all the options in [.nvim-thyme.fnl][] instead.
 
 The latter syntax `(thyme:setup)` works as same as `thyme.setup`.
 For this `thyme.setup` module,
