@@ -137,8 +137,8 @@ up-to-date.
 > You should manage all the options in [.nvim-thyme.fnl][] instead.
 
 For the Lua ideom `require("thyme").setup()` in Fennel,
-the method call syntax `(thyme:setup)` is supported
-to replace the following weird one-liner
+the method call syntax `(thyme:setup)` is supported.
+Therefore, the following weird syntax with `.` and additional parentheses
 
 ```fennel
 ((require :thyme) (. :setup))
@@ -146,7 +146,7 @@ to replace the following weird one-liner
 ((-> (require :thyme) (. :setup)))
 ```
 
-with
+can be replaced by the following syntax with `:`
 
 ```fennel
 (-> (require :thyme) (: :setup))
@@ -167,25 +167,13 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 ```
 
-```fennel
-(vim.api.nvim_create_autocmd :VimEnter
-  {:once true
-   :callback #(-> (fn []
-                    (-> (require :thyme)
-                        (: :setup))
-                    (require :others))
-                  (vim.schedule))})
-```
-
-With [nvim-laurel][],
+or if you carefully manage your config files
+where some Fennel file are loaded in `vim.schedule` on `VimEnter` elsewhere,
+put the following code in such a Fennel file:
 
 ```fennel
-(autocmd! :VimEnter * [:once]
-          #(-> (fn []
-                 (-> (require :thyme)
-                     (: :setup))
-                 (require :others))
-               (vim.schedule)))
+(-> (require :thyme)
+    (: :setup))
 ```
 
 ### Functions at `thyme.fennel`
