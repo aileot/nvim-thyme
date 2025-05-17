@@ -46,14 +46,8 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
   (Type annotation helps us very much.)
 
   > [!TIP]
-  > When `.nvim-thyme.fnl` is missing at `vim.fn.stdpath('config')`
-  > on nvim startup,
-  > `nvim-thyme` will ask you to generate the recommended config file,
-  > a copy of [.nvim-thyme.fnl.example][].\
-  > With the recommended config,
-  > you don't have to manage `fnl/` directory at `vim.fn.stdpath('config')`
-  > anymore,
-  > but only `lua/` and other Neovim's default [rtp][] directories now!
+  > Optionally, you can manage your Fennel files under `lua/`
+  > instead of `fnl/` directory.
 
 - ...and more features!
 
