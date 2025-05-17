@@ -1,11 +1,12 @@
 (import-macros {: when-not} :thyme.macros)
 
+;; WARN: Do NOT use `require` modules which depend on config in .nvim-thyme.fnl
+;; until `.nvim-thyme.fnl` is loaded.
+
 (local {: debug? : config-filename : config-path} (require :thyme.const))
+
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
-
-(local RollbackManager (require :thyme.rollback.manager))
-(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
@@ -61,7 +62,15 @@
                  2 (error (.. "abort trusting " config-path))
                  _ (vim.cmd.trust)))
             (vim.defer_fn 800)))
-    _ (error "abort proceeding with nvim-thyme")))
+    _ (case (vim.fn.confirm "Aborted proceeding with nvim-thyme. Exit?"
+                            "&No\n&yes" 1 :WarningMsg)
+        2 (os.exit 1))))
+
+;; HACK: Make sure to use `require` to modules which depend on config in
+;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
+
+(local RollbackManager (require :thyme.rollback.manager))
+(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 (fn notify-once! [msg ...]
   ;; NOTE: Avoid `Messenger:notyfy!`, which depends on this module

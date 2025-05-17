@@ -7,8 +7,6 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local RollbackManager = require("thyme.rollback.manager")
-local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
@@ -39,10 +37,16 @@ if not file_readable_3f(config_path) then
     vim.defer_fn(_5_, 800)
   else
     local _ = _3_
-    error("abort proceeding with nvim-thyme")
+    local _9_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (_9_ == 2) then
+      os.exit(1)
+    else
+    end
   end
 else
 end
+local RollbackManager = require("thyme.rollback.manager")
+local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local function notify_once_21(msg, ...)
   return vim.notify_once(("thyme(config): " .. msg), ...)
 end
@@ -105,7 +109,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _16_()
+local function _18_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -118,7 +122,7 @@ local function _16_()
   end
   return config
 end
-local function _18_(_self, k)
+local function _20_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -131,13 +135,13 @@ local function _18_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _21_
+local _23_
 if not debug_3f then
-  local function _22_()
+  local function _24_()
     return error("thyme.config is readonly")
   end
-  _21_ = _22_
+  _23_ = _24_
 else
-  _21_ = nil
+  _23_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _16_}, {__index = _18_, __newindex = _21_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _18_}, {__index = _20_, __newindex = _23_})
