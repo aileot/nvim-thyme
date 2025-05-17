@@ -56,12 +56,17 @@
             recommended-config (read-file example-config-path)]
         (write-fnl-file! config-path recommended-config)
         (vim.cmd.tabedit config-path)
-        (-> #(when (= config-path (vim.api.nvim_buf_get_name 0))
-               (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                     "&Yes\n&no" 1 :Question)
-                 2 (error (.. "abort trusting " config-path))
-                 _ (vim.cmd.trust)))
-            (vim.defer_fn 800)))
+        (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
+        (vim.cmd "redraw!")
+        (when (= config-path (vim.api.nvim_buf_get_name 0))
+          (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
+                                "&Yes\n&no" 1 :Question)
+            2 (do
+                (vim.secure.trust {:action "remove" :path config-path})
+                (case (vim.fn.confirm (-> "Aborted trusting %s. Exit?"
+                                          (: :format config-path))
+                                      "&No\n&yes" 1 :WarningMsg)
+                  2 (os.exit 1))))))
     _ (case (vim.fn.confirm "Aborted proceeding with nvim-thyme. Exit?"
                             "&No\n&yes" 1 :WarningMsg)
         2 (os.exit 1))))
