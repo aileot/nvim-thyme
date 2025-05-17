@@ -14,7 +14,12 @@
  ;; path. Relative path markers (`.`) are internally replaced with the paths on
  ;; &runtimepath filtered by the directories preceded by `?`, for example, in
  ;; `./fnl/?.fnl`.
- :macro-path "./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"
+ :macro-path (-> ["./fnl/?.fnlm"
+                  "./fnl/?/init.fnlm"
+                  "./fnl/?.fnl"
+                  "./fnl/?/init-macros.fnl"
+                  "./fnl/?/init.fnl"]
+                 (table.concat ";"))
  :command {;; Keep set it to nil to inherit from the root option.
            :compiler-options nil
            :cmd-history {;; With parinfer integration and the options below,
