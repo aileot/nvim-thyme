@@ -8,10 +8,6 @@
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
 
-;; NOTE: Please keep this security check simple.
-(local nvim-appname vim.env.NVIM_APPNAME)
-(local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
-
 (local default-opts ;
        {:max-rollbacks 5
         ;; TODO: Inplement :preproc and set the default value to `#$`.
@@ -102,8 +98,6 @@ the active backup, if available.
                                          (backup-handler:determine-active-backup-birthtime)))]
                           (notify-once! msg vim.log.levels.WARN)
                           (read-file mounted-backup-path))
-                        secure-nvim-env?
-                        (read-file config-file-path)
                         (vim.secure.read config-file-path))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}

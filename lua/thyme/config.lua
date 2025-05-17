@@ -7,8 +7,6 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local nvim_appname = vim.env.NVIM_APPNAME
-local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
 local cache = {}
 if not file_readable_3f(config_path) then
@@ -65,8 +63,6 @@ local function read_config_with_backup_21(config_file_path)
     local msg = ("rollback config to mounted backup (created at %s)"):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
     notify_once_21(msg, vim.log.levels.WARN)
     config_code = read_file(mounted_backup_path)
-  elseif secure_nvim_env_3f then
-    config_code = read_file(config_file_path)
   else
     config_code = vim.secure.read(config_file_path)
   end
