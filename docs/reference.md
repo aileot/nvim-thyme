@@ -135,7 +135,24 @@ up-to-date.
 > [!IMPORTANT]
 > No arguments are allowed. You should manage all the options in [.nvim-thyme.fnl][] instead.
 
-Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
+The latter syntax `(thyme:setup)` works as same as `thyme.setup`.
+For this `thyme.setup` module,
+the latter syntax is supported
+to replace the following weird syntax
+
+```fennel
+((require :thyme) (. :setup))
+;; or
+((-> (require :thyme) (. :setup)))
+```
+
+with
+
+```fennel
+(-> (require :thyme) (: :setup))
+```
+
+intending the Lua ideom `require("thyme").setup()` in Fennel.
 
 This function is to be called
 _after_ [VimEnter][] wrapped in [vim.schedule][],
