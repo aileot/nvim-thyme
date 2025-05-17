@@ -93,7 +93,8 @@
       (it* "thus, `require` can load the module \"foobar\" without any error"
         (assert.is_false (pcall require :foobar))
         (vim.cmd (.. "write " default-fnl-module-path))
-        (assert.is_true (pcall require :foobar))))
+        (assert.is_true (pcall require :foobar))
+        (set package.loaded.foobar nil)))
     (it* "can restore and load missing module from backup once loaded"
       (vim.cmd (.. "write " default-fnl-module-path))
       (assert.equals :function (type (thyme.loader :foobar)))

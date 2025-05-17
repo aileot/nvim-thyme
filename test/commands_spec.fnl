@@ -71,8 +71,6 @@
     (after_each (fn []
                   (remove-context-files!)))
     (describe* "(for the files compiled by thyme)"
-      (after_each (fn []
-                    (set package.loaded.foo nil)))
       (it* "opens a compiled lua file for current fnl file."
         (let [path (prepare-config-fnl-file! "foo.fnl" :foo)]
           (vim.cmd.edit path)
@@ -83,7 +81,8 @@
           (assert.is_same (vim.fn.expand "%:t") "foo.lua")
           (vim.cmd.bdelete path)
           (vim.cmd :bdelete)
-          (vim.fn.delete path))))
+          (vim.fn.delete path)
+          (set package.loaded.foo nil))))
     (describe* "(for the files not compiled by thyme)"
       (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exist."
         (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]

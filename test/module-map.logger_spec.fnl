@@ -21,6 +21,7 @@
       (let [fnl-path (vim.fs.joinpath default-fnl-dir :foo.fnl)]
         (vim.cmd.write fnl-path)
         (require :foo)
+        (set package.loaded.foo nil)
         (assert.equals "foo.lua"
                        (-> (DependencyLogger:fnl-path->lua-path fnl-path)
                            (vim.fn.fnamemodify ":t")))
