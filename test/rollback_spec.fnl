@@ -30,7 +30,7 @@
           backup-handler (rollback-manager:backup-handler-of module-name)
           stored-path (backup-handler:determine-active-backup-path)
           filename (.. module-name ".fnl")
-          original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]
+          original-path (prepare-config-fnl-file! filename "{}")]
       (-> (vim.fs.dirname original-path)
           (vim.fn.mkdir :p))
       (vim.fn.writefile ["{:foo :bar}"] original-path)
