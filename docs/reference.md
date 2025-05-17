@@ -119,12 +119,12 @@ end)
 
 <!-- panvimdoc-ignore-start -->
 
-### `thyme.setup` or `thyme:setup`
+### `thyme.setup` or `(thyme:setup)`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 thyme.setup                                                     *thyme.setup*
-thyme:setup                                                     *thyme:setup*
+(thyme:setup)                                                 *(thyme:setup)*
 -->
 
 Define [commands](#commands) and [keymaps](#keymaps).
