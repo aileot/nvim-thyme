@@ -12,18 +12,27 @@
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
+(local std-config (vim.fn.stdpath :config))
+(local std-fnl-dir? (vim.uv.fs_stat (vim.fs.joinpath std-config "fnl")))
+(local use-lua-dir? (not std-fnl-dir?))
+
 (local default-opts ;
        {:max-rollbacks 5
         ;; TODO: Inplement :preproc and set the default value to `#$`.
         :preproc nil
         :compiler-options {}
-        :fnl-dir "fnl"
+        :fnl-dir (if use-lua-dir? "lua" "fnl")
         ;; Set to fennel.macro-path for macro modules.
         :macro-path (-> ["./fnl/?.fnlm"
                          "./fnl/?/init.fnlm"
                          "./fnl/?.fnl"
                          "./fnl/?/init-macros.fnl"
-                         "./fnl/?/init.fnl"]
+                         "./fnl/?/init.fnl"
+                         ;; NOTE: Only the last items can be `nil`s without errors.
+                         (when use-lua-dir? (.. std-config "/lua/?.fnlm"))
+                         (when use-lua-dir? (.. std-config "/lua/?/init.fnlm"))
+                         (when use-lua-dir? (.. std-config "/lua/?.fnl"))
+                         (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                         (table.concat ";"))
         :notifier vim.notify
         :command {:compiler-options nil

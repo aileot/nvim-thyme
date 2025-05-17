@@ -9,34 +9,69 @@ local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
+local std_config = vim.fn.stdpath("config")
+local std_fnl_dir_3f = vim.uv.fs_stat(vim.fs.joinpath(std_config, "fnl"))
+local use_lua_dir_3f = not std_fnl_dir_3f
+local default_opts
+local _3_
+if use_lua_dir_3f then
+  _3_ = "lua"
+else
+  _3_ = "fnl"
+end
+local _5_
+if use_lua_dir_3f then
+  _5_ = (std_config .. "/lua/?.fnlm")
+else
+  _5_ = nil
+end
+local _7_
+if use_lua_dir_3f then
+  _7_ = (std_config .. "/lua/?/init.fnlm")
+else
+  _7_ = nil
+end
+local _9_
+if use_lua_dir_3f then
+  _9_ = (std_config .. "/lua/?.fnl")
+else
+  _9_ = nil
+end
+local function _11_(...)
+  if use_lua_dir_3f then
+    return (std_config .. "/lua/?/init.fnl")
+  else
+    return nil
+  end
+end
+default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_(...)}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
 local cache = {}
 if not file_readable_3f(config_path) then
-  local _3_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-  if (_3_ == 2) then
+  local _12_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  if (_12_ == 2) then
     local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
     local example_config_filename = (config_filename .. ".example")
-    local _let_4_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
-    local example_config_path = _let_4_[1]
+    local _let_13_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
+    local example_config_path = _let_13_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
-    local function _5_()
+    local function _14_()
       return (config_path == vim.api.nvim_buf_get_name(0))
     end
-    vim.wait(1000, _5_)
+    vim.wait(1000, _14_)
     vim.cmd("redraw!")
     if (config_path == vim.api.nvim_buf_get_name(0)) then
-      local _6_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-      if (_6_ == 2) then
+      local _15_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+      if (_15_ == 2) then
         local buf_name = vim.api.nvim_buf_get_name(0)
         assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))
         vim.cmd("trust")
       else
-        local _ = _6_
+        local _ = _15_
         vim.secure.trust({action = "remove", path = config_path})
-        local _7_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
-        if (_7_ == 2) then
+        local _16_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
+        if (_16_ == 2) then
           os.exit(1)
         else
         end
@@ -44,17 +79,17 @@ if not file_readable_3f(config_path) then
     else
     end
   else
-    local _ = _3_
-    local _11_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
-    if (_11_ == 2) then
+    local _ = _12_
+    local _20_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (_20_ == 2) then
       os.exit(1)
     else
     end
   end
 else
 end
-local _local_15_ = require("thyme.utils.trust")
-local denied_3f = _local_15_["denied?"]
+local _local_24_ = require("thyme.utils.trust")
+local denied_3f = _local_24_["denied?"]
 local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local function notify_once_21(msg, ...)
@@ -122,7 +157,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _22_()
+local function _31_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -135,7 +170,7 @@ local function _22_()
   end
   return config
 end
-local function _24_(_self, k)
+local function _33_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -148,13 +183,13 @@ local function _24_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _27_
+local _36_
 if not debug_3f then
-  local function _28_()
+  local function _37_()
     return error("thyme.config is readonly")
   end
-  _27_ = _28_
+  _36_ = _37_
 else
-  _27_ = nil
+  _36_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _22_}, {__index = _24_, __newindex = _27_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _31_}, {__index = _33_, __newindex = _36_})
