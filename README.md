@@ -44,6 +44,17 @@ The optional features can be enabled with few startup overhead thanks to `vim.sc
   as I still write Lua when it seems to be
   more comfortable than Fennel.
   (Type annotation helps us very much.)
+
+  > [!TIP]
+  > When `.nvim-thyme.fnl` is missing at `vim.fn.stdpath('config')`
+  > on nvim startup,
+  > `nvim-thyme` will ask you to generate the recommended config file,
+  > a copy of [.nvim-thyme.fnl.example][].\
+  > With the recommended config,
+  > you don't have to manage `fnl/` directory at `vim.fn.stdpath('config')`
+  > anymore,
+  > but only `lua/` and other Neovim's default [rtp][] directories now!
+
 - ...and more features!
 
 The project started from scratch. _Now in Beta!_
@@ -273,7 +284,7 @@ no conventional `setup` function is provided by `nvim-thyme`.
 You don't have to prepare it by yourself!
 If missing the config file on nvim startup,
 you will be asked to generate it with recommended settings:
-See [.nvim-thyme.fnl.example](./.nvim-thyme.fnl.example).
+See [.nvim-thyme.fnl.example][].
 
 ```fennel
 ;; WARN: See .nvim-thyme.fnl.example instead. This snippet might be outdated.
@@ -471,6 +482,8 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
+[rtp]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
 [reference]: ./docs/reference.md
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
