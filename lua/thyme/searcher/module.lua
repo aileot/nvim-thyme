@@ -18,7 +18,6 @@ local LoaderMessenger = Messenger.new("loader")
 local RollbackLoaderMessenger = Messenger.new("loader/rollback")
 local _local_5_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_5_["get-runtime-files"]
-local Config = require("thyme.config")
 local Observer = require("thyme.dependency.observer")
 local _local_6_ = require("thyme.searcher.macro")
 local initialize_macro_searcher_on_rtp_21 = _local_6_["initialize-macro-searcher-on-rtp!"]
@@ -52,6 +51,7 @@ local function compile_fennel_into_rtp_21()
 end
 local function initialize_module_searcher_on_rtp_21(fennel)
   local std_config_home = vim.fn.stdpath("config")
+  local Config = require("thyme.config")
   local fnl_dir = string.gsub(("/" .. Config["fnl-dir"] .. "/"), "//+", "/")
   local fennel_path
   local _10_
@@ -73,6 +73,7 @@ local function initialize_module_searcher_on_rtp_21(fennel)
   return nil
 end
 local function update_fennel_paths_21(fennel)
+  local Config = require("thyme.config")
   local base_path_cache
   local function _12_(self, key)
     rawset(self, key, get_runtime_files({key}, true))
@@ -146,6 +147,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
   if ("fennel" == module_name) then
     return compile_fennel_into_rtp_21()
   else
+    local Config = require("thyme.config")
     local or_21_ = Config["?error-msg"]
     if not or_21_ then
       local backup_handler = ModuleRollbackManager["backup-handler-of"](ModuleRollbackManager, module_name)

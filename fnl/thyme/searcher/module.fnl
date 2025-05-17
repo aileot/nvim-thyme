@@ -19,7 +19,8 @@
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
-(local Config (require :thyme.config))
+;; WARN: Do NOT load thyme.config in this module-wise; otherwise into loop.
+;; (local Config (require :thyme.config))
 
 (local Observer (require :thyme.dependency.observer))
 
@@ -71,6 +72,7 @@ fennel.lua.
 
 (fn initialize-module-searcher-on-rtp! [fennel]
   (let [std-config-home (vim.fn.stdpath :config)
+        Config (require :thyme.config)
         fnl-dir (-> (.. "/" Config.fnl-dir "/")
                     (string.gsub "//+" "/"))
         fennel-path (-> (icollect [_ suffix (ipairs [:?.fnl :?/init.fnl])]
@@ -82,7 +84,8 @@ fennel.lua.
     (set fennel.path fennel-path)))
 
 (fn update-fennel-paths! [fennel]
-  (let [base-path-cache (setmetatable {}
+  (let [Config (require :thyme.config)
+        base-path-cache (setmetatable {}
                           {:__index (fn [self key]
                                       (rawset self key
                                               (get-runtime-files [key] true))
@@ -135,68 +138,72 @@ cache dir.
       (compile-fennel-into-rtp!)
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
-      (or Config.?error-msg ;
-          (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)
-                ?chunk (case (case (let [file-loader (fn [path ...]
-                                                       ;; Explicitly discard
-                                                       ;; the rest params, or
-                                                       ;; tests could fail.
-                                                       (loadfile path))]
-                                     (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
-                                                                                            file-loader))
-                               searcher (searcher module-name))
-                         msg|chunk (case (type msg|chunk)
-                                     ;; NOTE: Discard unwothy msg in the edge
-                                     ;; cases on initializations.
-                                     :function
-                                     msg|chunk))]
-            (or ?chunk ;
-                (case (case (module-name->fnl-file-on-rtp! module-name)
-                        fnl-path (let [fennel (require :fennel)
-                                       {: determine-lua-path} (require :thyme.compiler.cache)
-                                       lua-path (determine-lua-path module-name)
-                                       compiler-options Config.compiler-options]
-                                   (case (Observer:observe! fennel.compile-string
-                                                            fnl-path lua-path
-                                                            compiler-options
-                                                            module-name)
-                                     (true lua-code) (do
-                                                       (if (can-restore-file? lua-path
-                                                                              lua-code)
-                                                           (restore-file! lua-path)
-                                                           (do
-                                                             (write-lua-file-with-backup! lua-path
-                                                                                          lua-code
-                                                                                          module-name)
-                                                             (backup-handler:cleanup-old-backups!)))
-                                                       (load lua-code lua-path))
-                                     (_ raw-msg)
-                                     (let [raw-msg-body (-> "%s is found for the module/%s, but failed to compile it"
-                                                            (: :format fnl-path
-                                                               module-name))
-                                           msg-body (LoaderMessenger:wrap-msg raw-msg-body)
-                                           msg (-> "
+      (let [Config (require :thyme.config)]
+        (or Config.?error-msg ;
+            (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)
+                  ?chunk (case (case (let [file-loader (fn [path ...]
+                                                         ;; Explicitly discard
+                                                         ;; the rest params, or
+                                                         ;; tests could fail.
+                                                         (loadfile path))]
+                                       (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
+                                                                                              file-loader))
+                                 searcher (searcher module-name))
+                           msg|chunk (case (type msg|chunk)
+                                       ;; NOTE: Discard unwothy msg in the edge
+                                       ;; cases on initializations.
+                                       :function
+                                       msg|chunk))]
+              (or ?chunk ;
+                  (case (case (module-name->fnl-file-on-rtp! module-name)
+                          fnl-path (let [fennel (require :fennel)
+                                         {: determine-lua-path} (require :thyme.compiler.cache)
+                                         lua-path (determine-lua-path module-name)
+                                         compiler-options Config.compiler-options]
+                                     (case (Observer:observe! fennel.compile-string
+                                                              fnl-path lua-path
+                                                              compiler-options
+                                                              module-name)
+                                       (true lua-code) (do
+                                                         (if (can-restore-file? lua-path
+                                                                                lua-code)
+                                                             (restore-file! lua-path)
+                                                             (do
+                                                               (write-lua-file-with-backup! lua-path
+                                                                                            lua-code
+                                                                                            module-name)
+                                                               (backup-handler:cleanup-old-backups!)))
+                                                         (load lua-code
+                                                               lua-path))
+                                       (_ raw-msg)
+                                       (let [raw-msg-body (-> "%s is found for the module/%s, but failed to compile it"
+                                                              (: :format
+                                                                 fnl-path
+                                                                 module-name))
+                                             msg-body (LoaderMessenger:wrap-msg raw-msg-body)
+                                             msg (-> "
 %s
 \t%s"
-                                                   (: :format msg-body raw-msg))]
-                                       (values nil msg))))
-                        (_ raw-msg) (let [msg (LoaderMessenger:wrap-msg raw-msg)]
-                                      (values nil (.. "\n" msg))))
-                  chunk chunk
-                  (_ error-msg)
-                  (let [backup-path (backup-handler:determine-active-backup-path module-name)
-                        max-rollbacks Config.max-rollbacks
-                        rollback-enabled? (< 0 max-rollbacks)]
-                    (if (and rollback-enabled? (file-readable? backup-path))
-                        (let [msg (: "temporarily restore backup for the module/%s (created at %s) due to the following error: %s
+                                                     (: :format msg-body
+                                                        raw-msg))]
+                                         (values nil msg))))
+                          (_ raw-msg) (let [msg (LoaderMessenger:wrap-msg raw-msg)]
+                                        (values nil (.. "\n" msg))))
+                    chunk chunk
+                    (_ error-msg)
+                    (let [backup-path (backup-handler:determine-active-backup-path module-name)
+                          max-rollbacks Config.max-rollbacks
+                          rollback-enabled? (< 0 max-rollbacks)]
+                      (if (and rollback-enabled? (file-readable? backup-path))
+                          (let [msg (: "temporarily restore backup for the module/%s (created at %s) due to the following error: %s
 HINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
-                                     :format module-name
-                                     (backup-handler:determine-active-backup-birthtime module-name)
-                                     error-msg)]
-                          (RollbackLoaderMessenger:notify-once! msg
-                                                                vim.log.levels.WARN)
-                          (loadfile backup-path))
-                        error-msg))))))))
+                                       :format module-name
+                                       (backup-handler:determine-active-backup-birthtime module-name)
+                                       error-msg)]
+                            (RollbackLoaderMessenger:notify-once! msg
+                                                                  vim.log.levels.WARN)
+                            (loadfile backup-path))
+                          error-msg)))))))))
 
 {: search-fnl-module-on-rtp! : write-lua-file-with-backup!}

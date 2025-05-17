@@ -15,6 +15,8 @@
 
 (describe* "option fnl-dir"
   (let [default-fnl-dir Config.fnl-dir]
+    (setup (fn []
+             (thyme.setup)))
     (after_each (fn []
                   (remove-context-files!)
                   (set Config.fnl-dir default-fnl-dir)))

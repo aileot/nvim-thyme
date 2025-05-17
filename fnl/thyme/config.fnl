@@ -1,11 +1,12 @@
 (import-macros {: when-not} :thyme.macros)
 
+;; WARN: Do NOT use `require` modules which depend on config in .nvim-thyme.fnl
+;; until `.nvim-thyme.fnl` is loaded.
+
 (local {: debug? : config-filename : config-path} (require :thyme.const))
+
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.utils.fs))
-
-(local RollbackManager (require :thyme.rollback.manager))
-(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
@@ -55,13 +56,36 @@
             recommended-config (read-file example-config-path)]
         (write-fnl-file! config-path recommended-config)
         (vim.cmd.tabedit config-path)
-        (-> #(when (= config-path (vim.api.nvim_buf_get_name 0))
-               (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                     "&Yes\n&no" 1 :Question)
-                 2 (error (.. "abort trusting " config-path))
-                 _ (vim.cmd.trust)))
-            (vim.defer_fn 800)))
-    _ (error "abort proceeding with nvim-thyme")))
+        (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
+        (vim.cmd "redraw!")
+        (when (= config-path (vim.api.nvim_buf_get_name 0))
+          (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
+                                "&Yes\n&no" 1 :Question)
+            2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
+                (assert (= config-path buf-name)
+                        (-> "expected %s, got %s"
+                            (: :format config-path buf-name)))
+                ;; NOTE: vim.secure.trust specifing path in its arg cannot
+                ;; set "allow" to the "action" value.
+                ;; NOTE: `:trust` to "allow" cannot take any path as the arg.
+                (vim.cmd :trust))
+            _ (do
+                (vim.secure.trust {:action "remove" :path config-path})
+                (case (vim.fn.confirm (-> "Aborted trusting %s. Exit?"
+                                          (: :format config-path))
+                                      "&No\n&yes" 1 :WarningMsg)
+                  2 (os.exit 1))))))
+    _ (case (vim.fn.confirm "Aborted proceeding with nvim-thyme. Exit?"
+                            "&No\n&yes" 1 :WarningMsg)
+        2 (os.exit 1))))
+
+;; HACK: Make sure to use `require` to modules which depend on config in
+;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
+
+(local {: denied?} (require :thyme.utils.trust))
+
+(local RollbackManager (require :thyme.rollback.manager))
+(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 (fn notify-once! [msg ...]
   ;; NOTE: Avoid `Messenger:notyfy!`, which depends on this module
@@ -88,9 +112,15 @@ the active backup, if available.
                                          (backup-handler:determine-active-backup-birthtime)))]
                           (notify-once! msg vim.log.levels.WARN)
                           (read-file mounted-backup-path))
-                        secure-nvim-env?
-                        (read-file config-file-path)
-                        (vim.secure.read config-file-path))
+                        (do
+                          (when (and secure-nvim-env?
+                                     (denied? config-file-path))
+                            (vim.secure.trust {:action "remove"
+                                               :path config-file-path})
+                            (notify-once! (: "Previously the attempt to load %s has been denied.
+However, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."
+                                             :format config-filename)))
+                          (vim.secure.read config-file-path)))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
         _ (set cache.evaluating? true)

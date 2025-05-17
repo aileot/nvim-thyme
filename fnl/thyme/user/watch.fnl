@@ -5,6 +5,7 @@
 (local fennel (require :fennel))
 
 (local {: config-path : lua-cache-prefix} (require :thyme.const))
+(local {: allowed?} (require :thyme.utils.trust))
 (local Messenger (require :thyme.utils.messenger))
 (local WatchMessenger (Messenger.new "watch"))
 (local {: clear-cache!} (require :thyme.compiler.cache))
@@ -37,10 +38,18 @@ the same.
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
-                         (when (clear-cache!)
-                           (let [msg (.. "clear all the cache under "
-                                         lua-cache-prefix)]
-                             (WatchMessenger:notify! msg)))
+                         (do
+                           (when (allowed? config-path)
+                             (WatchMessenger:notify-once! "Trust the config file.")
+                             ;; Automatically re-trust the user config file
+                             ;; regardless of the recorded hash; otherwise, the
+                             ;; user will be annoyed being asked to trust
+                             ;; his/her config file on every change.
+                             (vim.cmd :trust))
+                           (when (clear-cache!)
+                             (let [msg (.. "clear all the cache under "
+                                           lua-cache-prefix)]
+                               (WatchMessenger:notify! msg))))
                          (case (xpcall #(check-to-update! resolved-path opts)
                                        fennel.traceback)
                            (false msg) (WatchMessenger:notify-once! msg

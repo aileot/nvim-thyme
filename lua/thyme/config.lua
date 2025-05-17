@@ -7,8 +7,6 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local RollbackManager = require("thyme.rollback.manager")
-local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
 local default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = "fnl", ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl"}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
@@ -24,25 +22,41 @@ if not file_readable_3f(config_path) then
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd.tabedit(config_path)
     local function _5_()
-      if (config_path == vim.api.nvim_buf_get_name(0)) then
-        local _6_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-        if (_6_ == 2) then
-          return error(("abort trusting " .. config_path))
-        else
-          local _ = _6_
-          return vim.cmd.trust()
-        end
-      else
-        return nil
-      end
+      return (config_path == vim.api.nvim_buf_get_name(0))
     end
-    vim.defer_fn(_5_, 800)
+    vim.wait(1000, _5_)
+    vim.cmd("redraw!")
+    if (config_path == vim.api.nvim_buf_get_name(0)) then
+      local _6_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+      if (_6_ == 2) then
+        local buf_name = vim.api.nvim_buf_get_name(0)
+        assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))
+        vim.cmd("trust")
+      else
+        local _ = _6_
+        vim.secure.trust({action = "remove", path = config_path})
+        local _7_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
+        if (_7_ == 2) then
+          os.exit(1)
+        else
+        end
+      end
+    else
+    end
   else
     local _ = _3_
-    error("abort proceeding with nvim-thyme")
+    local _11_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (_11_ == 2) then
+      os.exit(1)
+    else
+    end
   end
 else
 end
+local _local_15_ = require("thyme.utils.trust")
+local denied_3f = _local_15_["denied?"]
+local RollbackManager = require("thyme.rollback.manager")
+local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local function notify_once_21(msg, ...)
   return vim.notify_once(("thyme(config): " .. msg), ...)
 end
@@ -57,9 +71,12 @@ local function read_config_with_backup_21(config_file_path)
     local msg = ("rollback config to mounted backup (created at %s)"):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
     notify_once_21(msg, vim.log.levels.WARN)
     config_code = read_file(mounted_backup_path)
-  elseif secure_nvim_env_3f then
-    config_code = read_file(config_file_path)
   else
+    if (secure_nvim_env_3f and denied_3f(config_file_path)) then
+      vim.secure.trust({action = "remove", path = config_file_path})
+      notify_once_21(("Previously the attempt to load %s has been denied.\nHowever, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."):format(config_filename))
+    else
+    end
     config_code = vim.secure.read(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
@@ -105,7 +122,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _16_()
+local function _22_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -118,7 +135,7 @@ local function _16_()
   end
   return config
 end
-local function _18_(_self, k)
+local function _24_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -131,13 +148,13 @@ local function _18_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _21_
+local _27_
 if not debug_3f then
-  local function _22_()
+  local function _28_()
     return error("thyme.config is readonly")
   end
-  _21_ = _22_
+  _27_ = _28_
 else
-  _21_ = nil
+  _27_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _16_}, {__index = _18_, __newindex = _21_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _22_}, {__index = _24_, __newindex = _27_})
