@@ -403,11 +403,14 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ## 🕶️ Disclosure
 
+<!--
+TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 ### Macro Dependency Tracking
 
 - The _macro dependency tracker_ is based on the nature that
   the [call stack][] of a module represents the dependencies of the module as is.
   No `fennel.plugins` dependency!
+-->
 
 ### Misleading...?
 
