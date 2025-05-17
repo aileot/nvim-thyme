@@ -31,10 +31,9 @@
           (teardown (fn []
                       (vim.fn.delete fnl-path)
                       (assert.is_nil (vim.uv.fs_stat fnl-path))))
-          (after_each (fn []
-                        (set package.loaded.foo nil)))
           (it* "can be loaded by `(require :foo)`"
-            (assert.is_same {:foo :bar} (require :foo))))))
+            (assert.is_same {:foo :bar} (require :foo))
+            (set package.loaded.foo nil)))))
     (describe* "can work with the value \"lua\";"
       (before_each (fn []
                      (set Config.fnl-dir "lua")))
@@ -48,11 +47,11 @@
                          (vim.fn.writefile ["{:foo :bar}"] fnl-path)
                          (assert.is_not_nil (vim.uv.fs_stat fnl-path))))
           (after_each (fn []
-                        (set package.loaded.foo nil)
                         (vim.fn.delete fnl-path)
                         (assert.is_nil (vim.uv.fs_stat fnl-path))))
           (it* "can be loaded by `(require :foo)`"
-            (assert.is_same {:foo :bar} (require :foo))))))
+            (assert.is_same {:foo :bar} (require :foo))
+            (set package.loaded.foo nil)))))
     (describe* "can work with an empty string \"\";"
       (before_each (fn []
                      (set Config.fnl-dir "")))
@@ -66,11 +65,11 @@
                          (vim.fn.writefile ["{:foo :bar}"] fnl-path)
                          (assert.is_not_nil (vim.uv.fs_stat fnl-path))))
           (after_each (fn []
-                        (set package.loaded.foo nil)
                         (vim.fn.delete fnl-path)
                         (assert.is_nil (vim.uv.fs_stat fnl-path))))
           (it* "can be loaded by `(require :foo)`"
-            (assert.is_same {:foo :bar} (require :foo))))))))
+            (assert.is_same {:foo :bar} (require :foo))
+            (set package.loaded.foo nil)))))))
 
 (describe* "option max-rollbacks"
   (let [default-max-rollbacks Config.max-rollbacks]
