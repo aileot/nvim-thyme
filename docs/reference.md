@@ -119,12 +119,12 @@ end)
 
 <!-- panvimdoc-ignore-start -->
 
-### `thyme.setup` or `thyme:setup`
+### `thyme.setup` or `(thyme:setup)`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
 thyme.setup                                                     *thyme.setup*
-thyme:setup                                                     *thyme:setup*
+(thyme:setup)                                                 *(thyme:setup)*
 -->
 
 Define [commands](#commands) and [keymaps](#keymaps).
@@ -133,9 +133,24 @@ It also defines an autocmd group `ThymeWatch` to keep compiled lua files
 up-to-date.
 
 > [!IMPORTANT]
-> No arguments are allowed. You should manage all the options in [.nvim-thyme.fnl][] instead.
+> No arguments are allowed by `thyme.setup`.\
+> You should manage all the options in [.nvim-thyme.fnl][] instead.
 
-Both `(thyme.setup)` and `(thyme:setup)` work equivalent in Fennel.
+For the Lua ideom `require("thyme").setup()` in Fennel,
+the method call syntax `(thyme:setup)` is supported
+to replace the following weird one-liner
+
+```fennel
+((require :thyme) (. :setup))
+;; or
+((-> (require :thyme) (. :setup)))
+```
+
+with
+
+```fennel
+(-> (require :thyme) (: :setup))
+```
 
 This function is to be called
 _after_ [VimEnter][] wrapped in [vim.schedule][],
