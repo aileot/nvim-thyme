@@ -78,91 +78,94 @@ local function update_hl_chunk_matrix_21(hl_chunk_matrix, text, _3fhl_name, meta
     return nil
   end
 end
+local function compose_hl_chunks(text, lang_tree)
+  local top_row0 = 0
+  local top_col0 = 0
+  local bottom_row0 = -1
+  local end_row = #vim.split(text, "\n", {plain = true})
+  local end_col = vim.go.columns
+  local whitespace_chunk = {" "}
+  local hl_chunk_matrix = new_matrix(end_row, end_col, whitespace_chunk)
+  local cb
+  local function _11_(ts_tree, tree)
+    if ts_tree then
+      local lang = tree:lang()
+      local hl_query
+      local or_12_ = hl_cache[lang]
+      if not or_12_ then
+        local hlq = ts.query.get(lang, "highlights")
+        hl_cache[lang] = hlq
+        or_12_ = hlq
+      end
+      hl_query = or_12_
+      local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
+      for id, node, metadata in iter do
+        local _14_ = hl_query.captures[id]
+        if ((_14_ == "spell") or (_14_ == "nospell")) then
+        else
+          local and_15_ = (nil ~= _14_)
+          if and_15_ then
+            local capture = _14_
+            and_15_ = not vim.startswith(capture, "_")
+          end
+          if and_15_ then
+            local capture = _14_
+            local txt = ts.get_node_text(node, text)
+            local hl_name = ("@" .. capture)
+            local row01, col01 = node:range()
+            update_hl_chunk_matrix_21(hl_chunk_matrix, txt, hl_name, metadata, row01, col01)
+          else
+          end
+        end
+      end
+      return nil
+    else
+      return nil
+    end
+  end
+  cb = _11_
+  initialize_priority_matrix_21(end_row, end_col)
+  update_hl_chunk_matrix_21(hl_chunk_matrix, text, nil, {}, top_row0, top_col0)
+  do
+    lang_tree:parse()
+    lang_tree:for_each_tree(cb)
+  end
+  local hl_chunks = {}
+  for i = 1, end_row do
+    for j = 1, end_col do
+      table.insert(hl_chunks, hl_chunk_matrix[i][j])
+    end
+  end
+  if (whitespace_chunk == hl_chunks[#hl_chunks]) then
+    table.remove(hl_chunks)
+  else
+  end
+  return hl_chunks
+end
 local function text__3ehl_chunks(text, _3fopts)
   local opts = (_3fopts or {})
   local base_lang = (opts.lang or "fennel")
   local tmp_text
-  local _11_
+  local _20_
   if (base_lang == "fennel") then
-    _11_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1_%2)")
+    _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1_%2)")
   elseif (base_lang == "lua") then
-    _11_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
+    _20_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
   else
     local _ = base_lang
-    _11_ = text
+    _20_ = text
   end
-  tmp_text = _11_:gsub("\\", "\\\\")
+  tmp_text = _20_:gsub("\\", "\\\\")
   validate_type("table", opts)
-  local _16_, _17_ = pcall(ts.get_string_parser, tmp_text, base_lang)
-  if ((_16_ == false) and (nil ~= _17_)) then
-    local msg = _17_
+  local _25_, _26_ = pcall(ts.get_string_parser, tmp_text, base_lang)
+  if ((_25_ == false) and (nil ~= _26_)) then
+    local msg = _26_
     local chunks = {{text}}
     vim.notify_once(msg, vim.log.levels.WARN)
     return chunks
-  elseif ((_16_ == true) and (nil ~= _17_)) then
-    local lang_tree = _17_
-    local top_row0 = 0
-    local top_col0 = 0
-    local bottom_row0 = -1
-    local end_row = #vim.split(text, "\n", {plain = true})
-    local end_col = vim.go.columns
-    local whitespace_chunk = {" "}
-    local hl_chunk_matrix = new_matrix(end_row, end_col, whitespace_chunk)
-    local cb
-    local function _18_(ts_tree, tree)
-      if ts_tree then
-        local lang = tree:lang()
-        local hl_query
-        local or_19_ = hl_cache[lang]
-        if not or_19_ then
-          local hlq = ts.query.get(lang, "highlights")
-          hl_cache[lang] = hlq
-          or_19_ = hlq
-        end
-        hl_query = or_19_
-        local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
-        for id, node, metadata in iter do
-          local _21_ = hl_query.captures[id]
-          if ((_21_ == "spell") or (_21_ == "nospell")) then
-          else
-            local and_22_ = (nil ~= _21_)
-            if and_22_ then
-              local capture = _21_
-              and_22_ = not vim.startswith(capture, "_")
-            end
-            if and_22_ then
-              local capture = _21_
-              local txt = ts.get_node_text(node, text)
-              local hl_name = ("@" .. capture)
-              local row01, col01 = node:range()
-              update_hl_chunk_matrix_21(hl_chunk_matrix, txt, hl_name, metadata, row01, col01)
-            else
-            end
-          end
-        end
-        return nil
-      else
-        return nil
-      end
-    end
-    cb = _18_
-    initialize_priority_matrix_21(end_row, end_col)
-    update_hl_chunk_matrix_21(hl_chunk_matrix, text, nil, {}, top_row0, top_col0)
-    do
-      lang_tree:parse()
-      lang_tree:for_each_tree(cb)
-    end
-    local hl_chunks = {}
-    for i = 1, end_row do
-      for j = 1, end_col do
-        table.insert(hl_chunks, hl_chunk_matrix[i][j])
-      end
-    end
-    if (whitespace_chunk == hl_chunks[#hl_chunks]) then
-      table.remove(hl_chunks)
-    else
-    end
-    return hl_chunks
+  elseif ((_25_ == true) and (nil ~= _26_)) then
+    local lang_tree = _26_
+    return compose_hl_chunks(tmp_text, lang_tree)
   else
     return nil
   end

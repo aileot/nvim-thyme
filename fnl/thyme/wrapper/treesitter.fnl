@@ -39,11 +39,7 @@
                              ;; In the order that (node:range) returns.
                              row01
                              col01]
-  "Update `hl-chunk-matrix` from `[row01 col1]` based on `text`, `?hl-name`,
-and metadata.
-@param hl-chunk-matrix table[]
-@param row01 number
-@param col01 number"
+  ""
   (let [priority (or metadata.priority 0)
         row1 (inc row01)
         col1 (inc col01)
@@ -66,6 +62,59 @@ and metadata.
               (tset priority-matrix row col priority)
               (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name))
               (set col (inc col))))))))
+
+(fn compose-hl-chunks [text lang-tree]
+  "Compose hl-chunks for `text` up to `lang-tree`.
+@param text string
+@param lang-tree vim.treesitter.LanguageTree
+@return table[] a sequence of `[text hl-group]` for `vim.api.nvim_echo`."
+  (let [top-row0 0 ;
+        top-col0 0
+        ;; NOTE: bottom-row0, i.e., end-row0, is excluded by the vim.treesitter
+        ;; object method Query:iter_captures.
+        bottom-row0 -1
+        end-row (-> text
+                    (vim.split "\n" {:plain true})
+                    (length))
+        end-col vim.go.columns
+        whitespace-chunk [" "]
+        hl-chunk-matrix (new-matrix end-row end-col whitespace-chunk)
+        cb (fn [ts-tree tree]
+             (when ts-tree
+               (let [lang (tree:lang)
+                     hl-query (or (. hl-cache lang)
+                                  (let [hlq (ts.query.get lang :highlights)]
+                                    (tset hl-cache lang hlq)
+                                    hlq))
+                     iter (hl-query:iter_captures (ts-tree:root) text top-row0
+                                                  bottom-row0)]
+                 (each [(id node metadata) iter]
+                   ;; NOTE: Apply metadata.conceal?
+                   (case (. hl-query.captures id)
+                     (where (or :spell :nospell))
+                     nil
+                     (where capture (not (vim.startswith capture "_")))
+                     ;; NOTE: underscored capture should not be for
+                     ;; highlights, but only for internal use.
+                     (let [txt (ts.get_node_text node text)
+                           hl-name (.. "@" capture)
+                           (row01 col01) (node:range)]
+                       (update-hl-chunk-matrix! hl-chunk-matrix txt hl-name
+                                                metadata row01 col01)))))))]
+    (initialize-priority-matrix! end-row end-col)
+    (update-hl-chunk-matrix! hl-chunk-matrix text nil {} top-row0 top-col0)
+    (doto lang-tree
+      (: :parse)
+      (: :for_each_tree cb))
+    (let [hl-chunks []]
+      (for [i 1 end-row]
+        (for [j 1 end-col]
+          (table.insert hl-chunks (. hl-chunk-matrix i j))))
+      ;; NOTE: nvim_echo results are displayed as if newline is inserted at
+      ;; the end when the last char reaches vim.go.columns.
+      (when (= whitespace-chunk (last hl-chunks))
+        (table.remove hl-chunks))
+      hl-chunks)))
 
 (fn text->hl-chunks [text ?opts]
   "Convert `text` into `chunks`, parsed with treesitter parser (\"fennel\" one
@@ -97,53 +146,7 @@ by default) for `vim.api.nvim_echo`.
         chunks)
       (true lang-tree)
       ;; Make sure to destroy
-      (let [top-row0 0 ;
-            top-col0 0
-            ;; NOTE: bottom-row0, i.e., end-row0, is excluded by the vim.treesitter
-            ;; object method Query:iter_captures.
-            bottom-row0 -1
-            end-row (-> text
-                        (vim.split "\n" {:plain true})
-                        (length))
-            end-col vim.go.columns
-            whitespace-chunk [" "]
-            hl-chunk-matrix (new-matrix end-row end-col whitespace-chunk)
-            cb (fn [ts-tree tree]
-                 (when ts-tree
-                   (let [lang (tree:lang)
-                         hl-query (or (. hl-cache lang)
-                                      (let [hlq (ts.query.get lang :highlights)]
-                                        (tset hl-cache lang hlq)
-                                        hlq))
-                         iter (hl-query:iter_captures (ts-tree:root) text
-                                                      top-row0 bottom-row0)]
-                     (each [(id node metadata) iter]
-                       ;; NOTE: Apply metadata.conceal?
-                       (case (. hl-query.captures id)
-                         (where (or :spell :nospell))
-                         nil
-                         (where capture (not (vim.startswith capture "_")))
-                         ;; NOTE: underscored capture should not be for
-                         ;; highlights, but only for internal use.
-                         (let [txt (ts.get_node_text node text)
-                               hl-name (.. "@" capture)
-                               (row01 col01) (node:range)]
-                           (update-hl-chunk-matrix! hl-chunk-matrix txt hl-name
-                                                    metadata row01 col01)))))))]
-        (initialize-priority-matrix! end-row end-col)
-        (update-hl-chunk-matrix! hl-chunk-matrix text nil {} top-row0 top-col0)
-        (doto lang-tree
-          (: :parse)
-          (: :for_each_tree cb))
-        (let [hl-chunks []]
-          (for [i 1 end-row]
-            (for [j 1 end-col]
-              (table.insert hl-chunks (. hl-chunk-matrix i j))))
-          ;; NOTE: nvim_echo results are displayed as if newline is inserted at
-          ;; the end when the last char reaches vim.go.columns.
-          (when (= whitespace-chunk (last hl-chunks))
-            (table.remove hl-chunks))
-          hl-chunks)))))
+      (compose-hl-chunks tmp-text lang-tree))))
 
 (fn echo [text ?opts]
   "Echo `text` with treesitter highlights.
