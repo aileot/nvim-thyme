@@ -271,17 +271,19 @@ NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
 
 ### Options in `.nvim-thyme.fnl`
 
-As described in the [Installation](#installation), all the settings of
-`nvim-thyme` is set up with a config file `.nvim-thyme.fnl`;
-no conventional `setup` function is provided by `nvim-thyme`.
+As described in the [Installation](#installation) above,
+all the configurations should be managed
+in a config file `.nvim-thyme.fnl` instead of `thyme.setup`.
 
-You don't have to prepare it by yourself!
-If missing the config file on nvim startup,
-you will be asked to generate it with recommended settings:
-See [.nvim-thyme.fnl.example][].
+> [!NOTE]
+> This is a point to optimize the nvim startuptime
+> with the runtime compiler.
+> Apart from `thyme.setup` but with `.nvim-thyme.fnl`,
+> the configurations can be _lazily evaluated_ only by need.
+
+Here is a sample config:
 
 ```fennel
-;; WARN: See .nvim-thyme.fnl.example instead. This snippet might be outdated.
 {:max-rollback 5
  :compiler-options {:correlate true
                     ;; :compilerEnv _G
@@ -289,6 +291,16 @@ See [.nvim-thyme.fnl.example][].
  :fnl-dir "fnl"
  :macro-path "./fnl/?.fnlm;./fnl/?/init-macros.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"}
 ```
+
+However, _you don't have to prepare it by yourself!_
+
+If `.nvim-thyme.fnl` is missing at `vim.fn.stdpath('config')` on nvim startup,
+you will be asked for confirmation.
+Once you agree, a new `.nvim-thyme.fnl` will be generated with recommended settings there.
+The generated file is a copy of [.nvim-thyme.fnl.example][].
+
+For all the available options,
+see the [section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
 
 For performance, you can `bootstrap` _macro_ plugins inside `.nvim-thyme.fnl`
 since, on missing a module written in Fennel, `.nvim-thyme.fnl` is always
