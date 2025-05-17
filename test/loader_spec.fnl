@@ -1,110 +1,65 @@
-(import-macros {: setup* : describe* : it*} :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
-(local {: remove-context-files!} (include :test.helper.utils))
+(local {: prepare-config-fnl-file!
+        : prepare-config-lua-file!
+        : remove-context-files!} (include :test.helper.utils))
 
 (local thyme (require :thyme))
-
-(local default-config-home (vim.fn.stdpath :config))
-
-(local default-fnl-dir (vim.fs.joinpath default-config-home :fnl))
-(local default-lua-dir (vim.fs.joinpath default-config-home :lua))
-
-(local default-fnl-module-path (vim.fs.joinpath default-fnl-dir :foobar.fnl))
-
-(local default-lua-module-path (vim.fs.joinpath default-lua-dir :foobar.lua))
+;; WARN: Importing thyme.config here accidentally removes entire
+;; thyme.call.nilted in the Makefile "prune" target.
+(local Config (require :thyme.config))
 
 (describe* :loader
-  (let [raw-confirm vim.fn.confirm]
-    (setup* (fn []
-              (thyme.setup)))
+  (let [raw-confirm vim.fn.confirm
+        default-fnl-dir Config.fnl-dir]
+    (setup (fn []
+             (thyme.setup)))
     (before_each (fn []
                    (set vim.fn.confirm
                         (fn []
                           (let [idx-yes 2]
-                            idx-yes)))
-                   (-> (vim.fs.dirname default-fnl-module-path)
-                       (vim.fn.mkdir :p))
-                   (-> (vim.fs.dirname default-lua-module-path)
-                       (vim.fn.mkdir :p))
-                   (vim.fn.delete default-fnl-module-path)
-                   (vim.fn.delete default-lua-module-path)
-                   (->> (vim.fn.filereadable default-fnl-module-path)
-                        (assert.equals 0))
-                   (->> (vim.fn.filereadable default-lua-module-path)
-                        (assert.equals 0))
-                   (assert.is_not_nil (-> vim.o.runtimepath
-                                          (: :find (vim.fn.stdpath :config) ;
-                                             1 true)))))
+                            idx-yes)))))
     (after_each (fn []
                   (set vim.fn.confirm raw-confirm)
-                  (vim.fn.delete default-fnl-module-path)
-                  (vim.fn.delete default-lua-module-path)
                   (remove-context-files!)
-                  (set package.loaded.foobar nil)
-                  (vim.cmd "% bdelete")))
-    (setup* (fn []
-              (thyme.setup)))
-    (before_each (fn []
-                   (-> (vim.fs.dirname default-fnl-module-path)
-                       (vim.fn.mkdir :p))
-                   (-> (vim.fs.dirname default-lua-module-path)
-                       (vim.fn.mkdir :p))
-                   (vim.fn.delete default-fnl-module-path)
-                   (vim.fn.delete default-lua-module-path)
-                   (->> (vim.fn.filereadable default-fnl-module-path)
-                        (assert.equals 0))
-                   (->> (vim.fn.filereadable default-lua-module-path)
-                        (assert.equals 0))
-                   (assert.is_not_nil (-> vim.o.runtimepath
-                                          (: :find (vim.fn.stdpath :config) ;
-                                             1 true)))))
-    (after_each (fn []
-                  (vim.fn.delete default-fnl-module-path)
-                  (vim.fn.delete default-lua-module-path)
-                  (remove-context-files!)
-                  (set package.loaded.foobar nil)
                   (vim.cmd "% bdelete")))
     (it* "returns a string if specified module is not found"
-      (assert.equals :string (type (thyme.loader :foo)))
-      (assert.equals :string (type (thyme.loader :bar)))
-      (assert.equals :string (type (thyme.loader :foobar))))
-    (describe* "cannot load a lua file under lua/ as a module;"
-      (it* "thus, thyme.loader returns a string for the module \"foobar\" without any error"
-        (vim.cmd "ThymeUninstall")
-        (-> default-lua-dir
-            (vim.fn.mkdir :p))
-        (vim.cmd (.. "write " default-lua-module-path))
-        (-> (vim.fn.filereadable default-lua-module-path)
-            (assert.equals 1))
-        (assert.equals :string (type (thyme.loader :foobar)))
-        (vim.fn.delete default-lua-module-path)))
-    (describe* "can load a fnl file under fnl/ as a module by default;"
-      (it* "thus, thyme.loader can load the module \"foobar\" without any error"
-        (vim.cmd "ThymeUninstall")
-        (-> default-fnl-dir
-            (vim.fn.mkdir :p))
-        (vim.cmd (.. "write " default-fnl-module-path))
-        (-> (vim.fn.filereadable default-fnl-module-path)
-            (assert.equals 1))
-        (assert.equals :function (type (thyme.loader :foobar)))
-        (vim.fn.delete default-fnl-module-path))
-      (it* "thus, `require` can load the module \"foobar\" without any error"
-        (assert.is_false (pcall require :foobar))
-        (vim.cmd (.. "write " default-fnl-module-path))
-        (assert.is_true (pcall require :foobar))
-        (set package.loaded.foobar nil)))
+      (assert.equals :string (type (thyme.loader :foo))
+                     "module 'foo' is loaded unexpectedly"))
+    (describe* "with fnl-dir=fnl"
+      (before_each (fn []
+                     (set Config.fnl-dir "fnl")))
+      (after_each (fn []
+                    (set Config.fnl-dir default-fnl-dir)))
+      (describe* "should not load a lua file under lua/ as a module;"
+        (it* "thus, thyme.loader returns a string for the module \"foo\" without any error"
+          (let [lua-path (prepare-config-lua-file! :foo.lua "return nil")]
+            (assert.equals :string (type (thyme.loader :foo)))
+            (vim.fn.delete lua-path))))
+      (describe* "can load a fnl file under fnl/ as a module by default;"
+        (it* "thus, thyme.loader can load the module \"foo\" without any error"
+          (let [fnl-path (prepare-config-fnl-file! "foo.fnl" "{}")]
+            (assert.equals :function (type (thyme.loader :foo)))
+            (vim.fn.delete fnl-path))))
+      (it* "thus, `require` can load the module \"foo\" without any error"
+        (assert.has_error #(require :foo))
+        (set package.loaded.foo nil)
+        (let [fnl-path (prepare-config-fnl-file! "foo.fnl" "{}")]
+          (assert.has_no_error #(require :foo))
+          (set package.loaded.foo nil)
+          (vim.fn.delete fnl-path))))
     (it* "can restore and load missing module from backup once loaded"
-      (vim.cmd (.. "write " default-fnl-module-path))
-      (assert.equals :function (type (thyme.loader :foobar)))
-      (set package.loaded.foobar nil)
-      (vim.fn.delete default-fnl-module-path)
-      (assert.equals :function (type (thyme.loader :foobar))))
+      (let [fnl-path (prepare-config-fnl-file! :foo.fnl "{}")]
+        (assert.equals :function (type (thyme.loader :foo))
+                       "failed to load module 'foo' first")
+        (vim.fn.delete fnl-path)
+        (assert.equals :function (type (thyme.loader :foo))
+                       "failed to load once-loaded module 'foo' after deletion")))
     (it* "cannot restore once loaded module after :ThymeUninstall"
-      (vim.cmd (.. "write " default-fnl-module-path))
-      (assert.equals :function (type (thyme.loader :foobar)))
-      (set package.loaded.foobar nil)
-      (vim.fn.delete default-fnl-module-path)
-      (vim.cmd "ThymeUninstall")
-      (assert.equals :string (type (thyme.loader :foobar))))))
+      (let [fnl-path (prepare-config-fnl-file! :foo.fnl "{}")]
+        (assert.equals :function (type (thyme.loader :foo)))
+        (vim.fn.delete fnl-path)
+        (vim.cmd "ThymeUninstall")
+        (assert.equals :string (type (thyme.loader :foo)))))))

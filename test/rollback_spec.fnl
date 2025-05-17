@@ -1,4 +1,4 @@
-(import-macros {: before-each : describe* : it*} :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
@@ -14,8 +14,10 @@
   (vim.fn.delete (TestRollbackManager.get-root) :rf))
 
 (describe* "rollback"
-  (before-each (fn []
+  (before_each (fn []
                  (clear-backup-files!)))
+  (after_each (fn []
+                (remove-context-files!)))
   (it* ".new creates a backup directory."
     (let [kind "foo"]
       (TestRollbackManager.new kind ".foobar")
@@ -28,7 +30,7 @@
           backup-handler (rollback-manager:backup-handler-of module-name)
           stored-path (backup-handler:determine-active-backup-path)
           filename (.. module-name ".fnl")
-          original-path (vim.fs.joinpath (vim.fn.stdpath :config) :fnl filename)]
+          original-path (prepare-config-fnl-file! filename "{}")]
       (-> (vim.fs.dirname original-path)
           (vim.fn.mkdir :p))
       (vim.fn.writefile ["{:foo :bar}"] original-path)

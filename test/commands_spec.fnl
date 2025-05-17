@@ -1,5 +1,4 @@
-(import-macros {: setup* : before-each : describe* : it*}
-               :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
 
@@ -12,8 +11,10 @@
 (local thyme (require :thyme))
 
 (describe* "command"
-  (setup* (fn []
-            (thyme.setup)))
+  (setup (fn []
+           (thyme.setup)))
+  (after_each (fn []
+                (remove-context-files!)))
   (describe* ":ThymeConfigOpen"
     (it* "opens the main config file .nvim-thyme.fnl"
       (vim.cmd :new)

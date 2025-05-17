@@ -123,6 +123,7 @@ build: $(LUA_RES_DIRS) $(FNL_PCALLABLE_FILES) prune $(LUA_RES) ## Compile lua fi
 test: build $(LUA_SPECS) ## Run test
 	@REPO_ROOT="$(REPO_ROOT)" \
 		THYME_DEBUG=1 \
+		FNL_DIR=lua \
 		DEPS_DIR="$(TEST_CONTEXT_DIR)/.deps" \
 		XDG_CONFIG_HOME="$(TEST_CONTEXT_DIR)/.config" \
 		XDG_CACHE_HOME="$(TEST_CONTEXT_DIR)/.cache" \
