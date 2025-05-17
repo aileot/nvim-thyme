@@ -1,38 +1,46 @@
 ;; Example options for nvim-thyme; some of the values are different from the default ones.
-{:max-rollbacks 5
- :compiler-options {:correlate true
-                    ;; Comment out below to enable `vim` APIs and any others in
-                    ;; compile time.
-                    ;; :compilerEnv _G
-                    ;; Pinpoint the error position with the pair of the strings.
-                    :error-pinpoint ["|>>" "<<|"]}
- ;; The directory relative to `(stdpath :config)` to manage your Fennel modules
- ;; like you manage Lua modules under lua/. The value only affects non-macro
- ;; modules; for Fennel macros, arrange `macro-path` option instead.
- :fnl-dir "fnl"
- ;; The path patterns for `fennel.macro-path` to find Fennel macro module
- ;; path. Relative path markers (`.`) are internally replaced with the paths on
- ;; &runtimepath filtered by the directories preceded by `?`, for example, in
- ;; `./fnl/?.fnl`.
- :macro-path (-> ["./fnl/?.fnlm"
-                  "./fnl/?/init.fnlm"
-                  "./fnl/?.fnl"
-                  "./fnl/?/init-macros.fnl"
-                  "./fnl/?/init.fnl"]
-                 (table.concat ";"))
- :command {;; Keep set it to nil to inherit from the root option.
-           :compiler-options nil
-           :cmd-history {;; With parinfer integration and the options below,
-                         ;; nvim-thyme will modify your command history with
-                         ;; parinfer-ed command results for fennel wrapper
-                         ;; Ex commands.
-                         ;; "overwrite"|"append"|"ignore"
-                         :method "overwrite"
-                         ;; trailing-parens only affects command history when
-                         ;; the method option is set to either "overwrite" or
-                         ;; "append".
-                         ;; "omit"|"keep"
-                         :trailing-parens "omit"}}
- :watch {:event [:BufWritePost :FileChangedShellPost]
-         :pattern "*.fnlm?"
-         :notifier vim.notify}}
+
+(let [std-config (vim.fn.stdpath :config)
+      std-fnl-dir? (vim.uv.fs_stat (vim.fs.joinpath std-config "fnl"))]
+  {:max-rollbacks 5
+   :compiler-options {:correlate true
+                      ;; Comment out below to enable `vim` APIs and any others in
+                      ;; compile time.
+                      ;; :compilerEnv _G
+                      ;; Pinpoint the error position with the pair of the strings.
+                      :error-pinpoint ["|>>" "<<|"]}
+   ;; The directory relative to `(stdpath :config)` to manage your Fennel modules
+   ;; like you manage Lua modules under lua/. The value only affects non-macro
+   ;; modules; for Fennel macros, arrange `macro-path` option instead.
+   :fnl-dir (if std-fnl-dir? "fnl" "lua")
+   ;; The path patterns for `fennel.macro-path` to find Fennel macro module
+   ;; path. Relative path markers (`.`) are internally replaced with the paths on
+   ;; &runtimepath filtered by the directories preceded by `?`, for example, in
+   ;; `./fnl/?.fnl`.
+   :macro-path (-> ["./fnl/?.fnlm"
+                    "./fnl/?/init.fnlm"
+                    "./fnl/?.fnl"
+                    "./fnl/?/init-macros.fnl"
+                    "./fnl/?/init.fnl"
+                    ;; NOTE: Only the last items can be `nil`s without errors.
+                    (when std-fnl-dir? (.. std-config "/lua/?.fnlm"))
+                    (when std-fnl-dir? (.. std-config "/lua/?/init.fnlm"))
+                    (when std-fnl-dir? (.. std-config "/lua/?.fnl"))
+                    (when std-fnl-dir? (.. std-config "/lua/?/init.fnl"))]
+                   (table.concat ";"))
+   :command {;; Keep set it to nil to inherit from the root option.
+             :compiler-options nil
+             :cmd-history {;; With parinfer integration and the options below,
+                           ;; nvim-thyme will modify your command history with
+                           ;; parinfer-ed command results for fennel wrapper
+                           ;; Ex commands.
+                           ;; "overwrite"|"append"|"ignore"
+                           :method "overwrite"
+                           ;; trailing-parens only affects command history when
+                           ;; the method option is set to either "overwrite" or
+                           ;; "append".
+                           ;; "omit"|"keep"
+                           :trailing-parens "omit"}}
+   :watch {:event [:BufWritePost :FileChangedShellPost]
+           :pattern "*.fnlm?"
+           :notifier vim.notify}})
