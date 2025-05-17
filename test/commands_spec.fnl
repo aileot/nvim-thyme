@@ -191,7 +191,7 @@
     ;; TODO: Do not hardcode `module/` backup dir.
     (let [backup-label "module/"]
       (describe* "removes all mounted rollbacks;"
-        (it* "thus, `:UmountAll` should make `nvim` ignore the last mounted module"
+        (it* "thus, `:UnmountAll` should make `nvim` ignore the last mounted module"
           (let [mod :foobar
                 filename (.. mod ".fnl")
                 ctx1 "1"
