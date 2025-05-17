@@ -14,6 +14,8 @@
 (describe* "command"
   (setup* (fn []
             (thyme.setup)))
+  (after_each (fn []
+                (remove-context-files!)))
   (describe* ":ThymeConfigOpen"
     (it* "opens the main config file .nvim-thyme.fnl"
       (vim.cmd :new)

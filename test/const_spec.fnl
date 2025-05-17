@@ -1,6 +1,7 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
+(local {: remove-context-files!} (include :test.helper.utils))
 
 (local {: config-filename} (require :thyme.const))
 
@@ -18,6 +19,8 @@
     (before_each (fn []
                    (tset package.loaded "thyme.const" nil)
                    (set vim.opt.runtimepath test-rtp/local)))
+    (after_each (fn []
+                  (remove-context-files!)))
     (teardown (fn []
                 (set vim.opt.runtimepath test-rtp/global)))
     (it* "thus, loading nvim-thyme without the `/thyme/compile` string in `&rtp` throws error."

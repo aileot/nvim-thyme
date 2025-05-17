@@ -1,10 +1,12 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
-
+(local {: remove-context-files!} (include :test.helper.utils))
 (local thyme (require :thyme))
 
 (describe* "thyme.cache.open"
+  (after_each (fn []
+                (remove-context-files!)))
   (it* "should open a dir a name of whose subdirectory contains literally `compile`"
     (vim.cmd :new)
     (thyme.cache.open)

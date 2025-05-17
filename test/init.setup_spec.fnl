@@ -3,10 +3,13 @@
 (include :test.helper.prerequisites)
 
 (local thyme (require :thyme))
+(local {: remove-context-files!} (include :test.helper.utils))
 
 (local Config (require :thyme.config))
 
 (describe* "setup"
+  (after_each (fn []
+                (remove-context-files!)))
   (describe* "can be called"
     (it* "without arguments"
       (assert.has_no_error #(thyme.setup)))

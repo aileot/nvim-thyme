@@ -19,7 +19,6 @@
     (before_each (fn []
                    (-> fnl-dir
                        (vim.fn.mkdir :p))
-                   (remove-context-files!)
                    (vim.cmd.write fnl-path)))
     (after_each (fn []
                   (vim.fn.delete fnl-path)
