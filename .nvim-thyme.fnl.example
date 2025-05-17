@@ -3,8 +3,7 @@
 (let [std-config (vim.fn.stdpath :config)
       std-fnl-dir? (vim.uv.fs_stat (vim.fs.joinpath std-config "fnl"))
       use-lua-dir? (not std-fnl-dir?)]
-  {:max-rollbacks 5
-   :compiler-options {:correlate true
+  {:compiler-options {:correlate true
                       ;; Comment out below to enable `vim` APIs and any others in
                       ;; compile time.
                       ;; :compilerEnv _G
@@ -29,6 +28,7 @@
                     (when use-lua-dir? (.. std-config "/lua/?.fnl"))
                     (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                    (table.concat ";"))
+   :max-rollbacks 5
    :notifier (let [noisy-notifier (case (or (pcall require :fidget)
                                             (pcall require :noice)
                                             (pcall require :notify))
