@@ -15,6 +15,11 @@
 (local {: hide-file! : restore-file! : can-restore-file?}
        (require :thyme.utils.pool))
 
+(local HashMap (require :thyme.utils.hashmap))
+
+(local {: validate-stackframe! &as Stackframe}
+       (require :thyme.dependency.stackframe))
+
 (local {: modmap->line : read-module-map-file} (require :thyme.dependency.io))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
@@ -40,7 +45,7 @@
     (set self._log-path log-path)
     (set self._entry-map (. modmap fnl-path))
     (tset modmap fnl-path nil)
-    (set self._dep-map modmap)
+    (set self._dependent-maps (HashMap.new))
     (values self)))
 
 (fn ModuleMap.try-read-from-file [raw-fnl-path]
@@ -105,14 +110,15 @@
   (and self._entry-map self._entry-map.macro?))
 
 (fn ModuleMap.get-dependent-maps [self]
-  self._dep-map)
+  self._dependent-maps)
 
 (fn ModuleMap.log-dependent! [self dependent]
-  (when-not (. self._dep-map dependent.fnl-path)
-    (let [modmap-line (modmap->line dependent)
-          log-path (self:get-log-path)]
-      (tset self._dep-map dependent.fnl-path dependent)
-      (append-log-file! log-path modmap-line))))
+  (let [dep-map (self:get-dependent-maps)]
+    (when-not (dep-map:contains? dependent.fnl-path)
+      (let [modmap-line (modmap->line dependent)
+            log-path (self:get-log-path)]
+        (dep-map:insert! dependent.fnl-path dependent)
+        (append-log-file! log-path modmap-line)))))
 
 (fn ModuleMap.clear! [self]
   "Clear dependency map of `dependency-fnl-path`:
@@ -120,18 +126,19 @@
 - Remove module-map log file.
 - Set module-map in memory for `dependency-fnl-path` to `nil`.
   @param dependency-fnl-path string"
-  (let [log-path (self:get-log-path)]
+  (let [log-path (self:get-log-path)
+        dep-map (self:get-dependent-maps)]
     (set self.__entry-map self._entry-map)
-    (set self.__dep-map self._dep-map)
+    (dep-map:clear!)
     (set self._entry-map nil)
-    (set self._dep-map nil)
     (hide-file! log-path)))
 
 (fn ModuleMap.restore! [self]
   "Restore once cleared module-map."
-  (let [log-path (self:get-log-path)]
+  (let [log-path (self:get-log-path)
+        dep-map (self:get-dependent-maps)]
     (set self._entry-map self.__entry-map)
-    (set self._dep-map self.__dep-map)
+    (dep-map:restore!)
     (restore-file! log-path)))
 
 (fn ModuleMap.fnl-path->log-path [raw-path]
