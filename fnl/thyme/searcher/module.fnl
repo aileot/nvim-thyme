@@ -4,7 +4,8 @@
 
 (local Path (require :thyme.utils.path))
 
-(local {: file-readable?
+(local {: executable?
+        : file-readable?
         : assert-is-file-readable
         : read-file
         : write-lua-file!
@@ -47,14 +48,17 @@ fennel.lua.
                                            {:upward true :path fnl-src-path})
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
-        fennel-lua-path (Path.join fennel-src-root fennel-lua-file)
-        on-exit (fn [out]
-                  (assert (= 0 (tonumber out))
-                          (-> "failed to compile fennel.lua with code: %s\n%s"
-                              (: :format out.code out.stderr))))
-        make-cmd [:make :-C fennel-src-root fennel-lua-file]]
-    (-> (vim.system make-cmd {:text true} on-exit)
-        (: :wait))
+        fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
+    (let [on-exit (fn [out]
+                    (assert (= 0 (tonumber out))
+                            (-> "failed to compile fennel.lua with code: %s\n%s"
+                                (: :format out.code out.stderr))))
+          LUA (when-not (executable? "lua")
+                (or vim.env.LUA "nvim --clean --headless -l"))
+          env {: LUA}
+          make-cmd [:make :-C fennel-src-root fennel-lua-file]]
+      (-> (vim.system make-cmd {:text true : env} on-exit)
+          (: :wait)))
     (-> (vim.fs.dirname cached-fennel-path)
         (vim.fn.mkdir :p))
     (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
