@@ -1,5 +1,7 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
+(include :test.helper.prerequisites)
+
 (local {: prepare-context-fnl-file! : remove-context-files!}
        (include :test.helper.utils))
 
