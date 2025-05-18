@@ -31,7 +31,7 @@ local function watch_files_21(_3fopts)
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if allowed_3f(config_path) then
-        vim.cmd("trust")
+        vim.cmd("silent trust")
       else
       end
       if clear_cache_21() then

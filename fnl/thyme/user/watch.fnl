@@ -44,7 +44,7 @@ the same.
                              ;; regardless of the recorded hash; otherwise, the
                              ;; user will be annoyed being asked to trust
                              ;; his/her config file on every change.
-                             (vim.cmd :trust))
+                             (vim.cmd "silent trust"))
                            (when (clear-cache!)
                              (let [msg (.. "Cleared all the cache under "
                                            lua-cache-prefix)]
