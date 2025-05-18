@@ -4,7 +4,8 @@
 
 (local Path (require :thyme.utils.path))
 
-(local {: file-readable?
+(local {: executable?
+        : file-readable?
         : assert-is-file-readable
         : read-file
         : write-lua-file!
@@ -47,16 +48,24 @@ fennel.lua.
                                            {:upward true :path fnl-src-path})
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
-        fennel-lua-path (Path.join fennel-src-root fennel-lua-file)
-        ;; NOTE: As long as the args of vim.fn.system is a list instead of a
-        ;; string the process is independent from vim.o.shell. The
-        ;; independence from shell also means that shell specific keywords
-        ;; like `|`, `&&`, etc., would be interpreted as `make` arg.
-        ;; TODO: Apply appropriate filename escapes.
-        output (vim.fn.system [:make :-C fennel-src-root fennel-lua-file])]
-    (when-not (= 0 vim.v.shell_error)
-      (error (.. "failed to compile fennel.lua with exit code: "
-                 vim.v.shell_error "\ndump:\n" output)))
+        fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
+    (let [?lua (if (executable? :luajit) "luajit" (executable? :lua)
+                   (let [stdout (-> (vim.system [:lua :-v] {:text true})
+                                    (: :wait)
+                                    (. :stdout))]
+                     ;; NOTE: The `lua` should be lua5.1 or luajit.
+                     (when (or (stdout:find "^LuaJIT")
+                               (stdout:find "^Lua 5%.1%."))
+                       "lua")))
+          LUA (or ?lua "nvim --clean --headless -l")
+          env {: LUA}
+          on-exit (fn [out]
+                    (assert (= 0 (tonumber out.code))
+                            (-> "failed to compile fennel.lua with code: %s\n%s"
+                                (: :format out.code out.stderr))))
+          make-cmd [:make :-C fennel-src-root fennel-lua-file]]
+      (-> (vim.system make-cmd {:text true : env} on-exit)
+          (: :wait)))
     (-> (vim.fs.dirname cached-fennel-path)
         (vim.fn.mkdir :p))
     (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))

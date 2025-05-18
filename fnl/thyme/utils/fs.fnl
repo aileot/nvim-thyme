@@ -12,6 +12,9 @@
                           (fn [...]
                             (call ...))))}))
 
+(fn executable? [cmd]
+  (= 1 (vim.fn.executable cmd)))
+
 (fn file-readable? [path]
   (and (= :string (type path)) ;
        (= 1 (vim.fn.filereadable path))))
@@ -177,7 +180,8 @@
                         false))
       _ true)))
 
-(setmetatable {: file-readable?
+(setmetatable {: executable?
+               : file-readable?
                : directory?
                : assert-is-file-readable
                : assert-is-directory
