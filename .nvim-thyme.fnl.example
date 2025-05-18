@@ -7,7 +7,7 @@
                       ;; Comment out below to enable `vim` APIs and any others in
                       ;; compile time.
                       ;; :compilerEnv _G
-                      ;; Pinpoint the error position with the pair of the strings.
+                      ;; Emphasize the error position with the pair of the strings.
                       :error-pinpoint ["|>>" "<<|"]}
    ;; The directory relative to `(stdpath :config)` to manage your Fennel modules
    ;; like you manage Lua modules under lua/. The value only affects non-macro
