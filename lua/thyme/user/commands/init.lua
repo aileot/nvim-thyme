@@ -24,14 +24,21 @@ local function define_commands_21(_3fopts)
     local _5_ = vim.fn.confirm("Delete all the thyme's cache, state, and data files? It will NOT modify your config files.", "&No\n&yes", 1, "Warning")
     if (_5_ == 2) then
       local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}
+      do
+        local _6_ = vim.secure.trust({action = "remove", path = config_path})
+        if (_6_ == true) then
+          UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "successfully untrust .nvim-thyme.fnl")
+        else
+        end
+      end
       for _, path in ipairs(files) do
         assert_is_file_of_thyme(path)
         if directory_3f(path) then
-          local _6_ = vim.fn.delete(path, "rf")
-          if (_6_ == 0) then
+          local _8_ = vim.fn.delete(path, "rf")
+          if (_8_ == 0) then
             UninstallCommandMessenger["notify!"](UninstallCommandMessenger, ("successfully deleted " .. path))
           else
-            local _0 = _6_
+            local _0 = _8_
             error(("failed to delete " .. path))
           end
         else

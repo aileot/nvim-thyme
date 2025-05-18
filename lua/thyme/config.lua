@@ -118,14 +118,15 @@ local function read_config_with_backup_21(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
+  local _0 = print(vim.inspect(config_code))
   local ok_3f, _3fresult = nil, nil
   local function _27_()
     return fennel.eval(config_code, compiler_options)
   end
   ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
-  local _0
+  local _1
   cache["evaluating?"] = false
-  _0 = nil
+  _1 = nil
   if ok_3f then
     local _3fconfig = _3fresult
     if backup_handler["should-update-backup?"](backup_handler, config_code) then
