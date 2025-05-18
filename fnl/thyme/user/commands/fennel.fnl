@@ -130,7 +130,7 @@
         compiler-options opts.compiler-options
         cmd-history-opts opts.cmd-history]
     (command! :Fnl
-      {:nargs "*"
+      {:nargs "+"
        :complete :lua
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
       (wrap-fennel-wrapper-for-command fennel-wrapper.eval
@@ -138,7 +138,7 @@
                                         : compiler-options
                                         : cmd-history-opts}))
     (command! :FnlCompile
-      {:nargs "*"
+      {:nargs "+"
        :complete :lua
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
