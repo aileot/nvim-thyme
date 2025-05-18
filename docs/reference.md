@@ -134,7 +134,7 @@ See [.nvim-thyme.fnl.example][] for an example.
 (default: `nil`)
 
 The default compiler-options for [Fennel Wrapper Commands][] like [:Fnl][].
-If `nil`, it inherits the values from [compiler-options][] above.
+If `nil`, it inherits the values from [compiler-options](#compiler-options) above.
 
 ### command.cmd-history.method
 
