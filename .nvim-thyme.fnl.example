@@ -44,7 +44,7 @@
                    ;;           (vim.notify msg ...))
                    _
                    (vim.notify msg ...))))
-   :command {;; Keep set it to nil to inherit from the root option.
+   :command {;; Keep set it to nil to inherit the values from the root option.
              :compiler-options nil
              :cmd-history {;; With parinfer integration and the options below,
                            ;; nvim-thyme will modify your command history with

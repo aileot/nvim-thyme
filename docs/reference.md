@@ -66,6 +66,22 @@ argument: `allowedGlobals`, `correlate`, `useMetadata`, and so on.
 
 See the official Fennel API documentation: <https://fennel-lang.org/api>
 
+### fnl-dir
+
+(default:
+If `fnl/` directory exists at `vim.fn.stdpath('config')`, `"fnl"`;
+otherwise, `"lua"`)
+
+The relative path to `vim.fn.stdpath('config')` directory for your Fennel module files.\
+It only supports `<fnl-dir>/?.fnl` and `<fnl-dir>/?/init.fnl`
+relative to `vim.fn.stdpath('config')`.
+
+> [!NOTE]
+> 3rd-party plugins written in Fennel are supposed to be compiled to `lua/`
+> as general nvim plugins written in Lua.
+
+For the path management of macro files, see [macro-path](#macro-path).
+
 ### macro-path
 
 (default: `"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
@@ -91,9 +107,77 @@ path of `(vim.fn.stdpath :config)`.
 
 Keep the number of backups for rollback at most. Set `0` to disable it.
 
-Note: Unlike the rollback system for compile error, [nvim-thyme][] does
-_**not** provide any rollback system for nvim **runtime** error._
-Such a feature should be realized independently of a runtime compiler plugin.
+> [!NOTE]
+> The rollback system only works for _**compile** error_;
+> [nvim-thyme][] does **not** provide any rollback system
+> for nvim _**runtime** error._
+> Such a feature should be realized independently of a runtime compiler plugin.
+
+### notifier
+
+(default: `vim.notify`)
+
+It is a function which takes the same arguments as `vim.notify`.
+
+You can filter out specific notifications by this option.
+See [.nvim-thyme.fnl.example][] for an example.
+
+### command.compiler-options
+
+(default: `nil`)
+
+The default compiler-options for [Fennel Wrapper Commands][] like [:Fnl][].
+If `nil`, it inherits the values from [compiler-options][] above.
+
+### command.cmd-history.method
+
+(default: `"overwrite"`)
+
+In Cmdline mode, the arguments of [Fennel Wrapper Commands][] like [:Fnl][]
+are modified when [parinfer-rust][] integration is activated.
+
+This option determines the command history behavior with the modified input.
+
+Available methods:
+
+- `"overwrite"`:
+  Overwrite the original input with the modified input in the command history.
+- `"append"`:
+  Append the modified input to the command history in addition to the original input.
+- `"ignore"`:
+  Ignore the modified input. Just keep the original input.
+
+### command.cmd-history.trailing-parens
+
+(default: `"omit"`)
+
+This option determines the behavior for [Fennel Wrapper Commands][] like [:Fnl][].
+
+This option works only when [parinfer-rust][] integration is activated
+and [command.cmd-history.method][] is `"overwrite"` or `"append"`.
+
+Available options:
+
+- `"omit"`:
+  Trim all the trailing parentheses in the command history.
+- `"keep"`:
+  Keep the trailing parentheses in the command history.
+
+### watch.event
+
+(default: `[:BufWritePost :FileChangedShellPost]`)
+
+What [autocmd events][] should check the changes of Fennel source file.
+
+Note that the watch system on autocmd events
+can only detect the changes on the buffers loaded in current nvim session.
+
+### watch.pattern
+
+(default: `"*.{fnl,fnlm}"`)
+
+The [autocmd pattern][] for [match][autocmd-event-args] (path)
+to check the changes of Fennel source file.
 
 ## Functions
 
@@ -437,13 +521,16 @@ Unmount the mounted backups for the `{target}`.
 
 Unmount the mounted backups.
 
+[autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
+[autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
+[autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
 [.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
+[parinfer-rust]: https://github.com/eraserhd/parinfer-rust
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [thyme]: https://github.com/aileot/nvim-thyme
-[nvim-laurel]: https://github.com/aileot/nvim-laurel
 [.nvim-thyme.fnl]: #options-for-nvim-thymefnl
 [thyme.setup]: #thymesetup-or-thymesetup
 [&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
