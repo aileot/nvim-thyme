@@ -470,7 +470,8 @@ This command will search in the following order:
 #### `:ThymeUninstall`
 
 Remove all the cache, data, state, and log files,
-which are implicitly managed by [nvim-thyme][].
+which are implicitly managed by [nvim-thyme][],
+and remove the hash of [.nvim-thyme.fnl][] from the [trust][vim.secure.trust] database.
 
 This command is so safe
 as it does **not** affect your [.nvim-thyme.fnl][]
@@ -550,4 +551,5 @@ Unmount the mounted backups.
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeRollbackUnmount]: #thymerollbackunmount-target
+[vim.secure.trust]: https://neovim.io/doc/user/lua.html#_lua-module:-vim.secure
 [:ThymeRollbackUnmountAll]: #thymerollbackunmountall
