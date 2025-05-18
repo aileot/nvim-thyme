@@ -51,8 +51,8 @@ the same.
                                (WatchMessenger:notify! msg))))
                          (case (xpcall #(check-to-update! resolved-path opts)
                                        fennel.traceback)
-                           (false msg) (WatchMessenger:notify-once! msg
-                                                                    vim.log.levels.ERROR)))
+                           (false msg) (WatchMessenger:notify! msg
+                                                               vim.log.levels.ERROR)))
                      ;; Prevent not to destroy the autocmd.
                      nil))]
     (set ?group group)

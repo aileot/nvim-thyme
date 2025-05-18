@@ -47,7 +47,7 @@ local function watch_files_21(_3fopts)
       _11_, _12_ = xpcall(_13_, fennel.traceback)
       if ((_11_ == false) and (nil ~= _12_)) then
         local msg = _12_
-        WatchMessenger["notify-once!"](WatchMessenger, msg, vim.log.levels.ERROR)
+        WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.ERROR)
       else
       end
     end
