@@ -34,11 +34,13 @@ local function compile_fennel_into_rtp_21()
   local _ = assert(fennel_src_Makefile, "Could not find Makefile for fennel.lua.")
   local fennel_src_root = vim.fs.dirname(fennel_src_Makefile)
   local fennel_lua_path = Path.join(fennel_src_root, fennel_lua_file)
-  local output = vim.fn.system({"make", "-C", fennel_src_root, fennel_lua_file})
-  if not (0 == vim.v.shell_error) then
-    error(("failed to compile fennel.lua with exit code: " .. vim.v.shell_error .. "\ndump:\n" .. output))
-  else
+  local on_exit
+  local function _8_(out)
+    return assert((0 == tonumber(out)), ("failed to compile fennel.lua with code: %s\n%s"):format(out.code, out.stderr))
   end
+  on_exit = _8_
+  local make_cmd = {"make", "-C", fennel_src_root, fennel_lua_file}
+  vim.system(make_cmd, {text = true}, on_exit):wait()
   vim.fn.mkdir(vim.fs.dirname(cached_fennel_path), "p")
   if can_restore_file_3f(cached_fennel_path, read_file(fennel_lua_path)) then
     restore_file_21(cached_fennel_path)
