@@ -57,4 +57,4 @@
                            ;; "append".
                            ;; "omit"|"keep"
                            :trailing-parens "omit"}}
-   :watch {:event [:BufWritePost :FileChangedShellPost] :pattern "*.fnlm?"}})
+   :watch {:event [:BufWritePost :FileChangedShellPost] :pattern "*.{fnl,fnlm}"}})
