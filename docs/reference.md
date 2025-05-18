@@ -152,6 +152,22 @@ Available options:
 - `"keep"`:
   Keep the trailing parentheses in the command history.
 
+### watch.event
+
+(default: `[:BufWritePost :FileChangedShellPost]`)
+
+What [autocmd events][] should check the changes of Fennel source file.
+
+Note that the watch system on autocmd events
+can only detect the changes on the buffers loaded in current nvim session.
+
+### watch.pattern
+
+(default: `"*.{fnl,fnlm}"`)
+
+The [autocmd pattern][] for [match][autocmd-event-args] (path)
+to check the changes of Fennel source file.
+
 ## Functions
 
 ### `thyme.loader`
@@ -494,6 +510,9 @@ Unmount the mounted backups for the `{target}`.
 
 Unmount the mounted backups.
 
+[autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
+[autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
+[autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
 [.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
