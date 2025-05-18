@@ -64,7 +64,7 @@
                                                 :path this-dir})
             recommended-config (read-file example-config-path)]
         (write-fnl-file! config-path recommended-config)
-        (vim.cmd.tabedit config-path)
+        (vim.cmd (.. "tabedit " config-path))
         (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
         (vim.cmd "redraw!")
         (when (= config-path (vim.api.nvim_buf_get_name 0))
@@ -115,30 +115,39 @@ the active backup, if available.
         backup-name "default"
         backup-handler (ConfigRollbackManager:backup-handler-of backup-name)
         mounted-backup-path (backup-handler:determine-mounted-backup-path)
-        config-code (if (file-readable? mounted-backup-path)
-                        (let [msg (-> "rollback config to mounted backup (created at %s)"
-                                      (: :format
-                                         (backup-handler:determine-active-backup-birthtime)))]
-                          (notify-once! msg vim.log.levels.WARN)
-                          (read-file mounted-backup-path))
-                        (do
-                          (when (and secure-nvim-env?
-                                     (denied? config-file-path))
-                            (vim.secure.trust {:action "remove"
-                                               :path config-file-path})
-                            (notify-once! (: "Previously the attempt to load %s has been denied.
+        ?config-code (if (file-readable? mounted-backup-path)
+                         (let [msg (-> "rollback config to mounted backup (created at %s)"
+                                       (: :format
+                                          (backup-handler:determine-active-backup-birthtime)))]
+                           (notify-once! msg vim.log.levels.WARN)
+                           (read-file mounted-backup-path))
+                         (do
+                           (when (and secure-nvim-env?
+                                      (denied? config-file-path))
+                             (vim.secure.trust {:action "remove"
+                                                :path config-file-path})
+                             (notify-once! (: "Previously the attempt to load %s has been denied.
 However, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."
-                                             :format config-filename)))
-                          (vim.secure.read config-file-path)))
+                                              :format config-filename)))
+                           ;; NOTE: The other choices than "allow" in
+                           ;; `vim.secure.read` prompt  returns `nil`.
+                           (vim.secure.read config-file-path)))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
         _ (set cache.evaluating? true)
-        (ok? ?result) (pcall fennel.eval config-code compiler-options)
+        (ok? ?result) (if ?config-code
+                          (xpcall #(fennel.eval ?config-code compiler-options)
+                                  fennel.traceback)
+                          (do
+                            (notify-once! "Failed to read config, fallback to the default options"
+                                          vim.log.levels.WARN)
+                            default-opts))
         _ (set cache.evaluating? false)]
     ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
     (if ok?
         (let [?config ?result]
-          (when (backup-handler:should-update-backup? config-code)
+          (when (and ?config-code
+                     (backup-handler:should-update-backup? ?config-code))
             (backup-handler:write-backup! config-file-path)
             (backup-handler:cleanup-old-backups!))
           (or ?config {}))
@@ -156,7 +165,10 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 (notify-once! msg vim.log.levels.WARN)
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))
-              {})))))
+              (do
+                (notify-once! "No backup found, fallback to the default options"
+                              vim.log.levels.WARN)
+                default-opts))))))
 
 (set cache.main-config {})
 
@@ -197,6 +209,9 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   {:__index (fn [_self k]
               (case k
                 "?error-msg" (when cache.evaluating?
+                               ;; NOTE: This message is intended to be used by
+                               ;; searcher as the reason why the searcher does
+                               ;; not return a chunk.
                                (.. "recursion detected in evaluating "
                                    config-filename))
                 _ (let [config (get-config)]

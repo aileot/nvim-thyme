@@ -51,6 +51,11 @@
                        (Path.join (vim.fn.stdpath :cache) :thyme)
                        (Path.join (vim.fn.stdpath :state) :thyme)
                        (Path.join (vim.fn.stdpath :data) :thyme)]]
+            (case (vim.secure.trust {:action "remove" :path config-path})
+              ;; TODO: Should notify error? but ignore error when
+              ;; `.nvim-thyme.fnl` is not trusted yet.
+              true
+              (UninstallCommandMessenger:notify! "successfully untrust .nvim-thyme.fnl"))
             (each [_ path (ipairs files)]
               (assert-is-file-of-thyme path)
               (when (directory? path)

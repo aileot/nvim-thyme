@@ -55,7 +55,7 @@ if not file_readable_3f(config_path) then
     local example_config_path = _let_13_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
-    vim.cmd.tabedit(config_path)
+    vim.cmd(("tabedit " .. config_path))
     local function _14_()
       return (config_path == vim.api.nvim_buf_get_name(0))
     end
@@ -101,30 +101,39 @@ local function read_config_with_backup_21(config_file_path)
   local backup_name = "default"
   local backup_handler = ConfigRollbackManager["backup-handler-of"](ConfigRollbackManager, backup_name)
   local mounted_backup_path = backup_handler["determine-mounted-backup-path"](backup_handler)
-  local config_code
+  local _3fconfig_code
   if file_readable_3f(mounted_backup_path) then
     local msg = ("rollback config to mounted backup (created at %s)"):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
     notify_once_21(msg, vim.log.levels.WARN)
-    config_code = read_file(mounted_backup_path)
+    _3fconfig_code = read_file(mounted_backup_path)
   else
     if (secure_nvim_env_3f and denied_3f(config_file_path)) then
       vim.secure.trust({action = "remove", path = config_file_path})
       notify_once_21(("Previously the attempt to load %s has been denied.\nHowever, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."):format(config_filename))
     else
     end
-    config_code = vim.secure.read(config_file_path)
+    _3fconfig_code = vim.secure.read(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
   local _
   cache["evaluating?"] = true
   _ = nil
-  local ok_3f, _3fresult = pcall(fennel.eval, config_code, compiler_options)
+  local ok_3f, _3fresult = nil, nil
+  if _3fconfig_code then
+    local function _27_()
+      return fennel.eval(_3fconfig_code, compiler_options)
+    end
+    ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
+  else
+    notify_once_21("Failed to read config, fallback to the default options", vim.log.levels.WARN)
+    ok_3f, _3fresult = default_opts
+  end
   local _0
   cache["evaluating?"] = false
   _0 = nil
   if ok_3f then
     local _3fconfig = _3fresult
-    if backup_handler["should-update-backup?"](backup_handler, config_code) then
+    if (_3fconfig_code and backup_handler["should-update-backup?"](backup_handler, _3fconfig_code)) then
       backup_handler["write-backup!"](backup_handler, config_file_path)
       backup_handler["cleanup-old-backups!"](backup_handler)
     else
@@ -140,7 +149,8 @@ local function read_config_with_backup_21(config_file_path)
       notify_once_21(msg0, vim.log.levels.WARN)
       return fennel.dofile(backup_path, compiler_options)
     else
-      return {}
+      notify_once_21("No backup found, fallback to the default options", vim.log.levels.WARN)
+      return default_opts
     end
   end
 end
@@ -157,7 +167,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _31_()
+local function _33_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -170,7 +180,7 @@ local function _31_()
   end
   return config
 end
-local function _33_(_self, k)
+local function _35_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -183,13 +193,13 @@ local function _33_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _36_
+local _38_
 if not debug_3f then
-  local function _37_()
+  local function _39_()
     return error("thyme.config is readonly")
   end
-  _36_ = _37_
+  _38_ = _39_
 else
-  _36_ = nil
+  _38_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _31_}, {__index = _33_, __newindex = _36_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _33_}, {__index = _35_, __newindex = _38_})
