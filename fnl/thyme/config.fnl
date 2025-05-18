@@ -145,7 +145,8 @@ However, nvim-thyme asks you again to proceed just in case you accidentally deni
     ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
     (if ok?
         (let [?config ?result]
-          (when (backup-handler:should-update-backup? ?config-code)
+          (when (and ?config-code
+                     (backup-handler:should-update-backup? ?config-code))
             (backup-handler:write-backup! config-file-path)
             (backup-handler:cleanup-old-backups!))
           (or ?config {}))

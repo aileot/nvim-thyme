@@ -133,7 +133,7 @@ local function read_config_with_backup_21(config_file_path)
   _0 = nil
   if ok_3f then
     local _3fconfig = _3fresult
-    if backup_handler["should-update-backup?"](backup_handler, _3fconfig_code) then
+    if (_3fconfig_code and backup_handler["should-update-backup?"](backup_handler, _3fconfig_code)) then
       backup_handler["write-backup!"](backup_handler, config_file_path)
       backup_handler["cleanup-old-backups!"](backup_handler)
     else
