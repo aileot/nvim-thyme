@@ -27,7 +27,7 @@
       - [`:Fnl {fnl-expr}`](#fnl-fnl-expr)
       - [`:FnlBuf [bufname]`](#fnlbuf-bufname)
       - [`:FnlFile [file]`](#fnlfile-file)
-      - [`:FnlCompileString {fnl-expr}`](#fnlcompilestring-fnl-expr)
+      - [`:FnlCompile {fnl-expr}`](#fnlcompilestring-fnl-expr)
       - [`:FnlCompileBuf [bufname]`](#fnlcompilebuf-bufname)
       - [`:FnlCompileFile [file]`](#fnlcompilefile-file)
     - [Fennel Misc. Commands](#fennel-misc-commands)
@@ -392,11 +392,11 @@ but respects your [&runtimepath][].
 
 If no `[file]` is given, it evaluates the current file.
 
-#### `:FnlCompileString {fnl-expr}`
+#### `:FnlCompile {fnl-expr}`
 
 <!-- panvimdoc-ignore-end -->
 <!-- panvimdoc-include-comment
-:FnlCompileString ~                                 *thyme-:FnlCompileString*
+:FnlCompile ~                                             *thyme-:FnlCompile*
 -->
 
 Almost equivalent to [:Fnl][];
