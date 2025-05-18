@@ -137,7 +137,7 @@
                                        {:lang :fennel
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! :FnlCompileString
+    (command! :FnlCompile
       {:nargs "*"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
