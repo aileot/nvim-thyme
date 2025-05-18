@@ -12,8 +12,9 @@ ModuleMapLogger["log-module-map!"] = function(self, dependency_stackframe, depen
   local _3_
   local or_4_ = module_maps[dependency_fnl_path]
   if not or_4_ then
+    local logged_3f = ModuleMap["has-log?"](dependency_fnl_path)
     local modmap = ModuleMap.new(dependency_fnl_path)
-    if not modmap["logged?"](modmap) then
+    if not logged_3f then
       modmap["initialize-module-map!"](modmap, dependency_stackframe)
     else
     end
@@ -44,7 +45,7 @@ ModuleMapLogger["fnl-path->module-map"] = function(self, raw_fnl_path)
   local or_11_ = self["_fnl-path->module-map"][fnl_path]
   if not or_11_ then
     local modmap = ModuleMap.new(fnl_path)
-    if modmap["logged?"](modmap) then
+    if ModuleMap["has-log?"](fnl_path) then
       module_maps[fnl_path] = modmap
     else
     end

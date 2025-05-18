@@ -20,14 +20,10 @@ local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
 ModuleMap.__index = ModuleMap
-local function fnl_path__3elog_path(dependency_fnl_path)
-  local log_id = uri_encode(dependency_fnl_path)
-  return Path.join(modmap_prefix, (log_id .. ".log"))
-end
 ModuleMap.new = function(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
   local fnl_path = vim.fn.resolve(raw_fnl_path)
-  local log_path = fnl_path__3elog_path(fnl_path)
+  local log_path = ModuleMap["fnl-path->log-path"](fnl_path)
   local logged_3f = file_readable_3f(log_path)
   local modmap
   if logged_3f then
@@ -39,13 +35,12 @@ ModuleMap.new = function(raw_fnl_path)
   self["_entry-map"] = modmap[fnl_path]
   modmap[fnl_path] = nil
   self["_dep-map"] = modmap
-  self["_logged?"] = logged_3f
-  return self, logged_3f
+  return self
 end
 ModuleMap["try-read-from-file"] = function(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
   local fnl_path = vim.fn.resolve(raw_fnl_path)
-  local log_path = fnl_path__3elog_path(fnl_path)
+  local log_path = ModuleMap["fnl-path->log-path"](fnl_path)
   if file_readable_3f(log_path) then
     local _8_ = read_module_map_file(log_path)
     if (nil ~= _8_) then
@@ -61,9 +56,6 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
   else
     return nil
   end
-end
-ModuleMap["logged?"] = function(self)
-  return self["_logged?"]
 end
 ModuleMap["initialize-module-map!"] = function(self, _11_)
   local module_name = _11_["module-name"]
@@ -132,6 +124,15 @@ ModuleMap["restore!"] = function(self)
   self["_entry-map"] = self["__entry-map"]
   self["_dep-map"] = self["__dep-map"]
   return restore_file_21(log_path)
+end
+ModuleMap["fnl-path->log-path"] = function(raw_path)
+  local resolved_path = vim.fn.resolve(raw_path)
+  local log_id = uri_encode(resolved_path)
+  return Path.join(modmap_prefix, (log_id .. ".log"))
+end
+ModuleMap["has-log?"] = function(raw_path)
+  local log_path = ModuleMap["fnl-path->log-path"](raw_path)
+  return file_readable_3f(log_path)
 end
 ModuleMap["clear-module-map-files!"] = function()
   return each_file(hide_file_21, modmap_prefix)

@@ -22,8 +22,9 @@
   (validate-stackframe! dependency-stackframe)
   (let [dependency-fnl-path (dependency-stackframe:get-fnl-path)]
     (case (or (. module-maps dependency-fnl-path)
-              (let [modmap (ModuleMap.new dependency-fnl-path)]
-                (when-not (modmap:logged?)
+              (let [logged? (ModuleMap.has-log? dependency-fnl-path)
+                    modmap (ModuleMap.new dependency-fnl-path)]
+                (when-not logged?
                   (modmap:initialize-module-map! dependency-stackframe))
                 (tset self._module-name->fnl-path ;
                       dependency-stackframe.module-name ;
@@ -40,7 +41,7 @@
   (let [fnl-path (vim.fn.resolve raw-fnl-path)]
     (or (. self._fnl-path->module-map fnl-path)
         (let [modmap (ModuleMap.new fnl-path)]
-          (when (modmap:logged?)
+          (when (ModuleMap.has-log? fnl-path)
             (tset module-maps fnl-path modmap))
           modmap))))
 
