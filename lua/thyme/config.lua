@@ -118,15 +118,19 @@ local function read_config_with_backup_21(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
-  local _0 = print(vim.inspect(config_code))
   local ok_3f, _3fresult = nil, nil
-  local function _27_()
-    return fennel.eval(config_code, compiler_options)
+  if config_code then
+    local function _27_()
+      return fennel.eval(config_code, compiler_options)
+    end
+    ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
+  else
+    notify_once_21("fallback to the default options")
+    ok_3f, _3fresult = default_opts
   end
-  ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
-  local _1
+  local _0
   cache["evaluating?"] = false
-  _1 = nil
+  _0 = nil
   if ok_3f then
     local _3fconfig = _3fresult
     if backup_handler["should-update-backup?"](backup_handler, config_code) then
@@ -145,7 +149,8 @@ local function read_config_with_backup_21(config_file_path)
       notify_once_21(msg0, vim.log.levels.WARN)
       return fennel.dofile(backup_path, compiler_options)
     else
-      return {}
+      notify_once_21("fallback to the default options")
+      return default_opts
     end
   end
 end
@@ -162,7 +167,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _32_()
+local function _33_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -175,7 +180,7 @@ local function _32_()
   end
   return config
 end
-local function _34_(_self, k)
+local function _35_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -188,13 +193,13 @@ local function _34_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _37_
+local _38_
 if not debug_3f then
-  local function _38_()
+  local function _39_()
     return error("thyme.config is readonly")
   end
-  _37_ = _38_
+  _38_ = _39_
 else
-  _37_ = nil
+  _38_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _32_}, {__index = _34_, __newindex = _37_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _33_}, {__index = _35_, __newindex = _38_})
