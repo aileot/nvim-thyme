@@ -40,7 +40,6 @@ the same.
                      (if (= config-path resolved-path)
                          (do
                            (when (allowed? config-path)
-                             (WatchMessenger:notify-once! "Trust the config file.")
                              ;; Automatically re-trust the user config file
                              ;; regardless of the recorded hash; otherwise, the
                              ;; user will be annoyed being asked to trust
