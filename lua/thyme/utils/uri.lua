@@ -8,7 +8,7 @@ local function encode_with_percent(char)
 end
 local function uri_encode(uri)
   local percent_patterns = "[^A-Za-z0-9%-_.!~*'()]"
-  local _start, _end = uri:find(split_pattern, 1, true)
+  local _start, _end = string.find(uri, split_pattern, 1, true)
   local prefix = uri:sub(1, (_end - 1))
   local suffix = uri:sub((_end + 1))
   local prefix_encoded = prefix:gsub(percent_patterns, encode_with_percent)

@@ -18,7 +18,7 @@
 (fn uri-encode [uri]
   (let [percent-patterns "[^A-Za-z0-9%-_.!~*'()]"
         ;; NOTE: Split at $NVIM_APPNAME part to avoid ENAMETOOLONG error.
-        (_start end) (uri:find split-pattern 1 true)
+        (_start end) (string.find uri split-pattern 1 true)
         prefix (uri:sub 1 (dec end))
         suffix (uri:sub (inc end))
         prefix-encoded (prefix:gsub percent-patterns encode-with-percent)
