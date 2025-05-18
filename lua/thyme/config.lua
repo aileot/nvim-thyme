@@ -101,27 +101,27 @@ local function read_config_with_backup_21(config_file_path)
   local backup_name = "default"
   local backup_handler = ConfigRollbackManager["backup-handler-of"](ConfigRollbackManager, backup_name)
   local mounted_backup_path = backup_handler["determine-mounted-backup-path"](backup_handler)
-  local config_code
+  local _3fconfig_code
   if file_readable_3f(mounted_backup_path) then
     local msg = ("rollback config to mounted backup (created at %s)"):format(backup_handler["determine-active-backup-birthtime"](backup_handler))
     notify_once_21(msg, vim.log.levels.WARN)
-    config_code = read_file(mounted_backup_path)
+    _3fconfig_code = read_file(mounted_backup_path)
   else
     if (secure_nvim_env_3f and denied_3f(config_file_path)) then
       vim.secure.trust({action = "remove", path = config_file_path})
       notify_once_21(("Previously the attempt to load %s has been denied.\nHowever, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."):format(config_filename))
     else
     end
-    config_code = vim.secure.read(config_file_path)
+    _3fconfig_code = vim.secure.read(config_file_path)
   end
   local compiler_options = {["error-pinpoint"] = {"|>>", "<<|"}, filename = config_file_path}
   local _
   cache["evaluating?"] = true
   _ = nil
   local ok_3f, _3fresult = nil, nil
-  if config_code then
+  if _3fconfig_code then
     local function _27_()
-      return fennel.eval(config_code, compiler_options)
+      return fennel.eval(_3fconfig_code, compiler_options)
     end
     ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
   else
@@ -133,7 +133,7 @@ local function read_config_with_backup_21(config_file_path)
   _0 = nil
   if ok_3f then
     local _3fconfig = _3fresult
-    if backup_handler["should-update-backup?"](backup_handler, config_code) then
+    if backup_handler["should-update-backup?"](backup_handler, _3fconfig_code) then
       backup_handler["write-backup!"](backup_handler, config_file_path)
       backup_handler["cleanup-old-backups!"](backup_handler)
     else
