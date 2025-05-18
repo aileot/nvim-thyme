@@ -234,6 +234,10 @@ generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 See the [Configuration](#configuration) section below.
 
+### 5. checkhealth
+
+Ensure the setup by `:checkhealth thyme`.
+
 ## 🎉 Interfaces
 
 Please read the [reference][] for the details and additional features.
