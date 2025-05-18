@@ -46,7 +46,7 @@ the same.
                              ;; his/her config file on every change.
                              (vim.cmd :trust))
                            (when (clear-cache!)
-                             (let [msg (.. "clear all the cache under "
+                             (let [msg (.. "Cleared all the cache under "
                                            lua-cache-prefix)]
                                (WatchMessenger:notify! msg))))
                          (case (xpcall #(check-to-update! resolved-path opts)

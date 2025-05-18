@@ -35,7 +35,7 @@ local function watch_files_21(_3fopts)
       else
       end
       if clear_cache_21() then
-        local msg = ("clear all the cache under " .. lua_cache_prefix)
+        local msg = ("Cleared all the cache under " .. lua_cache_prefix)
         WatchMessenger["notify!"](WatchMessenger, msg)
       else
       end
