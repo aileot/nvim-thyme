@@ -5,6 +5,24 @@
 
 (local M {})
 
+(fn M.recorded? [raw-path]
+  "Tell if the `raw-path` is recorded in the trust database of `vim.secure.trust`.
+@param raw-path string
+@return boolean if recorded, true; otherwise, false"
+  (let [resolved-path raw-path
+        trust-database-path (Path.join (vim.fn.stdpath :state) "trust")]
+    (if (file-readable? trust-database-path)
+        (let [;; NOTE: utils.fs.read-file instead returns a whole contents in
+              ;; a string.
+              trust-contents (vim.fn.readfile trust-database-path)]
+          (accumulate [trusted? false ;
+                       _ line (ipairs trust-contents) &until trusted?]
+            (if (or (line:find (.. " " config-path) 1 true)
+                    (line:find (.. " " resolved-path)))
+                true
+                false)))
+        false)))
+
 (fn M.allowed? [raw-path]
   "Tell if the `raw-path` is allowed on `vim.secure.trust`.
 @param raw-path string

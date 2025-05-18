@@ -4,6 +4,25 @@ local Path = require("thyme.utils.path")
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local M = {}
+M["recorded?"] = function(raw_path)
+  local resolved_path = raw_path
+  local trust_database_path = Path.join(vim.fn.stdpath("state"), "trust")
+  if file_readable_3f(trust_database_path) then
+    local trust_contents = vim.fn.readfile(trust_database_path)
+    local trusted_3f = false
+    for _, line in ipairs(trust_contents) do
+      if trusted_3f then break end
+      if (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path))) then
+        trusted_3f = true
+      else
+        trusted_3f = false
+      end
+    end
+    return trusted_3f
+  else
+    return false
+  end
+end
 M["allowed?"] = function(raw_path)
   local resolved_path = raw_path
   local trust_database_path = Path.join(vim.fn.stdpath("state"), "trust")
@@ -13,11 +32,11 @@ M["allowed?"] = function(raw_path)
     local trusted_3f = false
     for _, line in ipairs(trust_contents) do
       if trusted_3f then break end
-      local _3_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
-      if (_3_ == nil) then
+      local _5_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
+      if (_5_ == nil) then
         trusted_3f = false
       else
-        local _0 = _3_
+        local _0 = _5_
         if line:find(allowed_pattern) then
           trusted_3f = true
         else
@@ -39,11 +58,11 @@ M["denied?"] = function(raw_path)
     local trusted_3f = false
     for _, line in ipairs(trust_contents) do
       if trusted_3f then break end
-      local _7_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
-      if (_7_ == nil) then
+      local _9_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
+      if (_9_ == nil) then
         trusted_3f = false
       else
-        local _0 = _7_
+        local _0 = _9_
         if line:find(denied_pattern) then
           trusted_3f = true
         else
