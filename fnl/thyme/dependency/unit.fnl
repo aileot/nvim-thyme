@@ -1,5 +1,7 @@
 (import-macros {: when-not : last} :thyme.macros)
 
+(local {: state-prefix} (require :thyme.const))
+
 (local Path (require :thyme.utils.path))
 
 (local {: file-readable? : write-log-file! : append-log-file!}
@@ -7,8 +9,6 @@
 
 (local {: uri-encode} (require :thyme.utils.uri))
 (local {: each-file} (require :thyme.utils.iterator))
-
-(local {: state-prefix} (require :thyme.const))
 
 (local {: hide-file! : restore-file! : can-restore-file?}
        (require :thyme.utils.pool))
