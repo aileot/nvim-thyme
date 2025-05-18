@@ -1,7 +1,6 @@
 # Reference
 
 <!--toc:start-->
-
 - [Reference](#reference)
   - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
     - [compiler-options](#compiler-options)
@@ -27,7 +26,7 @@
       - [`:Fnl {fnl-expr}`](#fnl-fnl-expr)
       - [`:FnlBuf [bufname]`](#fnlbuf-bufname)
       - [`:FnlFile [file]`](#fnlfile-file)
-      - [`:FnlCompile {fnl-expr}`](#fnlcompilestring-fnl-expr)
+      - [`:FnlCompile {fnl-expr}`](#fnlcompile-fnl-expr)
       - [`:FnlCompileBuf [bufname]`](#fnlcompilebuf-bufname)
       - [`:FnlCompileFile [file]`](#fnlcompilefile-file)
     - [Fennel Misc. Commands](#fennel-misc-commands)
