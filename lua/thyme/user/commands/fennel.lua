@@ -155,30 +155,13 @@ M["setup!"] = function(_3fopts)
   end
   local compiler_options = opts["compiler-options"]
   local cmd_history_opts = opts["cmd-history"]
-  vim.api.nvim_create_user_command("Fnl", wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
-  vim.api.nvim_create_user_command("FnlCompileString", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", desc = "[thyme] display the compiled lua results of the following fennel expression"})
+  vim.api.nvim_create_user_command("Fnl", wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   local function _36_(_34_)
     local _arg_35_ = _34_["fargs"]
     local _3fpath = _arg_35_[1]
     local line1 = _34_["line1"]
     local line2 = _34_["line2"]
     local a = _34_
-    local fnl_code
-    do
-      local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
-      fnl_code = table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
-    end
-    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts})
-    a.args = fnl_code
-    return callback(a)
-  end
-  vim.api.nvim_create_user_command("FnlFile", _36_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
-  local function _39_(_37_)
-    local _arg_38_ = _37_["fargs"]
-    local _3fpath = _arg_38_[1]
-    local line1 = _37_["line1"]
-    local line2 = _37_["line2"]
-    local a = _37_
     local fnl_code
     do
       local bufnr
@@ -193,7 +176,24 @@ M["setup!"] = function(_3fopts)
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlBuf", _39_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  vim.api.nvim_create_user_command("FnlBuf", _36_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  local function _40_(_38_)
+    local _arg_39_ = _38_["fargs"]
+    local _3fpath = _arg_39_[1]
+    local line1 = _38_["line1"]
+    local line2 = _38_["line2"]
+    local a = _38_
+    local fnl_code
+    do
+      local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
+      fnl_code = table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
+    end
+    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts})
+    a.args = fnl_code
+    return callback(a)
+  end
+  vim.api.nvim_create_user_command("FnlFile", _40_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
+  vim.api.nvim_create_user_command("FnlCompile", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   local function _43_(_41_)
     local _arg_42_ = _41_["fargs"]
     local _3fpath = _arg_42_[1]
