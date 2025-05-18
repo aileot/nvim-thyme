@@ -129,6 +129,8 @@ the active backup, if available.
                              (notify-once! (: "Previously the attempt to load %s has been denied.
 However, nvim-thyme asks you again to proceed just in case you accidentally denied your own config file."
                                               :format config-filename)))
+                           ;; NOTE: The other choices than "allow" in
+                           ;; `vim.secure.read` prompt  returns `nil`.
                            (vim.secure.read config-file-path)))
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
