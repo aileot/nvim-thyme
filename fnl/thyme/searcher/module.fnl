@@ -49,8 +49,15 @@ fennel.lua.
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
         fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
-    (let [LUA (when-not (executable? "lua")
-                (or vim.env.LUA "nvim --clean --headless -l"))
+    (let [?lua (if (executable? :luajit) "luajit" (executable? :lua)
+                   (let [stdout (-> (vim.system [:lua :-v] {:text true})
+                                    (: :wait)
+                                    (. :stdout))]
+                     ;; NOTE: The `lua` should be lua5.1 or luajit.
+                     (when (or (stdout:find "^LuaJIT")
+                               (stdout:find "^Lua 5%.1%."))
+                       "lua")))
+          LUA (or ?lua "nvim --clean --headless -l")
           env {: LUA}
           on-exit (fn [out]
                     (assert (= 0 (tonumber out.code))
