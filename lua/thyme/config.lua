@@ -125,7 +125,7 @@ local function read_config_with_backup_21(config_file_path)
     end
     ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
   else
-    notify_once_21("fallback to the default options", vim.log.levels.WARN)
+    notify_once_21("Failed to read config, fallback to the default options", vim.log.levels.WARN)
     ok_3f, _3fresult = default_opts
   end
   local _0
@@ -149,7 +149,7 @@ local function read_config_with_backup_21(config_file_path)
       notify_once_21(msg0, vim.log.levels.WARN)
       return fennel.dofile(backup_path, compiler_options)
     else
-      notify_once_21("fallback to the default options", vim.log.levels.WARN)
+      notify_once_21("No backup found, fallback to the default options", vim.log.levels.WARN)
       return default_opts
     end
   end
