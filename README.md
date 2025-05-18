@@ -65,7 +65,7 @@ The project started from scratch. _Now in Beta!_
 
 - `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
   If none of them is available,
-  `"nvim --clean --headless -l"` will be used as a fallback.
+  `nvim --clean --headless -l` will be used as a `lua` fallback.
 - A tree-sitter parser for fennel like [tree-sitter-fennel], or via
   [nvim-treesitter][] on `&rtp`.
 - The [parinfer-rust][] on `&rtp`
