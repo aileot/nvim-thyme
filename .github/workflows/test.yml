@@ -23,9 +23,8 @@ jobs:
         run: |
           luarocks --lua-version=5.1 install fennel
           luarocks --lua-version=5.1 install vusted
-      # TODO: Comment out when parinfer tests can be passed on GitHub Actions.
-      # - name: Install cargo for parinfer-rust dependenct test
-      #   uses: moonrepo/setup-rust@v1
+      - name: Install cargo for parinfer-rust dependenct test
+        uses: moonrepo/setup-rust@v1
       - uses: rhysd/action-setup-vim@v1
         id: vim
         with:
@@ -33,8 +32,7 @@ jobs:
           version: ${{ matrix.nvim_version }}
       - name: Run tests
         env:
-          # FIXME: Remove `--filter-out` when successfully build `libparinfer_rust.so` in GitHub Actions.
-          VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending --filter-out=parinfer --filter-out=:Fnl"
+          VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending --filter-out=:Fnl"
           VUSTED_EXTRA_ARGS: ""
         run: |
           make -j test
