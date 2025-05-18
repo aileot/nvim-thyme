@@ -107,9 +107,11 @@ path of `(vim.fn.stdpath :config)`.
 
 Keep the number of backups for rollback at most. Set `0` to disable it.
 
-Note: Unlike the rollback system for compile error, [nvim-thyme][] does
-_**not** provide any rollback system for nvim **runtime** error._
-Such a feature should be realized independently of a runtime compiler plugin.
+> [!NOTE]
+> The rollback system only works for _**compile** error_;
+> [nvim-thyme][] does **not** provide any rollback system
+> for nvim _**runtime** error._
+> Such a feature should be realized independently of a runtime compiler plugin.
 
 ### notifier
 
