@@ -55,7 +55,7 @@ if not file_readable_3f(config_path) then
     local example_config_path = _let_13_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
-    vim.cmd.tabedit(config_path)
+    vim.cmd(("tabedit " .. config_path))
     local function _14_()
       return (config_path == vim.api.nvim_buf_get_name(0))
     end

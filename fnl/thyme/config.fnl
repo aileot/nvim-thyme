@@ -64,7 +64,7 @@
                                                 :path this-dir})
             recommended-config (read-file example-config-path)]
         (write-fnl-file! config-path recommended-config)
-        (vim.cmd.tabedit config-path)
+        (vim.cmd (.. "tabedit " config-path))
         (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
         (vim.cmd "redraw!")
         (when (= config-path (vim.api.nvim_buf_get_name 0))
