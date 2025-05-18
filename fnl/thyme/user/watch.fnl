@@ -40,20 +40,19 @@ the same.
                      (if (= config-path resolved-path)
                          (do
                            (when (allowed? config-path)
-                             (WatchMessenger:notify-once! "Trust the config file.")
                              ;; Automatically re-trust the user config file
                              ;; regardless of the recorded hash; otherwise, the
                              ;; user will be annoyed being asked to trust
                              ;; his/her config file on every change.
-                             (vim.cmd :trust))
+                             (vim.cmd "silent trust"))
                            (when (clear-cache!)
-                             (let [msg (.. "clear all the cache under "
+                             (let [msg (.. "Cleared all the cache under "
                                            lua-cache-prefix)]
                                (WatchMessenger:notify! msg))))
                          (case (xpcall #(check-to-update! resolved-path opts)
                                        fennel.traceback)
-                           (false msg) (WatchMessenger:notify-once! msg
-                                                                    vim.log.levels.ERROR)))
+                           (false msg) (WatchMessenger:notify! msg
+                                                               vim.log.levels.ERROR)))
                      ;; Prevent not to destroy the autocmd.
                      nil))]
     (set ?group group)

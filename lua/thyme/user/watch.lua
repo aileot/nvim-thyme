@@ -31,12 +31,11 @@ local function watch_files_21(_3fopts)
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if allowed_3f(config_path) then
-        WatchMessenger["notify-once!"](WatchMessenger, "Trust the config file.")
-        vim.cmd("trust")
+        vim.cmd("silent trust")
       else
       end
       if clear_cache_21() then
-        local msg = ("clear all the cache under " .. lua_cache_prefix)
+        local msg = ("Cleared all the cache under " .. lua_cache_prefix)
         WatchMessenger["notify!"](WatchMessenger, msg)
       else
       end
@@ -48,7 +47,7 @@ local function watch_files_21(_3fopts)
       _11_, _12_ = xpcall(_13_, fennel.traceback)
       if ((_11_ == false) and (nil ~= _12_)) then
         local msg = _12_
-        WatchMessenger["notify-once!"](WatchMessenger, msg, vim.log.levels.ERROR)
+        WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.ERROR)
       else
       end
     end
