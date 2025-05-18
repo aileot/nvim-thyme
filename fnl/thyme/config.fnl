@@ -139,7 +139,8 @@ However, nvim-thyme asks you again to proceed just in case you accidentally deni
                           (xpcall #(fennel.eval ?config-code compiler-options)
                                   fennel.traceback)
                           (do
-                            (notify-once! "fallback to the default options")
+                            (notify-once! "fallback to the default options"
+                                          vim.log.levels.WARN)
                             default-opts))
         _ (set cache.evaluating? false)]
     ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
@@ -165,7 +166,8 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 ;; Return the backup.
                 (fennel.dofile backup-path compiler-options))
               (do
-                (notify-once! "fallback to the default options")
+                (notify-once! "fallback to the default options"
+                              vim.log.levels.WARN)
                 default-opts))))))
 
 (set cache.main-config {})
