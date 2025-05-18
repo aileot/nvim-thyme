@@ -36,11 +36,6 @@ local function compile_fennel_into_rtp_21()
   local fennel_src_root = vim.fs.dirname(fennel_src_Makefile)
   local fennel_lua_path = Path.join(fennel_src_root, fennel_lua_file)
   do
-    local on_exit
-    local function _8_(out)
-      return assert((0 == tonumber(out.code)), ("failed to compile fennel.lua with code: %s\n%s"):format(out.code, out.stderr))
-    end
-    on_exit = _8_
     local LUA
     if not executable_3f("lua") then
       LUA = (vim.env.LUA or "nvim --clean --headless -l")
@@ -48,6 +43,11 @@ local function compile_fennel_into_rtp_21()
       LUA = nil
     end
     local env = {LUA = LUA}
+    local on_exit
+    local function _9_(out)
+      return assert((0 == tonumber(out.code)), ("failed to compile fennel.lua with code: %s\n%s"):format(out.code, out.stderr))
+    end
+    on_exit = _9_
     local make_cmd = {"make", "-C", fennel_src_root, fennel_lua_file}
     vim.system(make_cmd, {text = true, env = env}, on_exit):wait()
   end

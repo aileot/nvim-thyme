@@ -49,13 +49,13 @@ fennel.lua.
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
         fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
-    (let [on-exit (fn [out]
+    (let [LUA (when-not (executable? "lua")
+                (or vim.env.LUA "nvim --clean --headless -l"))
+          env {: LUA}
+          on-exit (fn [out]
                     (assert (= 0 (tonumber out.code))
                             (-> "failed to compile fennel.lua with code: %s\n%s"
                                 (: :format out.code out.stderr))))
-          LUA (when-not (executable? "lua")
-                (or vim.env.LUA "nvim --clean --headless -l"))
-          env {: LUA}
           make-cmd [:make :-C fennel-src-root fennel-lua-file]]
       (-> (vim.system make-cmd {:text true : env} on-exit)
           (: :wait)))
