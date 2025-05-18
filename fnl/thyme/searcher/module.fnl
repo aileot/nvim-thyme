@@ -50,7 +50,7 @@ fennel.lua.
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
         fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
     (let [on-exit (fn [out]
-                    (assert (= 0 (tonumber out))
+                    (assert (= 0 (tonumber out.code))
                             (-> "failed to compile fennel.lua with code: %s\n%s"
                                 (: :format out.code out.stderr))))
           LUA (when-not (executable? "lua")

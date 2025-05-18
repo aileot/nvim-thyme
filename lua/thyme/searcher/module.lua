@@ -38,7 +38,7 @@ local function compile_fennel_into_rtp_21()
   do
     local on_exit
     local function _8_(out)
-      return assert((0 == tonumber(out)), ("failed to compile fennel.lua with code: %s\n%s"):format(out.code, out.stderr))
+      return assert((0 == tonumber(out.code)), ("failed to compile fennel.lua with code: %s\n%s"):format(out.code, out.stderr))
     end
     on_exit = _8_
     local LUA
