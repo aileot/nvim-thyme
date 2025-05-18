@@ -111,6 +111,15 @@ Note: Unlike the rollback system for compile error, [nvim-thyme][] does
 _**not** provide any rollback system for nvim **runtime** error._
 Such a feature should be realized independently of a runtime compiler plugin.
 
+### notifier
+
+(default: `vim.notify`)
+
+It is a function which takes the same arguments as `vim.notify`.
+
+You can filter out specific notifications by this option.
+See [.nvim-thyme.fnl.example][] for an example.
+
 ### command.compiler-options
 
 (default: `nil`)
