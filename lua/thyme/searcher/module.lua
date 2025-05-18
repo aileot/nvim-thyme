@@ -39,6 +39,7 @@ local function compile_fennel_into_rtp_21()
     return assert((0 == tonumber(out)), ("failed to compile fennel.lua with code: %s\n%s"):format(out.code, out.stderr))
   end
   on_exit = _8_
+  local LUA = (vim.env.LUA or "nvim --clean --headless -l")
   local make_cmd = {"make", "-C", fennel_src_root, fennel_lua_file}
   vim.system(make_cmd, {text = true}, on_exit):wait()
   vim.fn.mkdir(vim.fs.dirname(cached_fennel_path), "p")
