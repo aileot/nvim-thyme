@@ -17,11 +17,11 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
   local rollback_path = backup_handler["determine-mounted-backup-path"](backup_handler)
   local messenger = Messenger.new(("rollback/mounted/loader/%s"):format(self._kind))
   if file_readable_3f(rollback_path) then
-    local msg = ("rollback to backup for %s/%s (created at %s)"):format(self._kind, module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name))
+    local msg = ("\nrollback to backup for %s/%s (created at %s)"):format(self._kind, module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name))
     messenger["notify-once!"](messenger, msg, vim.log.levels.WARN)
     return self["_file-loader"](rollback_path, module_name)
   else
-    local error_msg = messenger["wrap-msg"](messenger, ("no mounted backup is found for %s %s"):format(self._kind, module_name))
+    local error_msg = messenger["wrap-msg"](messenger, ("\nno mounted backup is found for %s %s"):format(self._kind, module_name))
     if (self._kind == "macro") then
       return nil, error_msg
     else
