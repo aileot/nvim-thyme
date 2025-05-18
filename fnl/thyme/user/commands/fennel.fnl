@@ -139,6 +139,7 @@
                                         : cmd-history-opts}))
     (command! :FnlCompile
       {:nargs "*"
+       :complete :lua
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
                                        {:lang :lua

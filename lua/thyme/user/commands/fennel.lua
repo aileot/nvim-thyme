@@ -156,7 +156,7 @@ M["setup!"] = function(_3fopts)
   local compiler_options = opts["compiler-options"]
   local cmd_history_opts = opts["cmd-history"]
   vim.api.nvim_create_user_command("Fnl", wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
-  vim.api.nvim_create_user_command("FnlCompile", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", desc = "[thyme] display the compiled lua results of the following fennel expression"})
+  vim.api.nvim_create_user_command("FnlCompile", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "*", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   local function _36_(_34_)
     local _arg_35_ = _34_["fargs"]
     local _3fpath = _arg_35_[1]
