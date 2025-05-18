@@ -3,6 +3,7 @@ local state_prefix = _local_1_["state-prefix"]
 local Path = require("thyme.utils.path")
 local _local_2_ = require("thyme.utils.fs")
 local file_readable_3f = _local_2_["file-readable?"]
+local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local write_log_file_21 = _local_2_["write-log-file!"]
 local append_log_file_21 = _local_2_["append-log-file!"]
 local _local_3_ = require("thyme.utils.uri")
@@ -38,6 +39,7 @@ ModuleMap.new = function(raw_fnl_path)
   return self
 end
 ModuleMap["try-read-from-file"] = function(raw_fnl_path)
+  assert_is_file_readable(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
   local fnl_path = vim.fn.resolve(raw_fnl_path)
   local log_path = ModuleMap["fnl-path->log-path"](fnl_path)

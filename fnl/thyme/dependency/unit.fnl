@@ -4,8 +4,10 @@
 
 (local Path (require :thyme.utils.path))
 
-(local {: file-readable? : write-log-file! : append-log-file!}
-       (require :thyme.utils.fs))
+(local {: file-readable?
+        : assert-is-file-readable
+        : write-log-file!
+        : append-log-file!} (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
 (local {: each-file} (require :thyme.utils.iterator))
@@ -47,6 +49,7 @@
   ;; file. Even in such cases, just executing :CacheClear would be the simple
   ;; answer. The symbolic link issue does not belong to dependent-map, but
   ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
+  (assert-is-file-readable raw-fnl-path)
   (let [self (setmetatable {} ModuleMap)
         fnl-path (vim.fn.resolve raw-fnl-path)
         log-path (ModuleMap.fnl-path->log-path fnl-path)]
