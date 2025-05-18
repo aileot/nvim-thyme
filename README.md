@@ -60,12 +60,15 @@ The project started from scratch. _Now in Beta!_
   (_not embedded_ unlike other plugins)
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
   on `&rtp` by yourself)
-- (Optional) `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
+
+### Optional Dependencies
+
+- `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
   If none of them is available,
   `"nvim --clean --headless -l"` will be used as a fallback.
-- (Optional) a tree-sitter parser for fennel like [tree-sitter-fennel], or via
+- A tree-sitter parser for fennel like [tree-sitter-fennel], or via
   [nvim-treesitter][] on `&rtp`.
-- (Optional) [parinfer-rust][] on `&rtp`
+- The [parinfer-rust][] on `&rtp`
   (to improve UX on the commands and keymaps)
 
 ## 📦 Installation
