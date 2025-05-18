@@ -60,12 +60,15 @@ The project started from scratch. _Now in Beta!_
   (_not embedded_ unlike other plugins)
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
   on `&rtp` by yourself)
-- (Optional) `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
+
+### Optional Dependencies
+
+- `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
   If none of them is available,
-  `"nvim --clean --headless -l"` will be used as a fallback.
-- (Optional) a tree-sitter parser for fennel like [tree-sitter-fennel], or via
+  `nvim --clean --headless -l` will be used as a `lua` fallback.
+- A tree-sitter parser for fennel like [tree-sitter-fennel], or via
   [nvim-treesitter][] on `&rtp`.
-- (Optional) [parinfer-rust][] on `&rtp`
+- The [parinfer-rust][] on `&rtp`
   (to improve UX on the commands and keymaps)
 
 ## 📦 Installation
@@ -230,6 +233,10 @@ If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
 generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
 See the [Configuration](#configuration) section below.
+
+### 5. checkhealth
+
+Ensure the setup by `:checkhealth thyme`.
 
 ## 🎉 Interfaces
 
