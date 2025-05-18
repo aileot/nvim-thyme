@@ -133,7 +133,8 @@ However, nvim-thyme asks you again to proceed just in case you accidentally deni
         compiler-options {:error-pinpoint ["|>>" "<<|"]
                           :filename config-file-path}
         _ (set cache.evaluating? true)
-        (ok? ?result) (pcall fennel.eval config-code compiler-options)
+        (ok? ?result) (xpcall #(fennel.eval config-code compiler-options)
+                              fennel.traceback)
         _ (set cache.evaluating? false)]
     ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
     (if ok?

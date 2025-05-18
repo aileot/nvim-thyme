@@ -118,7 +118,11 @@ local function read_config_with_backup_21(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
-  local ok_3f, _3fresult = pcall(fennel.eval, config_code, compiler_options)
+  local ok_3f, _3fresult = nil, nil
+  local function _27_()
+    return fennel.eval(config_code, compiler_options)
+  end
+  ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
   local _0
   cache["evaluating?"] = false
   _0 = nil
@@ -157,7 +161,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _31_()
+local function _32_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -170,7 +174,7 @@ local function _31_()
   end
   return config
 end
-local function _33_(_self, k)
+local function _34_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -183,13 +187,13 @@ local function _33_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _36_
+local _37_
 if not debug_3f then
-  local function _37_()
+  local function _38_()
     return error("thyme.config is readonly")
   end
-  _36_ = _37_
+  _37_ = _38_
 else
-  _36_ = nil
+  _37_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _31_}, {__index = _33_, __newindex = _36_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _32_}, {__index = _34_, __newindex = _37_})
