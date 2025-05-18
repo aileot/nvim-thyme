@@ -209,6 +209,9 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   {:__index (fn [_self k]
               (case k
                 "?error-msg" (when cache.evaluating?
+                               ;; NOTE: This message is intended to be used by
+                               ;; searcher as the reason why the searcher does
+                               ;; not return a chunk.
                                (.. "recursion detected in evaluating "
                                    config-filename))
                 _ (let [config (get-config)]
