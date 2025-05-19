@@ -1,6 +1,7 @@
 # Reference
 
 <!--toc:start-->
+
 - [Reference](#reference)
   - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
     - [compiler-options](#compiler-options)
