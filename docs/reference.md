@@ -79,7 +79,7 @@ See the official Fennel API documentation: <https://fennel-lang.org/api>
 If `fnl/` directory exists at `vim.fn.stdpath('config')`, `"fnl"`;
 otherwise, `"lua"`)
 
-The relative path to `vim.fn.stdpath('config')` directory for your Fennel module files.\
+The relative path to `vim.fn.stdpath('config')` directory for your Fennel runtime module files.\
 It only supports `<fnl-dir>/?.fnl` and `<fnl-dir>/?/init.fnl`
 relative to `vim.fn.stdpath('config')`.
 
@@ -103,7 +103,7 @@ value, `./` prefixes will be only replaced with the paths that contains `fnl`
 directory on `&runtimepath`.)
 
 Note: Unlike the `macro-path` option, `nvim-thyme` does _**not** provide any
-option to modify `fennel.path`._ For general Fennel modules, `nvim-thyme` is
+option to modify `fennel.path`._ For Fennel runtime modules, `nvim-thyme` is
 only designed to search through the path:
 `./fnl/?.fnl;./fnl/?/init.fnl` where each `.` prefix represents the result
 path of `(vim.fn.stdpath :config)`.
