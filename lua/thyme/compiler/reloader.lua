@@ -33,7 +33,7 @@ local function reload_module_21(module_name, _3fopts)
     local _8_ = fennel["macro-loaded"][module_name]
     if (nil ~= _8_) then
       local mod = _8_
-      local _let_9_ = require("thyme.searcher.macro")
+      local _let_9_ = require("thyme.searcher.macro-searcher")
       local search_fnl_macro_on_rtp = _let_9_["search-fnl-macro-on-rtp"]
       fennel["macro-loaded"][module_name] = nil
       local _10_, _11_ = nil, nil

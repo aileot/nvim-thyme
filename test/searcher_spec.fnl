@@ -5,7 +5,7 @@
        (include :test.helper.utils))
 
 (local thyme (require :thyme))
-(local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
+(local {: search-fnl-module-on-rtp!} (require :thyme.searcher.runtime-module))
 
 (describe* "module searcher"
   (setup (fn []

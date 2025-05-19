@@ -37,7 +37,7 @@
       ;; compile is required.
       nil
       (case (. fennel.macro-loaded module-name)
-        mod (let [{: search-fnl-macro-on-rtp} (require :thyme.searcher.macro)]
+        mod (let [{: search-fnl-macro-on-rtp} (require :thyme.searcher.macro-searcher)]
               (tset fennel.macro-loaded module-name nil)
               ;; Testing module if safe to update.
               ;; NOTE: `require` is unsuitable here because it does not run in

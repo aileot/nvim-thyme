@@ -1,4 +1,4 @@
-local _local_1_ = require("thyme.searcher.module")
+local _local_1_ = require("thyme.searcher.runtime-module")
 local search_fnl_module_on_rtp_21 = _local_1_["search-fnl-module-on-rtp!"]
 local M
 local function _2_(...)
