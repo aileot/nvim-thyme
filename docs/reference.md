@@ -523,7 +523,7 @@ Note that switching the active backup also affects the mounted backup of `{targe
 
 Mount the active backup of the `{target}`.
 
-Neovim will load the mounted backups instead of your modules with the same name.
+Neovim will load the mounted backup instead of your module with the same name.
 You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
 to restore the mount state.
 
