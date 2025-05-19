@@ -450,7 +450,7 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 ### Misleading...?
 
 - As you may have noticed, the term of _Zero overhead_ only means it does not
-  affect startup time once compiled.
+  affect startup time once compiled at an nvim runtime.
 - As you may have noticed, the term of _JIT (Just-in-time)_ might be a bit
   misleading due to the convention.\
   The _JIT_ in this project is more like JIT in
