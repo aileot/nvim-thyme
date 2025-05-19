@@ -425,7 +425,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
-:FnlEvalFile %
+:FnlFile %
 " hotpot.nvim
 :Fnlfile %
 " tangerine.nvim
