@@ -38,19 +38,24 @@ local function _12_(...)
   return require("thyme.user.commands.cache").clear(...)
 end
 M = {loader = search_fnl_module_on_rtp_21, fennel = {view = _2_, eval = _3_, ["compile-string"] = _4_, compile_file = _5_, ["compile-file"] = _7_, ["compile-file!"] = _8_, ["compile-buf"] = _9_, macrodebug = _10_}, cache = {open = _11_, clear = _12_}}
+local has_setup_3f = false
 M.setup = function(_3fopts)
   assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
-  local self = setmetatable({}, M)
-  local config = require("thyme.config")
-  local watch = require("thyme.user.watch")
-  local keymaps = require("thyme.user.keymaps")
-  local commands = require("thyme.user.commands")
-  local dropin = require("thyme.user.dropin")
-  watch["watch-files!"](config.watch)
-  keymaps["define-keymaps!"]()
-  commands["define-commands!"]()
-  dropin["enable-dropin-paren!"](config["dropin-paren"])
-  return self
+  if (not has_setup_3f or ("1" == vim.env.THYME_DEBUG)) then
+    local config = require("thyme.config")
+    local watch = require("thyme.user.watch")
+    local keymaps = require("thyme.user.keymaps")
+    local commands = require("thyme.user.commands")
+    local dropin = require("thyme.user.dropin")
+    watch["watch-files!"](config.watch)
+    keymaps["define-keymaps!"]()
+    commands["define-commands!"]()
+    dropin["enable-dropin-paren!"](config["dropin-paren"])
+    has_setup_3f = true
+    return nil
+  else
+    return nil
+  end
 end
 local function propagate_underscored_keys_21(tbl, key)
   local val = tbl[key]
@@ -62,8 +67,8 @@ local function propagate_underscored_keys_21(tbl, key)
     end
   else
   end
-  local _15_ = type(val)
-  if (_15_ == "table") then
+  local _16_ = type(val)
+  if (_16_ == "table") then
     for k in pairs(val) do
       propagate_underscored_keys_21(val, k)
     end
@@ -75,4 +80,4 @@ end
 for k in pairs(M) do
   propagate_underscored_keys_21(M, k)
 end
-return setmetatable(M, {__index = M})
+return M

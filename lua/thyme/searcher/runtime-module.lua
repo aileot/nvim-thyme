@@ -154,6 +154,7 @@ local function module_name__3efnl_file_on_rtp_21(module_name)
   if ((nil == cache.rtp) or debug_3f) then
     initialize_macro_searcher_on_rtp_21(fennel)
     initialize_module_searcher_on_rtp_21(fennel)
+    require("thyme"):setup()
   else
   end
   if not (cache.rtp == vim.o.rtp) then
