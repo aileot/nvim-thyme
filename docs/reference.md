@@ -1,6 +1,7 @@
 # Reference
 
 <!--toc:start-->
+
 - [Reference](#reference)
   - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
     - [compiler-options](#compiler-options)
@@ -402,6 +403,8 @@ Almost equivalent to [:Fnl][];
 however, it does not evaluate the {fnl-expr},
 but only returns the compiled lua results.
 
+It does not affect the file system.
+
 <!-- panvimdoc-ignore-start -->
 
 #### `:FnlCompileBuf [bufname]`
@@ -415,6 +418,8 @@ Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [bufname] (or current buffer),
 but only returns the compiled lua results.
 
+It does not affect the file system.
+
 <!-- panvimdoc-ignore-start -->
 
 #### `:FnlCompileFile [file]`
@@ -427,6 +432,8 @@ but only returns the compiled lua results.
 Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [file] (or current file),
 but only returns the compiled lua results.
+
+It does not affect the file system.
 
 <!-- panvimdoc-ignore-start -->
 <!--
@@ -505,20 +512,35 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 
 ### Thyme Rollback Commands
 
+Two concepts:
+
+- Active backup:
+  The backup to rollback
+  if you fail to compile or evaluate a Fennel module at nvim runtime.
+  You can switch to the active backup by [:ThymeRollbackSwitch][].
+
+- Mounted backup:
+  The backup to rollback regardless of your corresponding Fennel module stability.
+  You can mount an active backup by [:ThymeRollbackMount][],
+  or all the active backups by [:ThymeRollbackUnmountAll][].
+
 #### `:ThymeRollbackSwitch {target}`
 
 Prompt to switch to the active backup of the `{target}`.
 
 Any compile errors of the `{target}` of Fennel module will be rolled back to the active backup.
-This switch also affects the mounted backup of `{target}`.
+
+Note that switching the active backup also affects the mounted backup of `{target}`.
 
 #### `:ThymeRollbackMount {target}`
 
 Mount the active backup of the `{target}`.
 
-Neovim will load the mounted backups instead of your modules with the same name.
+Neovim will load the mounted backup instead of your module with the same name.
 You should run [:ThymeRollbackUnmount][] or [:ThymeRollbackUnmountAll][]
 to restore the mount state.
+
+To select which backup to mount, use [:ThymeRollbackSwitch][].
 
 #### `:ThymeRollbackUnmount {target}`
 
