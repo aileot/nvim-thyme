@@ -402,6 +402,8 @@ Almost equivalent to [:Fnl][];
 however, it does not evaluate the {fnl-expr},
 but only returns the compiled lua results.
 
+It does not affect the file system.
+
 <!-- panvimdoc-ignore-start -->
 
 #### `:FnlCompileBuf [bufname]`
@@ -415,6 +417,8 @@ Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [bufname] (or current buffer),
 but only returns the compiled lua results.
 
+It does not affect the file system.
+
 <!-- panvimdoc-ignore-start -->
 
 #### `:FnlCompileFile [file]`
@@ -427,6 +431,8 @@ but only returns the compiled lua results.
 Almost equivalent to [:FnlBuf][];
 however, it does not evaluate the [file] (or current file),
 but only returns the compiled lua results.
+
+It does not affect the file system.
 
 <!-- panvimdoc-ignore-start -->
 <!--
