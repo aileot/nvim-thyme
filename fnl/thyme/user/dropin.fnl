@@ -64,31 +64,29 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param replacement string The dropin command
 @param completion-type string The completion type"
   (let [cmdtype (get-cmdtype)
-        old-cmdline (vim.fn.getcmdline)]
-    (if (= ":" cmdtype)
-        ;; NOTE: Do NOT use .reserve instead. It also overrides history.
-        (case (extract-?invalid-cmd old-cmdline)
-          invalid-cmd (let [new-cmdline (replace-invalid-cmdline old-cmdline ;
-                                                                 invalid-cmd ;
-                                                                 pattern ;
-                                                                 replacement)
-                            last-wcm vim.o.wildcharm
-                            tmp-wcm "\26"
-                            right-keys (case (new-cmdline:find old-cmdline 1
-                                                               true)
-                                         nil ""
-                                         shift (string.rep "<Right>"
-                                                           (dec shift)))
-                            keys (-> (.. "<C-BSlash>e%q<CR>")
-                                     (: :format new-cmdline)
-                                     (.. right-keys)
-                                     (vim.keycode)
-                                     (.. tmp-wcm))]
-                        (set vim.o.wcm (vim.fn.str2nr tmp-wcm))
-                        (vim.api.nvim_feedkeys keys "ni" false)
-                        (set vim.o.wcm last-wcm))
-          _ old-cmdline)
-        old-cmdline)))
+        old-cmdline (vim.fn.getcmdline)
+        new-cmdline (if (= ":" cmdtype)
+                        ;; NOTE: Do NOT use .reserve instead. It also overrides history.
+                        (case (extract-?invalid-cmd old-cmdline)
+                          invalid-cmd (replace-invalid-cmdline old-cmdline
+                                                               invalid-cmd
+                                                               pattern
+                                                               replacement)
+                          _ old-cmdline)
+                        old-cmdline)
+        last-wcm vim.o.wildcharm
+        tmp-wcm "\26"
+        right-keys (case (new-cmdline:find old-cmdline 1 true)
+                     nil ""
+                     shift (string.rep "<Right>" (dec shift)))
+        keys (-> "<C-BSlash>e%q<CR>"
+                 (: :format new-cmdline)
+                 (.. right-keys)
+                 (vim.keycode)
+                 (.. tmp-wcm))]
+    (set vim.o.wcm (vim.fn.str2nr tmp-wcm))
+    (vim.api.nvim_feedkeys keys "ni" false)
+    (set vim.o.wcm last-wcm)))
 
 (λ M.enable-dropin-paren! [opts]
   "Realize dropin-paren feature.

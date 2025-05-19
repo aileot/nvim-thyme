@@ -48,40 +48,41 @@ end
 M.complete = function(pattern, replacement)
   local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
+  local new_cmdline
   if (":" == cmdtype) then
     local _9_ = extract__3finvalid_cmd(old_cmdline)
     if (nil ~= _9_) then
       local invalid_cmd = _9_
-      local new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replacement)
-      local last_wcm = vim.o.wildcharm
-      local tmp_wcm = "\26"
-      local right_keys
-      do
-        local _10_ = new_cmdline:find(old_cmdline, 1, true)
-        if (_10_ == nil) then
-          right_keys = ""
-        elseif (nil ~= _10_) then
-          local shift = _10_
-          right_keys = string.rep("<Right>", (shift - 1))
-        else
-          right_keys = nil
-        end
-      end
-      local keys = (vim.keycode((("<C-BSlash>e%q<CR>"):format(new_cmdline) .. right_keys)) .. tmp_wcm)
-      vim.o.wcm = vim.fn.str2nr(tmp_wcm)
-      vim.api.nvim_feedkeys(keys, "ni", false)
-      vim.o.wcm = last_wcm
-      return nil
+      new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replacement)
     else
       local _ = _9_
-      return old_cmdline
+      new_cmdline = old_cmdline
     end
   else
-    return old_cmdline
+    new_cmdline = old_cmdline
   end
+  local last_wcm = vim.o.wildcharm
+  local tmp_wcm = "\26"
+  local right_keys
+  do
+    local _12_ = new_cmdline:find(old_cmdline, 1, true)
+    if (_12_ == nil) then
+      right_keys = ""
+    elseif (nil ~= _12_) then
+      local shift = _12_
+      right_keys = string.rep("<Right>", (shift - 1))
+    else
+      right_keys = nil
+    end
+  end
+  local keys = (vim.keycode((("<C-BSlash>e%q<CR>"):format(new_cmdline) .. right_keys)) .. tmp_wcm)
+  vim.o.wcm = vim.fn.str2nr(tmp_wcm)
+  vim.api.nvim_feedkeys(keys, "ni", false)
+  vim.o.wcm = last_wcm
+  return nil
 end
 M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:93")
+  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:91")
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
   do
