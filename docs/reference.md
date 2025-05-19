@@ -511,6 +511,18 @@ Open the root directory of the Lua caches managed by [nvim-thyme][].
 
 ### Thyme Rollback Commands
 
+Two concepts:
+
+- Active backup:
+  The backup to rollback
+  if you fail to compile or evaluate a Fennel module at nvim runtime.
+  You can switch to the active backup by [:ThymeRollbackSwitch][].
+
+- Mounted backup:
+  The backup to rollback regardless of your corresponding Fennel module stability.
+  You can mount an active backup by [:ThymeRollbackMount][],
+  or all the active backups by [:ThymeRollbackUnmountAll][].
+
 #### `:ThymeRollbackSwitch {target}`
 
 Prompt to switch to the active backup of the `{target}`.
