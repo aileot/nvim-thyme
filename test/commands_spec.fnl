@@ -130,7 +130,7 @@
     (assert.has_error #(vim.cmd "ThymeRollbackSwitch unexisted")))
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
-    (let [backup-label "module/"]
+    (let [backup-label "runtime/"]
       (describe* "with applying `require` to a fnl module twice or more but changing its contents"
         (let [ctx1 "{:foo :bar}"
               ctx2 "{:foo :baz}"
@@ -164,7 +164,7 @@
                 (remove-context-files!)))
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
-    (let [backup-kind "module/"]
+    (let [backup-kind "runtime/"]
       (it* "will force `require` to load module from the mounted backup."
         (let [mod :foobar
               fnl-path (.. mod ".fnl")
@@ -190,7 +190,7 @@
                 (remove-context-files!)))
   (describe* "for module"
     ;; TODO: Do not hardcode `module/` backup dir.
-    (let [backup-label "module/"]
+    (let [backup-label "runtime/"]
       (describe* "removes all mounted rollbacks;"
         (it* "thus, `:UnmountAll` should make `nvim` ignore the last mounted module"
           (let [mod :foobar

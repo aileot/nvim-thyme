@@ -25,10 +25,11 @@
 
 (local Observer (require :thyme.dependency.observer))
 
-(local {: initialize-macro-searcher-on-rtp!} (require :thyme.searcher.macro-module))
+(local {: initialize-macro-searcher-on-rtp!}
+       (require :thyme.searcher.macro-module))
 
 (local RollbackManager (require :thyme.rollback.manager))
-(local ModuleRollbackManager (RollbackManager.new :module ".lua"))
+(local RuntimeModuleRollbackManager (RollbackManager.new :runtime ".lua"))
 
 ;; NOTE: To initialize fennel.path and fennel.macro-path, cache.rtp must not
 ;; start with vim.o.rtp.
@@ -118,7 +119,7 @@ fennel.lua.
 @param module-name string
 @return undefined"
   (write-lua-file! lua-path lua-code)
-  (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)]
+  (let [backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)]
     (when (backup-handler:should-update-backup? lua-code)
       (backup-handler:write-backup! lua-path))))
 
@@ -149,14 +150,14 @@ cache dir.
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [Config (require :thyme.config)]
         (or Config.?error-msg ;
-            (let [backup-handler (ModuleRollbackManager:backup-handler-of module-name)
+            (let [backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)
                   ?chunk (case (case (let [file-loader (fn [path ...]
                                                          ;; Explicitly discard
                                                          ;; the rest params, or
                                                          ;; tests could fail.
                                                          (loadfile path))]
-                                       (ModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
-                                                                                              file-loader))
+                                       (RuntimeModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
+                                                                                                     file-loader))
                                  searcher (searcher module-name))
                            msg|chunk (case (type msg|chunk)
                                        ;; NOTE: Discard unwothy msg in the edge
