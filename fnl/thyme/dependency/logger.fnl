@@ -2,7 +2,10 @@
 
 (local ModuleMap (require :thyme.dependency.unit))
 
+(local {: validate-type} (require :thyme.utils.general))
 (local {: uri-encode} (require :thyme.utils.uri))
+(local {: assert-is-file-readable} (require :thyme.utils.fs))
+(local HashMap (require :thyme.utils.hashmap))
 
 (local {: validate-stackframe!} (require :thyme.dependency.stackframe))
 
@@ -22,8 +25,9 @@
   (validate-stackframe! dependency-stackframe)
   (let [dependency-fnl-path (dependency-stackframe:get-fnl-path)]
     (case (or (. module-maps dependency-fnl-path)
-              (let [modmap (ModuleMap.new dependency-fnl-path)]
-                (when-not (modmap:logged?)
+              (let [logged? (ModuleMap.has-log? dependency-fnl-path)
+                    modmap (ModuleMap.new dependency-fnl-path)]
+                (when-not logged?
                   (modmap:initialize-module-map! dependency-stackframe))
                 (tset self._module-name->fnl-path ;
                       dependency-stackframe.module-name ;
@@ -37,15 +41,17 @@
                                           (module-map:log-dependent! dependent-stackframe))))))
 
 (fn ModuleMapLogger.fnl-path->module-map [self raw-fnl-path]
+  (assert-is-file-readable raw-fnl-path)
   (let [fnl-path (vim.fn.resolve raw-fnl-path)]
     (or (. self._fnl-path->module-map fnl-path)
         (let [modmap (ModuleMap.new fnl-path)]
-          (when (modmap:logged?)
+          (when (ModuleMap.has-log? fnl-path)
             (tset module-maps fnl-path modmap))
           modmap))))
 
 (fn ModuleMapLogger.module-name->fnl-path [self module-name]
-  (. self._module-name->fnl-path module-name))
+  (validate-type :string module-name)
+  (self._module-name->fnl-path:get module-name))
 
 (fn ModuleMapLogger.fnl-path->module-name [self raw-fnl-path]
   ;; This method can be called before logging in an nvim runtime.
