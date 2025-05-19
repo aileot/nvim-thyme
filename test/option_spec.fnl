@@ -9,7 +9,7 @@
 
 (local RollbackManager (require :thyme.rollback.manager))
 ;; TODO: Avoid hardcoding params to use ModuleRollbackManager methods.
-(local ModuleRollbackManager (RollbackManager.new :module ".lua"))
+(local RuntimeModuleRollbackManager (RollbackManager.new :runtime ".lua"))
 
 (local thyme (require :thyme))
 
@@ -57,7 +57,7 @@
     (it* "limits the number of backups per Fennel module."
       (let [mod :foobar
             filename (.. mod ".fnl")
-            backup-handler (ModuleRollbackManager:backup-handler-of mod)
+            backup-handler (RuntimeModuleRollbackManager:backup-handler-of mod)
             fnl-path (prepare-config-fnl-file! filename ":ctx1")]
         (assert.equals 0 (length (backup-handler:list-backup-files)))
         (assert.equals :ctx1 (require mod))

@@ -11,7 +11,7 @@
 (local Observer (require :thyme.dependency.observer))
 (local DependencyLogger (require :thyme.dependency.logger))
 
-(local {: write-lua-file-with-backup!} (require :thyme.searcher.module))
+(local {: write-lua-file-with-backup!} (require :thyme.searcher.runtime-module))
 (local {: clear-cache!} (require :thyme.compiler.cache))
 
 (local default-strategy :recompile)

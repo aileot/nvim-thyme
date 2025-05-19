@@ -20,10 +20,10 @@ local RollbackLoaderMessenger = Messenger.new("loader/rollback")
 local _local_5_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_5_["get-runtime-files"]
 local Observer = require("thyme.dependency.observer")
-local _local_6_ = require("thyme.searcher.macro")
+local _local_6_ = require("thyme.searcher.macro-module")
 local initialize_macro_searcher_on_rtp_21 = _local_6_["initialize-macro-searcher-on-rtp!"]
 local RollbackManager = require("thyme.rollback.manager")
-local ModuleRollbackManager = RollbackManager.new("module", ".lua")
+local RuntimeModuleRollbackManager = RollbackManager.new("runtime", ".lua")
 local cache = {rtp = nil}
 local function compile_fennel_into_rtp_21()
   local rtp = vim.api.nvim_get_option_value("rtp", {})
@@ -142,7 +142,7 @@ local function update_fennel_paths_21(fennel)
 end
 local function write_lua_file_with_backup_21(lua_path, lua_code, module_name)
   write_lua_file_21(lua_path, lua_code)
-  local backup_handler = ModuleRollbackManager["backup-handler-of"](ModuleRollbackManager, module_name)
+  local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
   if backup_handler["should-update-backup?"](backup_handler, lua_code) then
     return backup_handler["write-backup!"](backup_handler, lua_path)
   else
@@ -170,7 +170,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
     local Config = require("thyme.config")
     local or_23_ = Config["?error-msg"]
     if not or_23_ then
-      local backup_handler = ModuleRollbackManager["backup-handler-of"](ModuleRollbackManager, module_name)
+      local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
       local _3fchunk
       do
         local _25_
@@ -182,7 +182,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               return loadfile(path)
             end
             file_loader = _27_
-            _26_ = ModuleRollbackManager["inject-mounted-backup-searcher!"](ModuleRollbackManager, package.loaders, file_loader)
+            _26_ = RuntimeModuleRollbackManager["inject-mounted-backup-searcher!"](RuntimeModuleRollbackManager, package.loaders, file_loader)
           end
           if (nil ~= _26_) then
             local searcher = _26_

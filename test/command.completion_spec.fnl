@@ -14,7 +14,7 @@
            (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
-  (let [backup-kind "module"]
+  (let [backup-kind "runtime"]
     (describe* "for :ThymeRollbackUnmount"
       (it* "only completes the mounted modules"
         (let [mod1 "foo"

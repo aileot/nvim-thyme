@@ -5,7 +5,7 @@
 ;; NOTE: This module is only for nvim main-config, never for project.
 (import-macros {: require-with-key : lazy-require-with-key} :thyme.macros)
 
-(local {: search-fnl-module-on-rtp!} (require :thyme.searcher.module))
+(local {: search-fnl-module-on-rtp!} (require :thyme.searcher.runtime-module))
 
 (local M {:loader search-fnl-module-on-rtp!
           :fennel {:view (lazy-require-with-key :thyme.wrapper.fennel :view)
