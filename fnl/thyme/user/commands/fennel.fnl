@@ -84,6 +84,9 @@
   (fn [{: args : smods}]
     (let [verbose? (< -1 smods.verbose)
           new-fnl-code (-> args
+                           ;; NOTE: Otherwise, parinfer seems to ignore
+                           ;; carriage return characters.
+                           (: :gsub "\r" "\n")
                            (apply-parinfer {: cmd-history-opts}))]
       (when verbose?
         ;; TODO: Replace with nvim_echo on treesitter highlight?

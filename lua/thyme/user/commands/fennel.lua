@@ -76,7 +76,7 @@ local function wrap_fennel_wrapper_for_command(callback, _16_)
     local args = _17_["args"]
     local smods = _17_["smods"]
     local verbose_3f = (-1 < smods.verbose)
-    local new_fnl_code = apply_parinfer(args, {["cmd-history-opts"] = cmd_history_opts})
+    local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
     if verbose_3f then
       tts.print(";;; Source")
       tts.print(new_fnl_code)

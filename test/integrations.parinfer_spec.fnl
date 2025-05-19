@@ -16,6 +16,20 @@
     (it* "thus, `:Fnl (+ 1 1` results in the same as `:Fnl (+ 1 1)`"
       (assert.equals (vim.fn.execute "Fnl (+ 1 1)")
                      (vim.fn.execute "Fnl (+ 1 1"))))
+  (describe* "fnl wrapper commands should balance considering `\r`;"
+    (it* "thus, `:Fnl (+ 1 1\r(+ 1 1` results in the same as `:Fnl (+ 1 1)`"
+      (assert.equals (vim.fn.execute "Fnl (+ 1 1\r(+ 1 1")
+                     (vim.fn.execute "Fnl (+ 1 1")))
+    (it* "thus, `:Fnl (+ 1 1\r (+ 1 1` results in the same as `:Fnl (+ 1 1 (+ 1 1)`"
+      (assert.equals (vim.fn.execute "Fnl (+ 1 1\r (+ 1 1")
+                     (vim.fn.execute "Fnl (+ 1 1 (+ 1 1"))))
+  (describe* "fnl wrapper commands should balance considering `\n`;"
+    (it* "thus, `:Fnl (+ 1 1\n(+ 1 1` results in the same as `:Fnl (+ 1 1)`"
+      (assert.equals (vim.fn.execute "Fnl (+ 1 1\n(+ 1 1")
+                     (vim.fn.execute "Fnl (+ 1 1")))
+    (it* "thus, `:Fnl (+ 1 1\n (+ 1 1` results in the same as `:Fnl (+ 1 1 (+ 1 1)`"
+      (assert.equals (vim.fn.execute "Fnl (+ 1 1\n (+ 1 1")
+                     (vim.fn.execute "Fnl (+ 1 1 (+ 1 1"))))
   (describe* "fnl wrapper commands without treesitter parsers,"
     (let [parser-dirs (vim.api.nvim_get_runtime_file "parser" true)
           new-tmp-path #(.. $ ".bk")
