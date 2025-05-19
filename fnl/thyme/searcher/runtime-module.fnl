@@ -142,7 +142,14 @@ fennel.lua.
 cache dir.
 @param module-name string
 @return string|function a lua chunk in function, or a string to tell why failed to load module."
-  (if (= :fennel module-name)
+  (if (module-name:find "^vim%.")
+      ;; NOTE: This `vim` module detection is a workaround for not to be
+      ;; a suspect of the errors missing such `vim` modules due to a build
+      ;; failure in neovim development; otherwise, get into infinite loop.
+      (let [path (-> vim.env.VIMRUNTIME
+                     (vim.fs.joinpath "lua"))]
+        (loadfile path))
+      (= :fennel module-name)
       ;; NOTE: The searchers must not be initialized here because this
       ;; searcher only receives "fennel" when the cache is cleared.
       (compile-fennel-into-rtp!)

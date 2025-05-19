@@ -164,7 +164,10 @@ local function module_name__3efnl_file_on_rtp_21(module_name)
   return fennel["search-module"](module_name, fennel.path)
 end
 local function search_fnl_module_on_rtp_21(module_name, ...)
-  if ("fennel" == module_name) then
+  if module_name:find("^vim%.") then
+    local path = vim.fs.joinpath(vim.env.VIMRUNTIME, "lua")
+    return loadfile(path)
+  elseif ("fennel" == module_name) then
     return compile_fennel_into_rtp_21()
   else
     local Config = require("thyme.config")
