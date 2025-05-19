@@ -131,9 +131,7 @@ fennel.lua.
   (let [fennel (require :fennel)]
     (when (or (= nil cache.rtp) debug?)
       (initialize-macro-searcher-on-rtp! fennel)
-      (initialize-module-searcher-on-rtp! fennel)
-      (-> (require :thyme)
-          (: :setup)))
+      (initialize-module-searcher-on-rtp! fennel))
     (when-not (= cache.rtp vim.o.rtp)
       (set cache.rtp vim.o.rtp)
       (update-fennel-paths! fennel))
