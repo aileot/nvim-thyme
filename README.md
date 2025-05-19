@@ -128,7 +128,7 @@ end)
 #### 3. Add a cache path for lua cache to `&runtimepath`
 
 ```lua
--- Note: Add a cache path to &rtp. The path MUST include `/thyme/`.
+-- Note: Add a cache path to &rtp. The path MUST include the literal substring "/thyme/compile".
 local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
 vim.opt.rtp:prepend(thyme_cache_prefix)
 -- Note: `vim.loader` internally cache &rtp, and recache it if modified.
