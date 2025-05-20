@@ -150,6 +150,7 @@
                          (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
                                                          line2 true)
                              (table.concat "\n")))
+              cmd-history-opts {:method :ignore}
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                                         {:lang :fennel
                                                          : compiler-options
@@ -171,6 +172,7 @@
                          (-> (vim.fn.readfile full-path "" line2)
                              (vim.list_slice line1)
                              (table.concat "\n")))
+              cmd-history-opts {:method :ignore}
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                                         {:lang :fennel
                                                          : compiler-options
@@ -196,6 +198,7 @@
                          (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
                                                          line2 true)
                              (table.concat "\n")))
+              cmd-history-opts {:method :ignore}
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
                                                         {:lang :lua
                                                          :discard-last? true
@@ -204,10 +207,11 @@
           (set a.args fnl-code)
           (callback a))))
     (command! :FnlCompileFile
-      {:nargs "*"
+      {:range "%"
+       :nargs "*"
        :bang true
        :complete :file
-       :desc "Compile given fnl files, or current fnl buffer"}
+       :desc "Compile given fnl files, or current fnl file"}
       ;; NOTE: mods.confirm to confirm any files; without `bang` to confirm to
       ;; overwrite existing file.
       (fn [{:fargs glob-paths :bang force-compile?}]
