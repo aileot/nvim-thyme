@@ -314,7 +314,7 @@ M["setup!"] = function(_3fopts)
       return nil
     end
   end
-  vim.api.nvim_create_user_command("FnlCompileFile", _46_, {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl buffer"})
+  vim.api.nvim_create_user_command("FnlCompileFile", _46_, {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"})
   local function _66_(_64_)
     local _arg_65_ = _64_["fargs"]
     local _3fpath = _arg_65_[1]
