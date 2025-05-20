@@ -140,8 +140,9 @@ If `nil`, it inherits the values from [compiler-options](#compiler-options) abov
 
 (default: `"overwrite"`)
 
-In Cmdline mode, the arguments of [Fennel Wrapper Commands][] like [:Fnl][]
-are modified when [parinfer-rust][] integration is activated.
+With [parinfer-rust][] integration,
+the arguments for [:Fnl][] and [:FnlCompile][] are modified
+before execution in Cmdline.
 
 This option determines the command history behavior with the modified input.
 
@@ -399,8 +400,8 @@ If no `[file]` is given, it evaluates the current file.
 :FnlCompile ~                                             *thyme-:FnlCompile*
 -->
 
-Almost equivalent to [:Fnl][];
-however, it does not evaluate the {fnl-expr},
+Almost equivalent to [:Fnl][].
+However, it does not evaluate the {fnl-expr},
 but only returns the compiled lua results.
 
 It does not affect the file system.
@@ -414,8 +415,8 @@ It does not affect the file system.
 :FnlCompileBuf ~                                       *thyme-:FnlCompileBuf*
 -->
 
-Almost equivalent to [:FnlBuf][];
-however, it does not evaluate the [bufname] (or current buffer),
+Almost equivalent to [:FnlBuf][].
+However, it does not evaluate the [bufname] (or current buffer),
 but only returns the compiled lua results.
 
 It does not affect the file system.
@@ -568,6 +569,7 @@ Unmount the mounted backups.
 [Fennel Wrapper Commands]: #fennel-wrapper-commands
 [:Fnl]: #fnlfnl-expr
 [:FnlBuf]: #fnlbuf-bufname
+[:FnlCompile]: #fnlcompilefnl-expr
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
