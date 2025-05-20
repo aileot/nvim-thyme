@@ -207,7 +207,8 @@
           (set a.args fnl-code)
           (callback a))))
     (command! :FnlCompileFile
-      {:nargs "*"
+      {:range "%"
+       :nargs "*"
        :bang true
        :complete :file
        :desc "Compile given fnl files, or current fnl buffer"}
