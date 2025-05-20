@@ -37,7 +37,7 @@
   ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
   (let [self (setmetatable {} ModuleMap)
         fnl-path (vim.fn.resolve raw-fnl-path)
-        log-path (ModuleMap.fnl-path->log-path fnl-path)
+        log-path (ModuleMap.determine-log-path fnl-path)
         logged? (file-readable? log-path)
         modmap (if logged?
                    (read-module-map-file log-path)
@@ -57,7 +57,7 @@
   (assert-is-file-readable raw-fnl-path)
   (let [self (setmetatable {} ModuleMap)
         fnl-path (vim.fn.resolve raw-fnl-path)
-        log-path (ModuleMap.fnl-path->log-path fnl-path)]
+        log-path (ModuleMap.determine-log-path fnl-path)]
     (when (file-readable? log-path)
       (case (read-module-map-file log-path)
         modmap (do
@@ -141,7 +141,7 @@
     (dep-map:restore!)
     (restore-file! log-path)))
 
-(fn ModuleMap.fnl-path->log-path [raw-path]
+(fn ModuleMap.determine-log-path [raw-path]
   "Convert `dependency-fnl-path` into `log-path`.
 @param dependency-fnl-path string
 @return string"
@@ -153,7 +153,7 @@
   "Check if `raw-path` has the corresponding log file on `ModuleMap`.
 @param raw-path string
 @return boolean"
-  (let [log-path (ModuleMap.fnl-path->log-path raw-path)]
+  (let [log-path (ModuleMap.determine-log-path raw-path)]
     (file-readable? log-path)))
 
 (fn ModuleMap.clear-module-map-files! []

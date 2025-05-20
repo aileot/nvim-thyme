@@ -28,7 +28,7 @@ ModuleMap.__index = ModuleMap
 ModuleMap.new = function(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
   local fnl_path = vim.fn.resolve(raw_fnl_path)
-  local log_path = ModuleMap["fnl-path->log-path"](fnl_path)
+  local log_path = ModuleMap["determine-log-path"](fnl_path)
   local logged_3f = file_readable_3f(log_path)
   local modmap
   if logged_3f then
@@ -46,7 +46,7 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
   assert_is_file_readable(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
   local fnl_path = vim.fn.resolve(raw_fnl_path)
-  local log_path = ModuleMap["fnl-path->log-path"](fnl_path)
+  local log_path = ModuleMap["determine-log-path"](fnl_path)
   if file_readable_3f(log_path) then
     local _9_ = read_module_map_file(log_path)
     if (nil ~= _9_) then
@@ -133,13 +133,13 @@ ModuleMap["restore!"] = function(self)
   dep_map["restore!"](dep_map)
   return restore_file_21(log_path)
 end
-ModuleMap["fnl-path->log-path"] = function(raw_path)
+ModuleMap["determine-log-path"] = function(raw_path)
   local resolved_path = vim.fn.resolve(raw_path)
   local log_id = uri_encode(resolved_path)
   return Path.join(modmap_prefix, (log_id .. ".log"))
 end
 ModuleMap["has-log?"] = function(raw_path)
-  local log_path = ModuleMap["fnl-path->log-path"](raw_path)
+  local log_path = ModuleMap["determine-log-path"](raw_path)
   return file_readable_3f(log_path)
 end
 ModuleMap["clear-module-map-files!"] = function()
