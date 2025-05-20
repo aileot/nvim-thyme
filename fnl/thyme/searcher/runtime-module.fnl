@@ -15,8 +15,8 @@
 (local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
 
 (local Messenger (require :thyme.utils.messenger))
-(local LoaderMessenger (Messenger.new "loader"))
-(local RollbackLoaderMessenger (Messenger.new "loader/rollback"))
+(local LoaderMessenger (Messenger.new "loader/runtime"))
+(local RollbackLoaderMessenger (Messenger.new "loader/runtime/rollback"))
 
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
@@ -193,7 +193,7 @@ cache dir.
                                                          (load lua-code
                                                                lua-path))
                                        (_ raw-msg)
-                                       (let [raw-msg-body (-> "%s is found for the module/%s, but failed to compile it"
+                                       (let [raw-msg-body (-> "%s is found for the runtime/%s, but failed to compile it"
                                                               (: :format
                                                                  fnl-path
                                                                  module-name))
