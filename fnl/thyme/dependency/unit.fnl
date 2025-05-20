@@ -142,8 +142,8 @@
     (restore-file! log-path)))
 
 (fn ModuleMap.determine-log-path [raw-path]
-  "Convert `dependency-fnl-path` into `log-path`.
-@param dependency-fnl-path string
+  "Convert `path` into `log-path`.
+@param path string
 @return string"
   (let [resolved-path (vim.fn.resolve raw-path)
         log-id (uri-encode resolved-path)]
