@@ -12,18 +12,18 @@
 (fn Stackframe.get-lua-path [self]
   self.lua-path)
 
-(fn Stackframe.new [{: module-name : fnl-path : ?lua-path}]
+(fn Stackframe.new [{: module-name : fnl-path : lua-path}]
   "Create a new instance of `Stackframe` with `module-name`, `fnl-path`,
 and optional `lua-path` info.
 @param module-name string
 @param fnl-path string
-@param ?lua-path string
+@param lua-path string|nil
 @return Stackframe"
   (let [self (setmetatable {} Stackframe)]
     (set self.module-name module-name)
     (assert-is-file-readable fnl-path)
     (set self.fnl-path (vim.fn.resolve fnl-path))
-    (set self.lua-path ?lua-path)
+    (set self.lua-path lua-path)
     self))
 
 (fn Stackframe.validate-stackframe! [val]

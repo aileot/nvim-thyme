@@ -19,7 +19,7 @@ Observer["observe!"] = function(self, callback, fnl_path, _3flua_path, compiler_
   validate_type("string", module_name)
   local fennel = require("fennel")
   local fnl_code = read_file(fnl_path)
-  local stackframe = Stackframe.new({["module-name"] = module_name, ["fnl-path"] = fnl_path, ["?lua-path"] = _3flua_path})
+  local stackframe = Stackframe.new({["module-name"] = module_name, ["fnl-path"] = fnl_path, ["lua-path"] = _3flua_path})
   self.callstack["push!"](self.callstack, stackframe)
   compiler_options["module-name"] = module_name
   compiler_options.filename = fnl_path

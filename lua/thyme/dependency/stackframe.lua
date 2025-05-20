@@ -14,12 +14,12 @@ end
 Stackframe.new = function(_2_)
   local module_name = _2_["module-name"]
   local fnl_path = _2_["fnl-path"]
-  local _3flua_path = _2_["?lua-path"]
+  local lua_path = _2_["lua-path"]
   local self = setmetatable({}, Stackframe)
   self["module-name"] = module_name
   assert_is_file_readable(fnl_path)
   self["fnl-path"] = vim.fn.resolve(fnl_path)
-  self["lua-path"] = _3flua_path
+  self["lua-path"] = lua_path
   return self
 end
 Stackframe["validate-stackframe!"] = function(val)

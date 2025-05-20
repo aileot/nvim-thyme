@@ -34,7 +34,9 @@ callstacks.
   (validate-type :string module-name)
   (let [fennel (require :fennel)
         fnl-code (read-file fnl-path)
-        stackframe (Stackframe.new {: module-name : fnl-path : ?lua-path})]
+        stackframe (Stackframe.new {: module-name
+                                    : fnl-path
+                                    :lua-path ?lua-path})]
     (self.callstack:push! stackframe)
     (set compiler-options.module-name module-name)
     (set compiler-options.filename fnl-path)
