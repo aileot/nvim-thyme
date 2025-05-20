@@ -150,6 +150,7 @@
                          (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
                                                          line2 true)
                              (table.concat "\n")))
+              cmd-history-opts {:method :ignore}
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                                         {:lang :fennel
                                                          : compiler-options
@@ -171,6 +172,7 @@
                          (-> (vim.fn.readfile full-path "" line2)
                              (vim.list_slice line1)
                              (table.concat "\n")))
+              cmd-history-opts {:method :ignore}
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
                                                         {:lang :fennel
                                                          : compiler-options
@@ -196,6 +198,7 @@
                          (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
                                                          line2 true)
                              (table.concat "\n")))
+              cmd-history-opts {:method :ignore}
               callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
                                                         {:lang :lua
                                                          :discard-last? true
