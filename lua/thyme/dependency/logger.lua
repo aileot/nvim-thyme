@@ -23,8 +23,8 @@ ModuleMapLogger["log-module-map!"] = function(self, dependency_stackframe, depen
       modmap["initialize-module-map!"](modmap, dependency_stackframe)
     else
     end
-    self["_module-name->fnl-path"][dependency_stackframe["module-name"]] = dependency_stackframe["fnl-path"]
-    self["_fnl-path->module-map"][dependency_stackframe["fnl-path"]] = modmap
+    self["_module-name->fnl-path"]["insert!"](self["_module-name->fnl-path"], dependency_stackframe["module-name"], dependency_stackframe["fnl-path"])
+    self["_fnl-path->module-map"]["insert!"](self["_fnl-path->module-map"], dependency_stackframe["fnl-path"], modmap)
     or_6_ = modmap
   end
   _5_ = or_6_
@@ -106,8 +106,8 @@ ModuleMapLogger["restore-module-map!"] = function(self, fnl_path)
 end
 ModuleMapLogger._new = function()
   local self = setmetatable({}, ModuleMapLogger)
-  self["_module-name->fnl-path"] = {}
-  self["_fnl-path->module-map"] = {}
+  self["_module-name->fnl-path"] = HashMap.new()
+  self["_fnl-path->module-map"] = HashMap.new()
   return self
 end
 local SingletonModuleMapLogger = ModuleMapLogger._new()

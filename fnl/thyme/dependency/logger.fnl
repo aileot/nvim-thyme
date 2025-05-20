@@ -29,11 +29,10 @@
                     modmap (ModuleMap.new dependency-fnl-path)]
                 (when-not logged?
                   (modmap:initialize-module-map! dependency-stackframe))
-                (tset self._module-name->fnl-path ;
-                      dependency-stackframe.module-name ;
-                      dependency-stackframe.fnl-path)
-                (tset self._fnl-path->module-map dependency-stackframe.fnl-path
-                      modmap)
+                (self._module-name->fnl-path:insert! dependency-stackframe.module-name
+                                                     dependency-stackframe.fnl-path)
+                (self._fnl-path->module-map:insert! dependency-stackframe.fnl-path
+                                                    modmap)
                 modmap))
       module-map (case (last dependent-callstack)
                    dependent-stackframe (when-not (-> (module-map:get-dependent-maps)
@@ -112,8 +111,8 @@
   "Create a new instance of `ModuleMapLogger`.
 @return ModuleMapLogger"
   (let [self (setmetatable {} ModuleMapLogger)]
-    (set self._module-name->fnl-path {})
-    (set self._fnl-path->module-map {})
+    (set self._module-name->fnl-path (HashMap.new))
+    (set self._fnl-path->module-map (HashMap.new))
     self))
 
 (local SingletonModuleMapLogger (ModuleMapLogger._new))
