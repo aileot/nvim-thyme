@@ -27,8 +27,8 @@ local ModuleMap = {}
 ModuleMap.__index = ModuleMap
 ModuleMap.new = function(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
-  local fnl_path = vim.fn.resolve(raw_fnl_path)
-  local log_path = ModuleMap["fnl-path->log-path"](fnl_path)
+  local id = ModuleMap["fnl-path->id"](raw_fnl_path)
+  local log_path = ModuleMap["determine-log-path"](id)
   local logged_3f = file_readable_3f(log_path)
   local modmap
   if logged_3f then
@@ -37,23 +37,23 @@ ModuleMap.new = function(raw_fnl_path)
     modmap = {}
   end
   self["_log-path"] = log_path
-  self["_entry-map"] = modmap[fnl_path]
-  modmap[fnl_path] = nil
+  self["_entry-map"] = modmap[id]
+  modmap[id] = nil
   self["_dependent-maps"] = HashMap.new()
   return self
 end
 ModuleMap["try-read-from-file"] = function(raw_fnl_path)
   assert_is_file_readable(raw_fnl_path)
   local self = setmetatable({}, ModuleMap)
-  local fnl_path = vim.fn.resolve(raw_fnl_path)
-  local log_path = ModuleMap["fnl-path->log-path"](fnl_path)
+  local id = ModuleMap["fnl-path->id"](raw_fnl_path)
+  local log_path = ModuleMap["determine-log-path"](id)
   if file_readable_3f(log_path) then
     local _9_ = read_module_map_file(log_path)
     if (nil ~= _9_) then
       local modmap = _9_
       self["_log-path"] = log_path
-      self["_entry-map"] = modmap[fnl_path]
-      modmap[fnl_path] = nil
+      self["_entry-map"] = modmap[id]
+      modmap[id] = nil
       self["_dep-map"] = modmap
       return self
     else
@@ -65,11 +65,7 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
 end
 ModuleMap["initialize-module-map!"] = function(self, _12_)
   local module_name = _12_["module-name"]
-  local fnl_path = _12_["fnl-path"]
-  local _lua_path = _12_["lua-path"]
-  local _macro_3f = _12_["macro?"]
   local modmap = _12_
-  modmap["fnl-path"] = vim.fn.resolve(fnl_path)
   local modmap_line = modmap__3eline(modmap)
   local log_path = self["get-log-path"](self)
   assert(not file_readable_3f(log_path), ("this method only expects an empty log file for the module " .. module_name))
@@ -109,10 +105,11 @@ ModuleMap["get-dependent-maps"] = function(self)
 end
 ModuleMap["log-dependent!"] = function(self, dependent)
   local dep_map = self["get-dependent-maps"](self)
-  if not dep_map["contains?"](dep_map, dependent["fnl-path"]) then
+  local id = self["fnl-path->id"](dependent["fnl-path"])
+  if not dep_map["contains?"](dep_map, id) then
     local modmap_line = modmap__3eline(dependent)
     local log_path = self["get-log-path"](self)
-    dep_map["insert!"](dep_map, dependent["fnl-path"], dependent)
+    dep_map["insert!"](dep_map, id, dependent)
     return append_log_file_21(log_path, modmap_line)
   else
     return nil
@@ -133,13 +130,16 @@ ModuleMap["restore!"] = function(self)
   dep_map["restore!"](dep_map)
   return restore_file_21(log_path)
 end
-ModuleMap["fnl-path->log-path"] = function(raw_path)
-  local resolved_path = vim.fn.resolve(raw_path)
-  local log_id = uri_encode(resolved_path)
+ModuleMap["fnl-path->id"] = function(raw_fnl_path)
+  return vim.fn.resolve(raw_fnl_path)
+end
+ModuleMap["determine-log-path"] = function(raw_path)
+  local id = ModuleMap["fnl-path->id"](raw_path)
+  local log_id = uri_encode(id)
   return Path.join(modmap_prefix, (log_id .. ".log"))
 end
 ModuleMap["has-log?"] = function(raw_path)
-  local log_path = ModuleMap["fnl-path->log-path"](raw_path)
+  local log_path = ModuleMap["determine-log-path"](raw_path)
   return file_readable_3f(log_path)
 end
 ModuleMap["clear-module-map-files!"] = function()
