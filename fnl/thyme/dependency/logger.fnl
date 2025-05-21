@@ -24,17 +24,14 @@
   ;; NOTE: dependent-stack can be empty when `import-macros` is in cmdline.
   (validate-stackframe! dependency-stackframe)
   (let [dependency-fnl-path (dependency-stackframe:get-fnl-path)
-        module-map (if (ModuleMap.has-log? dependency-fnl-path)
-                       (do
-                         (var map
-                              (ModuleMap.try-read-from-file dependency-fnl-path))
-                         (when (and (map:macro?)
-                                    (dependency-stackframe:get-lua-path))
-                           (set map (ModuleMap.new dependency-stackframe))
-                           (map:write-file!))
-                         map)
-                       (let [map (ModuleMap.new dependency-stackframe)]
-                         (map:write-file!)))]
+        module-map (case (ModuleMap.try-read-from-file dependency-fnl-path)
+                     nil (-> (ModuleMap.new dependency-stackframe)
+                             (: :write-file!))
+                     map (if (and (map:macro?)
+                                  (dependency-stackframe:get-lua-path))
+                             (-> (ModuleMap.new dependency-stackframe)
+                                 (: :write-file!))
+                             (values map)))]
     (self._module-name->fnl-path:insert! dependency-stackframe.module-name
                                          dependency-stackframe.fnl-path)
     (self._fnl-path->module-map:insert! dependency-stackframe.fnl-path
@@ -45,10 +42,10 @@
 (fn ModuleMapLogger.fnl-path->module-map [self raw-fnl-path]
   ;; TODO: Save access time to compare
   (or (self._fnl-path->module-map:get raw-fnl-path)
-      (when (ModuleMap.has-log? raw-fnl-path)
-        (let [modmap (ModuleMap.try-read-from-file raw-fnl-path)]
-          (self._fnl-path->module-map:insert! raw-fnl-path modmap)
-          (values modmap)))))
+      (case (ModuleMap.try-read-from-file raw-fnl-path)
+        modmap (do
+                 (self._fnl-path->module-map:insert! raw-fnl-path modmap)
+                 (values modmap)))))
 
 (fn ModuleMapLogger.module-name->fnl-path [self module-name]
   (validate-type :string module-name)

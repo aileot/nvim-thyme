@@ -144,13 +144,6 @@
         log-id (uri-encode id)]
     (Path.join modmap-prefix (.. log-id :.log))))
 
-(fn ModuleMap.has-log? [raw-path]
-  "Check if `raw-path` has the corresponding log file on `ModuleMap`.
-@param raw-path string
-@return boolean"
-  (let [log-path (ModuleMap.determine-log-path raw-path)]
-    (file-readable? log-path)))
-
 (fn ModuleMap.clear-module-map-files! []
   "Clear all the module-map log files managed by nvim-thyme."
   ;; NOTE: hide-dir! instead also move modmap dir wastefully.

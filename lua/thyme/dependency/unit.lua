@@ -127,10 +127,6 @@ ModuleMap["determine-log-path"] = function(raw_path)
   local log_id = uri_encode(id)
   return Path.join(modmap_prefix, (log_id .. ".log"))
 end
-ModuleMap["has-log?"] = function(raw_path)
-  local log_path = ModuleMap["determine-log-path"](raw_path)
-  return file_readable_3f(log_path)
-end
 ModuleMap["clear-module-map-files!"] = function()
   return each_file(hide_file_21, modmap_prefix)
 end

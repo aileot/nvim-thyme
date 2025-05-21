@@ -15,40 +15,46 @@ ModuleMapLogger["log-module-map!"] = function(self, dependency_stackframe, depen
   validate_stackframe_21(dependency_stackframe)
   local dependency_fnl_path = dependency_stackframe["get-fnl-path"](dependency_stackframe)
   local module_map
-  if ModuleMap["has-log?"](dependency_fnl_path) then
-    local map = ModuleMap["try-read-from-file"](dependency_fnl_path)
-    if (map["macro?"](map) and dependency_stackframe["get-lua-path"](dependency_stackframe)) then
-      map = ModuleMap.new(dependency_stackframe)
-      map["write-file!"](map)
+  do
+    local _5_ = ModuleMap["try-read-from-file"](dependency_fnl_path)
+    if (_5_ == nil) then
+      local tgt_6_ = ModuleMap.new(dependency_stackframe)
+      module_map = (tgt_6_)["write-file!"](tgt_6_)
+    elseif (nil ~= _5_) then
+      local map = _5_
+      if (map["macro?"](map) and dependency_stackframe["get-lua-path"](dependency_stackframe)) then
+        local tgt_7_ = ModuleMap.new(dependency_stackframe)
+        module_map = (tgt_7_)["write-file!"](tgt_7_)
+      else
+        module_map = map
+      end
     else
+      module_map = nil
     end
-    module_map = map
-  else
-    local map = ModuleMap.new(dependency_stackframe)
-    module_map = map["write-file!"](map)
   end
   self["_module-name->fnl-path"]["insert!"](self["_module-name->fnl-path"], dependency_stackframe["module-name"], dependency_stackframe["fnl-path"])
   self["_fnl-path->module-map"]["insert!"](self["_fnl-path->module-map"], dependency_stackframe["fnl-path"], module_map)
-  local _7_ = dependent_callstack[#dependent_callstack]
-  if (nil ~= _7_) then
-    local dependent_stackframe = _7_
+  local _10_ = dependent_callstack[#dependent_callstack]
+  if (nil ~= _10_) then
+    local dependent_stackframe = _10_
     return module_map["log-dependent!"](module_map, dependent_stackframe)
   else
     return nil
   end
 end
 ModuleMapLogger["fnl-path->module-map"] = function(self, raw_fnl_path)
-  local or_9_ = self["_fnl-path->module-map"]:get(raw_fnl_path)
-  if not or_9_ then
-    if ModuleMap["has-log?"](raw_fnl_path) then
-      local modmap = ModuleMap["try-read-from-file"](raw_fnl_path)
+  local or_12_ = self["_fnl-path->module-map"]:get(raw_fnl_path)
+  if not or_12_ then
+    local _13_ = ModuleMap["try-read-from-file"](raw_fnl_path)
+    if (nil ~= _13_) then
+      local modmap = _13_
       self["_fnl-path->module-map"]["insert!"](self["_fnl-path->module-map"], raw_fnl_path, modmap)
-      or_9_ = modmap
+      or_12_ = modmap
     else
-      or_9_ = nil
+      or_12_ = nil
     end
   end
-  return or_9_
+  return or_12_
 end
 ModuleMapLogger["module-name->fnl-path"] = function(self, module_name)
   validate_type("string", module_name)
@@ -63,17 +69,17 @@ ModuleMapLogger["fnl-path->module-name"] = function(self, raw_fnl_path)
   end
 end
 ModuleMapLogger["module-name->module-map"] = function(self, module_name)
-  local _13_ = self["module-name->fnl-path"](self, module_name)
-  if (nil ~= _13_) then
-    local fnl_path = _13_
+  local _18_ = self["module-name->fnl-path"](self, module_name)
+  if (nil ~= _18_) then
+    local fnl_path = _18_
     return self["_fnl-path->module-map"]:get(fnl_path)
   else
     return nil
   end
 end
 ModuleMapLogger["fnl-path->dependent-maps"] = function(self, fnl_path)
-  local tgt_15_ = self["fnl-path->module-map"](self, fnl_path)
-  return (tgt_15_)["get-dependent-maps"](tgt_15_)
+  local tgt_20_ = self["fnl-path->module-map"](self, fnl_path)
+  return (tgt_20_)["get-dependent-maps"](tgt_20_)
 end
 ModuleMapLogger["fnl-path->lua-path"] = function(self, fnl_path)
   local tmp_3_ = self["fnl-path->module-map"](self, fnl_path)
