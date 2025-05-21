@@ -408,7 +408,7 @@ and `nvim-thyme`'s [paren-dropin][] option enabled,
 
 ```vim
 " nvim-thyme
-:Fnl (+ 1 1)
+:Fnl (+ 1 1
 " hotpot.nvim
 :Fnl= (+ 1 1)
 " tangerine.nvim
@@ -419,7 +419,7 @@ and `nvim-thyme`'s [paren-dropin][] option enabled,
 
 ```vim
 " nvim-thyme
-:silent Fnl (+ 1 1)
+:silent Fnl (+ 1 1
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
