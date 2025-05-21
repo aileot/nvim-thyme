@@ -103,17 +103,18 @@ ModuleMap["log-dependent!"] = function(self, dependent)
 end
 ModuleMap["clear!"] = function(self)
   local log_path = self["get-log-path"](self)
-  local dep_map = self["get-dependent-maps"](self)
   self["__entry-map"] = self["_entry-map"]
-  dep_map["clear!"](dep_map)
+  self["__dependent-maps"] = self["_dependent-maps"]
+  self["_dependent-maps"] = nil
   self["_entry-map"] = nil
   return hide_file_21(log_path)
 end
 ModuleMap["restore!"] = function(self)
   local log_path = self["get-log-path"](self)
-  local dep_map = self["get-dependent-maps"](self)
   self["_entry-map"] = self["__entry-map"]
-  dep_map["restore!"](dep_map)
+  self["_dependent-maps"] = self["__dependent-maps"]
+  self["__dependent-maps"] = nil
+  self["__entry-map"] = nil
   return restore_file_21(log_path)
 end
 ModuleMap["fnl-path->path-id"] = function(raw_fnl_path)

@@ -111,19 +111,20 @@
 - Remove module-map log file.
 - Set module-map in memory for `dependency-fnl-path` to `nil`.
   @param dependency-fnl-path string"
-  (let [log-path (self:get-log-path)
-        dep-map (self:get-dependent-maps)]
+  (let [log-path (self:get-log-path)]
     (set self.__entry-map self._entry-map)
-    (dep-map:clear!)
+    (set self.__dependent-maps self._dependent-maps)
+    (set self._dependent-maps nil)
     (set self._entry-map nil)
     (hide-file! log-path)))
 
 (fn ModuleMap.restore! [self]
   "Restore once cleared module-map."
-  (let [log-path (self:get-log-path)
-        dep-map (self:get-dependent-maps)]
+  (let [log-path (self:get-log-path)]
     (set self._entry-map self.__entry-map)
-    (dep-map:restore!)
+    (set self._dependent-maps self.__dependent-maps)
+    (set self.__dependent-maps nil)
+    (set self.__entry-map nil)
     (restore-file! log-path)))
 
 (fn ModuleMap.fnl-path->path-id [raw-fnl-path]
