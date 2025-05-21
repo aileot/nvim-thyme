@@ -131,13 +131,17 @@ by default) for `vim.api.nvim_echo`.
                        ;; Temporarily replace address indicators in pretty print
                        ;; to keep valid syntax tree.
                        :fennel
-                       (text:gsub "#<(%a+):(%s+0x%x+)>" "#(%1_%2)")
+                       (text:gsub "#<(%a+):(%s+0x%x+)>" "#(%1 %2)")
                        :lua
                        ;; TODO: Why does @field not affect in {%1=%2}?
                        (text:gsub "<(%a+%s+%d+)>" "\"%1\"")
                        _
                        text)
-                     (: :gsub "\\" "\\\\"))]
+                     (: :gsub "\\" "\\\\"))
+        fixed-text (-> text
+                       ;; Reset the address indicator adjustments,
+                       ;; but keep the escapes.
+                       (: :gsub "\\" "\\\\"))]
     (validate-type :table opts)
     (case (pcall ts.get_string_parser tmp-text base-lang)
       (false msg)
@@ -146,7 +150,7 @@ by default) for `vim.api.nvim_echo`.
         chunks)
       (true lang-tree)
       ;; Make sure to destroy
-      (compose-hl-chunks tmp-text lang-tree))))
+      (compose-hl-chunks fixed-text lang-tree))))
 
 (fn echo [text ?opts]
   "Echo `text` with treesitter highlights.

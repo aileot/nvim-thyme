@@ -148,7 +148,7 @@ local function text__3ehl_chunks(text, _3fopts)
   local tmp_text
   local _20_
   if (base_lang == "fennel") then
-    _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1_%2)")
+    _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
   elseif (base_lang == "lua") then
     _20_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
   else
@@ -156,6 +156,7 @@ local function text__3ehl_chunks(text, _3fopts)
     _20_ = text
   end
   tmp_text = _20_:gsub("\\", "\\\\")
+  local fixed_text = text:gsub("\\", "\\\\")
   validate_type("table", opts)
   local _25_, _26_ = pcall(ts.get_string_parser, tmp_text, base_lang)
   if ((_25_ == false) and (nil ~= _26_)) then
@@ -165,7 +166,7 @@ local function text__3ehl_chunks(text, _3fopts)
     return chunks
   elseif ((_25_ == true) and (nil ~= _26_)) then
     local lang_tree = _26_
-    return compose_hl_chunks(tmp_text, lang_tree)
+    return compose_hl_chunks(fixed_text, lang_tree)
   else
     return nil
   end
