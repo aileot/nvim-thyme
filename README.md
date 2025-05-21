@@ -26,7 +26,7 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 ## 🔌 Optional Features
 
 The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
-(For the details, please read the [Installation](#installation) guide below.)
+(For the details, please read the [Installation][installation] guide below.)
 
 - **Recompile** on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
@@ -232,7 +232,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
 generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
-See the [Configuration](#configuration) section below.
+See the [Configuration][configuration] section below.
 
 ### 5. checkhealth
 
@@ -281,7 +281,7 @@ NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
 
 ### Options in `.nvim-thyme.fnl`
 
-As described in the [Installation](#installation) above,
+As described in the [Installation][installation] above,
 all the configurations should be managed
 in a config file `.nvim-thyme.fnl` instead of `thyme.setup`.
 
@@ -387,15 +387,15 @@ require([[tangerine]]).setup({})
    load lua files under the `lua/` directory apart from
    `nvim-thyme`.
 2. Add codes to enable thyme's auto-compile system.
-   See the [Installation](#installation) section above.
+   See the [Installation][installation] section above.
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
 ## 💥 Ex Command Comparisons
 
-Note: nvim-thyme only provides user commands when you call
-[`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
-for performance as described in [Commands](#commands) section above.
+Note: `nvim-thyme` only provides user commands
+after you call [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
+for performance.
 
 ### Evaluate expression and print the result
 
@@ -505,6 +505,8 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
   `plugin/`. Not in compiler sandbox.
 
 [alternatives]: #-alternatives
+[installation]: #-installation
+[configuration]: #%EF%B8%8F-configuration
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
 [Fennel]: https://git.sr.ht/~technomancy/fennel
