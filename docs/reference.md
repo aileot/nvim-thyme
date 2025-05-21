@@ -563,15 +563,15 @@ Unmount the mounted backups.
 [parinfer-rust]: https://github.com/eraserhd/parinfer-rust
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [thyme]: https://github.com/aileot/nvim-thyme
-[.nvim-thyme.fnl]: #options-for-nvim-thymefnl
+[.nvim-thyme.fnl]: #options-in-nvim-thymefnl
 [thyme.setup]: #thymesetup-or-thymesetup
 [&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
 [Fennel Wrapper Commands]: #fennel-wrapper-commands
-[:Fnl]: #fnlfnl-expr
+[:Fnl]: #fnl-fnl-expr
 [:FnlBuf]: #fnlbuf-bufname
-[:FnlCompile]: #fnlcompilefnl-expr
+[:FnlCompile]: #fnlcompile-fnl-expr
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
