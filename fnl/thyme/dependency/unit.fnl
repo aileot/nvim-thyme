@@ -15,8 +15,6 @@
 (local {: hide-file! : restore-file! : can-restore-file?}
        (require :thyme.util.pool))
 
-(local HashMap (require :thyme.util.class.hashmap))
-
 (local modmap-prefix (Path.join state-prefix :modmap))
 
 (vim.fn.mkdir modmap-prefix :p)

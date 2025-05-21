@@ -14,7 +14,6 @@ local _local_5_ = require("thyme.util.pool")
 local hide_file_21 = _local_5_["hide-file!"]
 local restore_file_21 = _local_5_["restore-file!"]
 local can_restore_file_3f = _local_5_["can-restore-file?"]
-local HashMap = require("thyme.util.class.hashmap")
 local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
