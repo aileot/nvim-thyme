@@ -26,7 +26,7 @@ instead of `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`.
 ## 🔌 Optional Features
 
 The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
-(For the details, please read the [Installation](#installation) guide below.)
+(For the details, please read the [Installation][installation] guide below.)
 
 - **Recompile** on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
@@ -57,7 +57,7 @@ The project started from scratch. _Now in Beta!_
 
 - Neovim v0.10.0+
 - [Fennel][] on your `&runtimepath`, in short, `&rtp`.
-  (_not embedded_ unlike other plugins)
+  (_not embedded_ unlike [the alternative plugins][alternatives])
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
   on `&rtp` by yourself)
 
@@ -232,7 +232,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
 If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
 generally `$XDG_CONFIG_HOME/nvim`,
 you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
-See the [Configuration](#configuration) section below.
+See the [Configuration][configuration] section below.
 
 ### 5. checkhealth
 
@@ -281,7 +281,7 @@ NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
 
 ### Options in `.nvim-thyme.fnl`
 
-As described in the [Installation](#installation) above,
+As described in the [Installation][installation] above,
 all the configurations should be managed
 in a config file `.nvim-thyme.fnl` instead of `thyme.setup`.
 
@@ -387,23 +387,28 @@ require([[tangerine]]).setup({})
    load lua files under the `lua/` directory apart from
    `nvim-thyme`.
 2. Add codes to enable thyme's auto-compile system.
-   See the [Installation](#installation) section above.
+   See the [Installation][installation] section above.
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
 ## 💥 Ex Command Comparisons
 
-Note: nvim-thyme only provides user commands when you call
-[`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
-for performance as described in [Commands](#commands) section above.
+Note: `nvim-thyme` only provides user commands
+after you call [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
+for performance.
 
 ### Evaluate expression and print the result
 
-With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
+With [parinfer-rust][],
+
+<!--
+TODO: Comment out once the dropin feature becomes stable.
+and `nvim-thyme`'s [paren-dropin][] option enabled,
+-->
 
 ```vim
 " nvim-thyme
-:Fnl (+ 1 1)
+:Fnl (+ 1 1
 " hotpot.nvim
 :Fnl= (+ 1 1)
 " tangerine.nvim
@@ -414,7 +419,7 @@ With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
 
 ```vim
 " nvim-thyme
-:silent Fnl (+ 1 1)
+:silent Fnl (+ 1 1
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
@@ -493,7 +498,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
 The integration of `nvim-thyme` with [parinfer][]
 is based in part on copy extracted from the project,
-so the [file](./fnl/thyme/api/parinfer.fnl) on `parinfer` is also
+so the [file](./fnl/thyme/wrapper/parinfer.fnl) on `parinfer` is also
 on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
 
 ## 🤔 Alternatives
@@ -504,6 +509,9 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[alternatives]: #-alternatives
+[installation]: #-installation
+[configuration]: #%EF%B8%8F-configuration
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
 [Fennel]: https://git.sr.ht/~technomancy/fennel
@@ -518,4 +526,3 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
-[paren-cmd-map]: ./docs/reference#paren-cmd-map
