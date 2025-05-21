@@ -1,4 +1,4 @@
-local _local_1_ = require("thyme.utils.fs")
+local _local_1_ = require("thyme.util.fs")
 local assert_is_file_readable = _local_1_["assert-is-file-readable"]
 local Stackframe = {}
 Stackframe.__index = Stackframe

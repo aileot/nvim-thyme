@@ -2,7 +2,7 @@
 
 (include :test.helper.prerequisites)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local uv (or vim.uv vim.loop))
 (local os-sysname (-> (uv.os_uname)

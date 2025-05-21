@@ -1,13 +1,13 @@
 (import-macros {: when-not : str? : dec : inc : first : command!} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local {: lua-cache-prefix : config-filename : config-path}
        (require :thyme.const))
 
-(local {: directory?} (require :thyme.utils.fs))
+(local {: directory?} (require :thyme.util.fs))
 
-(local Messenger (require :thyme.utils.class.messenger))
+(local Messenger (require :thyme.util.class.messenger))
 (local UninstallCommandMessenger (Messenger.new "command/uninstall"))
 
 (local cache-commands (require :thyme.user.commands.cache))

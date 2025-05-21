@@ -1,7 +1,7 @@
 local _local_1_ = require("thyme.const")
 local config_path = _local_1_["config-path"]
-local Path = require("thyme.utils.path")
-local _local_2_ = require("thyme.utils.fs")
+local Path = require("thyme.util.path")
+local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local M = {}
 M["recorded?"] = function(raw_path)

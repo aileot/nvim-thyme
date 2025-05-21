@@ -5,7 +5,7 @@
 (include :test.helper.assertions)
 
 (local {: prepare-config-fnl-file! : remove-context-files!}
-       (include :test.helper.utils))
+       (include :test.helper.util))
 
 (local thyme (require :thyme))
 

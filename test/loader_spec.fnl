@@ -4,7 +4,7 @@
 
 (local {: prepare-config-fnl-file!
         : prepare-config-lua-file!
-        : remove-context-files!} (include :test.helper.utils))
+        : remove-context-files!} (include :test.helper.util))
 
 (local thyme (require :thyme))
 ;; WARN: Importing thyme.config here accidentally removes entire

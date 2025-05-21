@@ -1,7 +1,7 @@
 (import-macros {: when-not : inc : dec : last} :thyme.macros)
 
-(local {: validate-type : new-matrix} (require :thyme.utils.general))
-(local {: char-by-char : uncouple-substrings} (require :thyme.utils.iterator))
+(local {: validate-type : new-matrix} (require :thyme.util.general))
+(local {: char-by-char : uncouple-substrings} (require :thyme.util.iterator))
 
 (local ts vim.treesitter)
 (local hl-cache {})

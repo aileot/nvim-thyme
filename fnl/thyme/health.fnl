@@ -3,9 +3,9 @@
 (local {: lua-cache-prefix : config-path} (require :thyme.const))
 
 (local {: get-config} (require :thyme.config))
-(local {: each-file} (require :thyme.utils.iterator))
+(local {: each-file} (require :thyme.util.iterator))
 (local {:get-root get-root-of-backup} (require :thyme.rollback.manager))
-(local {:get-root get-root-of-pool} (require :thyme.utils.pool))
+(local {:get-root get-root-of-pool} (require :thyme.util.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 (local {: macro-recorded? : peek-module-name : peek-fnl-path}
        (require :thyme.dependency.io))

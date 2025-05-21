@@ -1,10 +1,10 @@
 ;; TODO: Rename this file more suitable.
 (import-macros {: when-not : inc : first : second : error-fmt} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local {: lua-cache-prefix} (require :thyme.const))
-(local {: hide-files-in-dir!} (require :thyme.utils.pool))
+(local {: hide-files-in-dir!} (require :thyme.util.pool))
 (local {: clear-module-map-files!} (require :thyme.dependency.unit))
 
 (fn determine-lua-path [module-name]

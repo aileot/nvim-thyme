@@ -6,7 +6,7 @@
 (local {: debug? : config-filename : config-path} (require :thyme.const))
 
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
-       (require :thyme.utils.fs))
+       (require :thyme.util.fs))
 
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
@@ -92,7 +92,7 @@
 ;; HACK: Make sure to use `require` to modules which depend on config in
 ;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
 
-(local {: denied?} (require :thyme.utils.trust))
+(local {: denied?} (require :thyme.util.trust))
 
 (local RollbackManager (require :thyme.rollback.manager))
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))

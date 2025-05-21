@@ -1,4 +1,4 @@
-local Path = require("thyme.utils.path")
+local Path = require("thyme.util.path")
 local raw_uv = (vim.uv or vim.loop)
 local uv
 local function _1_(self, key)
@@ -230,7 +230,7 @@ local function async_append_log_file_21(log_path, lines)
   return async_write_file_with_flags_21(log_path, lines, "a")
 end
 uv["symlink!"] = function(path, new_path, ...)
-  local _let_37_ = require("thyme.utils.pool")
+  local _let_37_ = require("thyme.util.pool")
   local hide_file_21 = _let_37_["hide-file!"]
   local has_hidden_file_3f = _let_37_["has-hidden-file?"]
   local restore_file_21 = _let_37_["restore-file!"]

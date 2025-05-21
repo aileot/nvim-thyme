@@ -3,7 +3,7 @@
 (include :test.helper.prerequisites)
 
 (local thyme (require :thyme))
-(local {: remove-context-files!} (include :test.helper.utils))
+(local {: remove-context-files!} (include :test.helper.util))
 
 (describe* "setup"
   (after_each (fn []

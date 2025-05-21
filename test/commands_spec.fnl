@@ -5,7 +5,7 @@
 (local {: prepare-config-fnl-file!
         : prepare-context-fnl-file!
         : prepare-context-lua-file!
-        : remove-context-files!} (include :test.helper.utils))
+        : remove-context-files!} (include :test.helper.util))
 
 (local {: lua-cache-prefix} (require :thyme.const))
 (local thyme (require :thyme))

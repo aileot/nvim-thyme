@@ -1,11 +1,11 @@
-local Path = require("thyme.utils.path")
-local _local_1_ = require("thyme.utils.fs")
+local Path = require("thyme.util.path")
+local _local_1_ = require("thyme.util.fs")
 local file_readable_3f = _local_1_["file-readable?"]
 local assert_is_file_readable = _local_1_["assert-is-file-readable"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
 local state_prefix = _local_2_["state-prefix"]
-local Messenger = require("thyme.utils.class.messenger")
+local Messenger = require("thyme.util.class.messenger")
 local BackupHandler = require("thyme.rollback.backup-handler")
 local RollbackManager = {_root = Path.join(state_prefix, "rollbacks"), ["_active-backup-filename"] = ".active", ["_mounted-backup-filename"] = ".mounted"}
 RollbackManager.__index = RollbackManager

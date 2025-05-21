@@ -2,7 +2,7 @@ local _local_1_ = require("thyme.const")
 local debug_3f = _local_1_["debug?"]
 local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
-local _local_2_ = require("thyme.utils.fs")
+local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
@@ -88,7 +88,7 @@ if not file_readable_3f(config_path) then
   end
 else
 end
-local _local_24_ = require("thyme.utils.trust")
+local _local_24_ = require("thyme.util.trust")
 local denied_3f = _local_24_["denied?"]
 local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")

@@ -3,9 +3,9 @@
 (include :test.helper.prerequisites)
 
 (local {: prepare-context-fnl-file! : remove-context-files!}
-       (include :test.helper.utils))
+       (include :test.helper.util))
 
-(local {: sorter/files-to-oldest-by-birthtime} (require :thyme.utils.general))
+(local {: sorter/files-to-oldest-by-birthtime} (require :thyme.util.general))
 
 (describe* "sorter/files-to-oldest-by-birthtime"
   (after_each (fn []

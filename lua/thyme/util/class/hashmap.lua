@@ -19,8 +19,8 @@ HashMap["or-insert!"] = function(self, key, value)
   end
 end
 HashMap.get = function(self, key)
-  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/utils/class/hashmap.fnl:27")
-  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/utils/class/hashmap.fnl:27")
+  _G.assert((nil ~= key), "Missing argument key on fnl/thyme/util/class/hashmap.fnl:27")
+  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/util/class/hashmap.fnl:27")
   return self._hash_map[key]
 end
 HashMap["contains?"] = function(self, key)

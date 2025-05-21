@@ -2,7 +2,7 @@
 
 (include :test.helper.prerequisites)
 
-(local {: uri-encode : uri-decode} (require :thyme.utils.uri))
+(local {: uri-encode : uri-decode} (require :thyme.util.uri))
 
 (describe* "uri-encode"
   (it* "encodes /path/to/nvim/fnl/foo.fnl leaving a `/` in the result."

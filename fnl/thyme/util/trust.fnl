@@ -1,7 +1,7 @@
 (local {: config-path} (require :thyme.const))
 
-(local Path (require :thyme.utils.path))
-(local {: file-readable?} (require :thyme.utils.fs))
+(local Path (require :thyme.util.path))
+(local {: file-readable?} (require :thyme.util.fs))
 
 (local M {})
 

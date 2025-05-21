@@ -2,19 +2,19 @@
 
 (local {: debug? : lua-cache-prefix} (require :thyme.const))
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local {: executable?
         : file-readable?
         : assert-is-file-readable
         : read-file
         : write-lua-file!
-        &as fs} (require :thyme.utils.fs))
+        &as fs} (require :thyme.util.fs))
 
-(local {: gsplit} (require :thyme.utils.iterator))
-(local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
+(local {: gsplit} (require :thyme.util.iterator))
+(local {: can-restore-file? : restore-file!} (require :thyme.util.pool))
 
-(local Messenger (require :thyme.utils.class.messenger))
+(local Messenger (require :thyme.util.class.messenger))
 (local LoaderMessenger (Messenger.new "loader/runtime"))
 (local RollbackLoaderMessenger (Messenger.new "loader/runtime/rollback"))
 

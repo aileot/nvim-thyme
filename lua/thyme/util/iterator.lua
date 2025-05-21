@@ -1,4 +1,4 @@
-local Path = require("thyme.utils.path")
+local Path = require("thyme.util.path")
 local function ipairs_reverse(seq)
   local max_idx = #seq
   local i = 0

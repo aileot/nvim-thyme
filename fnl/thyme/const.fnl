@@ -1,6 +1,6 @@
 (import-macros {: when-not : nvim-get-option} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local config-filename :.nvim-thyme.fnl)
 

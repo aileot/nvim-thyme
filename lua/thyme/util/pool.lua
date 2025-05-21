@@ -1,14 +1,14 @@
 local _local_1_ = require("thyme.const")
 local state_prefix = _local_1_["state-prefix"]
-local Path = require("thyme.utils.path")
-local _local_2_ = require("thyme.utils.fs")
+local Path = require("thyme.util.path")
+local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local fs = _local_2_
-local _local_3_ = require("thyme.utils.uri")
+local _local_3_ = require("thyme.util.uri")
 local uri_encode = _local_3_["uri-encode"]
-local _local_4_ = require("thyme.utils.iterator")
+local _local_4_ = require("thyme.util.iterator")
 local each_file = _local_4_["each-file"]
 local pool_prefix = Path.join(state_prefix, "pool")
 vim.fn.mkdir(pool_prefix, "p")

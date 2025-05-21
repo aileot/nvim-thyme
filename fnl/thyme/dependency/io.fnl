@@ -1,8 +1,8 @@
 (import-macros {: when-not : last} :thyme.macros)
 
-(local {: read-file : assert-is-log-file} (require :thyme.utils.fs))
+(local {: read-file : assert-is-log-file} (require :thyme.util.fs))
 
-(local {: gsplit} (require :thyme.utils.iterator))
+(local {: gsplit} (require :thyme.util.iterator))
 
 ;; NOTE: lua cannot handle \0 in pattern properly.
 (local marker {:sep "\t" :macro "\v" :end "\n"})

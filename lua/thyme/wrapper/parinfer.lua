@@ -1,5 +1,5 @@
 local ffi = require("ffi")
-local Path = require("thyme.utils.path")
+local Path = require("thyme.util.path")
 local _local_1_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_1_["get-runtime-files"]
 local json_encode = vim.json["encode"]
