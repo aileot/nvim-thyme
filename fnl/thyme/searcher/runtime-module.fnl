@@ -14,7 +14,7 @@
 (local {: gsplit} (require :thyme.utils.iterator))
 (local {: can-restore-file? : restore-file!} (require :thyme.utils.pool))
 
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local LoaderMessenger (Messenger.new "loader/runtime"))
 (local RollbackLoaderMessenger (Messenger.new "loader/runtime/rollback"))
 

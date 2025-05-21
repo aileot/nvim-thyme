@@ -1,4 +1,4 @@
-(local Stack (require :thyme.utils.stack))
+(local Stack (require :thyme.utils.class.stack))
 (local {: validate-type} (require :thyme.utils.general))
 (local {: assert-is-file-readable : read-file} (require :thyme.utils.fs))
 

@@ -6,7 +6,7 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 
 (local BackupHandler (require :thyme.rollback.backup-handler))
 

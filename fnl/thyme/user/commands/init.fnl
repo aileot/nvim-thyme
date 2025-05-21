@@ -7,7 +7,7 @@
 
 (local {: directory?} (require :thyme.utils.fs))
 
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local UninstallCommandMessenger (Messenger.new "command/uninstall"))
 
 (local cache-commands (require :thyme.user.commands.cache))

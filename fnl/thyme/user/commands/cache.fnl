@@ -1,7 +1,7 @@
 (import-macros {: command!} :thyme.macros)
 
 (local {: lua-cache-prefix} (require :thyme.const))
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local CommandMessenger (Messenger.new "command/cache"))
 (local {: clear-cache!} (require :thyme.compiler.cache))
 

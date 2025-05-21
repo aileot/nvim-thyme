@@ -1,7 +1,7 @@
 (import-macros {: command!} :thyme.macros)
 
 (local Path (require :thyme.utils.path))
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local CommandMessenger (Messenger.new "command/rollback"))
 (local RollbackManager (require :thyme.rollback.manager))
 

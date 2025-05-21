@@ -15,7 +15,7 @@
 (local {: hide-file! : restore-file! : can-restore-file?}
        (require :thyme.utils.pool))
 
-(local HashMap (require :thyme.utils.hashmap))
+(local HashMap (require :thyme.utils.class.hashmap))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
 

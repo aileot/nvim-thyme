@@ -5,7 +5,7 @@
 (local {: validate-type} (require :thyme.utils.general))
 (local {: uri-encode} (require :thyme.utils.uri))
 (local {: assert-is-file-readable} (require :thyme.utils.fs))
-(local HashMap (require :thyme.utils.hashmap))
+(local HashMap (require :thyme.utils.class.hashmap))
 
 (local {: validate-stackframe!} (require :thyme.dependency.stackframe))
 

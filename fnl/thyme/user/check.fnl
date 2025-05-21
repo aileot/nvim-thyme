@@ -3,7 +3,7 @@
 (local fennel (require :fennel))
 
 (local {: file-readable? : read-file} (require :thyme.utils.fs))
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local RecompilerMessenger (Messenger.new "watch/recompiler"))
 (local Config (require :thyme.config))
 (local {: compile-file} (require :thyme.wrapper.fennel))

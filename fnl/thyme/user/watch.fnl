@@ -6,7 +6,7 @@
 
 (local {: config-path : lua-cache-prefix} (require :thyme.const))
 (local {: allowed?} (require :thyme.utils.trust))
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local WatchMessenger (Messenger.new "watch"))
 (local {: clear-cache!} (require :thyme.compiler.cache))
 (local {: check-to-update!} (require :thyme.user.check))

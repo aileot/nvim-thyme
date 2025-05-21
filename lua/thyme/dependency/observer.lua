@@ -1,4 +1,4 @@
-local Stack = require("thyme.utils.stack")
+local Stack = require("thyme.utils.class.stack")
 local _local_1_ = require("thyme.utils.general")
 local validate_type = _local_1_["validate-type"]
 local _local_2_ = require("thyme.utils.fs")

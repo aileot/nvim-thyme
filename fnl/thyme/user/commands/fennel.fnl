@@ -11,7 +11,7 @@
 (local {: file-readable? : read-file : write-lua-file!}
        (require :thyme.utils.fs))
 
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.utils.class.messenger))
 (local CommandMessenger (Messenger.new "command/fennel"))
 
 (local {: config-file? &as Config} (require :thyme.config))
