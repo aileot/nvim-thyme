@@ -345,6 +345,8 @@ The `print` versions leave its results in cmdline-history as `vim.print` does.
 - `<Plug>(thyme-operator-print-macrodebug)`
 - `<Plug>(thyme-operator-print-compile-string)`
 
+(Currently, the keymaps only supports the Fennel modules on [&runtimepath][].)
+
 ## Commands
 
 The commands are defined by [thyme.setup][].
