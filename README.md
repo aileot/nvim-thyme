@@ -57,7 +57,7 @@ The project started from scratch. _Now in Beta!_
 
 - Neovim v0.10.0+
 - [Fennel][] on your `&runtimepath`, in short, `&rtp`.
-  (_not embedded_ unlike other plugins)
+  (_not embedded_ unlike [the alternative plugins][alternatives])
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
   on `&rtp` by yourself)
 
@@ -504,6 +504,7 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 - [tangerine.nvim][] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[alternatives]: #-alternatives
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
 [Fennel]: https://git.sr.ht/~technomancy/fennel
