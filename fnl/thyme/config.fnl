@@ -75,7 +75,7 @@
                 (assert (= config-path buf-name)
                         (-> "expected %s, got %s"
                             (: :format config-path buf-name)))
-                ;; NOTE: vim.secure.trust specifing path in its arg cannot
+                ;; NOTE: vim.secure.trust specifying path in its arg cannot
                 ;; set "allow" to the "action" value.
                 ;; NOTE: `:trust` to "allow" cannot take any path as the arg.
                 (vim.cmd :trust))
@@ -144,7 +144,7 @@ However, nvim-thyme asks you again to proceed just in case you accidentally deni
                                           vim.log.levels.WARN)
                             default-opts))
         _ (set cache.evaluating? false)]
-    ;; NOTE: Make sure `evalutating?` is reset to avoid `require` loop.
+    ;; NOTE: Make sure `evaluating?` is reset to avoid `require` loop.
     (if ok?
         (let [?config ?result]
           (when (and ?config-code
