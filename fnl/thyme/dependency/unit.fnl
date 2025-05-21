@@ -6,8 +6,8 @@
 
 (local {: file-readable?
         : assert-is-file-readable
-        : write-log-file!
-        : append-log-file!} (require :thyme.utils.fs))
+        : read-file
+        : write-log-file!} (require :thyme.utils.fs))
 
 (local {: uri-encode} (require :thyme.utils.uri))
 (local {: each-file} (require :thyme.utils.iterator))
@@ -17,11 +17,6 @@
 
 (local HashMap (require :thyme.utils.hashmap))
 
-(local {: validate-stackframe! &as Stackframe}
-       (require :thyme.dependency.stackframe))
-
-(local {: modmap->line : read-module-map-file} (require :thyme.dependency.io))
-
 (local modmap-prefix (Path.join state-prefix :modmap))
 
 (vim.fn.mkdir modmap-prefix :p)
@@ -29,23 +24,21 @@
 (local ModuleMap {})
 (set ModuleMap.__index ModuleMap)
 
-(fn ModuleMap.new [raw-fnl-path]
+(fn ModuleMap.new [{: module-name : fnl-path : lua-path}]
   ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
   ;; unlikely to be either re-set to another file or replaced with a general
   ;; file. Even in such cases, just executing :CacheClear would be the simple
   ;; answer. The symbolic link issue does not belong to dependent-map, but
   ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
-  (let [self (setmetatable {} ModuleMap)
-        id (ModuleMap.fnl-path->id raw-fnl-path)
-        log-path (ModuleMap.determine-log-path id)
-        logged? (file-readable? log-path)
-        modmap (if logged?
-                   (read-module-map-file log-path)
-                   {})]
-    (set self._log-path log-path)
-    (set self._entry-map (. modmap id))
-    (tset modmap id nil)
-    (set self._dependent-maps (HashMap.new))
+  (assert module-name "expected module-name")
+  (assert fnl-path "expected fnl-path")
+  (let [self (setmetatable {} ModuleMap)]
+    (set self._entry-map {: module-name
+                          : fnl-path
+                          : lua-path
+                          :macro? (= nil lua-path)})
+    (set self._dependent-maps {})
+    (set self._log-path (ModuleMap.determine-log-path fnl-path))
     (values self)))
 
 (fn ModuleMap.try-read-from-file [raw-fnl-path]
@@ -56,31 +49,17 @@
   ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
   (assert-is-file-readable raw-fnl-path)
   (let [self (setmetatable {} ModuleMap)
-        id (ModuleMap.fnl-path->id raw-fnl-path)
-        log-path (ModuleMap.determine-log-path id)]
+        id (ModuleMap.fnl-path->path-id raw-fnl-path)
+        log-path (ModuleMap.determine-log-path raw-fnl-path)]
     (when (file-readable? log-path)
-      (case (read-module-map-file log-path)
-        modmap (do
-                 (set self._log-path log-path)
-                 (set self._entry-map (. modmap id))
-                 (tset modmap id nil)
-                 (set self._dep-map modmap)
-                 self)))))
-
-(fn ModuleMap.initialize-module-map! [self {: module-name &as modmap}]
-  ;; TODO: Re-design ModuleMap method dropping logged? check to
-  ;; call initialize-module-map!
-  ;; NOTE: fnl-path should be managed in resolved path as described in the
-  ;; `new` method.
-  (let [modmap-line (modmap->line modmap)
-        log-path (self:get-log-path)]
-    (assert (not (file-readable? log-path))
-            (.. "this method only expects an empty log file for the module "
-                module-name))
-    (if (can-restore-file? log-path modmap-line)
-        (restore-file! log-path)
-        (write-log-file! log-path modmap-line))
-    (set self._entry-map modmap)))
+      (let [encoded (read-file log-path)
+            logged-maps (vim.mpack.decode encoded)
+            entry-map (. logged-maps id)]
+        (set self._entry-map entry-map)
+        (tset logged-maps id nil)
+        (set self._dependent-maps logged-maps)
+        (set self._log-path (ModuleMap.determine-log-path log-path))
+        (values self)))))
 
 (fn ModuleMap.get-log-path [self]
   self._log-path)
@@ -106,14 +85,27 @@
 (fn ModuleMap.get-dependent-maps [self]
   self._dependent-maps)
 
+(fn ModuleMap.write-file! [self]
+  "Write module-map to log file.
+@return ModuleMap"
+  (let [log-path (self:get-log-path)
+        entry-map (self:get-entry-map)
+        dependent-maps (self:get-dependent-maps)
+        entry-id (self.fnl-path->path-id (self:get-fnl-path))
+        _ (tset dependent-maps entry-id entry-map)
+        encoded (vim.mpack.encode dependent-maps)]
+    (tset dependent-maps entry-id nil)
+    (if (can-restore-file? log-path encoded)
+        (restore-file! log-path)
+        (write-log-file! log-path encoded))
+    (values self)))
+
 (fn ModuleMap.log-dependent! [self dependent]
-  (let [dep-map (self:get-dependent-maps)
-        id (self.fnl-path->id dependent.fnl-path)]
-    (when-not (dep-map:contains? id)
-      (let [modmap-line (modmap->line dependent)
-            log-path (self:get-log-path)]
-        (dep-map:insert! id dependent)
-        (append-log-file! log-path modmap-line)))))
+  (let [dep-maps (self:get-dependent-maps)
+        id (self.fnl-path->path-id dependent.fnl-path)]
+    (when-not (. dep-maps id)
+      (tset dep-maps id dependent)
+      (self:write-file!))))
 
 (fn ModuleMap.clear! [self]
   "Clear dependency map of `dependency-fnl-path`:
@@ -136,17 +128,19 @@
     (dep-map:restore!)
     (restore-file! log-path)))
 
-(fn ModuleMap.fnl-path->id [raw-fnl-path]
+(fn ModuleMap.fnl-path->path-id [raw-fnl-path]
   "Determine `ModuleMap` ID from `raw-fnl-path`.
 @param raw-fnl-path string
 @return string"
+  (assert-is-file-readable raw-fnl-path)
   (vim.fn.resolve raw-fnl-path))
 
 (fn ModuleMap.determine-log-path [raw-path]
   "Convert `path` into `log-path`.
 @param path string
 @return string"
-  (let [id (ModuleMap.fnl-path->id raw-path)
+  (assert-is-file-readable raw-path)
+  (let [id (ModuleMap.fnl-path->path-id raw-path)
         log-id (uri-encode id)]
     (Path.join modmap-prefix (.. log-id :.log))))
 
