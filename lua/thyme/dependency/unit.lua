@@ -14,7 +14,6 @@ local _local_5_ = require("thyme.util.pool")
 local hide_file_21 = _local_5_["hide-file!"]
 local restore_file_21 = _local_5_["restore-file!"]
 local can_restore_file_3f = _local_5_["can-restore-file?"]
-local HashMap = require("thyme.util.class.hashmap")
 local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
@@ -126,10 +125,6 @@ ModuleMap["determine-log-path"] = function(raw_path)
   local id = ModuleMap["fnl-path->path-id"](raw_path)
   local log_id = uri_encode(id)
   return Path.join(modmap_prefix, (log_id .. ".log"))
-end
-ModuleMap["has-log?"] = function(raw_path)
-  local log_path = ModuleMap["determine-log-path"](raw_path)
-  return file_readable_3f(log_path)
 end
 ModuleMap["clear-module-map-files!"] = function()
   return each_file(hide_file_21, modmap_prefix)
