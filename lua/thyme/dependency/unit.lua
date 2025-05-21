@@ -13,6 +13,7 @@ local each_file = _local_4_["each-file"]
 local _local_5_ = require("thyme.util.pool")
 local hide_file_21 = _local_5_["hide-file!"]
 local restore_file_21 = _local_5_["restore-file!"]
+local has_hidden_file_3f = _local_5_["has-hidden-file?"]
 local can_restore_file_3f = _local_5_["can-restore-file?"]
 local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
@@ -102,20 +103,41 @@ ModuleMap["log-dependent!"] = function(self, dependent)
   end
 end
 ModuleMap["clear!"] = function(self)
+  local lua_path = self["get-lua-path"](self)
   local log_path = self["get-log-path"](self)
   self["__entry-map"] = self["_entry-map"]
   self["__dependent-maps"] = self["_dependent-maps"]
   self["_dependent-maps"] = nil
   self["_entry-map"] = nil
-  return hide_file_21(log_path)
+  if file_readable_3f(lua_path) then
+    hide_file_21(lua_path)
+  else
+  end
+  if file_readable_3f(log_path) then
+    return hide_file_21(log_path)
+  else
+    return nil
+  end
 end
 ModuleMap["restore!"] = function(self)
+  local lua_path = self["get-lua-path"](self)
   local log_path = self["get-log-path"](self)
-  self["_entry-map"] = self["__entry-map"]
-  self["_dependent-maps"] = self["__dependent-maps"]
-  self["__dependent-maps"] = nil
-  self["__entry-map"] = nil
-  return restore_file_21(log_path)
+  if self["__entry-map"] then
+    self["_entry-map"] = self["__entry-map"]
+    self["_dependent-maps"] = self["__dependent-maps"]
+    self["__dependent-maps"] = nil
+    self["__entry-map"] = nil
+  else
+  end
+  if has_hidden_file_3f(lua_path) then
+    restore_file_21(lua_path)
+  else
+  end
+  if has_hidden_file_3f(log_path) then
+    return restore_file_21(log_path)
+  else
+    return nil
+  end
 end
 ModuleMap["fnl-path->path-id"] = function(raw_fnl_path)
   assert_is_file_readable(raw_fnl_path)

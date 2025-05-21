@@ -12,7 +12,7 @@
 (local {: uri-encode} (require :thyme.util.uri))
 (local {: each-file} (require :thyme.util.iterator))
 
-(local {: hide-file! : restore-file! : can-restore-file?}
+(local {: hide-file! : restore-file! : has-hidden-file? : can-restore-file?}
        (require :thyme.util.pool))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
@@ -111,21 +111,30 @@
 - Remove module-map log file.
 - Set module-map in memory for `dependency-fnl-path` to `nil`.
   @param dependency-fnl-path string"
-  (let [log-path (self:get-log-path)]
+  (let [lua-path (self:get-lua-path)
+        log-path (self:get-log-path)]
     (set self.__entry-map self._entry-map)
     (set self.__dependent-maps self._dependent-maps)
     (set self._dependent-maps nil)
     (set self._entry-map nil)
-    (hide-file! log-path)))
+    (when (file-readable? lua-path)
+      (hide-file! lua-path))
+    (when (file-readable? log-path)
+      (hide-file! log-path))))
 
 (fn ModuleMap.restore! [self]
   "Restore once cleared module-map."
-  (let [log-path (self:get-log-path)]
-    (set self._entry-map self.__entry-map)
-    (set self._dependent-maps self.__dependent-maps)
-    (set self.__dependent-maps nil)
-    (set self.__entry-map nil)
-    (restore-file! log-path)))
+  (let [lua-path (self:get-lua-path)
+        log-path (self:get-log-path)]
+    (when self.__entry-map
+      (set self._entry-map self.__entry-map)
+      (set self._dependent-maps self.__dependent-maps)
+      (set self.__dependent-maps nil)
+      (set self.__entry-map nil))
+    (when (has-hidden-file? lua-path)
+      (restore-file! lua-path))
+    (when (has-hidden-file? log-path)
+      (restore-file! log-path))))
 
 (fn ModuleMap.fnl-path->path-id [raw-fnl-path]
   "Determine `ModuleMap` ID from `raw-fnl-path`.
