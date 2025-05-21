@@ -399,7 +399,12 @@ for performance.
 
 ### Evaluate expression and print the result
 
-With [parinfer-rust][] and `nvim-thyme`'s [paren-cmd-map][] option enabled,
+With [parinfer-rust][],
+
+<!--
+TODO: Comment out once the dropin feature becomes stable.
+and `nvim-thyme`'s [paren-dropin][] option enabled,
+-->
 
 ```vim
 " nvim-thyme
@@ -521,4 +526,3 @@ on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/b
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
-[paren-cmd-map]: ./docs/reference#paren-cmd-map
