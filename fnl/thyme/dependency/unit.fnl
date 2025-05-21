@@ -121,6 +121,11 @@
     (when (file-readable? log-path)
       (hide-file! log-path))))
 
+(fn ModuleMap.restorable? [self]
+  "Check if `.restore!` is available.
+@return boolean"
+  self.__entry-map)
+
 (fn ModuleMap.restore! [self]
   "Restore once cleared module-map."
   (let [lua-path (self:get-lua-path)
