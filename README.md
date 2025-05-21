@@ -498,7 +498,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-parinfer-rust][].
 The integration of `nvim-thyme` with [parinfer][]
 is based in part on copy extracted from the project,
-so the [file](./fnl/thyme/api/parinfer.fnl) on `parinfer` is also
+so the [file](./fnl/thyme/wrapper/parinfer.fnl) on `parinfer` is also
 on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
 
 ## 🤔 Alternatives
