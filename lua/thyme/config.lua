@@ -44,7 +44,7 @@ local function _11_(...)
     return nil
   end
 end
-default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_(...)}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
+default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_(...)}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, keymap = {["compiler-options"] = nil}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
 local cache = {}
 if not file_readable_3f(config_path) then
   local _12_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")

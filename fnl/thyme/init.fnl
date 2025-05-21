@@ -63,7 +63,7 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
           commands (require :thyme.user.commands)
           dropin (require :thyme.user.dropin)]
       (watch.watch-files! config.watch)
-      (keymaps.define-keymaps!)
+      (keymaps.define-keymaps! config.keymap)
       (commands.define-commands!)
       (dropin.enable-dropin-paren! config.dropin-paren)
       (set has-setup? true))))

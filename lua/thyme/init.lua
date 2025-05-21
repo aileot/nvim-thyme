@@ -48,7 +48,7 @@ M.setup = function(_3fopts)
     local commands = require("thyme.user.commands")
     local dropin = require("thyme.user.dropin")
     watch["watch-files!"](config.watch)
-    keymaps["define-keymaps!"]()
+    keymaps["define-keymaps!"](config.keymap)
     commands["define-commands!"]()
     dropin["enable-dropin-paren!"](config["dropin-paren"])
     has_setup_3f = true

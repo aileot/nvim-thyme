@@ -8,6 +8,8 @@
 
 (local {: buf-marks->text} (require :thyme.utils.buf))
 
+(local Config (require :thyme.config))
+
 (local M {})
 
 (fn M.define-keymaps! [?opts]
@@ -23,7 +25,7 @@
                        :eval-compiler :fennel
                        :macrodebug :fennel}
         opts (or ?opts {})
-        ?compiler-options opts.compiler-options]
+        ?compiler-options (or opts.compiler-options Config.compiler-options)]
     (each [backend lang (pairs backend->lang)]
       (let [eval-fn (. fennel-wrapper backend)]
         (each [_ method (ipairs methods)]
