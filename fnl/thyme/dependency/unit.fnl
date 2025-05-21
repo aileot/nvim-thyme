@@ -2,20 +2,20 @@
 
 (local {: state-prefix} (require :thyme.const))
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local {: file-readable?
         : assert-is-file-readable
         : read-file
-        : write-log-file!} (require :thyme.utils.fs))
+        : write-log-file!} (require :thyme.util.fs))
 
-(local {: uri-encode} (require :thyme.utils.uri))
-(local {: each-file} (require :thyme.utils.iterator))
+(local {: uri-encode} (require :thyme.util.uri))
+(local {: each-file} (require :thyme.util.iterator))
 
 (local {: hide-file! : restore-file! : can-restore-file?}
-       (require :thyme.utils.pool))
+       (require :thyme.util.pool))
 
-(local HashMap (require :thyme.utils.hashmap))
+(local HashMap (require :thyme.util.class.hashmap))
 
 (local modmap-prefix (Path.join state-prefix :modmap))
 

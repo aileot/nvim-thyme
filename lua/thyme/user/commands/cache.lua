@@ -1,6 +1,6 @@
 local _local_1_ = require("thyme.const")
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
-local Messenger = require("thyme.utils.messenger")
+local Messenger = require("thyme.util.class.messenger")
 local CommandMessenger = Messenger.new("command/cache")
 local _local_2_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_2_["clear-cache!"]

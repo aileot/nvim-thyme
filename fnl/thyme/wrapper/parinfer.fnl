@@ -126,7 +126,7 @@
 (import-macros {: error-fmt} :thyme.macros)
 
 (local ffi (require :ffi))
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
 (local {:encode json-encode :decode json-decode} vim.json)

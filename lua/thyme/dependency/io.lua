@@ -1,7 +1,7 @@
-local _local_1_ = require("thyme.utils.fs")
+local _local_1_ = require("thyme.util.fs")
 local read_file = _local_1_["read-file"]
 local assert_is_log_file = _local_1_["assert-is-log-file"]
-local _local_2_ = require("thyme.utils.iterator")
+local _local_2_ = require("thyme.util.iterator")
 local gsplit = _local_2_["gsplit"]
 local marker = {sep = "\9", macro = "\v", ["end"] = "\n"}
 local function modmap__3eline(modmap)

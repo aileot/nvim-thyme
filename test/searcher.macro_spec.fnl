@@ -1,7 +1,7 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (include :test.helper.prerequisites)
-(local {: remove-context-files!} (include :test.helper.utils))
+(local {: remove-context-files!} (include :test.helper.util))
 
 (local thyme (require :thyme))
 

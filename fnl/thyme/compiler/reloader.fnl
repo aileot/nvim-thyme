@@ -1,4 +1,4 @@
-(local {: do-nothing} (require :thyme.utils.general))
+(local {: do-nothing} (require :thyme.util.general))
 
 (fn reload-module! [module-name ?opts]
   "Drop `module-name` from either `package.loaded` or `fennel.macro-loaded`.

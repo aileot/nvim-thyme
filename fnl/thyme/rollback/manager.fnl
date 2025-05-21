@@ -1,12 +1,12 @@
 (import-macros {: when-not : inc : first : last} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 (local {: file-readable? : assert-is-file-readable &as fs}
-       (require :thyme.utils.fs))
+       (require :thyme.util.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.util.class.messenger))
 
 (local BackupHandler (require :thyme.rollback.backup-handler))
 

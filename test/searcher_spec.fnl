@@ -2,7 +2,7 @@
 
 (include :test.helper.prerequisites)
 (local {: prepare-config-fnl-file! : remove-context-files!}
-       (include :test.helper.utils))
+       (include :test.helper.util))
 
 (local thyme (require :thyme))
 (local {: search-fnl-module-on-rtp!} (require :thyme.searcher.runtime-module))

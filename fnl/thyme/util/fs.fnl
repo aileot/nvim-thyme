@@ -1,6 +1,6 @@
 (import-macros {: when-not} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local raw-uv (or vim.uv vim.loop))
 
@@ -165,7 +165,7 @@
 @param new-path string
 @return boolean true if symlink is successfully created, or false"
   ;; NOTE: `loop or previous error` since `utils.pool` depends on this `utils.fs` module.
-  (let [{: hide-file! : has-hidden-file? : restore-file!} (require :thyme.utils.pool)]
+  (let [{: hide-file! : has-hidden-file? : restore-file!} (require :thyme.util.pool)]
     (when (file-readable? new-path)
       (hide-file! new-path))
     (case (pcall (assert #(vim.uv.fs_symlink path new-path)))

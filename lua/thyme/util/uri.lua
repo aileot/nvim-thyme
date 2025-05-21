@@ -1,6 +1,6 @@
 local _local_1_ = require("bit")
 local tohex = _local_1_["tohex"]
-local Path = require("thyme.utils.path")
+local Path = require("thyme.util.path")
 local appname = (vim.env.NVIM_APPNAME or "nvim")
 local split_pattern = ("/" .. appname .. "/")
 local function encode_with_percent(char)

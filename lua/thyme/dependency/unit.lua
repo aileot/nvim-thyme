@@ -1,20 +1,20 @@
 local _local_1_ = require("thyme.const")
 local state_prefix = _local_1_["state-prefix"]
-local Path = require("thyme.utils.path")
-local _local_2_ = require("thyme.utils.fs")
+local Path = require("thyme.util.path")
+local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local write_log_file_21 = _local_2_["write-log-file!"]
-local _local_3_ = require("thyme.utils.uri")
+local _local_3_ = require("thyme.util.uri")
 local uri_encode = _local_3_["uri-encode"]
-local _local_4_ = require("thyme.utils.iterator")
+local _local_4_ = require("thyme.util.iterator")
 local each_file = _local_4_["each-file"]
-local _local_5_ = require("thyme.utils.pool")
+local _local_5_ = require("thyme.util.pool")
 local hide_file_21 = _local_5_["hide-file!"]
 local restore_file_21 = _local_5_["restore-file!"]
 local can_restore_file_3f = _local_5_["can-restore-file?"]
-local HashMap = require("thyme.utils.hashmap")
+local HashMap = require("thyme.util.class.hashmap")
 local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}

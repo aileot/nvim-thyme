@@ -1,4 +1,4 @@
-local Path = require("thyme.utils.path")
+local Path = require("thyme.util.path")
 local config_filename = ".nvim-thyme.fnl"
 local stdpath_config = vim.fn.stdpath("config")
 local rtp = vim.api.nvim_get_option_value("rtp", {})

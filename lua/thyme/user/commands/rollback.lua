@@ -1,5 +1,5 @@
-local Path = require("thyme.utils.path")
-local Messenger = require("thyme.utils.messenger")
+local Path = require("thyme.util.path")
+local Messenger = require("thyme.util.class.messenger")
 local CommandMessenger = Messenger.new("command/rollback")
 local RollbackManager = require("thyme.rollback.manager")
 local M = {}

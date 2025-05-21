@@ -1,6 +1,6 @@
 (import-macros {: when-not : inc : dec} :thyme.macros)
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (fn ipairs-reverse [seq]
   "`ipairs` but in reverse order.

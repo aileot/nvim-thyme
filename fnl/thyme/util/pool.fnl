@@ -1,11 +1,11 @@
 (local {: state-prefix} (require :thyme.const))
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
-       (require :thyme.utils.fs))
+       (require :thyme.util.fs))
 
-(local {: uri-encode} (require :thyme.utils.uri))
-(local {: each-file} (require :thyme.utils.iterator))
+(local {: uri-encode} (require :thyme.util.uri))
+(local {: each-file} (require :thyme.util.iterator))
 
 (local pool-prefix (Path.join state-prefix :pool))
 

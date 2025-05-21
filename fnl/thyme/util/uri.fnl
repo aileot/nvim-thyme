@@ -5,7 +5,7 @@
 ;; NOTE: "bit" module is embedded in nvim>=0.9.0.
 (local {: tohex} (require :bit))
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local appname (or vim.env.NVIM_APPNAME :nvim))
 (local split-pattern (.. "/" appname "/"))

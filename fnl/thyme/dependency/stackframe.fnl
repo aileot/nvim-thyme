@@ -1,4 +1,4 @@
-(local {: assert-is-file-readable} (require :thyme.utils.fs))
+(local {: assert-is-file-readable} (require :thyme.util.fs))
 
 (local Stackframe {})
 (set Stackframe.__index Stackframe)

@@ -1,4 +1,4 @@
-local _local_1_ = require("thyme.utils.general")
+local _local_1_ = require("thyme.util.general")
 local do_nothing = _local_1_["do-nothing"]
 local function reload_module_21(module_name, _3fopts)
   local fennel = require("fennel")

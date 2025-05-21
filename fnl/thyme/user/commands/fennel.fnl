@@ -9,9 +9,9 @@
 (local {: lua-cache-prefix} (require :thyme.const))
 
 (local {: file-readable? : read-file : write-lua-file!}
-       (require :thyme.utils.fs))
+       (require :thyme.util.fs))
 
-(local Messenger (require :thyme.utils.messenger))
+(local Messenger (require :thyme.util.class.messenger))
 (local CommandMessenger (Messenger.new "command/fennel"))
 
 (local {: config-file? &as Config} (require :thyme.config))

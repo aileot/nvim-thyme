@@ -6,7 +6,7 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
-(local {: buf-marks->text} (require :thyme.utils.buf))
+(local {: buf-marks->text} (require :thyme.util.buf))
 
 (local Config (require :thyme.config))
 

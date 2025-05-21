@@ -3,12 +3,12 @@
 (local {: lua-cache-prefix} (require :thyme.const))
 
 (local {: validate-type : sorter/files-to-oldest-by-birthtime}
-       (require :thyme.utils.general))
+       (require :thyme.util.general))
 
-(local Path (require :thyme.utils.path))
+(local Path (require :thyme.util.path))
 
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
-       (require :thyme.utils.fs))
+       (require :thyme.util.fs))
 
 (local BackupHandler {})
 

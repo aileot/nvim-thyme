@@ -2,7 +2,7 @@
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 (local {: assert-is-fnl-file : read-file : write-lua-file!}
-       (require :thyme.utils.fs))
+       (require :thyme.util.fs))
 
 (local {: config-file? &as Config} (require :thyme.config))
 

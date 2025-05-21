@@ -1,6 +1,6 @@
-(local Stack (require :thyme.utils.stack))
-(local {: validate-type} (require :thyme.utils.general))
-(local {: assert-is-file-readable : read-file} (require :thyme.utils.fs))
+(local Stack (require :thyme.util.class.stack))
+(local {: validate-type} (require :thyme.util.general))
+(local {: assert-is-file-readable : read-file} (require :thyme.util.fs))
 
 (local Stackframe (require :thyme.dependency.stackframe))
 (local DependencyLogger (require :thyme.dependency.logger))

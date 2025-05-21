@@ -1,5 +1,5 @@
-(local Path (require :thyme.utils.path))
-(local {: write-fnl-file! : write-lua-file!} (require :thyme.utils.fs))
+(local Path (require :thyme.util.path))
+(local {: write-fnl-file! : write-lua-file!} (require :thyme.util.fs))
 (local Config (require :thyme.config))
 
 (local context-root vim.env.XDG_DATA_HOME)
