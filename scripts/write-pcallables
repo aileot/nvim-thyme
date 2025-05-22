@@ -22,7 +22,10 @@ local function write_pcallable(tbl, module_name)
   for key, val in pairs(tbl) do
     local t = type(val)
     module_name = vim.fs.joinpath(module_name, key)
-    if t == "function" then
+    if t == "table" then
+      write_pcallable(val, module_name)
+      module_name = "" -- Reset module_name
+    elseif t == "function" then
       local dot_args = module_name:gsub("[/\\]", " :") -- Convert "foo/bar/baz" to ":foo :bar :baz"; thus, `(. :foo :bar :baz)`.
       local contents = ("((-> (require :thyme) (.%s)))"):format(dot_args)
       local filename = vim.fs.joinpath(pcallable_dir, module_name .. ".fnl")
@@ -41,9 +44,6 @@ local function write_pcallable(tbl, module_name)
       file:write(contents)
       file:close()
       module_name = vim.fs.dirname(module_name) -- Reset module_name by one level.
-    elseif t == "table" then
-      write_pcallable(val, module_name)
-      module_name = "" -- Reset module_name
     end
   end
 end
