@@ -93,6 +93,8 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 (λ M.enable-dropin-paren! []
   "Realize dropin-paren feature.
 The configurations are only modifiable at the `dropin-parens` attributes in `.nvim-thyme.fnl`."
+  ;; TODO: Extract dropin feature into another plugin.
+  ;; TODO: Merge the dropin options to `command.dropin`?
   (let [opts Config.dropin-paren
         plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
         plug-map-complete "<Plug>(thyme-dropin-complete-Fnl)"]
