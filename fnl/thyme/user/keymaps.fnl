@@ -12,7 +12,10 @@
 
 (local M {})
 
-(fn M.define-keymaps! [?opts]
+(fn M.define-keymaps! []
+  "Define keymaps on nvim-thyme.
+The configurations are only modifiable at the `keymap` attributes in
+`.nvim-thyme.fnl`."
   ;; NOTE: &operatorfunc does not work on v:lua.require('foo')['bar'] format
   ;; instead of v:lua.require'foo'.bar: both `()` and `[]` do matter, avoid
   ;; "-" in names.
@@ -24,7 +27,7 @@
                        :eval :fennel
                        :eval-compiler :fennel
                        :macrodebug :fennel}
-        opts (or ?opts {})
+        opts Config.keymap
         ?compiler-options (or opts.compiler-options Config.compiler-options)]
     (each [backend lang (pairs backend->lang)]
       (let [eval-fn (. fennel-wrapper backend)]

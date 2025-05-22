@@ -5,13 +5,13 @@ local _local_1_ = require("thyme.util.buf")
 local buf_marks__3etext = _local_1_["buf-marks->text"]
 local Config = require("thyme.config")
 local M = {}
-M["define-keymaps!"] = function(_3fopts)
+M["define-keymaps!"] = function()
   local module_name = "thyme.user.keymaps"
   local callback_prefix = "new_operator_"
   local operator_callback_prefix = "operator_"
   local methods = {"echo", "print"}
   local backend__3elang = {["compile-string"] = "lua", eval = "fennel", ["eval-compiler"] = "fennel", macrodebug = "fennel"}
-  local opts = (_3fopts or {})
+  local opts = Config.keymap
   local _3fcompiler_options = (opts["compiler-options"] or Config["compiler-options"])
   for backend, lang in pairs(backend__3elang) do
     local eval_fn = fennel_wrapper[backend]
