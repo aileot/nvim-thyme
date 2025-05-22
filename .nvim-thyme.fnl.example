@@ -61,6 +61,30 @@
                            ;; "append".
                            ;; "omit"|"keep"
                            :trailing-parens "omit"}}
-   :keymap {:compiler-options {:correlate false :error-pinpoint ["|>>" "<<|"]}}
+   :keymap {:compiler-options {:correlate false :error-pinpoint ["|>>" "<<|"]}
+            ;; NOTE: "x" for Visual mode. See `:mapmode-x` for more details.
+            ;; NOTE: You can map the same keys for both normal and visual modes
+            ;; in a sequential table `[:n :x]` as `vim.keymap.set` does.
+            :mappings {[:n :x] {:alternate-file "<LocalLeader>a"
+                                :operator-echo-compile-string "<LocalLeader>s"
+                                :operator-echo-eval "<LocalLeader>e"
+                                :operator-echo-eval-compiler "<LocalLeader>c"
+                                :operator-echo-macrodebug "<LocalLeader>m"}}
+            ;; NOTE: You can map different operator keymaps between normal mode
+            ;; and visual mode.
+            :mappings {;; NOTE: "echo" versions will not add the outputs to the
+                       ;; command history.
+                       :n {:alternate-file "<LocalLeader>a"
+                           :operator-echo-compile-string "<LocalLeader>s"
+                           :operator-echo-eval "<LocalLeader>e"
+                           :operator-echo-eval-compiler "<LocalLeader>c"
+                           :operator-echo-macrodebug "<LocalLeader>m"}
+                       ;; NOTE: "print" versions will add the outputs to the
+                       ;; command history.
+                       :x {:alternate-file "<LocalLeader>a"
+                           :operator-print-compile-string "<LocalLeader>s"
+                           :operator-print-eval "<LocalLeader>e"
+                           :operator-print-eval-compiler "<LocalLeader>c"
+                           :operator-print-macrodebug "<LocalLeader>m"}}}
    :watch {:event [:BufWritePost :FileChangedShellPost]
            :pattern "*.{fnl,fnlm}"}})
