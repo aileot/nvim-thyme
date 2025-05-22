@@ -19,7 +19,7 @@ The configurations are only modifiable at the `keymap` attributes in
   ;; NOTE: &operatorfunc does not work on v:lua.require('foo')['bar'] format
   ;; instead of v:lua.require'foo'.bar: both `()` and `[]` do matter, avoid
   ;; "-" in names.
-  (let [module-name :thyme.user.keymaps
+  (let [module-name :thyme.user.keymap
         callback-prefix :new_operator_
         operator-callback-prefix :operator_
         methods [:echo :print]

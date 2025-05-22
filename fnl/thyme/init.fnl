@@ -58,11 +58,11 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
   (when (or (not has-setup?) ;
             (= :1 vim.env.THYME_DEBUG))
     (let [watch (require :thyme.user.watch)
-          keymaps (require :thyme.user.keymaps)
+          keymap (require :thyme.user.keymap)
           commands (require :thyme.user.commands)
           dropin (require :thyme.user.dropin)]
       (watch.watch-files!)
-      (keymaps.define-keymaps!)
+      (keymap.define-keymaps!)
       (commands.define-commands!)
       (dropin.enable-dropin-paren!)
       (set has-setup? true))))

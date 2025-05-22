@@ -43,11 +43,11 @@ M.setup = function(_3fopts)
   assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
   if (not has_setup_3f or ("1" == vim.env.THYME_DEBUG)) then
     local watch = require("thyme.user.watch")
-    local keymaps = require("thyme.user.keymaps")
+    local keymap = require("thyme.user.keymap")
     local commands = require("thyme.user.commands")
     local dropin = require("thyme.user.dropin")
     watch["watch-files!"]()
-    keymaps["define-keymaps!"]()
+    keymap["define-keymaps!"]()
     commands["define-commands!"]()
     dropin["enable-dropin-paren!"]()
     has_setup_3f = true
