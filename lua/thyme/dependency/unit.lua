@@ -4,6 +4,7 @@ local Path = require("thyme.util.path")
 local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
+local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_log_file_21 = _local_2_["write-log-file!"]
 local _local_3_ = require("thyme.util.uri")
@@ -43,7 +44,7 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
     self["_entry-map"] = entry_map
     logged_maps[id] = nil
     self["_dependent-maps"] = logged_maps
-    self["_log-path"] = ModuleMap["determine-log-path"](log_path)
+    self["_log-path"] = log_path
     return self
   else
     return nil
@@ -70,7 +71,7 @@ ModuleMap["get-lua-path"] = function(self)
   return self["_entry-map"]["lua-path"]
 end
 ModuleMap["macro?"] = function(self)
-  return (self["_entry-map"] and self["_entry-map"]["macro?"])
+  return self["_entry-map"]["macro?"]
 end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dependent-maps"]
@@ -145,6 +146,7 @@ ModuleMap["fnl-path->path-id"] = function(raw_fnl_path)
 end
 ModuleMap["determine-log-path"] = function(raw_path)
   assert_is_file_readable(raw_path)
+  assert((".log" ~= raw_path:sub(-4)), ".log file is not allowed")
   local id = ModuleMap["fnl-path->path-id"](raw_path)
   local log_id = uri_encode(id)
   return Path.join(modmap_prefix, (log_id .. ".log"))

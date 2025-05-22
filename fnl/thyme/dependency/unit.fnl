@@ -6,6 +6,7 @@
 
 (local {: file-readable?
         : assert-is-file-readable
+        : assert-is-fnl-file
         : read-file
         : write-log-file!} (require :thyme.util.fs))
 
@@ -54,7 +55,7 @@
         (set self._entry-map entry-map)
         (tset logged-maps id nil)
         (set self._dependent-maps logged-maps)
-        (set self._log-path (ModuleMap.determine-log-path log-path))
+        (set self._log-path log-path)
         (values self)))))
 
 (fn ModuleMap.get-log-path [self]
@@ -76,7 +77,7 @@
   ;; NOTE: It would be more complicated to prepare another dir for macro
   ;; files; log-path could not be determined in "new" method on a simple
   ;; logic.
-  (and self._entry-map self._entry-map.macro?))
+  self._entry-map.macro?)
 
 (fn ModuleMap.get-dependent-maps [self]
   self._dependent-maps)
@@ -151,6 +152,7 @@
 @param path string
 @return string"
   (assert-is-file-readable raw-path)
+  (assert (not= ".log" (raw-path:sub -4)) ".log file is not allowed")
   (let [id (ModuleMap.fnl-path->path-id raw-path)
         log-id (uri-encode id)]
     (Path.join modmap-prefix (.. log-id :.log))))
