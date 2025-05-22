@@ -136,10 +136,9 @@ failed."
                          (or Config.watch.macro-strategy ;
                              Config.watch.strategy)
                          Config.watch.strategy)
-        (always? strategy) (case (or (raw-strategy:match "^(always%-)(%S+)$")
-                                     raw-strategy)
+        (always? strategy) (case (raw-strategy:match "^(%S-%-)(%S+)$")
                              ("always-" strategy) (values true strategy)
-                             strategy (values false strategy))
+                             _ (values false raw-strategy))
         final-strategy (if (file-readable? (self:get-fnl-path))
                            strategy
                            "clear")]

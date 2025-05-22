@@ -143,15 +143,13 @@ Watcher["update!"] = function(self)
   end
   local always_3f, strategy = nil, nil
   do
-    local _26_, _27_ = (raw_strategy:match("^(always%-)(%S+)$") or raw_strategy)
+    local _26_, _27_ = raw_strategy:match("^(%S-%-)(%S+)$")
     if ((_26_ == "always-") and (nil ~= _27_)) then
       local strategy0 = _27_
       always_3f, strategy = true, strategy0
-    elseif (nil ~= _26_) then
-      local strategy0 = _26_
-      always_3f, strategy = false, strategy0
     else
-      always_3f, strategy = nil
+      local _ = _26_
+      always_3f, strategy = false, raw_strategy
     end
   end
   local final_strategy
