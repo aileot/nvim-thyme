@@ -23,11 +23,6 @@
 (set ModuleMap.__index ModuleMap)
 
 (fn ModuleMap.new [{: module-name : fnl-path : lua-path}]
-  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
-  ;; unlikely to be either re-set to another file or replaced with a general
-  ;; file. Even in such cases, just executing :CacheClear would be the simple
-  ;; answer. The symbolic link issue does not belong to dependent-map, but
-  ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
   (assert module-name "expected module-name")
   (assert fnl-path "expected fnl-path")
   (let [self (setmetatable {} ModuleMap)]
@@ -40,11 +35,6 @@
     (values self)))
 
 (fn ModuleMap.try-read-from-file [raw-fnl-path]
-  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
-  ;; unlikely to be either re-set to another file or replaced with a general
-  ;; file. Even in such cases, just executing :CacheClear would be the simple
-  ;; answer. The symbolic link issue does not belong to dependent-map, but
-  ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
   (assert-is-file-readable raw-fnl-path)
   (let [self (setmetatable {} ModuleMap)
         id (ModuleMap.fnl-path->path-id raw-fnl-path)
@@ -140,6 +130,11 @@
   "Determine `ModuleMap` ID from `raw-fnl-path`.
 @param raw-fnl-path string
 @return string"
+  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
+  ;; unlikely to be either re-set to another file or replaced with a general
+  ;; file. Even in such cases, just executing :CacheClear would be the simple
+  ;; answer. The symbolic link issue does not belong to dependent-map, but
+  ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
   (assert-is-file-readable raw-fnl-path)
   (vim.fn.resolve raw-fnl-path))
 
