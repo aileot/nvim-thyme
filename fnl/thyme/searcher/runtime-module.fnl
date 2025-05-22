@@ -223,4 +223,6 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                             (loadfile backup-path))
                           error-msg)))))))))
 
-{: search-fnl-module-on-rtp! : write-lua-file-with-backup!}
+{: search-fnl-module-on-rtp!
+ : write-lua-file-with-backup!
+ : RuntimeModuleRollbackManager}

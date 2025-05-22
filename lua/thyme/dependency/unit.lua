@@ -120,6 +120,9 @@ ModuleMap["clear!"] = function(self)
     return nil
   end
 end
+ModuleMap["restorable?"] = function(self)
+  return self["__entry-map"]
+end
 ModuleMap["restore!"] = function(self)
   local lua_path = self["get-lua-path"](self)
   local log_path = self["get-log-path"](self)
