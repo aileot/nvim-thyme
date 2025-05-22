@@ -12,55 +12,70 @@
 
 (local M {})
 
+(local Keymap {})
+
+(set Keymap.__index Keymap)
+
+(fn Keymap.new [{: backend : lang}]
+  ;; NOTE: &operatorfunc does not work on v:lua.require('foo')['bar'] format
+  ;; instead of v:lua.require'foo'.bar: both `()` and `[]` do matter, avoid
+  ;; "-" in names.
+  (let [self (setmetatable {} Keymap)]
+    (set self._module-name :thyme.user.keymap)
+    (set self._callback-prefix :new_operator_)
+    (set self._operator-callback-prefix :operator_)
+    (set self._backend backend)
+    (set self._lang lang)
+    self))
+
+(fn Keymap.generate-plug-keymaps! [self method]
+  (let [keymap-suffix (.. method "-" self._backend)
+        callback-suffix (keymap-suffix:gsub "%-" "_")
+        callback-name (.. self._callback-prefix callback-suffix)
+        callback-in-string (: "require'%s'.%s" ;
+                              :format self._module-name callback-name)
+        operator-callback-name (.. self._operator-callback-prefix
+                                   callback-suffix)
+        operator-callback-in-string (: "require'%s'.%s" ;
+                                       :format self._module-name
+                                       operator-callback-name)
+        lhs (: "<Plug>(thyme-operator-%s)" :format keymap-suffix)
+        ;; TODO: What implementation is the best for linewise operator?
+        ;; NOTE: In Vim script expression, avoid double quotes.
+        rhs/n (: "<Cmd>set operatorfunc=v:lua.%s<CR>g@" ;
+                 :format operator-callback-in-string)
+        rhs/x (: ":lua %s('<','>')<CR>" ;
+                 :format callback-in-string)
+        marks->print (fn [mark1 mark2]
+                       (let [compiler-options (or Config.keymap.compiler-options
+                                                  Config.compiler-options)
+                             eval-fn (. fennel-wrapper self._backend)
+                             print-fn (. tts method)
+                             val (-> (buf-marks->text 0 mark1 mark2)
+                                     (eval-fn compiler-options))
+                             text (if (str? val)
+                                      val
+                                      (fennel.view))]
+                         (print-fn text {:lang self._lang})))
+        operator-callback #(marks->print "[" "]")]
+    (vim.api.nvim_set_keymap :n lhs rhs/n {:noremap true})
+    (vim.api.nvim_set_keymap :x lhs rhs/x {:noremap true :silent true})
+    (tset M callback-name marks->print)
+    (tset M operator-callback-name operator-callback)))
+
 (fn M.define-keymaps! []
   "Define keymaps on nvim-thyme.
 The configurations are only modifiable at the `keymap` attributes in
 `.nvim-thyme.fnl`."
-  ;; NOTE: &operatorfunc does not work on v:lua.require('foo')['bar'] format
-  ;; instead of v:lua.require'foo'.bar: both `()` and `[]` do matter, avoid
-  ;; "-" in names.
-  (let [module-name :thyme.user.keymap
-        callback-prefix :new_operator_
-        operator-callback-prefix :operator_
-        methods [:echo :print]
-        backend->lang {:compile-string :lua
-                       :eval :fennel
-                       :eval-compiler :fennel
-                       :macrodebug :fennel}
-        opts Config.keymap
-        ?compiler-options (or opts.compiler-options Config.compiler-options)]
-    (each [backend lang (pairs backend->lang)]
-      (let [eval-fn (. fennel-wrapper backend)]
-        (each [_ method (ipairs methods)]
-          (let [print-fn (. tts method)
-                keymap-suffix (.. method "-" backend)
-                callback-suffix (keymap-suffix:gsub "%-" "_")
-                callback-name (.. callback-prefix callback-suffix)
-                callback-in-string (: "require'%s'.%s" ;
-                                      :format module-name callback-name)
-                operator-callback-name (.. operator-callback-prefix
-                                           callback-suffix)
-                operator-callback-in-string (: "require'%s'.%s" ;
-                                               :format module-name
-                                               operator-callback-name)
-                lhs (: "<Plug>(thyme-operator-%s)" :format keymap-suffix)
-                ;; TODO: What implementation is the best for linewise operator?
-                ;; NOTE: In Vim script expression, avoid double quotes.
-                rhs/n (: "<Cmd>set operatorfunc=v:lua.%s<CR>g@" ;
-                         :format operator-callback-in-string)
-                rhs/x (: ":lua %s('<','>')<CR>" ;
-                         :format callback-in-string)
-                marks->print (fn [mark1 mark2]
-                               (let [val (-> (buf-marks->text 0 mark1 mark2)
-                                             (eval-fn ?compiler-options))
-                                     text (if (str? val)
-                                              val
-                                              (fennel.view))]
-                                 (print-fn text {: lang})))
-                operator-callback #(marks->print "[" "]")]
-            (vim.api.nvim_set_keymap :n lhs rhs/n {:noremap true})
-            (vim.api.nvim_set_keymap :x lhs rhs/x {:noremap true :silent true})
-            (tset M callback-name marks->print)
-            (tset M operator-callback-name operator-callback)))))))
+  (let [methods [:echo :print]]
+    (each [_ method (ipairs methods)]
+      (doto (Keymap.new {:backend "compile-string" :lang "lua"})
+        (: :generate-plug-keymaps! method))
+      (doto (Keymap.new {:backend "eval" :lang "fennel"})
+        (: :generate-plug-keymaps! method))
+      (doto (Keymap.new {:backend "eval-compiler" :lang "fennel"})
+        (: :generate-plug-keymaps! method))
+      (doto (Keymap.new {:backend "macrodebug" :lang "fennel"})
+        (: :generate-plug-keymaps! method)))))
 
 M
