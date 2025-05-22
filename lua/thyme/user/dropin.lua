@@ -1,3 +1,4 @@
+local Config = require("thyme.config")
 local M = {}
 local function get_cmdtype()
   if ("command" == vim.fn.win_gettype()) then
@@ -81,8 +82,8 @@ M.complete = function(pattern, replacement)
   vim.o.wcm = last_wcm
   return nil
 end
-M["enable-dropin-paren!"] = function(opts)
-  _G.assert((nil ~= opts), "Missing argument opts on fnl/thyme/user/dropin.fnl:91")
+M["enable-dropin-paren!"] = function()
+  local opts = Config["dropin-paren"]
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
   do
