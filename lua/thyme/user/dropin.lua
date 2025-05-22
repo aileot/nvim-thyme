@@ -25,7 +25,7 @@ local function replace_invalid_cmdline(old_cmdline, invalid_cmd, pattern, replac
   local new_cmdline = (prefix .. fallback_cmd)
   return new_cmdline
 end
-M.reserve = function(pattern, replacement)
+M.replace = function(pattern, replacement)
   local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
   if (":" == cmdtype) then
@@ -92,7 +92,7 @@ M["enable-dropin-paren!"] = function()
     elseif (_14_ == "") then
     elseif (nil ~= _14_) then
       local key = _14_
-      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
+      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').replace('^[%[%(%{].*','Fnl %0')<CR><CR>", {noremap = true})
       vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
     else
     end

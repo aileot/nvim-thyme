@@ -34,8 +34,8 @@
         new-cmdline (.. prefix fallback-cmd)]
     new-cmdline))
 
-(fn M.reserve [pattern replacement]
-  "Reserve `replacement` to replace invalid cmdline when `pattern` is
+(fn M.replace [pattern replacement]
+  "Prepare to replace `replacement` to replace invalid cmdline when `pattern` is
 detected with E492. The fallback command will pretend that the substrings
 matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param pattern string Lua patterns to be support dropin fallback.
@@ -68,7 +68,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
   (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)
         new-cmdline (if (= ":" cmdtype)
-                        ;; NOTE: Do NOT use .reserve instead. It also overrides history.
+                        ;; NOTE: Do NOT use .replace instead. It also overrides history.
                         (case (extract-?invalid-cmd old-cmdline)
                           invalid-cmd (replace-invalid-cmdline old-cmdline
                                                                invalid-cmd
@@ -107,7 +107,7 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
       "" nil
       key (do
             (vim.api.nvim_set_keymap :c plug-map-insert
-              "<C-BSlash>ev:lua.require('thyme.user.dropin').reserve('^[%[%(%{].*','Fnl %0')<CR><CR>"
+              "<C-BSlash>ev:lua.require('thyme.user.dropin').replace('^[%[%(%{].*','Fnl %0')<CR><CR>"
               {:noremap true})
             ;; TODO: Expose `<Plug>` keymaps once stable a bit.
             (vim.api.nvim_set_keymap :c key plug-map-insert {:noremap true})))
