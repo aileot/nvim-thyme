@@ -6,6 +6,7 @@ local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local Stackframe = require("thyme.dependency.stackframe")
 local DependencyLogger = require("thyme.dependency.logger")
+local Config = require("thyme.config")
 local Observer = {}
 Observer.__index = Observer
 Observer._new = function()
@@ -18,14 +19,15 @@ Observer["observe!"] = function(self, callback, fnl_path, _3flua_path, compiler_
   assert_is_file_readable(fnl_path)
   validate_type("string", module_name)
   local fennel = require("fennel")
-  local fnl_code = read_file(fnl_path)
+  local raw_fnl_code = read_file(fnl_path)
+  local new_fnl_code = Config.preproc(raw_fnl_code, {source = raw_fnl_code, ["module-name"] = module_name, filename = fnl_path, env = compiler_options.env})
   local stackframe = Stackframe.new({["module-name"] = module_name, ["fnl-path"] = fnl_path, ["lua-path"] = _3flua_path})
   self.callstack["push!"](self.callstack, stackframe)
   compiler_options["module-name"] = module_name
   compiler_options.filename = fnl_path
   local ok_3f, result = nil, nil
   local function _3_()
-    return callback(fnl_code, compiler_options, module_name)
+    return callback(new_fnl_code, compiler_options, module_name)
   end
   ok_3f, result = xpcall(_3_, fennel.traceback)
   self.callstack["pop!"](self.callstack)

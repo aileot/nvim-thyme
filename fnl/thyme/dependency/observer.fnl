@@ -5,6 +5,8 @@
 (local Stackframe (require :thyme.dependency.stackframe))
 (local DependencyLogger (require :thyme.dependency.logger))
 
+(local Config (require :thyme.config))
+
 (local Observer {})
 
 (set Observer.__index Observer)
@@ -33,7 +35,13 @@ callstacks.
   (assert-is-file-readable fnl-path)
   (validate-type :string module-name)
   (let [fennel (require :fennel)
-        fnl-code (read-file fnl-path)
+        raw-fnl-code (read-file fnl-path)
+        ;; The same params as fennel.compile-string or fennel.eval.
+        new-fnl-code (Config.preproc raw-fnl-code
+                                     {:source raw-fnl-code
+                                      :module-name module-name
+                                      :filename fnl-path
+                                      :env compiler-options.env})
         stackframe (Stackframe.new {: module-name
                                     : fnl-path
                                     :lua-path ?lua-path})]
@@ -41,7 +49,8 @@ callstacks.
     (set compiler-options.module-name module-name)
     (set compiler-options.filename fnl-path)
     ;; NOTE: callback only expects fennel.compile-string or fennel.eval.
-    (let [(ok? result) (xpcall #(callback fnl-code compiler-options module-name)
+    (let [(ok? result) (xpcall #(callback new-fnl-code compiler-options
+                                          module-name)
                                fennel.traceback)]
       (self.callstack:pop!)
       (when ok?

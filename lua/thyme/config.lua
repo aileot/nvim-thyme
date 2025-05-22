@@ -44,34 +44,37 @@ local function _11_(...)
     return nil
   end
 end
-default_opts = {["max-rollbacks"] = 5, preproc = nil, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_(...)}, ";"), notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, keymap = {["compiler-options"] = nil}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
+local function _12_(_241)
+  return _241
+end
+default_opts = {["max-rollbacks"] = 5, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_(...)}, ";"), preproc = _12_, notifier = vim.notify, command = {["compiler-options"] = nil, ["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}}, keymap = {["compiler-options"] = nil}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "recompile"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}}
 local cache = {}
 if not file_readable_3f(config_path) then
-  local _12_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-  if (_12_ == 2) then
+  local _13_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  if (_13_ == 2) then
     local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
     local example_config_filename = (config_filename .. ".example")
-    local _let_13_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
-    local example_config_path = _let_13_[1]
+    local _let_14_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
+    local example_config_path = _let_14_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd(("tabedit " .. config_path))
-    local function _14_()
+    local function _15_()
       return (config_path == vim.api.nvim_buf_get_name(0))
     end
-    vim.wait(1000, _14_)
+    vim.wait(1000, _15_)
     vim.cmd("redraw!")
     if (config_path == vim.api.nvim_buf_get_name(0)) then
-      local _15_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-      if (_15_ == 2) then
+      local _16_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+      if (_16_ == 2) then
         local buf_name = vim.api.nvim_buf_get_name(0)
         assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))
         vim.cmd("trust")
       else
-        local _ = _15_
+        local _ = _16_
         vim.secure.trust({action = "remove", path = config_path})
-        local _16_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
-        if (_16_ == 2) then
+        local _17_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
+        if (_17_ == 2) then
           os.exit(1)
         else
         end
@@ -79,17 +82,17 @@ if not file_readable_3f(config_path) then
     else
     end
   else
-    local _ = _12_
-    local _20_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
-    if (_20_ == 2) then
+    local _ = _13_
+    local _21_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (_21_ == 2) then
       os.exit(1)
     else
     end
   end
 else
 end
-local _local_24_ = require("thyme.util.trust")
-local denied_3f = _local_24_["denied?"]
+local _local_25_ = require("thyme.util.trust")
+local denied_3f = _local_25_["denied?"]
 local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local function notify_once_21(msg, ...)
@@ -120,10 +123,10 @@ local function read_config_with_backup_21(config_file_path)
   _ = nil
   local ok_3f, _3fresult = nil, nil
   if _3fconfig_code then
-    local function _27_()
+    local function _28_()
       return fennel.eval(_3fconfig_code, compiler_options)
     end
-    ok_3f, _3fresult = xpcall(_27_, fennel.traceback)
+    ok_3f, _3fresult = xpcall(_28_, fennel.traceback)
   else
     notify_once_21("Failed to read config, fallback to the default options", vim.log.levels.WARN)
     ok_3f, _3fresult = default_opts
@@ -167,7 +170,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _33_()
+local function _34_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -180,7 +183,7 @@ local function _33_()
   end
   return config
 end
-local function _35_(_self, k)
+local function _36_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -193,13 +196,13 @@ local function _35_(_self, k)
     return (config[k] or error(("unexpected option detected: " .. k)))
   end
 end
-local _38_
+local _39_
 if not debug_3f then
-  local function _39_()
+  local function _40_()
     return error("thyme.config is readonly")
   end
-  _38_ = _39_
+  _39_ = _40_
 else
-  _38_ = nil
+  _39_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _33_}, {__index = _35_, __newindex = _38_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _34_}, {__index = _36_, __newindex = _39_})

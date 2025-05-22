@@ -18,8 +18,6 @@
 
 (local default-opts ;
        {:max-rollbacks 5
-        ;; TODO: Inplement :preproc and set the default value to `#$`.
-        :preproc nil
         :compiler-options {}
         :fnl-dir (if use-lua-dir? "lua" "fnl")
         ;; Set to fennel.macro-path for macro modules.
@@ -34,6 +32,9 @@
                          (when use-lua-dir? (.. std-config "/lua/?.fnl"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                         (table.concat ";"))
+        ;; (experimental)
+        ;; What args should be passed to the callback?
+        :preproc #$
         :notifier vim.notify
         :command {:compiler-options nil
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
