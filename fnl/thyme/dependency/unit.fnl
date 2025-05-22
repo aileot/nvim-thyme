@@ -23,6 +23,11 @@
 (set ModuleMap.__index ModuleMap)
 
 (fn ModuleMap.new [{: module-name : fnl-path : lua-path}]
+  "Create a new instance of `ModuleMap`.
+@param tbl.module-name string
+@param tbl.fnl-path string
+@param tbl.lua-path string
+@return ModuleMap"
   (assert module-name "expected module-name")
   (assert fnl-path "expected fnl-path")
   (let [self (setmetatable {} ModuleMap)]
@@ -35,6 +40,9 @@
     (values self)))
 
 (fn ModuleMap.try-read-from-file [raw-fnl-path]
+  "Try to restore `ModuleMap` from file.
+@param raw-fnl-path string
+@return ModuleMap|nil `nil` if the corresponding log file is not found"
   (assert-is-file-readable raw-fnl-path)
   (let [self (setmetatable {} ModuleMap)
         id (ModuleMap.fnl-path->path-id raw-fnl-path)
