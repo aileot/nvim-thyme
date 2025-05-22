@@ -57,15 +57,14 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
           "Please call `thyme.setup` without any args, or with an empty table.")
   (when (or (not has-setup?) ;
             (= :1 vim.env.THYME_DEBUG))
-    (let [config (require :thyme.config)
-          watch (require :thyme.user.watch)
+    (let [watch (require :thyme.user.watch)
           keymaps (require :thyme.user.keymaps)
           commands (require :thyme.user.commands)
           dropin (require :thyme.user.dropin)]
-      (watch.watch-files! config.watch)
-      (keymaps.define-keymaps! config.keymap)
+      (watch.watch-files!)
+      (keymaps.define-keymaps!)
       (commands.define-commands!)
-      (dropin.enable-dropin-paren! config.dropin-paren)
+      (dropin.enable-dropin-paren!)
       (set has-setup? true))))
 
 (fn propagate-underscored-keys! [tbl key]

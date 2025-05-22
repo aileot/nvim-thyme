@@ -249,22 +249,12 @@ Watcher.new = function(fnl_path)
     return nil
   end
 end
-local function watch_files_21(_3fopts)
-  local group
-  local or_44_ = _3fgroup
-  if not or_44_ then
-    or_44_ = vim.api.nvim_create_augroup("ThymeWatch", {})
-  end
-  group = or_44_
-  local opts
-  if _3fopts then
-    opts = vim.tbl_deep_extend("force", Config.watch, _3fopts)
-  else
-    opts = Config.watch
-  end
+local function watch_files_21()
+  local group = vim.api.nvim_create_augroup("ThymeWatch", {})
+  local opts = Config.watch
   local callback
-  local function _47_(_46_)
-    local fnl_path = _46_["match"]
+  local function _45_(_44_)
+    local fnl_path = _44_["match"]
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if allowed_3f(config_path) then
@@ -277,16 +267,16 @@ local function watch_files_21(_3fopts)
       else
       end
     else
-      local _50_ = Watcher.new(fnl_path)
-      if (nil ~= _50_) then
-        local watcher = _50_
+      local _48_ = Watcher.new(fnl_path)
+      if (nil ~= _48_) then
+        local watcher = _48_
         watcher["update!"](watcher)
       else
       end
     end
     return nil
   end
-  callback = _47_
+  callback = _45_
   _3fgroup = group
   return vim.api.nvim_create_autocmd(opts.event, {group = group, pattern = opts.pattern, callback = callback})
 end

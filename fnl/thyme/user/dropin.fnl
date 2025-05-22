@@ -1,5 +1,7 @@
 (import-macros {: dec} :thyme.macros)
 
+(local Config (require :thyme.config))
+
 (local M {})
 
 (fn get-cmdtype []
@@ -88,10 +90,11 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
     (vim.api.nvim_feedkeys keys "ni" false)
     (set vim.o.wcm last-wcm)))
 
-(λ M.enable-dropin-paren! [opts]
+(λ M.enable-dropin-paren! []
   "Realize dropin-paren feature.
-@param opts.cmap string (default \"<CR>\") The keys to be mapped in Cmdline mode."
-  (let [plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
+The configurations are only modifiable at the `dropin-parens` attributes in `.nvim-thyme.fnl`."
+  (let [opts Config.dropin-paren
+        plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
         plug-map-complete "<Plug>(thyme-dropin-complete-Fnl)"]
     ;; TODO: Support cmdwin.
     ;; (each [_ key (ipairs opts.dropin-parens.cmdwin)]

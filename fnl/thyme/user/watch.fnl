@@ -207,20 +207,14 @@ failed."
                (set self._modmap modmap)
                self))))
 
-(fn watch-files! [?opts]
+(fn watch-files! []
   "Add an autocmd in augroup named `ThymeWatch` to watch fennel files.
 It overrides the previously defined `autocmd`s if both event and pattern are
-the same.
-@param ?opts.verbose boolean (default: false) notify if successfully compiled file.
-@param ?opts.dependent-files 'delete'|'ignore' (default: 'delete')
-@param ?opts.live-reload boolean WIP (default: false)
-@param ?opts.event string|string[] autocmd-event
-@param ?opts.pattern string|string[] autocmd-pattern
+the same. The configurations are only modifiable at the `watch` attributes in
+`.nvim-thyme.fnl`.
 @return number autocmd-id"
-  (let [group (or ?group (augroup! :ThymeWatch {}))
-        opts (if ?opts
-                 (vim.tbl_deep_extend :force Config.watch ?opts)
-                 Config.watch)
+  (let [group (augroup! :ThymeWatch {})
+        opts Config.watch
         callback (fn [{:match fnl-path}]
                    (let [resolved-path (vim.fn.resolve fnl-path)]
                      (if (= config-path resolved-path)
