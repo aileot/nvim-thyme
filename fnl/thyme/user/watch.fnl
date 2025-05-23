@@ -76,10 +76,11 @@
         ;; TODO: Compare to the backup fnl-path to tell if updated.
         true
         (case (modmap:get-lua-path)
-          lua-path (when (file-readable? lua-path)
-                     (let [fnl-path (modmap:get-fnl-path)]
-                       (not= (read-file lua-path) ;
-                             (compile-file fnl-path))))
+          lua-path (if (file-readable? lua-path)
+                       (let [fnl-path (modmap:get-fnl-path)]
+                         (not= (read-file lua-path) ;
+                               (compile-file fnl-path)))
+                       false)
           _ (error (-> "invalid ModuleMap instance for %s: %s"
                        (: :format (modmap:get-module-name) (vim.inspect modmap))))))))
 

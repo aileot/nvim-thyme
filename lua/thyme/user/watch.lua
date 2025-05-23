@@ -74,7 +74,7 @@ Watcher["should-update?"] = function(self)
         local fnl_path = modmap["get-fnl-path"](modmap)
         return (read_file(lua_path) ~= compile_file(fnl_path))
       else
-        return nil
+        return false
       end
     else
       local _ = _14_
