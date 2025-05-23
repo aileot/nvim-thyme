@@ -168,6 +168,14 @@ Available options:
 - `"omit"`: Trim all the trailing parentheses in the command history.
 - `"keep"`: Keep the trailing parentheses in the command history.
 
+### keymap.compiler-options
+
+(default: `nil`)
+
+The default compiler-options for `nvim-thyme` operator keymaps like
+`<Plug>(thyme-operator-eval)`. If `nil`, it inherits the values from the root
+[compiler-options](#compiler-options) above.
+
 ### watch.event
 
 (default: `[:BufWritePost :FileChangedShellPost]`)
