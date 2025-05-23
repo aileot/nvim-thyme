@@ -99,7 +99,7 @@
     (modmap:clear! fnl-path)
     (case (DepObserver:observe! fennel.compile-string fnl-path lua-path
                                 compiler-options module-name)
-      (true lua-code) (let [msg (.. "successfully recompile " fnl-path)
+      (true lua-code) (let [msg (.. "successfully recompiled " fnl-path)
                             backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)]
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)

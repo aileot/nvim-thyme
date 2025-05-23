@@ -95,7 +95,7 @@ Watcher["try-recompile!"] = function(self)
   local _18_, _19_ = DepObserver["observe!"](DepObserver, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
   if ((_18_ == true) and (nil ~= _19_)) then
     local lua_code = _19_
-    local msg = ("successfully recompile " .. fnl_path)
+    local msg = ("successfully recompiled " .. fnl_path)
     local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
     write_lua_file_with_backup_21(lua_path, lua_code, module_name)
     backup_handler["cleanup-old-backups!"](backup_handler)
