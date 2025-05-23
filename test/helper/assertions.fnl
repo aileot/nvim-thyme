@@ -29,3 +29,22 @@ Expected:
 (assert:register "assertion" "same-in-arbitrary-order" same-in-arbitrary-order
                  "assertion.same-in-arbitrary-order.positive"
                  "assertion.same-in-arbitrary-order.negative")
+
+(fn key-mapped [_state [mode expected-keymap-name]]
+  (->> (vim.fn.maparg expected-keymap-name mode)
+       (not= "")))
+
+(say:set "assertion.key-mapped.positive" "Expected keymap defined.
+Expected Mode:
+%s
+Expected Keymap:
+%s")
+
+(say:set "assertion.key-mapped.negative" "Expected keymap is not defined.
+Mode:
+%s
+Keymap:
+%s")
+
+(assert:register "assertion" "key-mapped" key-mapped
+                 "assertion.key-mapped.positive" "assertion.key-mapped.negative")
