@@ -54,7 +54,10 @@
             entry-map (. logged-maps id)]
         (set self._entry-map entry-map)
         (tset logged-maps id nil)
-        (set self._dependent-maps logged-maps)
+        (set self._dependent-maps
+             (if (= logged-maps (vim.empty_dict))
+                 {}
+                 logged-maps))
         (set self._log-path log-path)
         (values self)))))
 

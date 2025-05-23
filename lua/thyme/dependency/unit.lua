@@ -43,7 +43,11 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
     local entry_map = logged_maps[id]
     self["_entry-map"] = entry_map
     logged_maps[id] = nil
-    self["_dependent-maps"] = logged_maps
+    if (logged_maps == vim.empty_dict()) then
+      self["_dependent-maps"] = {}
+    else
+      self["_dependent-maps"] = logged_maps
+    end
     self["_log-path"] = log_path
     return self
   else
@@ -57,12 +61,12 @@ ModuleMap["get-entry-map"] = function(self)
   return self["_entry-map"]
 end
 ModuleMap["get-module-name"] = function(self)
-  local t_8_ = self["_entry-map"]
-  if (nil ~= t_8_) then
-    t_8_ = t_8_["module-name"]
+  local t_9_ = self["_entry-map"]
+  if (nil ~= t_9_) then
+    t_9_ = t_9_["module-name"]
   else
   end
-  return t_8_
+  return t_9_
 end
 ModuleMap["get-fnl-path"] = function(self)
   return self["_entry-map"]["fnl-path"]
