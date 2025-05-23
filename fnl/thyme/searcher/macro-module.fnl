@@ -27,6 +27,12 @@
                        (do
                          (rawset self module-name nil)
                          (tset cache-table module-name val))
+                       ;; NOTE: Pretend to be the original
+                       ;; `fennel.macro-loaded` for the other modules not
+                       ;; observed by thyme; in other words, all the modules
+                       ;; observed by thyme are never saved to
+                       ;; `fennel.macro-loaded` but only in the cache-table
+                       ;; replacement.
                        (rawset self module-name val)))
      :__index (fn [_ module-name]
                 ;; NOTE: __index runs after __newindex runs.
