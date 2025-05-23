@@ -52,26 +52,80 @@ Keymap["generate-plug-keymaps!"] = function(self, method)
   vim.api.nvim_set_keymap("x", lhs, rhs_2fx, {noremap = true, silent = true})
   M[callback_name] = marks__3eprint
   M[operator_callback_name] = operator_callback
-  return nil
+  return vim.keymap.set({"n", "x"}, "<Plug>(thyme-alternate-file)", "<Cmd>FnlAlternate<CR>")
 end
-M["define-keymaps!"] = function()
-  local methods = {"echo", "print"}
-  for _, method in ipairs(methods) do
-    do
-      local tmp_9_ = Keymap.new({backend = "compile-string", lang = "lua"})
-      tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
+Keymap["map-keys-on-ft=fennel!"] = function()
+  local keymap_recipes = Config.keymap.mappings
+  local plug_keymap_template
+  local function _6_(_241)
+    return ("<Plug>(thyme-%s)"):format(_241)
+  end
+  plug_keymap_template = _6_
+  for mode, rhs__3elhs in pairs(keymap_recipes) do
+    for rhs_key, lhs in pairs(rhs__3elhs) do
+      local rhs = plug_keymap_template(rhs_key)
+      vim.keymap.set(mode, lhs, rhs, {buffer = true})
     end
-    do
-      local tmp_9_ = Keymap.new({backend = "eval", lang = "fennel"})
-      tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
-    end
-    do
-      local tmp_9_ = Keymap.new({backend = "eval-compiler", lang = "fennel"})
-      tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
-    end
-    local tmp_9_ = Keymap.new({backend = "macrodebug", lang = "fennel"})
-    tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
   end
   return nil
+end
+Keymap["map-keys-on-ft=lua!"] = function()
+  local keymap_recipes = Config.keymap.mappings
+  local plug_keymap_template
+  local function _7_(_241)
+    return ("<Plug>(thyme-%s)"):format(_241)
+  end
+  plug_keymap_template = _7_
+  local lhs_rhs_pairs_on_ft_3dlua = {"alternate-file"}
+  for _, rhs_key in ipairs(lhs_rhs_pairs_on_ft_3dlua) do
+    local rhs = plug_keymap_template(rhs_key)
+    for mode, rhs__3elhs in pairs(keymap_recipes) do
+      local _8_ = rhs__3elhs[rhs_key]
+      if (nil ~= _8_) then
+        local lhs = _8_
+        vim.keymap.set(mode, lhs, rhs, {buffer = true})
+      else
+      end
+    end
+  end
+  return nil
+end
+local function define_autocmds_to_map_keys_21()
+  local group = vim.api.nvim_create_augroup("ThymeKeymap", {})
+  vim.api.nvim_create_autocmd("FileType", {group = group, pattern = "fennel", callback = Keymap["map-keys-on-ft=fennel!"]})
+  vim.api.nvim_create_autocmd("FileType", {group = group, pattern = "lua", callback = Keymap["map-keys-on-ft=lua!"]})
+  if vim.v.vim_did_enter then
+    for buffer in ipairs(vim.api.nvim_list_bufs()) do
+      local function _10_()
+        return vim.api.nvim_exec_autocmds("FileType", {group = group, buffer = buffer})
+      end
+      vim.api.nvim_buf_call(buffer, _10_)
+    end
+    return nil
+  else
+    return nil
+  end
+end
+M["define-keymaps!"] = function()
+  do
+    local methods = {"echo", "print"}
+    for _, method in ipairs(methods) do
+      do
+        local tmp_9_ = Keymap.new({backend = "compile-string", lang = "lua"})
+        tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
+      end
+      do
+        local tmp_9_ = Keymap.new({backend = "eval", lang = "fennel"})
+        tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
+      end
+      do
+        local tmp_9_ = Keymap.new({backend = "eval-compiler", lang = "fennel"})
+        tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
+      end
+      local tmp_9_ = Keymap.new({backend = "macrodebug", lang = "fennel"})
+      tmp_9_["generate-plug-keymaps!"](tmp_9_, method)
+    end
+  end
+  return define_autocmds_to_map_keys_21()
 end
 return M

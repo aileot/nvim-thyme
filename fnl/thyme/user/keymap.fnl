@@ -61,7 +61,46 @@
     (vim.api.nvim_set_keymap :n lhs rhs/n {:noremap true})
     (vim.api.nvim_set_keymap :x lhs rhs/x {:noremap true :silent true})
     (tset M callback-name marks->print)
-    (tset M operator-callback-name operator-callback)))
+    (tset M operator-callback-name operator-callback)
+    (vim.keymap.set [:n :x] "<Plug>(thyme-alternate-file)"
+                    "<Cmd>FnlAlternate<CR>")))
+
+(fn Keymap.map-keys-on-ft=fennel! []
+  "Map keys for ft=fennel buffer."
+  (let [keymap-recipes Config.keymap.mappings
+        plug-keymap-template #(-> "<Plug>(thyme-%s)" (: :format $))]
+    (each [mode rhs->lhs (pairs keymap-recipes)]
+      (each [rhs-key lhs (pairs rhs->lhs)]
+        (let [rhs (plug-keymap-template rhs-key)]
+          (vim.keymap.set mode lhs rhs {:buffer true}))))
+    ;; Make sure not to destroy the autocmd just in case in the future updates.
+    nil))
+
+(fn Keymap.map-keys-on-ft=lua! []
+  "Map keys for ft=lua buffer."
+  (let [keymap-recipes Config.keymap.mappings
+        plug-keymap-template #(-> "<Plug>(thyme-%s)" (: :format $))
+        lhs-rhs-pairs-on-ft=lua [:alternate-file]]
+    (each [_ rhs-key (ipairs lhs-rhs-pairs-on-ft=lua)]
+      (let [rhs (plug-keymap-template rhs-key)]
+        (each [mode rhs->lhs (pairs keymap-recipes)]
+          (case (. rhs->lhs rhs-key)
+            lhs (vim.keymap.set mode lhs rhs {:buffer true})))))
+    ;; Make sure not to destroy the autocmd just in case in the future updates.
+    nil))
+
+(fn define-autocmds-to-map-keys! []
+  "Define autocmds on ft=fennel (and partly on ft=lua) to map keys on nvim-thyme."
+  (let [group (vim.api.nvim_create_augroup "ThymeKeymap" {})]
+    (vim.api.nvim_create_autocmd "FileType"
+      {: group :pattern "fennel" :callback Keymap.map-keys-on-ft=fennel!})
+    (vim.api.nvim_create_autocmd "FileType"
+      {: group :pattern "lua" :callback Keymap.map-keys-on-ft=lua!})
+    (when vim.v.vim_did_enter
+      ;; Tweaks for lazy setup.
+      (each [buffer (ipairs (vim.api.nvim_list_bufs))]
+        (->> #(vim.api.nvim_exec_autocmds "FileType" {: group : buffer})
+             (vim.api.nvim_buf_call buffer))))))
 
 (fn M.define-keymaps! []
   "Define keymaps on nvim-thyme.
@@ -76,6 +115,7 @@ The configurations are only modifiable at the `keymap` attributes in
       (doto (Keymap.new {:backend "eval-compiler" :lang "fennel"})
         (: :generate-plug-keymaps! method))
       (doto (Keymap.new {:backend "macrodebug" :lang "fennel"})
-        (: :generate-plug-keymaps! method)))))
+        (: :generate-plug-keymaps! method))))
+  (define-autocmds-to-map-keys!))
 
 M
