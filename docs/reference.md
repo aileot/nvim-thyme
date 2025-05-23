@@ -359,14 +359,14 @@ respects your [&runtimepath][&runtimepath].
 Display the result of applying [fennel.dofile][fennel.dofile] but to
 `[bufname]`, but respects your [&runtimepath][&runtimepath].
 
-If no `[bufname]` is given, it evaluates the current buffer.
+Without `[bufname]`, it evaluates the current buffer.
 
 #### :FnlFile [file]
 
 Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
 respects your [&runtimepath][&runtimepath].
 
-If no `[file]` is given, it evaluates the current file.
+Without `[file]`, it evaluates the current file.
 
 #### :FnlCompile {fnl-expr}
 
