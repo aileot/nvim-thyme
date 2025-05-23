@@ -35,6 +35,8 @@
   self._fnl-path)
 
 (fn Watcher.get-modmap [self]
+  ;; TODO: Once stable, update ._modmap on the strategies recompile and reload
+  ;; for performance?
   (case (Modmap.try-read-from-file (self:get-fnl-path))
     latest-modmap (set self._modmap latest-modmap))
   self._modmap)
