@@ -87,4 +87,10 @@
                            :operator-print-eval-compiler "<LocalLeader>c"
                            :operator-print-macrodebug "<LocalLeader>m"}}}
    :watch {:event [:BufWritePost :FileChangedShellPost]
-           :pattern "*.{fnl,fnlm}"}})
+           :pattern "*.{fnl,fnlm}"
+           ;; NOTE: Available Strategies:
+           ;; - "clear-all": clear all the Lua caches by nvim-thyme
+           ;; - "clear": clear the cache of the module and its dependencies
+           ;; - "recompile": recompile the module and its dependencies
+           :strategy "recompile"
+           :macro-strategy "clear-all"}})

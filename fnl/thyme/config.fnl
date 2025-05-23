@@ -49,7 +49,7 @@
                 ;; TODO: Add :strategy recommended value to
                 ;; .nvim-thyme.fnl.example.
                 :strategy "clear-all"
-                :macro-strategy nil}
+                :macro-strategy "clear-all"}
         ;; (experimental)
         ;; TODO: Set the default keys once stable a bit.
         :dropin-paren {:cmdline-key false :cmdline-completion-key false}})
