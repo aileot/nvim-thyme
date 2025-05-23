@@ -540,11 +540,11 @@ Two concepts:
 
 - Active backup: The backup to rollback if you fail to compile or evaluate a
   Fennel module at nvim runtime. You can switch to the active backup by
-  [:ThymeRollbackSwitch][].
+  [:ThymeRollbackSwitch][:ThymeRollbackSwitch].
 
 - Mounted backup: The backup to rollback regardless of your corresponding Fennel
-  module stability. You can mount an active backup by [:ThymeRollbackMount][],
-  or all the active backups by
+  module stability. You can mount an active backup by
+  [:ThymeRollbackMount][:ThymeRollbackMount], or all the active backups by
   [:ThymeRollbackUnmountAll][:ThymeRollbackUnmountAll].
 
 #### :ThymeRollbackSwitch {target}
@@ -565,7 +565,8 @@ Neovim will load the mounted backup instead of your module with the same name.
 You should run [:ThymeRollbackUnmount][:ThymeRollbackUnmount] or
 [:ThymeRollbackUnmountAll][:ThymeRollbackUnmountAll] to restore the mount state.
 
-To select which backup to mount, use [:ThymeRollbackSwitch][].
+To select which backup to mount, use
+[:ThymeRollbackSwitch][:ThymeRollbackSwitch].
 
 #### :ThymeRollbackUnmount {target}
 
@@ -584,6 +585,8 @@ Unmount the mounted backups.
 [:Fnl]: #fnl-fnl-expr
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeCacheOpen]: #thymecacheopen
+[:ThymeRollbackMount]: #thymerollbackmount-target
+[:ThymeRollbackSwitch]: #thymerollbackswitch-target
 [:ThymeRollbackUnmountAll]: #thymerollbackunmountall
 [:ThymeRollbackUnmount]: #thymerollbackunmount-target
 [:ThymeUninstall]: #thymeuninstall
