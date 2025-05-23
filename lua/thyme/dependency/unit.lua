@@ -43,7 +43,11 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
     local entry_map = logged_maps[id]
     self["_entry-map"] = entry_map
     logged_maps[id] = nil
-    self["_dependent-maps"] = logged_maps
+    if (logged_maps == vim.empty_dict()) then
+      self["_dependent-maps"] = {}
+    else
+      self["_dependent-maps"] = logged_maps
+    end
     self["_log-path"] = log_path
     return self
   else
@@ -57,18 +61,13 @@ ModuleMap["get-entry-map"] = function(self)
   return self["_entry-map"]
 end
 ModuleMap["get-module-name"] = function(self)
-  local t_8_ = self["_entry-map"]
-  if (nil ~= t_8_) then
-    t_8_ = t_8_["module-name"]
-  else
-  end
-  return t_8_
+  return self["get-entry-map"](self)["module-name"]
 end
 ModuleMap["get-fnl-path"] = function(self)
-  return self["_entry-map"]["fnl-path"]
+  return self["get-entry-map"](self)["fnl-path"]
 end
 ModuleMap["get-lua-path"] = function(self)
-  return self["_entry-map"]["lua-path"]
+  return self["get-entry-map"](self)["lua-path"]
 end
 ModuleMap["macro?"] = function(self)
   return self["_entry-map"]["macro?"]
@@ -103,7 +102,7 @@ ModuleMap["log-dependent!"] = function(self, dependent)
     return nil
   end
 end
-ModuleMap["clear!"] = function(self)
+ModuleMap["hide!"] = function(self)
   local lua_path = self["get-lua-path"](self)
   local log_path = self["get-log-path"](self)
   self["__entry-map"] = self["_entry-map"]

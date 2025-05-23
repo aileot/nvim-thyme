@@ -56,7 +56,7 @@ HashMap.values = function(self)
   end
   return tbl_21_
 end
-HashMap["clear!"] = function(self)
+HashMap["hide!"] = function(self)
   self["_hidden-map"] = self._hash_map
   self._hash_map = {}
   return nil

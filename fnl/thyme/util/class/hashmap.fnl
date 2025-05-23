@@ -50,7 +50,7 @@ it.
   (icollect [_key val (pairs self._hash_map)]
     val))
 
-(fn HashMap.clear! [self]
+(fn HashMap.hide! [self]
   "Clear the map."
   (set self._hidden-map self._hash_map)
   (set self._hash_map {}))

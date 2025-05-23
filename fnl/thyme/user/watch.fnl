@@ -12,6 +12,9 @@
 (local Modmap (require :thyme.dependency.unit))
 (local DepObserver (require :thyme.dependency.observer))
 
+(local {: hide-macro-cache! : restore-macro-cache!}
+       (require :thyme.searcher.macro-module))
+
 (local {: write-lua-file-with-backup! : RuntimeModuleRollbackManager}
        (require :thyme.searcher.runtime-module))
 
@@ -27,20 +30,19 @@
 (macro autocmd! [...]
   `(vim.api.nvim_create_autocmd ,...))
 
-(var ?group nil)
-
 (local Watcher {})
 
 (set Watcher.__index Watcher)
 
+(fn Watcher.get-fnl-path [self]
+  self._fnl-path)
+
 (fn Watcher.get-modmap [self]
-  (case (Modmap.try-read-from-file self._fnl-path)
+  ;; TODO: Once stable, update ._modmap on the strategies recompile and reload
+  ;; for performance?
+  (case (Modmap.try-read-from-file (self:get-fnl-path))
     latest-modmap (set self._modmap latest-modmap))
   self._modmap)
-
-(fn Watcher.get-fnl-path [self]
-  (-> (self:get-modmap)
-      (: :get-fnl-path)))
 
 (fn Watcher.get-lua-path [self]
   (-> (self:get-modmap)
@@ -57,6 +59,14 @@
 (fn Watcher.macro? [self]
   (-> (self:get-modmap)
       (: :macro?)))
+
+(fn Watcher.hide-macro-module! [self]
+  (let [module-name (self:get-module-name)]
+    (hide-macro-cache! module-name)))
+
+(fn Watcher.restore-macro-module! [self]
+  (let [module-name (self:get-module-name)]
+    (restore-macro-cache! module-name)))
 
 (fn Watcher.should-update? [self]
   "Check if fnl file is updated and the compiled lua file exists.
@@ -88,7 +98,8 @@
         modmap (self:get-modmap)
         module-name (modmap:get-module-name)
         fnl-path (modmap:get-fnl-path)
-        lua-path (modmap:get-lua-path)]
+        lua-path (modmap:get-lua-path)
+        last-chunk (. package.loaded module-name)]
     (assert (not (modmap:macro?)) "Invalid attempt to recompile macro")
     ;; NOTE: With "module-name" option, macro-searcher can map macro
     ;; dependency.
@@ -96,10 +107,10 @@
     (set compiler-options.module-name module-name)
     ;; NOTE: module-map must be cleared before logging, but after getting
     ;; its maps.
-    (modmap:clear! fnl-path)
+    (modmap:hide! fnl-path)
     (case (DepObserver:observe! fennel.compile-string fnl-path lua-path
                                 compiler-options module-name)
-      (true lua-code) (let [msg (.. "successfully recompile " fnl-path)
+      (true lua-code) (let [msg (.. "successfully recompiled " fnl-path)
                             backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)]
                         (write-lua-file-with-backup! lua-path lua-code
                                                      module-name)
@@ -110,6 +121,7 @@
 %s"
                                   (: :format fnl-path error-msg))]
                       (WatchMessenger:notify! msg vim.log.levels.WARN)
+                      (tset package.loaded module-name last-chunk)
                       (modmap:restore!)
                       false))))
 
@@ -147,52 +159,45 @@ failed."
         :clear-all (when (clear-cache!)
                      (-> (.. "Cleared all the caches under " lua-cache-prefix)
                          (WatchMessenger:notify!)))
-        :clear (let [modmap (self:get-modmap)]
-                 (when (modmap:clear!)
-                   (-> (.. "Cleared the cache for " (modmap:get-fnl-path))
+        :clear (let [macro? (self:macro?)
+                     modmap (self:get-modmap)
+                     ;; NOTE: Make sure get the last dependent-maps before
+                     ;; clearing.
+                     dependent-maps (modmap:get-dependent-maps)]
+                 (when macro?
+                   (self:hide-macro-module!))
+                 (when (modmap:hide!)
+                   (-> (.. "Cleared the cache for " (self:get-fnl-path))
                        (WatchMessenger:notify!)))
-                 (self:update-dependent-modules!))
-        :recompile (do
-                     (self:clear-dependent-module-maps!)
-                     (when-not (self:macro?)
-                       (self:try-recompile!))
-                     (self:update-dependent-modules!))
-        :reload (do
-                  (self:clear-dependent-module-maps!)
-                  (when-not (self:macro?)
-                    (self:try-reload!))
-                  (self:update-dependent-modules!))
+                 (self.update-dependent-modules! dependent-maps)
+                 (when macro?
+                   (self:restore-macro-module!)))
+        :recompile (let [macro? (self:macro?)
+                         dependent-maps (modmap:get-dependent-maps)]
+                     (if macro?
+                         (self:hide-macro-module!)
+                         (self:try-recompile!))
+                     (self.update-dependent-modules! dependent-maps)
+                     (when macro?
+                       (self:restore-macro-module!)))
+        :reload (let [macro? (self:macro?)
+                      dependent-maps (modmap:get-dependent-maps)]
+                  (if macro?
+                      ;; NOTE: When strategy is reload, no need to restore.
+                      (self:hide-macro-module!)
+                      (self:try-reload!))
+                  (self.update-dependent-modules! dependent-maps))
         _ (error (.. "unsupported strategy: " strategy))))))
 
-(fn Watcher.clear-dependent-module-maps! [self]
-  "Clear dependent module maps."
-  (let [modmap (self:get-modmap)
-        dependent-maps (modmap:get-dependent-maps)]
-    (each [dependent-fnl-path (pairs dependent-maps)]
-      (-> #(-> (Modmap.try-read-from-file dependent-fnl-path)
-               (: :clear!))
-          (vim.schedule)))))
-
-(fn Watcher.restore-dependent-module-maps! [self]
-  "Restore dependent module maps."
-  (let [modmap (self:get-modmap)
-        dependent-maps (modmap:get-dependent-maps)]
-    (each [dependent-fnl-path (pairs dependent-maps)]
-      (-> #(let [modmap (Modmap.new dependent-fnl-path)]
-             (when (modmap:restorable?)
-               (modmap:restore!)))
-          (vim.schedule)))))
-
-(fn Watcher.update-dependent-modules! [self]
+(fn Watcher.update-dependent-modules! [dependent-maps]
   "Update dependent modules."
-  (let [modmap (self:get-modmap)
-        dependent-maps (modmap:get-dependent-maps)]
-    (each [_ dependent (pairs dependent-maps)]
-      ;; TODO: Wrap `update-module-dependencies!` into
-      ;; `uv.new_async`, but does it keep the consistency?
-      (when (file-readable? dependent.fnl-path)
-        (-> (Watcher.new dependent.fnl-path)
-            (: :update!))))))
+  (each [_ dependent (pairs dependent-maps)]
+    ;; TODO: Wrap `update-module-dependencies!` into
+    ;; `uv.new_async`, but does it keep the consistency?
+    (when (file-readable? dependent.fnl-path)
+      (-> #(-> (Watcher.new dependent.fnl-path)
+               (: :update!))
+          (vim.schedule)))))
 
 (fn Watcher.new [fnl-path]
   "Create Watcher instance if available, or return nil.
@@ -232,7 +237,6 @@ the same. The configurations are only modifiable at the `watch` attributes in
                            watcher (watcher:update!)))
                      ;; Prevent not to destroy the autocmd.
                      nil))]
-    (set ?group group)
     (autocmd! opts.event {: group :pattern opts.pattern : callback})))
 
 {: watch-files!}

@@ -54,7 +54,10 @@
             entry-map (. logged-maps id)]
         (set self._entry-map entry-map)
         (tset logged-maps id nil)
-        (set self._dependent-maps logged-maps)
+        (set self._dependent-maps
+             (if (= logged-maps (vim.empty_dict))
+                 {}
+                 logged-maps))
         (set self._log-path log-path)
         (values self)))))
 
@@ -65,13 +68,16 @@
   self._entry-map)
 
 (fn ModuleMap.get-module-name [self]
-  (?. self._entry-map :module-name))
+  (-> (self:get-entry-map)
+      (. :module-name)))
 
 (fn ModuleMap.get-fnl-path [self]
-  self._entry-map.fnl-path)
+  (-> (self:get-entry-map)
+      (. :fnl-path)))
 
 (fn ModuleMap.get-lua-path [self]
-  self._entry-map.lua-path)
+  (-> (self:get-entry-map)
+      (. :lua-path)))
 
 (fn ModuleMap.macro? [self]
   ;; NOTE: It would be more complicated to prepare another dir for macro
@@ -104,7 +110,7 @@
       (tset dep-maps id dependent)
       (self:write-file!))))
 
-(fn ModuleMap.clear! [self]
+(fn ModuleMap.hide! [self]
   "Clear dependency map of `dependency-fnl-path`:
 
 - Remove module-map log file.
