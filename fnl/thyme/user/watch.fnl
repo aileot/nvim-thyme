@@ -22,7 +22,7 @@
 
 (local {: compile-file} (require :thyme.wrapper.fennel))
 
-(local WatchMessenger (Messenger.new "watch"))
+(local WatchMessenger (Messenger.new "autocmd/watch"))
 
 (macro augroup! [...]
   `(vim.api.nvim_create_augroup ,...))
