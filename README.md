@@ -236,41 +236,6 @@ Ensure the setup by `:checkhealth thyme`.
 ## 🎉 Interfaces
 
 Please read the [reference][reference] for the details and additional features.
-But here is a rough list:
-
-<!--
-NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
--->
-
-- `thyme.loader`
-- `thyme.setup` or `thyme:setup`
-- Functions at `thyme.fennel`
-- Functions `pcall`-able
-  - `thyme.call.cache.clear`
-  - `thyme.call.cache.open`
-- Keymaps
-- Fennel Wrapper Commands
-  - `:Fnl {fnl-expr}`
-  - `:FnlBuf [bufname]`
-  - `:FnlFile [file]`
-  - `:FnlCompileString {fnl-expr}`
-  - `:FnlCompileBuf [bufname]`
-  - `:FnlCompileFile [file]`
-  - `:FnlCompileFile[!] [src-file] [dest-file]`
-- Fennel Misc. Commands
-  - `:FnlAlternate`
-- Thyme General Commands
-  - `:ThymeUninstall`
-- Thyme Config Commands
-  - `:ThymeConfigOpen`
-- Thyme Cache Commands
-  - `:ThymeCacheClear`
-  - `:ThymeCacheOpen`
-- Thyme Rollback Commands
-  - `:ThymeRollbackSwitch {target}`
-  - `:ThymeRollbackMount {target}`
-  - `:ThymeRollbackUnmount {target}`
-  - `:ThymeRollbackUnmountAll`
 
 ## ⚙️ Configuration
 
