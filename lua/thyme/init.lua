@@ -32,10 +32,10 @@ local function _10_(...)
   return require("thyme.wrapper.fennel").macrodebug(...)
 end
 local function _11_(...)
-  return require("thyme.user.commands.cache").open(...)
+  return require("thyme.user.command.cache").open(...)
 end
 local function _12_(...)
-  return require("thyme.user.commands.cache").clear(...)
+  return require("thyme.user.command.cache").clear(...)
 end
 M = {loader = search_fnl_module_on_rtp_21, fennel = {view = _2_, eval = _3_, ["compile-string"] = _4_, compile_file = _5_, ["compile-file"] = _7_, ["compile-file!"] = _8_, ["compile-buf"] = _9_, macrodebug = _10_}, cache = {open = _11_, clear = _12_}}
 local has_setup_3f = false
@@ -44,11 +44,11 @@ M.setup = function(_3fopts)
   if (not has_setup_3f or ("1" == vim.env.THYME_DEBUG)) then
     local watch = require("thyme.user.watch")
     local keymap = require("thyme.user.keymap")
-    local commands = require("thyme.user.commands")
+    local command = require("thyme.user.command")
     local dropin = require("thyme.user.dropin")
     watch["watch-files!"]()
     keymap["define-keymaps!"]()
-    commands["define-commands!"]()
+    command["define-commands!"]()
     dropin["enable-dropin-paren!"]()
     has_setup_3f = true
     return nil

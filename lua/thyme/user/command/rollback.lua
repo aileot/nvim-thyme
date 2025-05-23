@@ -8,7 +8,7 @@ RollbackCommander["cmdargs->kind-modname"] = function(cmdargs)
   return cmdargs:match("([^/]+)/?([^/]*)")
 end
 RollbackCommander.attach = function(kind)
-  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/commands/rollback.fnl:19")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/user/command/rollback.fnl:19")
   local ext_tmp = ".tmp"
   return RollbackManager.new(kind, ext_tmp)
 end

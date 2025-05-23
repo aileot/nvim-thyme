@@ -10,9 +10,9 @@
 (local Messenger (require :thyme.util.class.messenger))
 (local UninstallCommandMessenger (Messenger.new "command/uninstall"))
 
-(local cache-commands (require :thyme.user.commands.cache))
-(local rollback-commands (require :thyme.user.commands.rollback))
-(local fennel-wrapper-commands (require :thyme.user.commands.fennel))
+(local cache-commands (require :thyme.user.command.cache))
+(local rollback-commands (require :thyme.user.command.rollback))
+(local fennel-wrapper-commands (require :thyme.user.command.fennel))
 
 ;; (fn get-candidates-in-cache-dir [arg-lead _cmdline _cursorpos]
 ;;   "Return list of directories under thyme's cache as `arg-lead`.

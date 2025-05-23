@@ -25,8 +25,8 @@
                                                        :compile-buf)
                    :macrodebug (lazy-require-with-key :thyme.wrapper.fennel
                                                       :macrodebug)}
-          :cache {:open (lazy-require-with-key :thyme.user.commands.cache :open)
-                  :clear (lazy-require-with-key :thyme.user.commands.cache
+          :cache {:open (lazy-require-with-key :thyme.user.command.cache :open)
+                  :clear (lazy-require-with-key :thyme.user.command.cache
                                                 :clear)}})
 
 (var has-setup? false)
@@ -59,11 +59,11 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
             (= :1 vim.env.THYME_DEBUG))
     (let [watch (require :thyme.user.watch)
           keymap (require :thyme.user.keymap)
-          commands (require :thyme.user.commands)
+          command (require :thyme.user.command)
           dropin (require :thyme.user.dropin)]
       (watch.watch-files!)
       (keymap.define-keymaps!)
-      (commands.define-commands!)
+      (command.define-commands!)
       (dropin.enable-dropin-paren!)
       (set has-setup? true))))
 
