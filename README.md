@@ -245,7 +245,7 @@ All the configurations should be managed in a config file `.nvim-thyme.fnl`
 instead of `thyme.setup`.
 
 > [!NOTE]
-> This is a point to optimize the nvim startuptime with the runtime compiler.
+> This is a point to optimize the nvim startuptime with the JIT compiler.
 > Apart from `thyme.setup` but with `.nvim-thyme.fnl`, the configurations can be
 > _lazily evaluated_ only by need.
 
