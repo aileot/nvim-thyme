@@ -96,10 +96,13 @@ local function define_autocmds_to_map_keys_21()
   vim.api.nvim_create_autocmd("FileType", {group = group, pattern = "lua", callback = Keymap["map-keys-on-ft=lua!"]})
   if vim.v.vim_did_enter then
     for buffer in ipairs(vim.api.nvim_list_bufs()) do
-      local function _10_()
-        return vim.api.nvim_exec_autocmds("FileType", {group = group, buffer = buffer})
+      if vim.api.nvim_buf_is_valid(buffer) then
+        local function _10_()
+          return vim.api.nvim_exec_autocmds("FileType", {group = group, buffer = buffer})
+        end
+        vim.api.nvim_buf_call(buffer, _10_)
+      else
       end
-      vim.api.nvim_buf_call(buffer, _10_)
     end
     return nil
   else

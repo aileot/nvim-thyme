@@ -99,8 +99,9 @@
     (when vim.v.vim_did_enter
       ;; Tweaks for lazy setup.
       (each [buffer (ipairs (vim.api.nvim_list_bufs))]
-        (->> #(vim.api.nvim_exec_autocmds "FileType" {: group : buffer})
-             (vim.api.nvim_buf_call buffer))))))
+        (when (vim.api.nvim_buf_is_valid buffer)
+          (->> #(vim.api.nvim_exec_autocmds "FileType" {: group : buffer})
+               (vim.api.nvim_buf_call buffer)))))))
 
 (fn M.define-keymaps! []
   "Define keymaps on nvim-thyme.
