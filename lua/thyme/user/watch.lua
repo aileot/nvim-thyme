@@ -225,39 +225,11 @@ Watcher["update!"] = function(self)
     return nil
   end
 end
-Watcher["clear-dependent-module-maps!"] = function(self)
-  local modmap = self["get-modmap"](self)
-  local dependent_maps = modmap["get-dependent-maps"](modmap)
-  for dependent_fnl_path in pairs(dependent_maps) do
-    local function _39_()
-      local tgt_40_ = Modmap["try-read-from-file"](dependent_fnl_path)
-      return (tgt_40_)["clear!"](tgt_40_)
-    end
-    vim.schedule(_39_)
-  end
-  return nil
-end
-Watcher["restore-dependent-module-maps!"] = function(self)
-  local modmap = self["get-modmap"](self)
-  local dependent_maps = modmap["get-dependent-maps"](modmap)
-  for dependent_fnl_path in pairs(dependent_maps) do
-    local function _41_()
-      local modmap0 = Modmap.new(dependent_fnl_path)
-      if modmap0["restorable?"](modmap0) then
-        return modmap0["restore!"](modmap0)
-      else
-        return nil
-      end
-    end
-    vim.schedule(_41_)
-  end
-  return nil
-end
 Watcher["update-dependent-modules!"] = function(dependent_maps)
   for _, dependent in pairs(dependent_maps) do
     if file_readable_3f(dependent["fnl-path"]) then
-      local tgt_43_ = Watcher.new(dependent["fnl-path"])
-      do end (tgt_43_)["update!"](tgt_43_)
+      local tgt_39_ = Watcher.new(dependent["fnl-path"])
+      do end (tgt_39_)["update!"](tgt_39_)
     else
     end
   end
@@ -267,9 +239,9 @@ Watcher.new = function(fnl_path)
   assert_is_fnl_file(fnl_path)
   local self = setmetatable({}, Watcher)
   self["_fnl-path"] = fnl_path
-  local _45_ = Modmap["try-read-from-file"](fnl_path)
-  if (nil ~= _45_) then
-    local modmap = _45_
+  local _41_ = Modmap["try-read-from-file"](fnl_path)
+  if (nil ~= _41_) then
+    local modmap = _41_
     self._modmap = modmap
     return self
   else
@@ -280,8 +252,8 @@ local function watch_files_21()
   local group = vim.api.nvim_create_augroup("ThymeWatch", {})
   local opts = Config.watch
   local callback
-  local function _48_(_47_)
-    local fnl_path = _47_["match"]
+  local function _44_(_43_)
+    local fnl_path = _43_["match"]
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if allowed_3f(config_path) then
@@ -294,16 +266,16 @@ local function watch_files_21()
       else
       end
     else
-      local _51_ = Watcher.new(fnl_path)
-      if (nil ~= _51_) then
-        local watcher = _51_
+      local _47_ = Watcher.new(fnl_path)
+      if (nil ~= _47_) then
+        local watcher = _47_
         watcher["update!"](watcher)
       else
       end
     end
     return nil
   end
-  callback = _48_
+  callback = _44_
   return vim.api.nvim_create_autocmd(opts.event, {group = group, pattern = opts.pattern, callback = callback})
 end
 return {["watch-files!"] = watch_files_21}

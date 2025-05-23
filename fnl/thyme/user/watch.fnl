@@ -189,25 +189,6 @@ failed."
                   (self.update-dependent-modules! dependent-maps))
         _ (error (.. "unsupported strategy: " strategy))))))
 
-(fn Watcher.clear-dependent-module-maps! [self]
-  "Clear dependent module maps."
-  (let [modmap (self:get-modmap)
-        dependent-maps (modmap:get-dependent-maps)]
-    (each [dependent-fnl-path (pairs dependent-maps)]
-      (-> #(-> (Modmap.try-read-from-file dependent-fnl-path)
-               (: :clear!))
-          (vim.schedule)))))
-
-(fn Watcher.restore-dependent-module-maps! [self]
-  "Restore dependent module maps."
-  (let [modmap (self:get-modmap)
-        dependent-maps (modmap:get-dependent-maps)]
-    (each [dependent-fnl-path (pairs dependent-maps)]
-      (-> #(let [modmap (Modmap.new dependent-fnl-path)]
-             (when (modmap:restorable?)
-               (modmap:restore!)))
-          (vim.schedule)))))
-
 (fn Watcher.update-dependent-modules! [dependent-maps]
   "Update dependent modules."
   (each [_ dependent (pairs dependent-maps)]
