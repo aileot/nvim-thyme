@@ -575,32 +575,32 @@ Unmount the mounted backups for the `{target}`.
 
 Unmount the mounted backups.
 
+[&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
+[.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
+[.nvim-thyme.fnl]: #options-in-nvim-thymefnl
+[:FnlAlternate]: #fnlalternate
+[:FnlBuf]: #fnlbuf-bufname
+[:FnlCompile]: #fnlcompile-fnl-expr
+[:Fnl]: #fnl-fnl-expr
+[:ThymeCacheClear]: #thymecacheclear
+[:ThymeCacheOpen]: #thymecacheopen
+[:ThymeRollbackUnmountAll]: #thymerollbackunmountall
+[:ThymeRollbackUnmount]: #thymerollbackunmount-target
+[:ThymeUninstall]: #thymeuninstall
+[Fennel Wrapper Commands]: #fennel-wrapper-commands
+[Keymaps]: #keymaps
+[VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
 [autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
 [autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
 [autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
-[.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
-[package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
-[VimEnter]: https://neovim.io/doc/user/autocmd.html#VimEnter
-[vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
-[parinfer-rust]: https://github.com/eraserhd/parinfer-rust
-[nvim-thyme]: https://github.com/aileot/nvim-thyme
-[thyme]: https://github.com/aileot/nvim-thyme
-[.nvim-thyme.fnl]: #options-in-nvim-thymefnl
-[thyme.setup]: #thymesetup-or-thymesetup
-[keymap.mappings]: #keymap-mappings
-[&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
-[fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
 [fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
-[Fennel Wrapper Commands]: #fennel-wrapper-commands
-[:Fnl]: #fnl-fnl-expr
-[:FnlBuf]: #fnlbuf-bufname
-[:FnlCompile]: #fnlcompile-fnl-expr
-[:FnlAlternate]: #fnlalternate
-[:ThymeUninstall]: #thymeuninstall
-[:ThymeCacheOpen]: #thymecacheopen
-[:ThymeCacheClear]: #thymecacheclear
-[:ThymeRollbackUnmount]: #thymerollbackunmount-target
-[Keymaps]: #keymaps
+[fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
+[keymap.mappings]: #keymap-mappings
+[nvim-thyme]: https://github.com/aileot/nvim-thyme
+[package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
+[parinfer-rust]: https://github.com/eraserhd/parinfer-rust
+[thyme.setup]: #thymesetup-or-thymesetup
+[thyme]: https://github.com/aileot/nvim-thyme
+[vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
 [vim.secure.trust]: https://neovim.io/doc/user/lua.html#_lua-module:-vim.secure
-[:ThymeRollbackUnmountAll]: #thymerollbackunmountall
