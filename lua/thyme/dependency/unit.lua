@@ -102,7 +102,7 @@ ModuleMap["log-dependent!"] = function(self, dependent)
     return nil
   end
 end
-ModuleMap["clear!"] = function(self)
+ModuleMap["hide!"] = function(self)
   local lua_path = self["get-lua-path"](self)
   local log_path = self["get-log-path"](self)
   self["__entry-map"] = self["_entry-map"]

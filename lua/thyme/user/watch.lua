@@ -101,7 +101,7 @@ Watcher["try-recompile!"] = function(self)
   local last_chunk = package.loaded[module_name]
   assert(not modmap["macro?"](modmap), "Invalid attempt to recompile macro")
   compiler_options["module-name"] = module_name
-  modmap["clear!"](modmap, fnl_path)
+  modmap["hide!"](modmap, fnl_path)
   local _18_, _19_ = DepObserver["observe!"](DepObserver, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
   if ((_18_ == true) and (nil ~= _19_)) then
     local lua_code = _19_
@@ -184,7 +184,7 @@ Watcher["update!"] = function(self)
         self["hide-macro-module!"](self)
       else
       end
-      if modmap0["clear!"](modmap0) then
+      if modmap0["hide!"](modmap0) then
         WatchMessenger["notify!"](WatchMessenger, ("Cleared the cache for " .. self["get-fnl-path"](self)))
       else
       end

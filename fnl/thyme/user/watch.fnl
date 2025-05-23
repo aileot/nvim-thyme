@@ -107,7 +107,7 @@
     (set compiler-options.module-name module-name)
     ;; NOTE: module-map must be cleared before logging, but after getting
     ;; its maps.
-    (modmap:clear! fnl-path)
+    (modmap:hide! fnl-path)
     (case (DepObserver:observe! fennel.compile-string fnl-path lua-path
                                 compiler-options module-name)
       (true lua-code) (let [msg (.. "successfully recompiled " fnl-path)
@@ -166,7 +166,7 @@ failed."
                      dependent-maps (modmap:get-dependent-maps)]
                  (when macro?
                    (self:hide-macro-module!))
-                 (when (modmap:clear!)
+                 (when (modmap:hide!)
                    (-> (.. "Cleared the cache for " (self:get-fnl-path))
                        (WatchMessenger:notify!)))
                  (self.update-dependent-modules! dependent-maps)

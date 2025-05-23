@@ -110,7 +110,7 @@
       (tset dep-maps id dependent)
       (self:write-file!))))
 
-(fn ModuleMap.clear! [self]
+(fn ModuleMap.hide! [self]
   "Clear dependency map of `dependency-fnl-path`:
 
 - Remove module-map log file.
