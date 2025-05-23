@@ -27,8 +27,6 @@
 (macro autocmd! [...]
   `(vim.api.nvim_create_autocmd ,...))
 
-(var ?group nil)
-
 (local Watcher {})
 
 (set Watcher.__index Watcher)
@@ -231,7 +229,6 @@ the same. The configurations are only modifiable at the `watch` attributes in
                            watcher (watcher:update!)))
                      ;; Prevent not to destroy the autocmd.
                      nil))]
-    (set ?group group)
     (autocmd! opts.event {: group :pattern opts.pattern : callback})))
 
 {: watch-files!}

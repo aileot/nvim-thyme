@@ -19,12 +19,14 @@ local clear_cache_21 = _local_5_["clear-cache!"]
 local _local_6_ = require("thyme.wrapper.fennel")
 local compile_file = _local_6_["compile-file"]
 local WatchMessenger = Messenger.new("watch")
-local _3fgroup = nil
 local Watcher = {}
 Watcher.__index = Watcher
+Watcher["get-fnl-path"] = function(self)
+  return self["_fnl-path"]
+end
 Watcher["get-modmap"] = function(self)
   do
-    local _7_ = Modmap["try-read-from-file"](self["_fnl-path"])
+    local _7_ = Modmap["try-read-from-file"](self["get-fnl-path"](self))
     if (nil ~= _7_) then
       local latest_modmap = _7_
       self._modmap = latest_modmap
@@ -271,7 +273,6 @@ local function watch_files_21()
     return nil
   end
   callback = _44_
-  _3fgroup = group
   return vim.api.nvim_create_autocmd(opts.event, {group = group, pattern = opts.pattern, callback = callback})
 end
 return {["watch-files!"] = watch_files_21}
