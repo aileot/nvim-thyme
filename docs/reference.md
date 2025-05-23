@@ -1,7 +1,6 @@
 # Reference
 
 <!--toc:start-->
-
 - [Reference](#reference)
   - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
     - [`compiler-options`](#compiler-options)
@@ -16,6 +15,8 @@
     - [`keymap.mappings`](#keymapmappings)
     - [`watch.event`](#watchevent)
     - [`watch.pattern`](#watchpattern)
+    - [`watch.strategy`](#watchstrategy)
+    - [`watch.macro-strategy`](#watchmacro-strategy)
   - [Functions](#functions)
     - [`thyme.loader`](#thymeloader)
     - [`thyme.setup` or `(thyme:setup)`](#thymesetup-or-thymesetup)
