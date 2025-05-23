@@ -3,8 +3,8 @@
 (local {: validate-type} (require :thyme.util.general))
 (local {: file-readable? : read-file} (require :thyme.util.fs))
 (local Messenger (require :thyme.util.class.messenger))
-(local SearcherMessenger (Messenger.new "searcher/macro"))
-(local RollbackLoaderMessenger (Messenger.new "searcher/macro/rollback"))
+(local SearcherMessenger (Messenger.new "loader/macro"))
+(local RollbackLoaderMessenger (Messenger.new "loader/macro/rollback"))
 
 (local Observer (require :thyme.dependency.observer))
 

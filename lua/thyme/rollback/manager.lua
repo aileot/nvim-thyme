@@ -15,7 +15,7 @@ end
 RollbackManager["search-module-from-mounted-backups"] = function(self, module_name)
   local backup_handler = self["backup-handler-of"](self, module_name)
   local rollback_path = backup_handler["determine-mounted-backup-path"](backup_handler)
-  local messenger = Messenger.new(("rollback/mounted/loader/%s"):format(self._kind))
+  local messenger = Messenger.new(("loader/%s/rollback/mounted"):format(self._kind))
   if file_readable_3f(rollback_path) then
     local msg = ("\nrollback to backup for %s (created at %s)"):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name))
     messenger["notify-once!"](messenger, msg, vim.log.levels.WARN)

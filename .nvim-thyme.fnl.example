@@ -41,10 +41,10 @@
                                         vim.notify)]
                  ;; Extract scope
                  (case (msg:match "^thyme%((.-)%): ")
-                   "watch"
+                   "autocmd/watch"
                    (noisy-notifier msg ...)
                    ;; You can suppress messages of specific scopes.
-                   ;; scope (if (vim.startswith scope "mounted-rollback") nil
+                   ;; scope (if (vim.endswith scope "rollback/mounted") nil
                    ;;           (vim.notify msg ...))
                    _
                    (vim.notify msg ...))))

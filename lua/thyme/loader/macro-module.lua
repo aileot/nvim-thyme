@@ -4,8 +4,8 @@ local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local read_file = _local_2_["read-file"]
 local Messenger = require("thyme.util.class.messenger")
-local SearcherMessenger = Messenger.new("searcher/macro")
-local RollbackLoaderMessenger = Messenger.new("searcher/macro/rollback")
+local SearcherMessenger = Messenger.new("loader/macro")
+local RollbackLoaderMessenger = Messenger.new("loader/macro/rollback")
 local Observer = require("thyme.dependency.observer")
 local RollbackManager = require("thyme.rollback.manager")
 local MacroRollbackManager = RollbackManager.new("macro", ".fnl")
@@ -170,13 +170,13 @@ local function initialize_macro_searcher_on_rtp_21(fennel)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 local function hide_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/searcher/macro-module.fnl:153")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:153")
   cache["__macro-loaded"][module_name] = cache["macro-loaded"][module_name]
   cache["macro-loaded"][module_name] = nil
   return nil
 end
 local function restore_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/searcher/macro-module.fnl:160")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:160")
   cache["macro-loaded"][module_name] = cache["__macro-loaded"][module_name]
   cache["__macro-loaded"][module_name] = nil
   return nil
