@@ -34,33 +34,32 @@ Watcher["get-modmap"] = function(self)
   return self._modmap
 end
 Watcher["get-fnl-path"] = function(self)
-  local tgt_9_ = self["get-modmap"](self)
-  return (tgt_9_)["get-fnl-path"](tgt_9_)
+  return self["_fnl-path"]
 end
 Watcher["get-lua-path"] = function(self)
-  local tgt_10_ = self["get-modmap"](self)
-  return (tgt_10_)["get-lua-path"](tgt_10_)
+  local tgt_9_ = self["get-modmap"](self)
+  return (tgt_9_)["get-lua-path"](tgt_9_)
 end
 Watcher["get-module-name"] = function(self)
-  local tgt_11_ = self["get-modmap"](self)
-  return (tgt_11_)["get-module-name"](tgt_11_)
+  local tgt_10_ = self["get-modmap"](self)
+  return (tgt_10_)["get-module-name"](tgt_10_)
 end
 Watcher["get-depentent-maps"] = function(self)
-  local tgt_12_ = self["get-modmap"](self)
-  return (tgt_12_)["get-depentent-maps"](tgt_12_)
+  local tgt_11_ = self["get-modmap"](self)
+  return (tgt_11_)["get-depentent-maps"](tgt_11_)
 end
 Watcher["macro?"] = function(self)
-  local tgt_13_ = self["get-modmap"](self)
-  return (tgt_13_)["macro?"](tgt_13_)
+  local tgt_12_ = self["get-modmap"](self)
+  return (tgt_12_)["macro?"](tgt_12_)
 end
 Watcher["should-update?"] = function(self)
   local modmap = self["get-modmap"](self)
   if modmap["macro?"](modmap) then
     return true
   else
-    local _14_ = modmap["get-lua-path"](modmap)
-    if (nil ~= _14_) then
-      local lua_path = _14_
+    local _13_ = modmap["get-lua-path"](modmap)
+    if (nil ~= _13_) then
+      local lua_path = _13_
       if file_readable_3f(lua_path) then
         local fnl_path = modmap["get-fnl-path"](modmap)
         return (read_file(lua_path) ~= compile_file(fnl_path))
@@ -68,7 +67,7 @@ Watcher["should-update?"] = function(self)
         return nil
       end
     else
-      local _ = _14_
+      local _ = _13_
       return error(("invalid ModuleMap instance for %s: %s"):format(modmap["get-module-name"](modmap), vim.inspect(modmap)))
     end
   end
@@ -92,18 +91,18 @@ Watcher["try-recompile!"] = function(self)
   assert(not modmap["macro?"](modmap), "Invalid attempt to recompile macro")
   compiler_options["module-name"] = module_name
   modmap["clear!"](modmap, fnl_path)
-  local _18_, _19_ = DepObserver["observe!"](DepObserver, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
-  if ((_18_ == true) and (nil ~= _19_)) then
-    local lua_code = _19_
+  local _17_, _18_ = DepObserver["observe!"](DepObserver, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+  if ((_17_ == true) and (nil ~= _18_)) then
+    local lua_code = _18_
     local msg = ("successfully recompiled " .. fnl_path)
     local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
     write_lua_file_with_backup_21(lua_path, lua_code, module_name)
     backup_handler["cleanup-old-backups!"](backup_handler)
     WatchMessenger["notify!"](WatchMessenger, msg)
     return true
-  elseif (true and (nil ~= _19_)) then
-    local _ = _18_
-    local error_msg = _19_
+  elseif (true and (nil ~= _18_)) then
+    local _ = _17_
+    local error_msg = _18_
     local msg = ("abort recompiling %s due to the following error:\n%s"):format(fnl_path, error_msg)
     WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.WARN)
     modmap["restore!"](modmap)
@@ -118,11 +117,11 @@ Watcher["try-reload!"] = function(self)
   local last_chunk = package.loaded[modname]
   package.loaded[modname] = nil
   if modmap["macro?"](modmap) then
-    local _21_, _22_ = pcall(require, modname)
-    if (_21_ == true) then
+    local _20_, _21_ = pcall(require, modname)
+    if (_20_ == true) then
       return WatchMessenger["notify!"](WatchMessenger, ("Successfully reloaded " .. modname))
-    elseif ((_21_ == false) and (nil ~= _22_)) then
-      local error_msg = _22_
+    elseif ((_20_ == false) and (nil ~= _21_)) then
+      local error_msg = _21_
       local msg = ("Failed to reload %s due to the following error:\n%s"):format(modname, error_msg)
       package.loaded[modname] = last_chunk
       return WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.ERROR)
@@ -143,12 +142,12 @@ Watcher["update!"] = function(self)
   end
   local always_3f, strategy = nil, nil
   do
-    local _26_, _27_ = raw_strategy:match("^(%S-%-)(%S+)$")
-    if ((_26_ == "always-") and (nil ~= _27_)) then
-      local strategy0 = _27_
+    local _25_, _26_ = raw_strategy:match("^(%S-%-)(%S+)$")
+    if ((_25_ == "always-") and (nil ~= _26_)) then
+      local strategy0 = _26_
       always_3f, strategy = true, strategy0
     else
-      local _ = _26_
+      local _ = _25_
       always_3f, strategy = false, raw_strategy
     end
   end
@@ -198,11 +197,11 @@ Watcher["clear-dependent-module-maps!"] = function(self)
   local modmap = self["get-modmap"](self)
   local dependent_maps = modmap["get-dependent-maps"](modmap)
   for dependent_fnl_path in pairs(dependent_maps) do
-    local function _36_()
-      local tgt_37_ = Modmap["try-read-from-file"](dependent_fnl_path)
-      return (tgt_37_)["clear!"](tgt_37_)
+    local function _35_()
+      local tgt_36_ = Modmap["try-read-from-file"](dependent_fnl_path)
+      return (tgt_36_)["clear!"](tgt_36_)
     end
-    vim.schedule(_36_)
+    vim.schedule(_35_)
   end
   return nil
 end
@@ -210,7 +209,7 @@ Watcher["restore-dependent-module-maps!"] = function(self)
   local modmap = self["get-modmap"](self)
   local dependent_maps = modmap["get-dependent-maps"](modmap)
   for dependent_fnl_path in pairs(dependent_maps) do
-    local function _38_()
+    local function _37_()
       local modmap0 = Modmap.new(dependent_fnl_path)
       if modmap0["restorable?"](modmap0) then
         return modmap0["restore!"](modmap0)
@@ -218,7 +217,7 @@ Watcher["restore-dependent-module-maps!"] = function(self)
         return nil
       end
     end
-    vim.schedule(_38_)
+    vim.schedule(_37_)
   end
   return nil
 end
@@ -227,8 +226,8 @@ Watcher["update-dependent-modules!"] = function(self)
   local dependent_maps = modmap["get-dependent-maps"](modmap)
   for _, dependent in pairs(dependent_maps) do
     if file_readable_3f(dependent["fnl-path"]) then
-      local tgt_40_ = Watcher.new(dependent["fnl-path"])
-      do end (tgt_40_)["update!"](tgt_40_)
+      local tgt_39_ = Watcher.new(dependent["fnl-path"])
+      do end (tgt_39_)["update!"](tgt_39_)
     else
     end
   end
@@ -238,9 +237,9 @@ Watcher.new = function(fnl_path)
   assert_is_fnl_file(fnl_path)
   local self = setmetatable({}, Watcher)
   self["_fnl-path"] = fnl_path
-  local _42_ = Modmap["try-read-from-file"](fnl_path)
-  if (nil ~= _42_) then
-    local modmap = _42_
+  local _41_ = Modmap["try-read-from-file"](fnl_path)
+  if (nil ~= _41_) then
+    local modmap = _41_
     self._modmap = modmap
     return self
   else
@@ -251,8 +250,8 @@ local function watch_files_21()
   local group = vim.api.nvim_create_augroup("ThymeWatch", {})
   local opts = Config.watch
   local callback
-  local function _45_(_44_)
-    local fnl_path = _44_["match"]
+  local function _44_(_43_)
+    local fnl_path = _43_["match"]
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if allowed_3f(config_path) then
@@ -265,16 +264,16 @@ local function watch_files_21()
       else
       end
     else
-      local _48_ = Watcher.new(fnl_path)
-      if (nil ~= _48_) then
-        local watcher = _48_
+      local _47_ = Watcher.new(fnl_path)
+      if (nil ~= _47_) then
+        local watcher = _47_
         watcher["update!"](watcher)
       else
       end
     end
     return nil
   end
-  callback = _45_
+  callback = _44_
   _3fgroup = group
   return vim.api.nvim_create_autocmd(opts.event, {group = group, pattern = opts.pattern, callback = callback})
 end

@@ -39,8 +39,7 @@
   self._modmap)
 
 (fn Watcher.get-fnl-path [self]
-  (-> (self:get-modmap)
-      (: :get-fnl-path)))
+  self._fnl-path)
 
 (fn Watcher.get-lua-path [self]
   (-> (self:get-modmap)
