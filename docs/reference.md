@@ -237,6 +237,29 @@ buffers loaded in current nvim session.
 The [autocmd pattern][autocmd pattern] for [match][autocmd-event-args] (path) to
 check the changes of Fennel source file.
 
+### `watch.strategy`
+
+(default: `"clear-all"`)
+
+The strategy how to handle Fennel runtime module updates on the autocmd
+detection on [watch.event][watch.event].
+
+Available Strategies:
+
+- `"clear-all"`: clear all the Lua caches by nvim-thyme
+- `"clear"`: clear the cache of the module and its dependencies
+- `"recompile"`: recompile the module and its dependencies
+
+### `watch.macro-strategy`
+
+(default: `"clear-all"`)
+
+The same as the option [watch.strategy][watch.strategy], but for Fennel macro
+modules.
+
+> [!CAUTION]
+> The macro-strategy "recompile" is unstable yet.
+
 ## Functions
 
 > [!IMPORTANT]
@@ -626,3 +649,5 @@ Unmount the mounted backups.
 [thyme]: https://github.com/aileot/nvim-thyme
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
 [vim.secure.trust]: https://neovim.io/doc/user/lua.html#_lua-module:-vim.secure
+[watch.event]: #watch-event
+[watch.strategy]: #watch-strategy
