@@ -373,6 +373,10 @@ The keymaps are defined with [thyme.setup][thyme.setup]. You can change the
 mappings by the [keymap.mappings][keymap.mappings] option in
 [.nvim-thyme.fnl][.nvim-thyme.fnl].
 
+> [!NOTE]
+> Currently, the keymaps only supports the Fennel modules on
+> [&runtimepath][&runtimepath].
+
 #### `<Plug>(thyme-alternate-file)`
 
 This is a keymap version of [:FnlAlternate][:FnlAlternate].
@@ -432,9 +436,6 @@ The operator keymapping to pass `(macrodebug {motion})` text to
 [fennel.eval][fennel.eval] and print the results.
 
 The `print` version does not mess up cmdline-history as `:print` does not.
-
-(Currently, the keymaps only supports the Fennel modules on
-[&runtimepath][&runtimepath].)
 
 ## Commands
 
