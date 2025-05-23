@@ -5,4 +5,4 @@
 
 (local thyme (require :thyme))
 
-(local {: search-fnl-module-on-rtp!} (require :thyme.searcher.runtime-module))
+(local {: search-fnl-module-on-rtp!} (require :thyme.loader.runtime-module))

@@ -26,7 +26,7 @@
 (local Observer (require :thyme.dependency.observer))
 
 (local {: initialize-macro-searcher-on-rtp!}
-       (require :thyme.searcher.macro-module))
+       (require :thyme.loader.macro-module))
 
 (local RollbackManager (require :thyme.rollback.manager))
 (local RuntimeModuleRollbackManager (RollbackManager.new :runtime ".lua"))

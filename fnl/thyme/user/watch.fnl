@@ -13,10 +13,10 @@
 (local DepObserver (require :thyme.dependency.observer))
 
 (local {: hide-macro-cache! : restore-macro-cache!}
-       (require :thyme.searcher.macro-module))
+       (require :thyme.loader.macro-module))
 
 (local {: write-lua-file-with-backup! : RuntimeModuleRollbackManager}
-       (require :thyme.searcher.runtime-module))
+       (require :thyme.loader.runtime-module))
 
 (local {: clear-cache!} (require :thyme.compiler.cache))
 
