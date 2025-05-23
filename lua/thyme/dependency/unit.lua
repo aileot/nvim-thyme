@@ -61,18 +61,13 @@ ModuleMap["get-entry-map"] = function(self)
   return self["_entry-map"]
 end
 ModuleMap["get-module-name"] = function(self)
-  local t_9_ = self["_entry-map"]
-  if (nil ~= t_9_) then
-    t_9_ = t_9_["module-name"]
-  else
-  end
-  return t_9_
+  return self["get-entry-map"](self)["module-name"]
 end
 ModuleMap["get-fnl-path"] = function(self)
-  return self["_entry-map"]["fnl-path"]
+  return self["get-entry-map"](self)["fnl-path"]
 end
 ModuleMap["get-lua-path"] = function(self)
-  return self["_entry-map"]["lua-path"]
+  return self["get-entry-map"](self)["lua-path"]
 end
 ModuleMap["macro?"] = function(self)
   return self["_entry-map"]["macro?"]

@@ -68,13 +68,16 @@
   self._entry-map)
 
 (fn ModuleMap.get-module-name [self]
-  (?. self._entry-map :module-name))
+  (-> (self:get-entry-map)
+      (. :module-name)))
 
 (fn ModuleMap.get-fnl-path [self]
-  self._entry-map.fnl-path)
+  (-> (self:get-entry-map)
+      (. :fnl-path)))
 
 (fn ModuleMap.get-lua-path [self]
-  self._entry-map.lua-path)
+  (-> (self:get-entry-map)
+      (. :lua-path)))
 
 (fn ModuleMap.macro? [self]
   ;; NOTE: It would be more complicated to prepare another dir for macro
