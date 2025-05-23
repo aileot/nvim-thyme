@@ -158,28 +158,33 @@ failed."
                      (-> (.. "Cleared all the caches under " lua-cache-prefix)
                          (WatchMessenger:notify!)))
         :clear (let [macro? (self:macro?)
-                     modmap (self:get-modmap)]
+                     modmap (self:get-modmap)
+                     ;; NOTE: Make sure get the last dependent-maps before
+                     ;; clearing.
+                     dependent-maps (modmap:get-dependent-maps)]
                  (when macro?
                    (self:hide-macro-module!))
                  (when (modmap:clear!)
                    (-> (.. "Cleared the cache for " (self:get-fnl-path))
                        (WatchMessenger:notify!)))
-                 (self:update-dependent-modules!)
+                 (self.update-dependent-modules! dependent-maps)
                  (when macro?
                    (self:restore-macro-module!)))
-        :recompile (let [macro? (self:macro?)]
+        :recompile (let [macro? (self:macro?)
+                         dependent-maps (modmap:get-dependent-maps)]
                      (if macro?
                          (self:hide-macro-module!)
                          (self:try-recompile!))
-                     (self:update-dependent-modules!)
+                     (self.update-dependent-modules! dependent-maps)
                      (when macro?
                        (self:restore-macro-module!)))
-        :reload (let [macro? (self:macro?)]
+        :reload (let [macro? (self:macro?)
+                      dependent-maps (modmap:get-dependent-maps)]
                   (if macro?
                       ;; NOTE: When strategy is reload, no need to restore.
                       (self:hide-macro-module!)
                       (self:try-reload!))
-                  (self:update-dependent-modules!))
+                  (self.update-dependent-modules! dependent-maps))
         _ (error (.. "unsupported strategy: " strategy))))))
 
 (fn Watcher.clear-dependent-module-maps! [self]
@@ -201,16 +206,14 @@ failed."
                (modmap:restore!)))
           (vim.schedule)))))
 
-(fn Watcher.update-dependent-modules! [self]
+(fn Watcher.update-dependent-modules! [dependent-maps]
   "Update dependent modules."
-  (let [modmap (self:get-modmap)
-        dependent-maps (modmap:get-dependent-maps)]
-    (each [_ dependent (pairs dependent-maps)]
-      ;; TODO: Wrap `update-module-dependencies!` into
-      ;; `uv.new_async`, but does it keep the consistency?
-      (when (file-readable? dependent.fnl-path)
-        (-> (Watcher.new dependent.fnl-path)
-            (: :update!))))))
+  (each [_ dependent (pairs dependent-maps)]
+    ;; TODO: Wrap `update-module-dependencies!` into
+    ;; `uv.new_async`, but does it keep the consistency?
+    (when (file-readable? dependent.fnl-path)
+      (-> (Watcher.new dependent.fnl-path)
+          (: :update!)))))
 
 (fn Watcher.new [fnl-path]
   "Create Watcher instance if available, or return nil.

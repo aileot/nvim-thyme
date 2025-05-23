@@ -177,6 +177,7 @@ Watcher["update!"] = function(self)
     elseif (final_strategy == "clear") then
       local macro_3f = self["macro?"](self)
       local modmap0 = self["get-modmap"](self)
+      local dependent_maps = modmap0["get-dependent-maps"](modmap0)
       if macro_3f then
         self["hide-macro-module!"](self)
       else
@@ -185,7 +186,7 @@ Watcher["update!"] = function(self)
         WatchMessenger["notify!"](WatchMessenger, ("Cleared the cache for " .. self["get-fnl-path"](self)))
       else
       end
-      self["update-dependent-modules!"](self)
+      self["update-dependent-modules!"](dependent_maps)
       if macro_3f then
         return self["restore-macro-module!"](self)
       else
@@ -193,12 +194,13 @@ Watcher["update!"] = function(self)
       end
     elseif (final_strategy == "recompile") then
       local macro_3f = self["macro?"](self)
+      local dependent_maps = modmap["get-dependent-maps"](modmap)
       if macro_3f then
         self["hide-macro-module!"](self)
       else
         self["try-recompile!"](self)
       end
-      self["update-dependent-modules!"](self)
+      self["update-dependent-modules!"](dependent_maps)
       if macro_3f then
         return self["restore-macro-module!"](self)
       else
@@ -206,12 +208,13 @@ Watcher["update!"] = function(self)
       end
     elseif (final_strategy == "reload") then
       local macro_3f = self["macro?"](self)
+      local dependent_maps = modmap["get-dependent-maps"](modmap)
       if macro_3f then
         self["hide-macro-module!"](self)
       else
         self["try-reload!"](self)
       end
-      return self["update-dependent-modules!"](self)
+      return self["update-dependent-modules!"](dependent_maps)
     else
       local _ = final_strategy
       return error(("unsupported strategy: " .. strategy))
@@ -248,9 +251,7 @@ Watcher["restore-dependent-module-maps!"] = function(self)
   end
   return nil
 end
-Watcher["update-dependent-modules!"] = function(self)
-  local modmap = self["get-modmap"](self)
-  local dependent_maps = modmap["get-dependent-maps"](modmap)
+Watcher["update-dependent-modules!"] = function(dependent_maps)
   for _, dependent in pairs(dependent_maps) do
     if file_readable_3f(dependent["fnl-path"]) then
       local tgt_43_ = Watcher.new(dependent["fnl-path"])
