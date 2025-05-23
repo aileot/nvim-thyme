@@ -315,14 +315,14 @@ Equivalent to [:ThymeCacheOpen][:ThymeCacheOpen], but it should work without
 
 <!-- panvimdoc-include-comment
 <Plug>(thyme-alternate-file)                *<Plug>(thyme-alternate-file)*
+<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
 <Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
 <Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
 <Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
-<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
+<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
 <Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
 <Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
 <Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
-<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
 -->
 
 The keymaps are defined with [thyme.setup][thyme.setup].
@@ -332,17 +332,17 @@ The keymaps are defined with [thyme.setup][thyme.setup].
 
 The `echo` versions do not mess up cmdline-history as `:echo` does not.
 
+- `<Plug>(thyme-operator-echo-compile-string)`
 - `<Plug>(thyme-operator-echo-eval)`
 - `<Plug>(thyme-operator-echo-eval-compiler)`
 - `<Plug>(thyme-operator-echo-macrodebug)`
-- `<Plug>(thyme-operator-echo-compile-string)`
 
 The `print` versions leave its results in cmdline-history as `vim.print` does.
 
+- `<Plug>(thyme-operator-print-compile-string)`
 - `<Plug>(thyme-operator-print-eval)`
 - `<Plug>(thyme-operator-print-eval-compiler)`
 - `<Plug>(thyme-operator-print-macrodebug)`
-- `<Plug>(thyme-operator-print-compile-string)`
 
 (Currently, the keymaps only supports the Fennel modules on
 [&runtimepath][&runtimepath].)
