@@ -161,7 +161,8 @@ This option determines the behavior for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl].
 
 This option works only when [parinfer-rust][parinfer-rust] integration is
-activated and [command.cmd-history.method][] is `"overwrite"` or `"append"`.
+activated and [command.cmd-history.method][command.cmd-history.method] is
+`"overwrite"` or `"append"`.
 
 Available options:
 
@@ -596,6 +597,7 @@ Unmount the mounted backups.
 [autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
 [autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
 [autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
+[command.cmd-history.method]: #command-cmd-history-method
 [fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
