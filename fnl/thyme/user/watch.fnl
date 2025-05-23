@@ -98,7 +98,8 @@
         modmap (self:get-modmap)
         module-name (modmap:get-module-name)
         fnl-path (modmap:get-fnl-path)
-        lua-path (modmap:get-lua-path)]
+        lua-path (modmap:get-lua-path)
+        last-chunk (. package.loaded module-name)]
     (assert (not (modmap:macro?)) "Invalid attempt to recompile macro")
     ;; NOTE: With "module-name" option, macro-searcher can map macro
     ;; dependency.
@@ -120,6 +121,7 @@
 %s"
                                   (: :format fnl-path error-msg))]
                       (WatchMessenger:notify! msg vim.log.levels.WARN)
+                      (tset package.loaded module-name last-chunk)
                       (modmap:restore!)
                       false))))
 

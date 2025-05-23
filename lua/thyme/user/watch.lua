@@ -98,6 +98,7 @@ Watcher["try-recompile!"] = function(self)
   local module_name = modmap["get-module-name"](modmap)
   local fnl_path = modmap["get-fnl-path"](modmap)
   local lua_path = modmap["get-lua-path"](modmap)
+  local last_chunk = package.loaded[module_name]
   assert(not modmap["macro?"](modmap), "Invalid attempt to recompile macro")
   compiler_options["module-name"] = module_name
   modmap["clear!"](modmap, fnl_path)
@@ -115,6 +116,7 @@ Watcher["try-recompile!"] = function(self)
     local error_msg = _19_
     local msg = ("abort recompiling %s due to the following error:\n%s"):format(fnl_path, error_msg)
     WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.WARN)
+    package.loaded[module_name] = last_chunk
     modmap["restore!"](modmap)
     return false
   else
