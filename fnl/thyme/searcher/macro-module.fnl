@@ -11,7 +11,9 @@
 (local RollbackManager (require :thyme.rollback.manager))
 (local MacroRollbackManager (RollbackManager.new :macro ".fnl"))
 
-(local cache {:macro-loaded {} :mounted-rollback-searcher nil})
+(local cache {:macro-loaded {}
+              :__macro-loaded {}
+              :mounted-rollback-searcher nil})
 
 (fn overwrite-metatable! [original-table cache-table]
   (case (getmetatable original-table)
@@ -148,4 +150,21 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                     (_ msg) msg)))
   (overwrite-metatable! fennel.macro-loaded cache.macro-loaded))
 
-{: initialize-macro-searcher-on-rtp! : search-fnl-macro-on-rtp!}
+(λ hide-macro-cache! [module-name]
+  ;; (assert (. cache.macro-loaded module-name)
+  ;;         (-> "macro module %s is not loaded yet"
+  ;;             (: :format module-name)))
+  (tset cache.__macro-loaded module-name (. cache.macro-loaded module-name))
+  (tset cache.macro-loaded module-name nil))
+
+(λ restore-macro-cache! [module-name]
+  ;; (assert (. cache.__macro-loaded module-name)
+  ;;         (-> "hide cache of macro module %s first"
+  ;;             (: :format module-name)))
+  (tset cache.macro-loaded module-name (. cache.__macro-loaded module-name))
+  (tset cache.__macro-loaded module-name nil))
+
+{: initialize-macro-searcher-on-rtp!
+ : search-fnl-macro-on-rtp!
+ : hide-macro-cache!
+ : restore-macro-cache!}
