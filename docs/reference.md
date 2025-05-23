@@ -64,7 +64,7 @@ When `.nvim-thyme.fnl` is missing at the directory on nvim startup,
 [nvim-thyme][nvim-thyme] will ask you to generate it with recommended settings:
 See the file [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
 
-### compiler-options
+### `compiler-options`
 
 (default: `{}`)
 
@@ -73,7 +73,7 @@ argument: `allowedGlobals`, `correlate`, `useMetadata`, and so on.
 
 See the official Fennel API documentation: <https://fennel-lang.org/api>
 
-### fnl-dir
+### `fnl-dir`
 
 (default: If `fnl/` directory exists at `vim.fn.stdpath('config')`, `"fnl"`;
 otherwise, `"lua"`)
@@ -89,7 +89,7 @@ It only supports `<fnl-dir>/?.fnl` and `<fnl-dir>/?/init.fnl` relative to
 
 For the path management of macro files, see [macro-path](#macro-path).
 
-### macro-path
+### `macro-path`
 
 (default:
 `"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
@@ -107,7 +107,7 @@ option to modify `fennel.path`._ For Fennel runtime modules, `nvim-thyme` is
 only designed to search through the path: `./fnl/?.fnl;./fnl/?/init.fnl` where
 each `.` prefix represents the result path of `(vim.fn.stdpath :config)`.
 
-### max-rollbacks
+### `max-rollbacks`
 
 (default: `5`)
 
@@ -119,7 +119,7 @@ Keep the number of backups for rollback at most. Set `0` to disable it.
 > _**runtime** error._ Such a feature should be realized independently of a
 > runtime compiler plugin.
 
-### notifier
+### `notifier`
 
 (default: `vim.notify`)
 
@@ -128,7 +128,7 @@ It is a function which takes the same arguments as `vim.notify`.
 You can filter out specific notifications by this option. See
 [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example] for an example.
 
-### command.compiler-options
+### `command.compiler-options`
 
 (default: `nil`)
 
@@ -136,7 +136,7 @@ The default compiler-options for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl]. If `nil`,
 it inherits the values from [compiler-options](#compiler-options) above.
 
-### command.cmd-history.method
+### `command.cmd-history.method`
 
 (default: `"overwrite"`)
 
@@ -153,7 +153,7 @@ Available methods:
   the original input.
 - `"ignore"`: Ignore the modified input. Just keep the original input.
 
-### command.cmd-history.trailing-parens
+### `command.cmd-history.trailing-parens`
 
 (default: `"omit"`)
 
@@ -170,7 +170,7 @@ Available options:
 - `"omit"`: Trim all the trailing parentheses in the command history.
 - `"keep"`: Keep the trailing parentheses in the command history.
 
-### keymap.compiler-options
+### `keymap.compiler-options`
 
 (default: `nil`)
 
@@ -178,7 +178,7 @@ The default compiler-options for `nvim-thyme` operator keymaps like
 `<Plug>(thyme-operator-eval)`. If `nil`, it inherits the values from the root
 [compiler-options](#compiler-options) above.
 
-### keymap.mappings
+### `keymap.mappings`
 
 default:
 
@@ -209,7 +209,7 @@ Available Actions:
 
 They are internally translated into `<Plug>` keymaps. See [Keymaps][Keymaps].
 
-### watch.event
+### `watch.event`
 
 (default: `[:BufWritePost :FileChangedShellPost]`)
 
@@ -219,7 +219,7 @@ file.
 Note that the watch system on autocmd events can only detect the changes on the
 buffers loaded in current nvim session.
 
-### watch.pattern
+### `watch.pattern`
 
 (default: `"*.{fnl,fnlm}"`)
 
