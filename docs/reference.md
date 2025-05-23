@@ -239,6 +239,10 @@ check the changes of Fennel source file.
 
 ## Functions
 
+> [!IMPORTANT]
+> The functions exposed to the users are limited to `require("thyme")` module.
+> The other modules would cause breaking changes without any deprecation notice.
+
 ### `thyme.loader`
 
 The core function of [nvim-thyme][nvim-thyme]. The loader is to be appended to
