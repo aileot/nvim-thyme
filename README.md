@@ -264,8 +264,8 @@ However, _you don't have to prepare it by yourself!_
 
 If `.nvim-thyme.fnl` is missing at `vim.fn.stdpath('config')` on nvim startup,
 you will be asked for confirmation. Once you agree, a new `.nvim-thyme.fnl` will
-be generated with recommended settings there. The generated file is a copy of
-[.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
+be generated to `vim.fn.stdpath('config')` with recommended settings there. The
+generated file is a copy of [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
 
 For all the available options, see the
 [section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
