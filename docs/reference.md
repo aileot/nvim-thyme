@@ -168,6 +168,41 @@ Available options:
 - `"omit"`: Trim all the trailing parentheses in the command history.
 - `"keep"`: Keep the trailing parentheses in the command history.
 
+### keymap.compiler-options
+
+(default: `nil`)
+
+The default compiler-options for `nvim-thyme` operator keymaps like
+`<Plug>(thyme-operator-eval)`. If `nil`, it inherits the values from the root
+[compiler-options](#compiler-options) above.
+
+### keymap.mappings
+
+default:
+
+```fennel
+{[:n :x] {:alternate-file "<LocalLeader>a"
+          :operator-echo-compile-string "<LocalLeader>s"
+          :operator-echo-eval "<LocalLeader>e"
+          :operator-echo-eval-compiler "<LocalLeader>c"
+          :operator-echo-macrodebug "<LocalLeader>m"}}
+```
+
+The format is `{mode {action lhs}}`.\
+Available Actions:
+
+- alternate-file
+- operator-echo-compile-string
+- operator-echo-eval
+- operator-echo-eval-compiler
+- operator-echo-macrodebug
+- operator-print-compile-string
+- operator-print-eval
+- operator-print-eval-compiler
+- operator-print-macrodebug
+
+They are internally translated into `<Plug>` keymaps. See [Keymaps][Keymaps].
+
 ### watch.event
 
 (default: `[:BufWritePost :FileChangedShellPost]`)
@@ -314,31 +349,37 @@ Equivalent to [:ThymeCacheOpen][:ThymeCacheOpen], but it should work without
 ### Keymaps
 
 <!-- panvimdoc-include-comment
+<Plug>(thyme-alternate-file)                *<Plug>(thyme-alternate-file)*
+<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
 <Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
 <Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
 <Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
-<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
+<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
 <Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
 <Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
 <Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
-<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
 -->
 
-The keymaps are defined with [thyme.setup][thyme.setup].
+The keymaps are defined with [thyme.setup][thyme.setup]. You can change the
+mappings by the [keymap.mappings][] option in
+[.nvim-thyme.fnl][.nvim-thyme.fnl].
+
+- `<Plug>(thyme-alternate-file)`\
+  This is a keymap version of [:FnlAlternate][:FnlAlternate].
 
 The `echo` versions do not mess up cmdline-history as `:echo` does not.
 
+- `<Plug>(thyme-operator-echo-compile-string)`
 - `<Plug>(thyme-operator-echo-eval)`
 - `<Plug>(thyme-operator-echo-eval-compiler)`
 - `<Plug>(thyme-operator-echo-macrodebug)`
-- `<Plug>(thyme-operator-echo-compile-string)`
 
 The `print` versions leave its results in cmdline-history as `vim.print` does.
 
+- `<Plug>(thyme-operator-print-compile-string)`
 - `<Plug>(thyme-operator-print-eval)`
 - `<Plug>(thyme-operator-print-eval-compiler)`
 - `<Plug>(thyme-operator-print-macrodebug)`
-- `<Plug>(thyme-operator-print-compile-string)`
 
 (Currently, the keymaps only supports the Fennel modules on
 [&runtimepath][&runtimepath].)
@@ -518,9 +559,11 @@ Unmount the mounted backups.
 [:Fnl]: #fnl-fnl-expr
 [:FnlBuf]: #fnlbuf-bufname
 [:FnlCompile]: #fnlcompile-fnl-expr
+[:FnlAlternate]: #fnlalternate
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeRollbackUnmount]: #thymerollbackunmount-target
+[Keymaps]: #keymaps
 [vim.secure.trust]: https://neovim.io/doc/user/lua.html#_lua-module:-vim.secure
 [:ThymeRollbackUnmountAll]: #thymerollbackunmountall
