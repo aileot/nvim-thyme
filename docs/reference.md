@@ -427,40 +427,40 @@ The commands are defined by [thyme.setup][thyme.setup].
 
 ### Fennel Wrapper Commands
 
-#### :Fnl {fnl-expr}
+#### `:Fnl {fnl-expr}`
 
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
-#### :FnlBuf [bufname]
+#### `:FnlBuf [bufname]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] but to
 `[bufname]`, but respects your [&runtimepath][&runtimepath].
 
 Without `[bufname]`, it evaluates the current buffer.
 
-#### :FnlFile [file]
+#### `:FnlFile [file]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
 respects your [&runtimepath][&runtimepath].
 
 Without `[file]`, it evaluates the current file.
 
-#### :FnlCompile {fnl-expr}
+#### `:FnlCompile {fnl-expr}`
 
 Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
 `{fnl-expr}`, but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### :FnlCompileBuf [bufname]
+#### `:FnlCompileBuf [bufname]`
 
 Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
 `[bufname]` (or current buffer), but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### :FnlCompileFile [file]
+#### `:FnlCompileFile [file]`
 
 Almost equivalent to [:FnlBuf][:FnlBuf]; however, it does not evaluate the
 `[file]` (or current file), but only returns the compiled lua results.
@@ -471,7 +471,7 @@ It does not affect the file system.
 <!--
 TODO: Add the spec tests first.
 
-#### :FnlCompileFile[!] [src-file] [dest-file]
+#### `:FnlCompileFile[!] [src-file] [dest-file]`
 
 With `!`, it will write the compiled lua results to `[dest-file]`.
 -->
@@ -485,7 +485,7 @@ With `!`, it will write the compiled lua results to `[dest-file]`.
 
 <!-- panvimdoc-ignore-start -->
 
-#### :FnlAlternate
+#### `:FnlAlternate`
 
 Try to open the alternate file of current buffer:
 
@@ -500,7 +500,7 @@ This command will search in the following order:
 
 ### Thyme General Commands
 
-#### :ThymeUninstall
+#### `:ThymeUninstall`
 
 Remove all the cache, data, state, and log files, which are implicitly managed
 by [nvim-thyme][nvim-thyme], and remove the hash of
@@ -515,13 +515,13 @@ your issue, then try this command [:ThymeUninstall][:ThymeUninstall].
 
 ### Thyme Config Commands
 
-#### :ThymeConfigOpen
+#### `:ThymeConfigOpen`
 
 Open your [.nvim-thyme.fnl][.nvim-thyme.fnl] file.
 
 ### Thyme Cache Commands
 
-#### :ThymeCacheClear
+#### `:ThymeCacheClear`
 
 Clear all the Lua caches managed by [nvim-thyme][nvim-thyme].
 
@@ -532,7 +532,7 @@ Command line instead.
 
 See also [:ThymeUninstall][:ThymeUninstall].
 
-#### :ThymeCacheOpen
+#### `:ThymeCacheOpen`
 
 Open the root directory of the Lua caches managed by [nvim-thyme][nvim-thyme].
 
@@ -549,7 +549,7 @@ Two concepts:
   [:ThymeRollbackMount][:ThymeRollbackMount], or all the active backups by
   [:ThymeRollbackUnmountAll][:ThymeRollbackUnmountAll].
 
-#### :ThymeRollbackSwitch {target}
+#### `:ThymeRollbackSwitch {target}`
 
 Prompt to switch to the active backup of the `{target}`.
 
@@ -559,7 +559,7 @@ active backup.
 Note that switching the active backup also affects the mounted backup of
 `{target}`.
 
-#### :ThymeRollbackMount {target}
+#### `:ThymeRollbackMount {target}`
 
 Mount the active backup of the `{target}`.
 
@@ -570,11 +570,11 @@ You should run [:ThymeRollbackUnmount][:ThymeRollbackUnmount] or
 To select which backup to mount, use
 [:ThymeRollbackSwitch][:ThymeRollbackSwitch].
 
-#### :ThymeRollbackUnmount {target}
+#### `:ThymeRollbackUnmount {target}`
 
 Unmount the mounted backups for the `{target}`.
 
-#### :ThymeRollbackUnmountAll
+#### `:ThymeRollbackUnmountAll`
 
 Unmount the mounted backups.
 
