@@ -446,22 +446,22 @@ Without `[file]`, it evaluates the current file.
 
 #### :FnlCompile {fnl-expr}
 
-Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the {fnl-expr},
-but only returns the compiled lua results.
+Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
+`{fnl-expr}`, but only returns the compiled lua results.
 
 It does not affect the file system.
 
 #### :FnlCompileBuf [bufname]
 
 Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
-[bufname] (or current buffer), but only returns the compiled lua results.
+`[bufname]` (or current buffer), but only returns the compiled lua results.
 
 It does not affect the file system.
 
 #### :FnlCompileFile [file]
 
 Almost equivalent to [:FnlBuf][:FnlBuf]; however, it does not evaluate the
-[file] (or current file), but only returns the compiled lua results.
+`[file]` (or current file), but only returns the compiled lua results.
 
 It does not affect the file system.
 
