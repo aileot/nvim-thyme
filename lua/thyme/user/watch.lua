@@ -33,9 +33,6 @@ Watcher["get-modmap"] = function(self)
   end
   return self._modmap
 end
-Watcher["get-fnl-path"] = function(self)
-  return self["_fnl-path"]
-end
 Watcher["get-lua-path"] = function(self)
   local tgt_9_ = self["get-modmap"](self)
   return (tgt_9_)["get-lua-path"](tgt_9_)

@@ -33,13 +33,13 @@
 
 (set Watcher.__index Watcher)
 
-(fn Watcher.get-modmap [self]
-  (case (Modmap.try-read-from-file self._fnl-path)
-    latest-modmap (set self._modmap latest-modmap))
-  self._modmap)
-
 (fn Watcher.get-fnl-path [self]
   self._fnl-path)
+
+(fn Watcher.get-modmap [self]
+  (case (Modmap.try-read-from-file (self:get-fnl-path))
+    latest-modmap (set self._modmap latest-modmap))
+  self._modmap)
 
 (fn Watcher.get-lua-path [self]
   (-> (self:get-modmap)
