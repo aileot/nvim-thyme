@@ -32,7 +32,7 @@ jobs:
           version: ${{ matrix.nvim_version }}
       - name: Run tests
         env:
-          VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending --filter-out=:Fnl"
+          VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending"
           VUSTED_EXTRA_ARGS: ""
         run: |
           make -j test
