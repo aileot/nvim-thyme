@@ -29,12 +29,16 @@
                     (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                    (table.concat ";"))
    :max-rollbacks 5
-   :notifier (let [noisy-notifier (case (or (pcall require :fidget)
-                                            (pcall require :noice)
-                                            (pcall require :notify))
-                                    (true mod) mod.notify
-                                    _ vim.notify)]
-               (fn [msg ...]
+   :notifier (fn [msg ...]
+               (let [noisy-notifier (or (case (pcall require :fidget)
+                                          (true mod) mod.notify)
+                                        (case (pcall require :noice)
+                                          (true mod) mod.notify)
+                                        (case (pcall require :notify)
+                                          (true mod) mod.notify)
+                                        (case (pcall require :mini.notify)
+                                          (true mod) (mod.make_notify))
+                                        vim.notify)]
                  ;; Extract scope
                  (case (msg:match "^thyme%((.-)%): ")
                    "watch/recompiler"
