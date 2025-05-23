@@ -241,8 +241,8 @@ Please read the [reference][reference] for the details and additional features.
 
 ### Options in `.nvim-thyme.fnl`
 
-As described in the [Installation][installation] above, all the configurations
-should be managed in a config file `.nvim-thyme.fnl` instead of `thyme.setup`.
+All the configurations should be managed in a config file `.nvim-thyme.fnl`
+instead of `thyme.setup`.
 
 > [!NOTE]
 > This is a point to optimize the nvim startuptime with the runtime compiler.
