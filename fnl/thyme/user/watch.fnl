@@ -12,6 +12,9 @@
 (local Modmap (require :thyme.dependency.unit))
 (local DepObserver (require :thyme.dependency.observer))
 
+(local {: hide-macro-cache! : restore-macro-cache!}
+       (require :thyme.searcher.macro-module))
+
 (local {: write-lua-file-with-backup! : RuntimeModuleRollbackManager}
        (require :thyme.searcher.runtime-module))
 
@@ -56,6 +59,14 @@
 (fn Watcher.macro? [self]
   (-> (self:get-modmap)
       (: :macro?)))
+
+(fn Watcher.hide-macro-module! [self]
+  (let [module-name (self:get-module-name)]
+    (hide-macro-cache! module-name)))
+
+(fn Watcher.restore-macro-module! [self]
+  (let [module-name (self:get-module-name)]
+    (restore-macro-cache! module-name)))
 
 (fn Watcher.should-update? [self]
   "Check if fnl file is updated and the compiled lua file exists.
@@ -146,20 +157,28 @@ failed."
         :clear-all (when (clear-cache!)
                      (-> (.. "Cleared all the caches under " lua-cache-prefix)
                          (WatchMessenger:notify!)))
-        :clear (let [modmap (self:get-modmap)]
+        :clear (let [macro? (self:macro?)
+                     modmap (self:get-modmap)]
+                 (when macro?
+                   (self:hide-macro-module!))
                  (when (modmap:clear!)
-                   (-> (.. "Cleared the cache for " (modmap:get-fnl-path))
+                   (-> (.. "Cleared the cache for " (self:get-fnl-path))
                        (WatchMessenger:notify!)))
-                 (self:update-dependent-modules!))
-        :recompile (do
-                     (self:clear-dependent-module-maps!)
-                     (when-not (self:macro?)
-                       (self:try-recompile!))
-                     (self:update-dependent-modules!))
-        :reload (do
-                  (self:clear-dependent-module-maps!)
-                  (when-not (self:macro?)
-                    (self:try-reload!))
+                 (self:update-dependent-modules!)
+                 (when macro?
+                   (self:restore-macro-module!)))
+        :recompile (let [macro? (self:macro?)]
+                     (if macro?
+                         (self:hide-macro-module!)
+                         (self:try-recompile!))
+                     (self:update-dependent-modules!)
+                     (when macro?
+                       (self:restore-macro-module!)))
+        :reload (let [macro? (self:macro?)]
+                  (if macro?
+                      ;; NOTE: When strategy is reload, no need to restore.
+                      (self:hide-macro-module!)
+                      (self:try-reload!))
                   (self:update-dependent-modules!))
         _ (error (.. "unsupported strategy: " strategy))))))
 
