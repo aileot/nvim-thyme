@@ -161,8 +161,9 @@ This option determines the behavior for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl].
 
 This option works only when [parinfer-rust][parinfer-rust] integration is
-activated and [command.cmd-history.method][command.cmd-history.method] is
-`"overwrite"` or `"append"`.
+activated and the option
+[command.cmd-history.method][command.cmd-history.method] is set to `"overwrite"`
+or `"append"`.
 
 Available options:
 
