@@ -352,38 +352,69 @@ Equivalent to [:ThymeCacheOpen][:ThymeCacheOpen], but it should work without
 
 ### Keymaps
 
-<!-- panvimdoc-include-comment
-<Plug>(thyme-alternate-file)                *<Plug>(thyme-alternate-file)*
-<Plug>(thyme-operator-echo-compile-string)  *<Plug>(thyme-operator-echo-compile-string)*
-<Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
-<Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
-<Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
-<Plug>(thyme-operator-print-compile-string) *<Plug>(thyme-operator-print-compile-string)
-<Plug>(thyme-operator-print-eval)           *<Plug>(thyme-operator-print-eval)*
-<Plug>(thyme-operator-print-eval-compiler)  *<Plug>(thyme-operator-print-eval-compiler)*
-<Plug>(thyme-operator-print-macrodebug)     *<Plug>(thyme-operator-print-macrodebug)*
--->
-
 The keymaps are defined with [thyme.setup][thyme.setup]. You can change the
-mappings by the [keymap.mappings][] option in
+mappings by the [keymap.mappings][keymap.mappings] option in
 [.nvim-thyme.fnl][.nvim-thyme.fnl].
 
-- `<Plug>(thyme-alternate-file)`\
-  This is a keymap version of [:FnlAlternate][:FnlAlternate].
+#### `<Plug>(thyme-alternate-file)`
 
-The `echo` versions do not mess up cmdline-history as `:echo` does not.
+This is a keymap version of [:FnlAlternate][:FnlAlternate].
 
-- `<Plug>(thyme-operator-echo-compile-string)`
-- `<Plug>(thyme-operator-echo-eval)`
-- `<Plug>(thyme-operator-echo-eval-compiler)`
-- `<Plug>(thyme-operator-echo-macrodebug)`
+#### `<Plug>(thyme-operator-echo-compile-string){motion}`
 
-The `print` versions leave its results in cmdline-history as `vim.print` does.
+The operator keymapping to pass `{motion}` text to
+[fennel.compile-string][fennel.compile-string] and echo the results.
 
-- `<Plug>(thyme-operator-print-compile-string)`
-- `<Plug>(thyme-operator-print-eval)`
-- `<Plug>(thyme-operator-print-eval-compiler)`
-- `<Plug>(thyme-operator-print-macrodebug)`
+The `echo` version does not mess up cmdline-history as `:echo` does not.
+
+#### `<Plug>(thyme-operator-echo-eval){motion}`
+
+The operator keymapping to pass `{motion}` text to [fennel.eval][fennel.eval]
+and echo the results.
+
+The `echo` version does not mess up cmdline-history as `:echo` does not.
+
+#### `<Plug>(thyme-operator-echo-eval-compiler){motion}`
+
+The operator keymapping to pass `(eval-compiler {motion})` text to
+[fennel.eval][fennel.eval] and echo the results.
+
+The `echo` version does not mess up cmdline-history as `:echo` does not.
+
+#### `<Plug>(thyme-operator-echo-macrodebug){motion}`
+
+The operator keymapping to pass `(macrodebug {motion})` text to
+[fennel.eval][fennel.eval] and echo the results.
+
+The `echo` version does not mess up cmdline-history as `:echo` does not.
+
+#### `<Plug>(thyme-operator-print-compile-string){motion}`
+
+The operator keymapping to pass `{motion}` text to
+[fennel.compile-string][fennel.compile-string] and print the results.
+
+The `print` version does not mess up cmdline-history as `:print` does not.
+
+#### `<Plug>(thyme-operator-print-eval){motion}`
+
+The operator keymapping to pass `{motion}` text to [fennel.eval][fennel.eval]
+and print the results.
+
+The `print` version does not mess up cmdline-history as `:print` does not.
+
+#### `<Plug>(thyme-operator-print-eval-compiler){motion}`
+
+The operator keymapping to pass `(eval-compiler {motion})` text to
+[fennel.eval][fennel.eval] and print the results.
+
+The `print` version does not mess up cmdline-history as `:print` does not.
+
+#### `<Plug>(thyme-operator-print-macrodebug){motion}`
+
+The operator keymapping to pass `(macrodebug {motion})` text to
+[fennel.eval][fennel.eval] and print the results.
+
+The `print` version does not mess up cmdline-history as `:print` does not.
 
 (Currently, the keymaps only supports the Fennel modules on
 [&runtimepath][&runtimepath].)
@@ -556,8 +587,10 @@ Unmount the mounted backups.
 [thyme]: https://github.com/aileot/nvim-thyme
 [.nvim-thyme.fnl]: #options-in-nvim-thymefnl
 [thyme.setup]: #thymesetup-or-thymesetup
+[keymap.mappings]: #keymap-mappings
 [&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
+[fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
 [Fennel Wrapper Commands]: #fennel-wrapper-commands
 [:Fnl]: #fnl-fnl-expr
