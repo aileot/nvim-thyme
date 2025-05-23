@@ -6,8 +6,8 @@ _Once compiled, **ZERO** overhead_\
 A JIT compiler for nvim config, but no impact on nvim startup.
 
 _Also welcome, **non-lispers**_\
-who are tired to balance quotes and parentheses
-for handy tests in Cmdline mode:\
+who are tired to balance quotes and parentheses for handy tests in Cmdline
+mode:\
 Do you feel like **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
 (_uh..., typos?_ ¯\\\_(ツ)\_/¯)\
 or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
@@ -18,33 +18,34 @@ or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
 
 - Compile Fennel source just as Lua fallback **at nvim runtime**.
 - Get optimized with `vim.loader` **out of box**.
-- Safely **roll back** to the last successfully compiled backups if compilation fails.
+- Safely **roll back** to the last successfully compiled backups if compilation
+  fails.
 
 ## 🔌 Optional Features
 
-The optional features can be enabled with few startup overhead thanks to `vim.schedule`.\
+The optional features can be enabled with few startup overhead thanks to
+`vim.schedule`.\
 (For the details, please read the [Installation][installation] guide below.)
 
 - **Recompile** on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
   - Colorful output on [the builtin **treesitter**][builtin treesitter].
-  - Implicit paren-completions on **[parinfer][]**:
-    _Evaluate `(+ 1 2` as if `(+ 1 2)`!_
-  - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be builtin commands:\
+  - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
+    as if `(+ 1 2)`!_
+  - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be
+    builtin commands:\
     _Type `:(+ 1 2)<CR>` as if `:Fnl (+ 1 2)<CR>`!_
 
 ## 🔥 Motivations
 
-- To cut down startuptime,
-  checking Fennel should be skipped at startup if possible.
-- I don't like to mess up `lua/`
-  as I still write Lua when it seems to be
-  more comfortable than Fennel.
-  (Type annotation helps us very much.)
+- To cut down startuptime, checking Fennel should be skipped at startup if
+  possible.
+- I don't like to mess up `lua/` as I still write Lua when it seems to be more
+  comfortable than Fennel. (Type annotation helps us very much.)
 
   > [!TIP]
-  > Optionally, you can manage your Fennel files under `lua/`
-  > instead of `fnl/` directory.
+  > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
+  > directory.
 
 - ...and more features!
 
@@ -53,20 +54,20 @@ The project started from scratch. _Now in Beta!_
 ## ✔️ Requirements
 
 - Neovim v0.10.0+
-- [Fennel][] on your `&runtimepath`, in short, `&rtp`.
-  (_not embedded_ unlike [the alternative plugins][alternatives])
-- `make` (or please locate a compiled `fennel.lua` in a `lua/` directory
-  on `&rtp` by yourself)
+- [Fennel][Fennel] on your `&runtimepath`, in short, `&rtp`. (_not embedded_
+  unlike [the alternative plugins][alternatives])
+- `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
+  `&rtp` by yourself)
 
 ### Optional Dependencies
 
 - `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
-  If none of them is available,
-  `nvim --clean --headless -l` will be used as a `lua` fallback.
+  If none of them is available, `nvim --clean --headless -l` will be used as a
+  `lua` fallback.
 - A tree-sitter parser for fennel like [tree-sitter-fennel], or via
-  [nvim-treesitter][] on `&rtp`.
-- The [parinfer-rust][] on `&rtp`
-  (to improve UX on the commands and keymaps)
+  [nvim-treesitter][nvim-treesitter] on `&rtp`.
+- The [parinfer-rust][parinfer-rust] on `&rtp` (to improve UX on the commands
+  and keymaps)
 
 ## 📦 Installation
 
@@ -166,11 +167,9 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 },
 ```
 
-(If you also manage macro plugin versions,
-_please clear the Lua cache_ on the updates!
-You can automate it either on spec hook like above,
-on user event hook like below;
-otherwise, please run `:ThymeCacheClear` manually.)
+(If you also manage macro plugin versions, _please clear the Lua cache_ on the
+updates! You can automate it either on spec hook like above, on user event hook
+like below; otherwise, please run `:ThymeCacheClear` manually.)
 
 ```lua
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
@@ -185,9 +184,9 @@ vim.api.nvim_create_autocmd("User", {
 ### 3. Setup Optional Interfaces
 
 To optimize the nvim startuptime, `nvim-thyme` suggests to define the Ex command
-interfaces and its fnl file state checker some time
-after `VimEnter` or `UIEnter`.
-When to enable them is up to you. The following snippets are examples:
+interfaces and its fnl file state checker some time after `VimEnter` or
+`UIEnter`. When to enable them is up to you. The following snippets are
+examples:
 
 <details>
 <summary>
@@ -226,10 +225,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
 
 ### 4. Start `nvim`
 
-If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`,
-generally `$XDG_CONFIG_HOME/nvim`,
-you will be asked to generate `.nvim-thyme.fnl` there with recommended config.
-See the [Configuration][configuration] section below.
+If you don't have `.nvim-thyme.fnl` at `vim.fn.stdpath('config')`, generally
+`$XDG_CONFIG_HOME/nvim`, you will be asked to generate `.nvim-thyme.fnl` there
+with recommended config. See the [Configuration][configuration] section below.
 
 ### 5. checkhealth
 
@@ -237,56 +235,19 @@ Ensure the setup by `:checkhealth thyme`.
 
 ## 🎉 Interfaces
 
-Please read the [reference][] for the details and additional features.
-But here is a rough list:
-
-<!--
-NOTE: Dump rough list from reference.md via `let @a = execute('g/^###')`.
--->
-
-- `thyme.loader`
-- `thyme.setup` or `thyme:setup`
-- Functions at `thyme.fennel`
-- Functions `pcall`-able
-  - `thyme.call.cache.clear`
-  - `thyme.call.cache.open`
-- Keymaps
-- Fennel Wrapper Commands
-  - `:Fnl {fnl-expr}`
-  - `:FnlBuf [bufname]`
-  - `:FnlFile [file]`
-  - `:FnlCompileString {fnl-expr}`
-  - `:FnlCompileBuf [bufname]`
-  - `:FnlCompileFile [file]`
-  - `:FnlCompileFile[!] [src-file] [dest-file]`
-- Fennel Misc. Commands
-  - `:FnlAlternate`
-- Thyme General Commands
-  - `:ThymeUninstall`
-- Thyme Config Commands
-  - `:ThymeConfigOpen`
-- Thyme Cache Commands
-  - `:ThymeCacheClear`
-  - `:ThymeCacheOpen`
-- Thyme Rollback Commands
-  - `:ThymeRollbackSwitch {target}`
-  - `:ThymeRollbackMount {target}`
-  - `:ThymeRollbackUnmount {target}`
-  - `:ThymeRollbackUnmountAll`
+Please read the [reference][reference] for the details and additional features.
 
 ## ⚙️ Configuration
 
 ### Options in `.nvim-thyme.fnl`
 
-As described in the [Installation][installation] above,
-all the configurations should be managed
-in a config file `.nvim-thyme.fnl` instead of `thyme.setup`.
+All the configurations should be managed in a config file `.nvim-thyme.fnl`
+instead of `thyme.setup`.
 
 > [!NOTE]
-> This is a point to optimize the nvim startuptime
-> with the runtime compiler.
-> Apart from `thyme.setup` but with `.nvim-thyme.fnl`,
-> the configurations can be _lazily evaluated_ only by need.
+> This is a point to optimize the nvim startuptime with the JIT compiler. Apart
+> from `thyme.setup` but with `.nvim-thyme.fnl`, the configurations can be
+> _lazily evaluated_ only by need.
 
 Here is a sample config:
 
@@ -302,12 +263,12 @@ Here is a sample config:
 However, _you don't have to prepare it by yourself!_
 
 If `.nvim-thyme.fnl` is missing at `vim.fn.stdpath('config')` on nvim startup,
-you will be asked for confirmation.
-Once you agree, a new `.nvim-thyme.fnl` will be generated with recommended settings there.
-The generated file is a copy of [.nvim-thyme.fnl.example][].
+you will be asked for confirmation. Once you agree, a new `.nvim-thyme.fnl` will
+be generated to `vim.fn.stdpath('config')` with recommended settings there. The
+generated file is a copy of [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
 
-For all the available options,
-see the [section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
+For all the available options, see the
+[section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
 
 <!--
 
@@ -380,23 +341,22 @@ require([[tangerine]]).setup({})
 
 1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
    like`mv lua/ lua.bk/`.\
-   Otherwise, there's some chances that nvim would unquestionably
-   load lua files under the `lua/` directory apart from
-   `nvim-thyme`.
-2. Add codes to enable thyme's auto-compile system.
-   See the [Installation][installation] section above.
+   Otherwise, there's some chances that nvim would unquestionably load lua files
+   under the `lua/` directory apart from `nvim-thyme`.
+2. Add codes to enable thyme's auto-compile system. See the
+   [Installation][installation] section above.
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
 ## 💥 Ex Command Comparisons
 
-Note: `nvim-thyme` only provides user commands
-after you call [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`)
-for performance.
+Note: `nvim-thyme` only provides user commands after you call
+[`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`) for
+performance.
 
 ### Evaluate expression and print the result
 
-With [parinfer-rust][],
+With [parinfer-rust][parinfer-rust],
 
 <!--
 TODO: Comment out once the dropin feature becomes stable.
@@ -458,52 +418,47 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
   The _JIT_ in this project is more like JIT in
   [JIT Manufacturing](https://en.wikipedia.org/w/index.php?title=Just-in-time_manufacturing)
   than in
-  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation):
-  it compiles missing modules, and optionally recompiles them on
-  `BufWritePost` and `FileChangedShellPost`.
+  [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation): it
+  compiles missing modules, and optionally recompiles them on `BufWritePost` and
+  `FileChangedShellPost`.
 
 ### Not in Plan
 
-- Unlike [tangerine.nvim][],
-  `nvim-thyme` does _**not** compile `$XDG_CONFIG_HOME/nvim/init.fnl`._
-- Unlike [hotpot.nvim][],
-  `nvim-thyme` does _**not** load_
-  `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on;
-  `nvim-thyme` does _**not** support_ Vim commands
-  (e.g., `:source` and `:runtime`)
-  to load your Fennel files.
-  `nvim-thyme` _**only** supports_ Lua/Fennel loader like `require`.
-- Unlike [nfnl][],
-  `nvim-thyme` does _**not** compile_ Fennel files which is not loaded in nvim
-  runtime by default.
-  If you still need to compile Fennel files in a project apart from nvim
-  runtime, you have several options:
+- Unlike [tangerine.nvim][tangerine.nvim], `nvim-thyme` does _**not** compile
+  `$XDG_CONFIG_HOME/nvim/init.fnl`._
+- Unlike [hotpot.nvim][hotpot.nvim], `nvim-thyme` does _**not** load_
+  `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on; `nvim-thyme` does
+  _**not** support_ Vim commands (e.g., `:source` and `:runtime`) to load your
+  Fennel files. `nvim-thyme` _**only** supports_ Lua/Fennel loader like
+  `require`.
+- Unlike [nfnl][nfnl], `nvim-thyme` does _**not** compile_ Fennel files which is
+  not loaded in nvim runtime by default. If you still need to compile Fennel
+  files in a project apart from nvim runtime, you have several options:
   - Define some `autocmd`s in your config or in .nvim.lua.
-  - Use another compiler plugin _together_ like [nfnl][].
-  - Use a task runner like [overseer.nvim][].
-  - Use git hooks.
-    (See the [.githooks](./.githooks) in this project as a WIP example. Help wanted.)
+  - Use another compiler plugin _together_ like [nfnl][nfnl].
+  - Use a task runner like [overseer.nvim][overseer.nvim].
+  - Use git hooks. (See the [.githooks](./.githooks) in this project as a WIP
+    example. Help wanted.)
 
 ## 📚 Acknowledgement
 
 Thanks to [Shougo](https://github.com/Shougo) for
-[dein.vim](https://github.com/Shougo/dein.vim)
-the legendary.
-The design heavily inspires `nvim-thyme`.
+[dein.vim](https://github.com/Shougo/dein.vim) the legendary. The design heavily
+inspires `nvim-thyme`.
 
 Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
-[nvim-parinfer-rust][].
-The integration of `nvim-thyme` with [parinfer][]
-is based in part on copy extracted from the project,
-so the [file](./fnl/thyme/wrapper/parinfer.fnl) on `parinfer` is also
-on the license [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
+[nvim-parinfer-rust][nvim-parinfer-rust]. The integration of `nvim-thyme` with
+[parinfer][parinfer] is based in part on copy extracted from the project, so the
+[file](./fnl/thyme/wrapper/parinfer.fnl) on `parinfer` is also on the license
+[CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
 
 ## 🤔 Alternatives
 
-- [aniseed][] provides Clojure-like interfaces. I've never used it.
-- [hotpot.nvim][] loads fennel first. I've been indebted so long. Big thanks.
-- [nfnl][] compiles to the `lua/`.
-- [tangerine.nvim][] suggests to start the missing `init.fnl` from
+- [aniseed][aniseed] provides Clojure-like interfaces. I've never used it.
+- [hotpot.nvim][hotpot.nvim] loads fennel first. I've been indebted so long. Big
+  thanks.
+- [nfnl][nfnl] compiles to the `lua/`.
+- [tangerine.nvim][tangerine.nvim] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
 [alternatives]: #-alternatives

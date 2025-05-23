@@ -4,16 +4,18 @@
 
 - [Reference](#reference)
   - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
-    - [compiler-options](#compiler-options)
-    - [fnl-dir](#fnl-dir)
-    - [macro-path](#macro-path)
-    - [max-rollbacks](#max-rollbacks)
-    - [notifier](#notifier)
-    - [command.compiler-options](#commandcompiler-options)
-    - [command.cmd-history.method](#commandcmd-historymethod)
-    - [command.cmd-history.trailing-parens](#commandcmd-historytrailing-parens)
-    - [watch.event](#watchevent)
-    - [watch.pattern](#watchpattern)
+    - [`compiler-options`](#compiler-options)
+    - [`fnl-dir`](#fnl-dir)
+    - [`macro-path`](#macro-path)
+    - [`max-rollbacks`](#max-rollbacks)
+    - [`notifier`](#notifier)
+    - [`command.compiler-options`](#commandcompiler-options)
+    - [`command.cmd-history.method`](#commandcmd-historymethod)
+    - [`command.cmd-history.trailing-parens`](#commandcmd-historytrailing-parens)
+    - [`keymap.compiler-options`](#keymapcompiler-options)
+    - [`keymap.mappings`](#keymapmappings)
+    - [`watch.event`](#watchevent)
+    - [`watch.pattern`](#watchpattern)
   - [Functions](#functions)
     - [`thyme.loader`](#thymeloader)
     - [`thyme.setup` or `(thyme:setup)`](#thymesetup-or-thymesetup)
@@ -22,6 +24,15 @@
       - [`thyme.call.cache.clear`](#thymecallcacheclear)
       - [`thyme.call.cache.open`](#thymecallcacheopen)
     - [Keymaps](#keymaps)
+      - [`<Plug>(thyme-alternate-file)`](#plugthyme-alternate-file)
+      - [`<Plug>(thyme-operator-echo-compile-string){motion}`](#plugthyme-operator-echo-compile-stringmotion)
+      - [`<Plug>(thyme-operator-echo-eval){motion}`](#plugthyme-operator-echo-evalmotion)
+      - [`<Plug>(thyme-operator-echo-eval-compiler){motion}`](#plugthyme-operator-echo-eval-compilermotion)
+      - [`<Plug>(thyme-operator-echo-macrodebug){motion}`](#plugthyme-operator-echo-macrodebugmotion)
+      - [`<Plug>(thyme-operator-print-compile-string){motion}`](#plugthyme-operator-print-compile-stringmotion)
+      - [`<Plug>(thyme-operator-print-eval){motion}`](#plugthyme-operator-print-evalmotion)
+      - [`<Plug>(thyme-operator-print-eval-compiler){motion}`](#plugthyme-operator-print-eval-compilermotion)
+      - [`<Plug>(thyme-operator-print-macrodebug){motion}`](#plugthyme-operator-print-macrodebugmotion)
   - [Commands](#commands)
     - [Fennel Wrapper Commands](#fennel-wrapper-commands)
       - [`:Fnl {fnl-expr}`](#fnl-fnl-expr)
@@ -64,7 +75,7 @@ When `.nvim-thyme.fnl` is missing at the directory on nvim startup,
 [nvim-thyme][nvim-thyme] will ask you to generate it with recommended settings:
 See the file [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
 
-### compiler-options
+### `compiler-options`
 
 (default: `{}`)
 
@@ -73,7 +84,7 @@ argument: `allowedGlobals`, `correlate`, `useMetadata`, and so on.
 
 See the official Fennel API documentation: <https://fennel-lang.org/api>
 
-### fnl-dir
+### `fnl-dir`
 
 (default: If `fnl/` directory exists at `vim.fn.stdpath('config')`, `"fnl"`;
 otherwise, `"lua"`)
@@ -89,7 +100,7 @@ It only supports `<fnl-dir>/?.fnl` and `<fnl-dir>/?/init.fnl` relative to
 
 For the path management of macro files, see [macro-path](#macro-path).
 
-### macro-path
+### `macro-path`
 
 (default:
 `"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
@@ -107,7 +118,7 @@ option to modify `fennel.path`._ For Fennel runtime modules, `nvim-thyme` is
 only designed to search through the path: `./fnl/?.fnl;./fnl/?/init.fnl` where
 each `.` prefix represents the result path of `(vim.fn.stdpath :config)`.
 
-### max-rollbacks
+### `max-rollbacks`
 
 (default: `5`)
 
@@ -119,7 +130,7 @@ Keep the number of backups for rollback at most. Set `0` to disable it.
 > _**runtime** error._ Such a feature should be realized independently of a
 > runtime compiler plugin.
 
-### notifier
+### `notifier`
 
 (default: `vim.notify`)
 
@@ -128,7 +139,7 @@ It is a function which takes the same arguments as `vim.notify`.
 You can filter out specific notifications by this option. See
 [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example] for an example.
 
-### command.compiler-options
+### `command.compiler-options`
 
 (default: `nil`)
 
@@ -136,7 +147,7 @@ The default compiler-options for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl]. If `nil`,
 it inherits the values from [compiler-options](#compiler-options) above.
 
-### command.cmd-history.method
+### `command.cmd-history.method`
 
 (default: `"overwrite"`)
 
@@ -153,7 +164,7 @@ Available methods:
   the original input.
 - `"ignore"`: Ignore the modified input. Just keep the original input.
 
-### command.cmd-history.trailing-parens
+### `command.cmd-history.trailing-parens`
 
 (default: `"omit"`)
 
@@ -161,14 +172,16 @@ This option determines the behavior for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl].
 
 This option works only when [parinfer-rust][parinfer-rust] integration is
-activated and [command.cmd-history.method][] is `"overwrite"` or `"append"`.
+activated and the option
+[command.cmd-history.method][command.cmd-history.method] is set to `"overwrite"`
+or `"append"`.
 
 Available options:
 
 - `"omit"`: Trim all the trailing parentheses in the command history.
 - `"keep"`: Keep the trailing parentheses in the command history.
 
-### keymap.compiler-options
+### `keymap.compiler-options`
 
 (default: `nil`)
 
@@ -176,7 +189,7 @@ The default compiler-options for `nvim-thyme` operator keymaps like
 `<Plug>(thyme-operator-eval)`. If `nil`, it inherits the values from the root
 [compiler-options](#compiler-options) above.
 
-### keymap.mappings
+### `keymap.mappings`
 
 default:
 
@@ -207,7 +220,7 @@ Available Actions:
 
 They are internally translated into `<Plug>` keymaps. See [Keymaps][Keymaps].
 
-### watch.event
+### `watch.event`
 
 (default: `[:BufWritePost :FileChangedShellPost]`)
 
@@ -217,7 +230,7 @@ file.
 Note that the watch system on autocmd events can only detect the changes on the
 buffers loaded in current nvim session.
 
-### watch.pattern
+### `watch.pattern`
 
 (default: `"*.{fnl,fnlm}"`)
 
@@ -225,6 +238,10 @@ The [autocmd pattern][autocmd pattern] for [match][autocmd-event-args] (path) to
 check the changes of Fennel source file.
 
 ## Functions
+
+> [!IMPORTANT]
+> The functions exposed to the users are limited to `require("thyme")` module.
+> The other modules would cause breaking changes without any deprecation notice.
 
 ### `thyme.loader`
 
@@ -356,6 +373,10 @@ The keymaps are defined with [thyme.setup][thyme.setup]. You can change the
 mappings by the [keymap.mappings][keymap.mappings] option in
 [.nvim-thyme.fnl][.nvim-thyme.fnl].
 
+> [!NOTE]
+> Currently, the keymaps only supports the Fennel modules on
+> [&runtimepath][&runtimepath].
+
 #### `<Plug>(thyme-alternate-file)`
 
 This is a keymap version of [:FnlAlternate][:FnlAlternate].
@@ -416,52 +437,49 @@ The operator keymapping to pass `(macrodebug {motion})` text to
 
 The `print` version does not mess up cmdline-history as `:print` does not.
 
-(Currently, the keymaps only supports the Fennel modules on
-[&runtimepath][&runtimepath].)
-
 ## Commands
 
 The commands are defined by [thyme.setup][thyme.setup].
 
 ### Fennel Wrapper Commands
 
-#### :Fnl {fnl-expr}
+#### `:Fnl {fnl-expr}`
 
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
-#### :FnlBuf [bufname]
+#### `:FnlBuf [bufname]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] but to
 `[bufname]`, but respects your [&runtimepath][&runtimepath].
 
 Without `[bufname]`, it evaluates the current buffer.
 
-#### :FnlFile [file]
+#### `:FnlFile [file]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
 respects your [&runtimepath][&runtimepath].
 
 Without `[file]`, it evaluates the current file.
 
-#### :FnlCompile {fnl-expr}
+#### `:FnlCompile {fnl-expr}`
 
-Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the {fnl-expr},
-but only returns the compiled lua results.
+Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
+`{fnl-expr}`, but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### :FnlCompileBuf [bufname]
+#### `:FnlCompileBuf [bufname]`
 
 Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
-[bufname] (or current buffer), but only returns the compiled lua results.
+`[bufname]` (or current buffer), but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### :FnlCompileFile [file]
+#### `:FnlCompileFile [file]`
 
 Almost equivalent to [:FnlBuf][:FnlBuf]; however, it does not evaluate the
-[file] (or current file), but only returns the compiled lua results.
+`[file]` (or current file), but only returns the compiled lua results.
 
 It does not affect the file system.
 
@@ -469,7 +487,7 @@ It does not affect the file system.
 <!--
 TODO: Add the spec tests first.
 
-#### :FnlCompileFile[!] [src-file] [dest-file]
+#### `:FnlCompileFile[!] [src-file] [dest-file]`
 
 With `!`, it will write the compiled lua results to `[dest-file]`.
 -->
@@ -483,7 +501,7 @@ With `!`, it will write the compiled lua results to `[dest-file]`.
 
 <!-- panvimdoc-ignore-start -->
 
-#### :FnlAlternate
+#### `:FnlAlternate`
 
 Try to open the alternate file of current buffer:
 
@@ -498,7 +516,7 @@ This command will search in the following order:
 
 ### Thyme General Commands
 
-#### :ThymeUninstall
+#### `:ThymeUninstall`
 
 Remove all the cache, data, state, and log files, which are implicitly managed
 by [nvim-thyme][nvim-thyme], and remove the hash of
@@ -513,13 +531,13 @@ your issue, then try this command [:ThymeUninstall][:ThymeUninstall].
 
 ### Thyme Config Commands
 
-#### :ThymeConfigOpen
+#### `:ThymeConfigOpen`
 
 Open your [.nvim-thyme.fnl][.nvim-thyme.fnl] file.
 
 ### Thyme Cache Commands
 
-#### :ThymeCacheClear
+#### `:ThymeCacheClear`
 
 Clear all the Lua caches managed by [nvim-thyme][nvim-thyme].
 
@@ -530,7 +548,7 @@ Command line instead.
 
 See also [:ThymeUninstall][:ThymeUninstall].
 
-#### :ThymeCacheOpen
+#### `:ThymeCacheOpen`
 
 Open the root directory of the Lua caches managed by [nvim-thyme][nvim-thyme].
 
@@ -547,7 +565,7 @@ Two concepts:
   [:ThymeRollbackMount][:ThymeRollbackMount], or all the active backups by
   [:ThymeRollbackUnmountAll][:ThymeRollbackUnmountAll].
 
-#### :ThymeRollbackSwitch {target}
+#### `:ThymeRollbackSwitch {target}`
 
 Prompt to switch to the active backup of the `{target}`.
 
@@ -557,7 +575,7 @@ active backup.
 Note that switching the active backup also affects the mounted backup of
 `{target}`.
 
-#### :ThymeRollbackMount {target}
+#### `:ThymeRollbackMount {target}`
 
 Mount the active backup of the `{target}`.
 
@@ -568,11 +586,11 @@ You should run [:ThymeRollbackUnmount][:ThymeRollbackUnmount] or
 To select which backup to mount, use
 [:ThymeRollbackSwitch][:ThymeRollbackSwitch].
 
-#### :ThymeRollbackUnmount {target}
+#### `:ThymeRollbackUnmount {target}`
 
 Unmount the mounted backups for the `{target}`.
 
-#### :ThymeRollbackUnmountAll
+#### `:ThymeRollbackUnmountAll`
 
 Unmount the mounted backups.
 
@@ -596,6 +614,7 @@ Unmount the mounted backups.
 [autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
 [autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
 [autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
+[command.cmd-history.method]: #command-cmd-history-method
 [fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
