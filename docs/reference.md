@@ -314,6 +314,7 @@ Equivalent to [:ThymeCacheOpen][:ThymeCacheOpen], but it should work without
 ### Keymaps
 
 <!-- panvimdoc-include-comment
+<Plug>(thyme-alternate-file)                *<Plug>(thyme-alternate-file)*
 <Plug>(thyme-operator-echo-eval)            *<Plug>(thyme-operator-echo-eval)*
 <Plug>(thyme-operator-echo-eval-compiler)   *<Plug>(thyme-operator-echo-eval-compiler)*
 <Plug>(thyme-operator-echo-macrodebug)      *<Plug>(thyme-operator-echo-macrodebug)*
@@ -325,6 +326,9 @@ Equivalent to [:ThymeCacheOpen][:ThymeCacheOpen], but it should work without
 -->
 
 The keymaps are defined with [thyme.setup][thyme.setup].
+
+- `<Plug>(thyme-alternate-file)`\
+  This is a keymap version of [:FnlAlternate][:FnlAlternate].
 
 The `echo` versions do not mess up cmdline-history as `:echo` does not.
 
@@ -518,6 +522,7 @@ Unmount the mounted backups.
 [:Fnl]: #fnl-fnl-expr
 [:FnlBuf]: #fnlbuf-bufname
 [:FnlCompile]: #fnlcompile-fnl-expr
+[:FnlAlternate]: #fnlalternate
 [:ThymeUninstall]: #thymeuninstall
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeCacheClear]: #thymecacheclear
