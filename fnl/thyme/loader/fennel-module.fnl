@@ -43,20 +43,20 @@ fennel.lua.
 (fn locate-fennel-path! []
   "Find a fennel module on `&rtp`; otherwise, try to load the executable.
 @return string a fennel.lua path"
-  (or (case (vim.api.nvim_get_runtime_file :fennel.lua false)
+  (or (case (vim.api.nvim_get_runtime_file "fennel.lua" false)
         [fennel-lua-path] fennel-lua-path
         [nil] false) ;
-      (case (vim.api.nvim_get_runtime_file :fennel false)
+      (case (vim.api.nvim_get_runtime_file "fennel" false)
         [fennel-lua-path] fennel-lua-path
         [nil] false) ;
       (let [rtp (nvim-get-option :rtp)]
         (case (or (rtp:match (Path.join "([^,]+" "fennel),"))
                   (rtp:match (Path.join "([^,]+" "fennel)$")))
           fennel-repo-path (compile-fennel-into-rtp! fennel-repo-path)
-          _ (if (executable? :fennel)
+          _ (if (executable? "fennel")
                 ;; NOTE: The uv version vim.uv.exepath only returns the `nvim`
                 ;; executable path instead of `fennel`.
-                (vim.fn.exepath :fennel)
+                (vim.fn.exepath "fennel")
                 (error "No `fennel.lua`, no `fennel`, no Fennel repo, and no `fennel` executable found.
 Please make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable."))))))
 
