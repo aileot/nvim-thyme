@@ -180,13 +180,13 @@
     (let [backup-kind "runtime/"]
       (it* "will force `require` to load module from the mounted backup."
         (let [mod :foobar
-              fnl-path (.. mod ".fnl")
+              fnl-filename (.. mod ".fnl")
               ctx1 "1"
-              ctx2 "2"]
-          (prepare-config-fnl-file! fnl-path ctx1)
+              ctx2 "2"
+              fnl-path (prepare-config-fnl-file! fnl-filename ctx1)]
           (assert.equals (tonumber ctx1) (require mod))
           (tset package.loaded mod nil)
-          (prepare-config-fnl-file! fnl-path ctx2)
+          (prepare-config-fnl-file! fnl-filename ctx2)
           (vim.cmd.ThymeRollbackMount (.. backup-kind mod))
           (vim.cmd :ThymeCacheClear)
           (assert.equals (tonumber ctx1) (require mod))
@@ -194,7 +194,8 @@
           (vim.cmd.ThymeRollbackUnmountAll)
           (vim.cmd :ThymeCacheClear)
           (assert.equals (tonumber ctx2) (require mod))
-          (tset package.loaded mod nil))))))
+          (tset package.loaded mod nil)
+          (vim.fn.delete fnl-path))))))
 
 (describe* "command :ThymeRollbackUnmountAll"
   (setup (fn []
