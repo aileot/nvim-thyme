@@ -16,14 +16,17 @@
               (tohex 2))))
 
 (fn uri-encode [uri]
-  (let [percent-patterns "[^A-Za-z0-9%-_.!~*'()]"
-        ;; NOTE: Split at $NVIM_APPNAME part to avoid ENAMETOOLONG error.
-        (_start end) (string.find uri split-pattern 1 true)
-        prefix (uri:sub 1 (dec end))
-        suffix (uri:sub (inc end))
-        prefix-encoded (prefix:gsub percent-patterns encode-with-percent)
-        suffix-encoded (suffix:gsub percent-patterns encode-with-percent)]
-    (Path.join prefix-encoded suffix-encoded)))
+  (let [percent-patterns "[^A-Za-z0-9%-_.!~*'()]"]
+    ;; NOTE: Split at $NVIM_APPNAME part to avoid ENAMETOOLONG error.
+    (case (string.find uri split-pattern 1 true)
+      (_start end) (let [prefix (uri:sub 1 (dec end))
+                         suffix (uri:sub (inc end))
+                         prefix-encoded (prefix:gsub percent-patterns
+                                                     encode-with-percent)
+                         suffix-encoded (suffix:gsub percent-patterns
+                                                     encode-with-percent)]
+                     (Path.join prefix-encoded suffix-encoded))
+      _ (error (.. "Invalid URI: " (vim.inspect uri))))))
 
 (fn hex->char [hex]
   (-> (tonumber hex 16)
