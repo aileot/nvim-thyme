@@ -12,11 +12,9 @@ How about trying **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
 (_uh..., typos?_ ¯\\\_(ツ)\_/¯),\
 or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
 
-[![badge/test][]][url/to/workflow/test]
-[![badge/semver][]][url/to/semver]
+[![badge/test][]][url/to/workflow/test] [![badge/semver][]][url/to/semver]
 [![badge/license][]][url/to/license]\
-[![badge/lua][]][url/to/lua]
-[![badge/fennel][]][url/to/fennel]
+[![badge/lua][]][url/to/lua] [![badge/fennel][]][url/to/fennel]
 
 <!--
 NOTE: The colors come from the palette of catppuccin-mocha:
@@ -62,13 +60,11 @@ The optional features can be enabled with few startup overhead thanks to
 - I don't like to mess up `lua/` as I still write Lua when it seems to be more
   comfortable than Fennel. (Type annotation helps us very much.)
 
-  > [!TIP]
-  > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
-  > directory.
+> [!TIP]
+> Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
+> directory.
 
-- ...and more features!
-
-And this project started from scratch.
+...and more features! So, this project started from scratch.
 
 ## ✔️ Requirements
 
