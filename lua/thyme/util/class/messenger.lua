@@ -12,6 +12,9 @@ end
 Messenger["wrap-msg"] = function(self, old_msg)
   return (self._prefix .. old_msg)
 end
+Messenger["mk-failure-reason"] = function(self, old_msg, ...)
+  return ("\n" .. self["wrap-msg"](self, old_msg))
+end
 Messenger["_validate-raw-msg!"] = function(raw_msg)
   assert(not raw_msg:find("^thyme"), "The raw message must not starts with `thyme`")
   return assert(not raw_msg:find("^%[thyme"), "The raw message must not starts with `[thyme`")

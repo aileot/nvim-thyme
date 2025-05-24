@@ -25,6 +25,13 @@
 @return Messenger"
   (.. self._prefix old-msg))
 
+(fn Messenger.mk-failure-reason [self old-msg ...]
+  "Make a failure reason message for `loader` with `scope` signature.
+It means that the message should start with \n.
+@param old-msg string
+@return string a failure reason message"
+  (.. "\n" (self:wrap-msg old-msg)))
+
 (fn Messenger._validate-raw-msg! [raw-msg]
   ;; NOTE: Some Fennel compiler errors start with capital letter.
   ;; (assert (raw-msg:find "^[a-z]")
