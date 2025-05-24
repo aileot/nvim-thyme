@@ -387,7 +387,7 @@ With [parinfer-rust][parinfer-rust],
 " hotpot.nvim
 :Fnl (+ 1 1)
 " tangerine.nvim
-:Fnl (+ 1 1))
+:Fnl (+ 1 1)
 ```
 
 ### Evaluate current file
