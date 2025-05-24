@@ -175,21 +175,21 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       return LoaderMessenger["mk-failure-reason"](LoaderMessenger, Config["?error-msg"])
     else
       local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
-      local _3fchunk
+      local _24_
       do
         local _23_
         do
-          local _24_
+          local _25_
           do
             local file_loader
-            local function _25_(path, ...)
+            local function _26_(path, ...)
               return loadfile(path)
             end
-            file_loader = _25_
-            _24_ = RuntimeModuleRollbackManager["inject-mounted-backup-searcher!"](RuntimeModuleRollbackManager, package.loaders, file_loader)
+            file_loader = _26_
+            _25_ = RuntimeModuleRollbackManager["inject-mounted-backup-searcher!"](RuntimeModuleRollbackManager, package.loaders, file_loader)
           end
-          if (nil ~= _24_) then
-            local searcher = _24_
+          if (nil ~= _25_) then
+            local searcher = _25_
             _23_ = searcher(module_name)
           else
             _23_ = nil
@@ -197,77 +197,77 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
         end
         if (nil ~= _23_) then
           local msg_7cchunk = _23_
-          local _27_ = type(msg_7cchunk)
-          if (_27_ == "function") then
-            _3fchunk = msg_7cchunk
+          local _29_ = type(msg_7cchunk)
+          if (_29_ == "function") then
+            _24_ = msg_7cchunk
           else
-            _3fchunk = nil
+            _24_ = nil
           end
         else
-          _3fchunk = nil
+          _24_ = nil
         end
       end
-      local or_30_ = _3fchunk
-      if not or_30_ then
-        local _31_, _32_ = nil, nil
+      local or_34_ = _24_
+      if not or_34_ then
+        local _35_, _36_ = nil, nil
         do
-          local _34_, _35_ = module_name__3efnl_file_on_rtp_21(module_name)
-          if (nil ~= _34_) then
-            local fnl_path = _34_
+          local _38_, _39_ = module_name__3efnl_file_on_rtp_21(module_name)
+          if (nil ~= _38_) then
+            local fnl_path = _38_
             local fennel = require("fennel")
-            local _let_36_ = require("thyme.compiler.cache")
-            local determine_lua_path = _let_36_["determine-lua-path"]
+            local _let_40_ = require("thyme.compiler.cache")
+            local determine_lua_path = _let_40_["determine-lua-path"]
             local lua_path = determine_lua_path(module_name)
             local compiler_options = Config["compiler-options"]
-            local _37_, _38_ = Observer["observe!"](Observer, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
-            if ((_37_ == true) and (nil ~= _38_)) then
-              local lua_code = _38_
+            local _41_, _42_ = Observer["observe!"](Observer, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+            if ((_41_ == true) and (nil ~= _42_)) then
+              local lua_code = _42_
               if can_restore_file_3f(lua_path, lua_code) then
                 restore_file_21(lua_path)
               else
                 write_lua_file_with_backup_21(lua_path, lua_code, module_name)
                 backup_handler["cleanup-old-backups!"](backup_handler)
               end
-              _31_, _32_ = load(lua_code, lua_path)
-            elseif (true and (nil ~= _38_)) then
-              local _ = _37_
-              local raw_msg = _38_
+              _35_, _36_ = load(lua_code, lua_path)
+            elseif (true and (nil ~= _42_)) then
+              local _ = _41_
+              local raw_msg = _42_
               local raw_msg_body = ("%s is found for the runtime/%s, but failed to compile it"):format(fnl_path, module_name)
               local msg_body = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg_body)
               local msg = ("\n%s\9%s"):format(msg_body, raw_msg)
-              _31_, _32_ = nil, msg
+              _35_, _36_ = nil, msg
             else
-              _31_, _32_ = nil
+              _35_, _36_ = nil
             end
-          elseif (true and (nil ~= _35_)) then
-            local _ = _34_
-            local raw_msg = _35_
-            _31_, _32_ = nil, raw_msg
+          elseif (true and (nil ~= _39_)) then
+            local _ = _38_
+            local raw_msg = _39_
+            _35_, _36_ = nil, raw_msg
           else
-            _31_, _32_ = nil
+            _35_, _36_ = nil
           end
         end
-        if (nil ~= _31_) then
-          local chunk = _31_
-          or_30_ = chunk
-        elseif (true and (nil ~= _32_)) then
-          local _ = _31_
-          local error_msg = _32_
+        if (nil ~= _35_) then
+          local chunk = _35_
+          or_34_ = chunk
+        elseif (true and (nil ~= _36_)) then
+          local _ = _35_
+          local error_msg = _36_
           local backup_path = backup_handler["determine-active-backup-path"](backup_handler, module_name)
           local max_rollbacks = Config["max-rollbacks"]
           local rollback_enabled_3f = (0 < max_rollbacks)
           if (rollback_enabled_3f and file_readable_3f(backup_path)) then
             local msg = ("temporarily restore backup for the module/%s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name), error_msg)
             RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
-            or_30_ = loadfile(backup_path)
+            or_34_ = loadfile(backup_path)
           else
-            or_30_ = LoaderMessenger["mk-failure-reason"](LoaderMessenger, error_msg)
+            or_34_ = LoaderMessenger["mk-failure-reason"](LoaderMessenger, error_msg)
           end
         else
-          or_30_ = nil
+          or_34_ = nil
         end
       end
-      return or_30_
+      return or_34_
     end
   end
 end

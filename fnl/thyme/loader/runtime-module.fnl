@@ -158,21 +158,20 @@ cache dir.
       (let [Config (require :thyme.config)]
         (if Config.?error-msg ;
             (LoaderMessenger:mk-failure-reason Config.?error-msg)
-            (let [backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)
-                  ?chunk (case (case (let [file-loader (fn [path ...]
-                                                         ;; Explicitly discard
-                                                         ;; the rest params, or
-                                                         ;; tests could fail.
-                                                         (loadfile path))]
-                                       (RuntimeModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
-                                                                                                     file-loader))
-                                 searcher (searcher module-name))
-                           msg|chunk (case (type msg|chunk)
-                                       ;; NOTE: Discard unwothy msg in the edge
-                                       ;; cases on initializations.
-                                       :function
-                                       msg|chunk))]
-              (or ?chunk ;
+            (let [backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)]
+              (or (case (case (let [file-loader (fn [path ...]
+                                                  ;; Explicitly discard
+                                                  ;; the rest params, or
+                                                  ;; tests could fail.
+                                                  (loadfile path))]
+                                (RuntimeModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
+                                                                                              file-loader))
+                          searcher (searcher module-name))
+                    msg|chunk (case (type msg|chunk)
+                                ;; NOTE: Discard unwothy msg in the edge
+                                ;; cases on initializations.
+                                :function
+                                msg|chunk))
                   (case (case (module-name->fnl-file-on-rtp! module-name)
                           fnl-path (let [fennel (require :fennel)
                                          {: determine-lua-path} (require :thyme.compiler.cache)
