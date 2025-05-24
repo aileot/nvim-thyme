@@ -7,16 +7,15 @@
 
 (local Path (require :thyme.util.path))
 
-(local appname (or vim.env.NVIM_APPNAME :nvim))
-(local split-pattern (.. "/" appname "/"))
-
 (fn encode-with-percent [char]
   (.. "%" (-> char
               (string.byte)
               (tohex 2))))
 
 (fn uri-encode [uri]
-  (let [percent-patterns "[^A-Za-z0-9%-_.!~*'()]"]
+  (let [appname (or vim.env.NVIM_APPNAME :nvim)
+        split-pattern (.. "/" appname "/")
+        percent-patterns "[^A-Za-z0-9%-_.!~*'()]"]
     ;; NOTE: Split at $NVIM_APPNAME part to avoid ENAMETOOLONG error.
     (case (string.find uri split-pattern 1 true)
       (_start end) (let [prefix (uri:sub 1 (dec end))

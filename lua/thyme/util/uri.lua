@@ -1,12 +1,12 @@
 local _local_1_ = require("bit")
 local tohex = _local_1_["tohex"]
 local Path = require("thyme.util.path")
-local appname = (vim.env.NVIM_APPNAME or "nvim")
-local split_pattern = ("/" .. appname .. "/")
 local function encode_with_percent(char)
   return ("%" .. tohex(string.byte(char), 2))
 end
 local function uri_encode(uri)
+  local appname = (vim.env.NVIM_APPNAME or "nvim")
+  local split_pattern = ("/" .. appname .. "/")
   local percent_patterns = "[^A-Za-z0-9%-_.!~*'()]"
   local _2_, _3_ = string.find(uri, split_pattern, 1, true)
   if (true and (nil ~= _3_)) then
