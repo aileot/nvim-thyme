@@ -66,9 +66,7 @@ The optional features can be enabled with few startup overhead thanks to
 > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
 > directory.
 
-- ...and more features!
-
-And this project started from scratch.
+...and more features! So, this project started from scratch.
 
 ## ✔️ Requirements
 
