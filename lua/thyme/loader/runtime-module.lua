@@ -175,39 +175,36 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
       return LoaderMessenger["mk-failure-reason"](LoaderMessenger, Config["?error-msg"])
     else
       local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
-      local _24_
+      local file_loader
+      local function _23_(path, ...)
+        return loadfile(path)
+      end
+      file_loader = _23_
+      local _25_
       do
-        local _23_
+        local _24_
         do
-          local _25_
-          do
-            local file_loader
-            local function _26_(path, ...)
-              return loadfile(path)
-            end
-            file_loader = _26_
-            _25_ = RuntimeModuleRollbackManager["inject-mounted-backup-searcher!"](RuntimeModuleRollbackManager, package.loaders, file_loader)
-          end
-          if (nil ~= _25_) then
-            local searcher = _25_
-            _23_ = searcher(module_name)
-          else
-            _23_ = nil
-          end
-        end
-        if (nil ~= _23_) then
-          local msg_7cchunk = _23_
-          local _29_ = type(msg_7cchunk)
-          if (_29_ == "function") then
-            _24_ = msg_7cchunk
+          local _26_ = RuntimeModuleRollbackManager["inject-mounted-backup-searcher!"](RuntimeModuleRollbackManager, package.loaders, file_loader)
+          if (nil ~= _26_) then
+            local searcher = _26_
+            _24_ = searcher(module_name)
           else
             _24_ = nil
           end
+        end
+        if (nil ~= _24_) then
+          local msg_7cchunk = _24_
+          local _29_ = type(msg_7cchunk)
+          if (_29_ == "function") then
+            _25_ = msg_7cchunk
+          else
+            _25_ = nil
+          end
         else
-          _24_ = nil
+          _25_ = nil
         end
       end
-      local or_34_ = _24_
+      local or_34_ = _25_
       if not or_34_ then
         local _35_, _36_ = nil, nil
         do
