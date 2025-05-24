@@ -227,14 +227,15 @@ Watcher["update!"] = function(self)
 end
 Watcher["update-dependent-modules!"] = function(dependent_maps)
   for _, dependent in pairs(dependent_maps) do
-    if file_readable_3f(dependent["fnl-path"]) then
-      local function _39_()
+    local function _39_()
+      if file_readable_3f(dependent["fnl-path"]) then
         local tgt_40_ = Watcher.new(dependent["fnl-path"])
         return (tgt_40_)["update!"](tgt_40_)
+      else
+        return nil
       end
-      vim.schedule(_39_)
-    else
     end
+    vim.schedule(_39_)
   end
   return nil
 end

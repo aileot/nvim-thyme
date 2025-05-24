@@ -195,10 +195,10 @@ failed."
   (each [_ dependent (pairs dependent-maps)]
     ;; TODO: Wrap `update-module-dependencies!` into
     ;; `uv.new_async`, but does it keep the consistency?
-    (when (file-readable? dependent.fnl-path)
-      (-> #(-> (Watcher.new dependent.fnl-path)
-               (: :update!))
-          (vim.schedule)))))
+    (-> #(when (file-readable? dependent.fnl-path)
+           (-> (Watcher.new dependent.fnl-path)
+               (: :update!)))
+        (vim.schedule))))
 
 (fn Watcher.new [fnl-path]
   "Create Watcher instance if available, or return nil.
