@@ -9,6 +9,9 @@
 
 (local {: can-restore-file? : restore-file!} (require :thyme.util.pool))
 
+(local Messenger (require :thyme.util.class.messenger))
+(local LoaderMessenger (Messenger.new "loader/fennel"))
+
 (fn compile-fennel-into-rtp! [fennel-repo-path]
   "Compile src/fennel.fnl into lua/ at nvim-thyme cache dir, and return the
 fennel.lua.
@@ -93,7 +96,8 @@ Error Message:
 %s
 Contents:
 %s"
-                    (: :format err-msg (read-file cached-fennel-path)))]
+                    (: :format err-msg (read-file cached-fennel-path))
+                    (LoaderMessenger.wrap-msg))]
         (fs.unlink cached-fennel-path)
         (values msg))
       ;; TODO: Make backup of fennel.lua here?

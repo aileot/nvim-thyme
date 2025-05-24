@@ -9,6 +9,8 @@ local fs = _local_2_
 local _local_3_ = require("thyme.util.pool")
 local can_restore_file_3f = _local_3_["can-restore-file?"]
 local restore_file_21 = _local_3_["restore-file!"]
+local Messenger = require("thyme.util.class.messenger")
+local LoaderMessenger = Messenger.new("loader/fennel")
 local function compile_fennel_into_rtp_21(fennel_repo_path)
   local fennel_lua_file = "fennel.lua"
   local _let_4_ = vim.fs.find("Makefile", {upward = true, path = fennel_repo_path})
@@ -103,7 +105,7 @@ local function load_fennel(fennel_lua_path)
   local _28_, _29_ = loadfile(cached_fennel_path)
   if ((_28_ == false) and (nil ~= _29_)) then
     local err_msg = _29_
-    local msg = ("Failed to load fennel.lua.\nError Message:\n%s\nContents:\n%s"):format(err_msg, read_file(cached_fennel_path))
+    local msg = LoaderMessenger["wrap-msg"](("Failed to load fennel.lua.\nError Message:\n%s\nContents:\n%s"):format(err_msg, read_file(cached_fennel_path)))
     fs.unlink(cached_fennel_path)
     return msg
   elseif (nil ~= _28_) then
