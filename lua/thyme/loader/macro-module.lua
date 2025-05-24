@@ -105,7 +105,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
       elseif (true and (nil ~= _24_)) then
         local _ = _23_
         local msg = _24_
-        _20_, _21_ = nil, MacroLoaderMessenger["wrap-msg"](MacroLoaderMessenger, msg)
+        _20_, _21_ = nil, msg
       else
         _20_, _21_ = nil
       end
@@ -122,6 +122,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
       local _29_ = Config["?error-msg"]
       if (nil ~= _29_) then
         local msg = _29_
+        MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, msg)
         or_19_ = nil
       else
         local _0 = _29_
@@ -143,7 +144,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
             _33_ = nil
           end
         end
-        or_19_ = (_33_ or nil or error_msg)
+        or_19_ = (_33_ or nil or MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, error_msg))
       end
     else
       or_19_ = nil
@@ -170,13 +171,13 @@ local function initialize_macro_searcher_on_rtp_21(fennel)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 local function hide_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:149")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:150")
   cache["__macro-loaded"][module_name] = cache["macro-loaded"][module_name]
   cache["macro-loaded"][module_name] = nil
   return nil
 end
 local function restore_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:156")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:157")
   cache["macro-loaded"][module_name] = cache["__macro-loaded"][module_name]
   cache["__macro-loaded"][module_name] = nil
   return nil

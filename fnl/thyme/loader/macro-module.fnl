@@ -105,14 +105,14 @@
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
-                (_ msg) (values nil (MacroLoaderMessenger:wrap-msg msg)))
+                (_ msg) (values nil msg))
           chunk chunk
           (_ error-msg)
           (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
                 backup-path (backup-handler:determine-active-backup-path)
                 Config (require :thyme.config)]
             (case Config.?error-msg
-              msg (values nil msg)
+              msg (values nil (MacroLoaderMessenger:mk-failure-reason msg))
               _ (or (let [max-rollbacks Config.max-rollbacks
                           rollback-enabled? (< 0 max-rollbacks)]
                       (when (and rollback-enabled? (file-readable? backup-path))
@@ -129,7 +129,8 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                             (RollbackLoaderMessenger:notify-once! msg
                                                                   vim.log.levels.WARN)
                             (values chunk)))))
-                    (values nil error-msg))))))))
+                    (values nil
+                            (MacroLoaderMessenger:mk-failure-reason error-msg)))))))))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
   ;; Ref: src/fennel/specials.fnl @1276
