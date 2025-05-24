@@ -40,8 +40,10 @@
 (fn Watcher.get-modmap [self]
   ;; TODO: Once stable, update ._modmap on the strategies recompile and reload
   ;; for performance?
-  (case (Modmap.try-read-from-file (self:get-fnl-path))
-    latest-modmap (set self._modmap latest-modmap))
+  (let [fnl-path (self:get-fnl-path)]
+    (when (file-readable? fnl-path)
+      (case (Modmap.try-read-from-file fnl-path)
+        latest-modmap (set self._modmap latest-modmap))))
   self._modmap)
 
 (fn Watcher.get-lua-path [self]
@@ -195,10 +197,10 @@ failed."
   (each [_ dependent (pairs dependent-maps)]
     ;; TODO: Wrap `update-module-dependencies!` into
     ;; `uv.new_async`, but does it keep the consistency?
-    (when (file-readable? dependent.fnl-path)
-      (-> #(-> (Watcher.new dependent.fnl-path)
-               (: :update!))
-          (vim.schedule)))))
+    (-> #(when (file-readable? dependent.fnl-path)
+           (-> (Watcher.new dependent.fnl-path)
+               (: :update!)))
+        (vim.schedule))))
 
 (fn Watcher.new [fnl-path]
   "Create Watcher instance if available, or return nil.
@@ -207,10 +209,11 @@ failed."
   (assert-is-fnl-file fnl-path)
   (let [self (setmetatable {} Watcher)]
     (set self._fnl-path fnl-path)
-    (case (Modmap.try-read-from-file fnl-path)
-      modmap (do
-               (set self._modmap modmap)
-               self))))
+    (when (file-readable? fnl-path)
+      (case (Modmap.try-read-from-file fnl-path)
+        modmap (do
+                 (set self._modmap modmap)
+                 self)))))
 
 (fn watch-files! []
   "Add an autocmd in augroup named `ThymeWatch` to watch fennel files.
