@@ -84,7 +84,7 @@ Please make sure to add the path to fennel repo in `&runtimepath`, or install a 
   ;; a loader of `require`.
   "Load fennel from the given path.
 @param fennel-lua-path string the path to Fennel compiled in Lua
-@return function a lua chunk of fennel.lua."
+@return string|function a lua chunk of fennel.lua, or a string to tell why failed to load the fennel module"
   (let [cached-fennel-path (cache-fennel-lua! fennel-lua-path)]
     (case (loadfile cached-fennel-path)
       (false err-msg)
