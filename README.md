@@ -175,7 +175,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
 {
   "aileot/nvim-laurel",
-  build = ":ThymeCacheClear",
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
   -- and other settings
 },
 -- Optional dependency plugin.
