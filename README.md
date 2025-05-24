@@ -49,11 +49,11 @@ The optional features can be enabled with few startup overhead thanks to
 
 - ...and more features!
 
-The project started from scratch. _Now in Beta!_
+And this project started from scratch.
 
 ## ✔️ Requirements
 
-- Neovim v0.10.0+
+- Neovim v0.11.1+
 - [Fennel][Fennel] on your `&runtimepath`, in short, `&rtp`. (_not embedded_
   unlike [the alternative plugins][alternatives])
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
@@ -146,7 +146,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 ```lua
 { "aileot/nvim-thyme",
   {
-    version = "~v0.1.0",
+    version = "~v1.0.0",
     config = function()
       -- See the "Setup Optional Interfaces" section below!
     end,
