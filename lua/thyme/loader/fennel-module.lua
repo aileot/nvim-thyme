@@ -103,8 +103,9 @@ local function load_fennel(fennel_lua_path)
   local _28_, _29_ = loadfile(cached_fennel_path)
   if ((_28_ == false) and (nil ~= _29_)) then
     local err_msg = _29_
+    local msg = ("Failed to load fennel.lua.\nError Message:\n%s\nContents:\n%s"):format(err_msg, read_file(cached_fennel_path))
     fs.unlink(cached_fennel_path)
-    return error("Failed to load fennel.lua: %s", err_msg)
+    return msg
   elseif (nil ~= _28_) then
     local lua_chunk = _28_
     return lua_chunk

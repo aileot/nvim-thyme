@@ -87,10 +87,17 @@ Please make sure to add the path to fennel repo in `&runtimepath`, or install a 
 @return function a lua chunk of fennel.lua."
   (let [cached-fennel-path (cache-fennel-lua! fennel-lua-path)]
     (case (loadfile cached-fennel-path)
-      (false err-msg) (do
-                        (fs.unlink cached-fennel-path)
-                        (error "Failed to load fennel.lua: %s" err-msg))
+      (false err-msg)
+      (let [msg (-> "Failed to load fennel.lua.
+Error Message:
+%s
+Contents:
+%s"
+                    (: :format err-msg (read-file cached-fennel-path)))]
+        (fs.unlink cached-fennel-path)
+        (values msg))
       ;; TODO: Make backup of fennel.lua here?
-      lua-chunk lua-chunk)))
+      lua-chunk
+      lua-chunk)))
 
 {: locate-fennel-path! : load-fennel}
