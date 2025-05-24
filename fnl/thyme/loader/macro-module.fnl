@@ -128,7 +128,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                                      error-msg)]
                           (RollbackLoaderMessenger:notify-once! msg
                                                                 vim.log.levels.WARN)
-                          chunk)
+                          (values chunk))
                         (_ msg)
                         (values nil msg))
                       (values nil error-msg)))))))))
