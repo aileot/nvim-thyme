@@ -13,6 +13,53 @@
            (thyme:setup)))
   (after_each (fn []
                 (remove-context-files!)))
+  (describe* "can detect changes on a Fennel file on FileChangedShellPost"
+    (let [default-strategy Config.watch.strategy]
+      (before_each (fn []
+                     (set Config.watch.strategy "always-clear-all")))
+      (after_each (fn []
+                    (set Config.watch.strategy default-strategy)))
+      (it* "should not throw error when editing a buffer but externally removed later"
+        (let [mod "foo"
+              filename (.. mod ".fnl")
+              fnl-path (prepare-config-fnl-file! filename "1")]
+          (vim.cmd.edit fnl-path)
+          (assert.equals 1 (require mod))
+          (tset package.loaded mod nil)
+          (-> ["rm" fnl-path]
+              (vim.system)
+              (: :wait))
+          (assert.has_no_error #(vim.cmd :checktime))
+          (tset package.loaded mod nil)
+          (vim.cmd.bdelete fnl-path)))
+      (describe* "should clear the cache for modified Fennel file;"
+        (let [mod "foo"
+              filename (.. mod ".fnl")]
+          (it* "thus, each `require` should return different results on FileChangedShellPost event twice."
+            (let [fnl-path (prepare-config-fnl-file! filename "1")]
+              (vim.cmd.edit fnl-path)
+              (assert.equals 1 (require mod))
+              (tset package.loaded mod nil)
+              (-> ["sed" "-i" "s/[0-9]/2/g" fnl-path]
+                  (vim.system)
+                  (: :wait))
+              (vim.cmd :checktime)
+              (assert.equals 2 (require mod))
+              (tset package.loaded mod nil)
+              (-> ["sed" "-i" "s/[0-9]/3/g" fnl-path]
+                  (vim.system)
+                  (: :wait))
+              (vim.cmd :checktime)
+              (assert.equals 3 (require mod))
+              (tset package.loaded mod nil)
+              (vim.cmd.bdelete fnl-path)
+              (vim.fn.delete fnl-path))))))))
+
+(describe* "ThymeWatch"
+  (setup (fn []
+           (thyme:setup)))
+  (after_each (fn []
+                (remove-context-files!)))
   (describe* "with strategy=always-clear-all"
     (let [default-strategy Config.watch.strategy]
       (before_each (fn []
