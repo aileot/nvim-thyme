@@ -156,7 +156,8 @@ cache dir.
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [Config (require :thyme.config)]
-        (or Config.?error-msg ;
+        (if Config.?error-msg ;
+            (LoaderMessenger:mk-failure-reason Config.?error-msg)
             (let [backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)
                   ?chunk (case (case (let [file-loader (fn [path ...]
                                                          ;; Explicitly discard
@@ -202,8 +203,7 @@ cache dir.
                                                      (: :format msg-body
                                                         raw-msg))]
                                          (values nil msg))))
-                          (_ raw-msg) (let [msg (LoaderMessenger:wrap-msg raw-msg)]
-                                        (values nil (.. "\n" msg))))
+                          (_ raw-msg) (values nil raw-msg))
                     chunk chunk
                     (_ error-msg)
                     (let [backup-path (backup-handler:determine-active-backup-path module-name)
@@ -219,7 +219,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                             (RollbackLoaderMessenger:notify-once! msg
                                                                   vim.log.levels.WARN)
                             (loadfile backup-path))
-                          error-msg)))))))))
+                          (LoaderMessenger:mk-failure-reason error-msg))))))))))
 
 {: search-fnl-module-on-rtp!
  : write-lua-file-with-backup!
