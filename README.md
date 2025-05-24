@@ -163,26 +163,25 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 <!-- </summary> -->
 
 ```lua
-{ "aileot/nvim-thyme",
-  {
-    version = "~v1.0.0",
-    config = function()
-      -- See the "Setup Optional Interfaces" section below!
-    end,
-  },
+{
+  "aileot/nvim-thyme",
+  version = "~v1.0.0",
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+  -- For config, see the "Setup Optional Interfaces" section
+  -- and "Options in .nvim-thyme.fnl" below!
+  -- config = function()
+  -- end,
 },
 -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
-{ "aileot/nvim-laurel",
-  {
-    build = ":ThymeCacheClear",
-    -- and other settings
-  },
+{
+  "aileot/nvim-laurel",
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+  -- and other settings
 },
 -- Optional dependency plugin.
-{ "eraserhd/parinfer-rust",
-  {
-    build = "cargo build --release",
-  },
+{
+  "eraserhd/parinfer-rust",
+  build = "cargo build --release",
 },
 ```
 
