@@ -210,7 +210,7 @@
                 filename (.. mod ".fnl")
                 ctx1 "1"
                 ctx2 "2"
-                path (prepare-config-fnl-file! filename ctx1)]
+                fnl-path (prepare-config-fnl-file! filename ctx1)]
             (assert.equals 1 (require mod))
             (tset package.loaded mod nil)
             (vim.cmd :ThymeCacheClear)
@@ -221,4 +221,4 @@
             (vim.cmd.ThymeRollbackUnmountAll)
             (assert.equals 2 (require mod))
             (tset package.loaded mod nil)
-            (vim.fn.delete path)))))))
+            (vim.fn.delete fnl-path)))))))
