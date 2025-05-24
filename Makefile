@@ -49,12 +49,7 @@ REPO_MACRO_DIR := $(REPO_FNL_DIR)
 REPO_MACRO_PATH := $(REPO_MACRO_DIR)/?.fnl;$(REPO_MACRO_DIR)/?/init.fnl
 
 FNL_INIT_MOD_FILE:=$(REPO_ROOT)/fnl/$(ROOT_MODNAME)/init.fnl
-FNL_PCALLABLE_DIR:=$(REPO_ROOT)/fnl/$(ROOT_MODNAME)/call
-FNL_PCALLABLE_FILES:=$(wildcard $(FNL_PCALLABLE_DIR)/*.fnl)
-FNL_PCALLABLE_FILES+=$(wildcard $(FNL_PCALLABLE_DIR)/*/*.fnl)
-FNL_PCALLABLE_FILES+=$(wildcard $(FNL_PCALLABLE_DIR)/*/*/*.fnl)
-FNL_PCALLABLE_FILES+=$(wildcard $(FNL_PCALLABLE_DIR)/*/*/*/*.fnl)
-LUA_PCALLABLE_DIR:=$(FNL_PCALLABLE_DIR:fnl/%=lua/%)
+LUA_INIT_MOD_FILE:=$(FNL_INIT_MOD_FILE:fnl/%.fnl=lua/%.lua)
 
 VUSTED_FLAGS ?= --shuffle --output=utfTerminal --verbose
 VUSTED_EXTRA_FLAGS ?=
@@ -93,21 +88,14 @@ prune: ## Remove stale lua files
 	@	rm $(LUA_OLD_SPECS) && echo "Pruned $(LUA_OLD_SPECS)"
 	@fi
 
-$(FNL_INIT_MOD_FILE): # Just to trigger pcallable re-generations as export functions could be changed.
-
-$(FNL_PCALLABLE_FILES): $(FNL_INIT_MOD_FILE) $(SCRIPT_WRITE_PCALLABLES) # Re-generate modules to be called with `pcall(require, ...)`
-	@rm -rf $(FNL_PCALLABLE_DIR)
-	@rm -rf $(LUA_PCALLABLE_DIR)
-	@$(SCRIPT_WRITE_PCALLABLES)
-
 .PHONY: pcallables
-pcallables: $(FNL_PCALLABLE_FILES) ## Force to re-generate pcallables
-	@rm -rf $(FNL_PCALLABLE_DIR)
-	@rm -rf $(LUA_PCALLABLE_DIR)
+pcallables: ## Force to re-generate pcallables
 	@$(SCRIPT_WRITE_PCALLABLES)
+
+$(LUA_INIT_MOD_FILE): pcallable # Just to trigger pcallable re-generations as export functions could be changed.
 
 .PHONY: build
-build: $(LUA_RES_DIRS) $(FNL_PCALLABLE_FILES) prune $(LUA_RES) ## Compile lua files from fnl/
+build: $(LUA_RES_DIRS) prune $(LUA_RES) ## Compile lua files from fnl/
 
 %_spec.lua: %_spec.fnl $(LUA_RES) $(TEST_DEPS)
 	@$(FENNEL) \
