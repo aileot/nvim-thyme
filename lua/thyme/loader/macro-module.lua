@@ -4,7 +4,7 @@ local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local read_file = _local_2_["read-file"]
 local Messenger = require("thyme.util.class.messenger")
-local SearcherMessenger = Messenger.new("loader/macro")
+local MacroLoaderMessenger = Messenger.new("loader/macro")
 local RollbackLoaderMessenger = Messenger.new("loader/macro/rollback")
 local Observer = require("thyme.dependency.observer")
 local RollbackManager = require("thyme.rollback.manager")
@@ -65,7 +65,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     local _ = _10_
     local raw_msg = _11_
     local raw_msg_body = ("%s is found for the macro/%s, but failed to evaluate it in a compiler environment"):format(fnl_path, module_name)
-    local msg_body = SearcherMessenger["wrap-msg"](SearcherMessenger, raw_msg_body)
+    local msg_body = MacroLoaderMessenger["wrap-msg"](MacroLoaderMessenger, raw_msg_body)
     local msg = ("\n%s\9%s"):format(msg_body, raw_msg)
     compiler_options.env = _3fenv
     return nil, msg
@@ -105,7 +105,7 @@ local function search_fnl_macro_on_rtp_21(module_name)
       elseif (true and (nil ~= _24_)) then
         local _ = _23_
         local msg = _24_
-        _20_, _21_ = nil, SearcherMessenger["wrap-msg"](SearcherMessenger, msg)
+        _20_, _21_ = nil, MacroLoaderMessenger["wrap-msg"](MacroLoaderMessenger, msg)
       else
         _20_, _21_ = nil
       end

@@ -3,7 +3,7 @@
 (local {: validate-type} (require :thyme.util.general))
 (local {: file-readable? : read-file} (require :thyme.util.fs))
 (local Messenger (require :thyme.util.class.messenger))
-(local SearcherMessenger (Messenger.new "loader/macro"))
+(local MacroLoaderMessenger (Messenger.new "loader/macro"))
 (local RollbackLoaderMessenger (Messenger.new "loader/macro/rollback"))
 
 (local Observer (require :thyme.dependency.observer))
@@ -69,7 +69,7 @@
       (_ raw-msg)
       (let [raw-msg-body (-> "%s is found for the macro/%s, but failed to evaluate it in a compiler environment"
                              (: :format fnl-path module-name))
-            msg-body (SearcherMessenger:wrap-msg raw-msg-body)
+            msg-body (MacroLoaderMessenger:wrap-msg raw-msg-body)
             msg (-> "\n%s\t%s"
                     (: :format msg-body raw-msg))]
         (set compiler-options.env ?env)
@@ -105,7 +105,7 @@
     (or ?chunk ;
         (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
-                (_ msg) (values nil (SearcherMessenger:wrap-msg msg)))
+                (_ msg) (values nil (MacroLoaderMessenger:wrap-msg msg)))
           chunk chunk
           (_ error-msg)
           (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
