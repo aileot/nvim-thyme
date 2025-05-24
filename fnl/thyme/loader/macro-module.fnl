@@ -70,7 +70,7 @@
       (let [raw-msg-body (-> "%s is found for the macro/%s, but failed to evaluate it in a compiler environment"
                              (: :format fnl-path module-name))
             msg-body (MacroLoaderMessenger:wrap-msg raw-msg-body)
-            msg (-> "\n%s\t%s"
+            msg (-> "\n%s\n\t%s"
                     (: :format msg-body raw-msg))]
         (set compiler-options.env ?env)
         ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
