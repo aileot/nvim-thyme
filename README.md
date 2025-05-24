@@ -53,7 +53,7 @@ The project started from scratch. _Now in Beta!_
 
 ## ✔️ Requirements
 
-- Neovim v0.10.0+
+- Neovim v0.11.1+
 - [Fennel][Fennel] on your `&runtimepath`, in short, `&rtp`. (_not embedded_
   unlike [the alternative plugins][alternatives])
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
