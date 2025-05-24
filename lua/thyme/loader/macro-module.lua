@@ -66,7 +66,7 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
     local raw_msg = _11_
     local raw_msg_body = ("%s is found for the macro/%s, but failed to evaluate it in a compiler environment"):format(fnl_path, module_name)
     local msg_body = SearcherMessenger["wrap-msg"](SearcherMessenger, raw_msg_body)
-    local msg = ("\n%s\n\9%s"):format(msg_body, raw_msg)
+    local msg = ("\n%s\9%s"):format(msg_body, raw_msg)
     compiler_options.env = _3fenv
     return nil, msg
   else
@@ -170,13 +170,13 @@ local function initialize_macro_searcher_on_rtp_21(fennel)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 local function hide_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:153")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:151")
   cache["__macro-loaded"][module_name] = cache["macro-loaded"][module_name]
   cache["macro-loaded"][module_name] = nil
   return nil
 end
 local function restore_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:160")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:158")
   cache["macro-loaded"][module_name] = cache["__macro-loaded"][module_name]
   cache["__macro-loaded"][module_name] = nil
   return nil

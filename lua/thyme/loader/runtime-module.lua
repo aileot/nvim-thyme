@@ -233,7 +233,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               local raw_msg = _40_
               local raw_msg_body = ("%s is found for the runtime/%s, but failed to compile it"):format(fnl_path, module_name)
               local msg_body = LoaderMessenger["wrap-msg"](LoaderMessenger, raw_msg_body)
-              local msg = ("\n%s\n\9%s"):format(msg_body, raw_msg)
+              local msg = ("\n%s\9%s"):format(msg_body, raw_msg)
               _33_, _34_ = nil, msg
             else
               _33_, _34_ = nil
