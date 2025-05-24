@@ -75,36 +75,39 @@ local function macro_module__3e_3fchunk(module_name, fnl_path)
 end
 local function search_fnl_macro_on_rtp_21(module_name)
   local fennel = require("fennel")
-  local _3fchunk
+  local _15_
   if cache["mounted-rollback-searcher"] then
-    _3fchunk = cache["mounted-rollback-searcher"](module_name)
+    _15_ = cache["mounted-rollback-searcher"](module_name)
   else
     local macro_file_loader
-    local function _15_(fnl_path, module_name0)
+    local function _16_(fnl_path, module_name0)
       return macro_module__3e_3fchunk(module_name0, fnl_path)
     end
-    macro_file_loader = _15_
-    local _16_ = MacroRollbackManager["inject-mounted-backup-searcher!"](MacroRollbackManager, fennel["macro-searchers"], macro_file_loader)
-    if (nil ~= _16_) then
-      local searcher = _16_
+    macro_file_loader = _16_
+    local _17_ = MacroRollbackManager["inject-mounted-backup-searcher!"](MacroRollbackManager, fennel["macro-searchers"], macro_file_loader)
+    if (nil ~= _17_) then
+      local searcher = _17_
       validate_type("function", searcher)
       cache["mounted-rollback-searcher"] = searcher
-      _3fchunk = searcher(module_name)
+      _15_ = searcher(module_name)
     else
-      _3fchunk = nil
+      _15_ = nil
     end
   end
-  local or_19_ = _3fchunk
-  if not or_19_ then
+  if (nil ~= _15_) then
+    local chunk = _15_
+    return chunk
+  else
+    local _ = _15_
     local _20_, _21_ = nil, nil
     do
-      local _23_, _24_ = fennel["search-module"](module_name, fennel["macro-path"])
-      if (nil ~= _23_) then
-        local fnl_path = _23_
+      local _22_, _23_ = fennel["search-module"](module_name, fennel["macro-path"])
+      if (nil ~= _22_) then
+        local fnl_path = _22_
         _20_, _21_ = macro_module__3e_3fchunk(module_name, fnl_path)
-      elseif (true and (nil ~= _24_)) then
-        local _ = _23_
-        local msg = _24_
+      elseif (true and (nil ~= _23_)) then
+        local _0 = _22_
+        local msg = _23_
         _20_, _21_ = nil, msg
       else
         _20_, _21_ = nil
@@ -112,62 +115,60 @@ local function search_fnl_macro_on_rtp_21(module_name)
     end
     if (nil ~= _20_) then
       local chunk = _20_
-      or_19_ = chunk
+      return chunk
     elseif (true and (nil ~= _21_)) then
-      local _ = _20_
+      local _0 = _20_
       local error_msg = _21_
       local backup_handler = MacroRollbackManager["backup-handler-of"](MacroRollbackManager, module_name)
       local backup_path = backup_handler["determine-active-backup-path"](backup_handler)
       local Config = require("thyme.config")
-      local _29_ = Config["?error-msg"]
-      if (nil ~= _29_) then
-        local msg = _29_
-        MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, msg)
-        or_19_ = nil
+      local _25_ = Config["?error-msg"]
+      if (nil ~= _25_) then
+        local msg = _25_
+        return nil, MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, msg)
       else
-        local _0 = _29_
-        local _33_
+        local _1 = _25_
+        local _26_
         do
           local max_rollbacks = Config["max-rollbacks"]
           local rollback_enabled_3f = (0 < max_rollbacks)
           if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-            local _34_ = macro_module__3e_3fchunk(module_name, backup_path)
-            if (nil ~= _34_) then
-              local chunk = _34_
+            local _27_ = macro_module__3e_3fchunk(module_name, backup_path)
+            if (nil ~= _27_) then
+              local chunk = _27_
               local msg = ("temporarily restore backup for the macro/%s (created at %s) due to the following error:\n%s\n\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
               RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
-              _33_ = chunk
+              _26_ = chunk
             else
-              _33_ = nil
+              _26_ = nil
             end
           else
-            _33_ = nil
+            _26_ = nil
           end
         end
-        or_19_ = (_33_ or nil or MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, error_msg))
+        return (_26_ or nil or MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, error_msg))
       end
     else
-      or_19_ = nil
+      return nil
     end
   end
-  return or_19_
 end
 local function initialize_macro_searcher_on_rtp_21(fennel)
   table.insert(fennel["macro-searchers"], 1, search_fnl_macro_on_rtp_21)
-  local function _42_(...)
-    local _43_, _44_ = search_fnl_macro_on_rtp_21(...)
-    if (nil ~= _43_) then
-      local chunk = _43_
+  local function _36_(...)
+    local _37_, _38_ = search_fnl_macro_on_rtp_21(...)
+    if (nil ~= _37_) then
+      local chunk = _37_
       return chunk
-    elseif (true and (nil ~= _44_)) then
-      local _ = _43_
-      local msg = _44_
+    elseif (true and (nil ~= _38_)) then
+      local _ = _37_
+      local msg = _38_
       return msg
     else
       return nil
     end
   end
-  table.insert(package.loaders, _42_)
+  table.insert(package.loaders, _36_)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 local function hide_macro_cache_21(module_name)
