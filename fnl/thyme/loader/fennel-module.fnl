@@ -13,7 +13,7 @@
   "Compile src/fennel.fnl into lua/ at nvim-thyme cache dir, and return the
 fennel.lua.
 @param fennel-repo-path string the path to a fennel repository
-@return function a lua chunk of fennel.lua."
+@return string the path to a compiled fennel.lua"
   (let [fennel-lua-file "fennel.lua"
         [fennel-src-Makefile] (vim.fs.find "Makefile"
                                            {:upward true
@@ -81,6 +81,9 @@ Please make sure to add the path to fennel repo in `&runtimepath`, or install a 
   ;; NOTE: Evaluating fennel.lua by (require :fennel) is unsuitable;
   ;; otherwise, it gets into infinite loop since this function runs as
   ;; a loader of `require`.
+  "Load fennel from the given path.
+@param fennel-lua-path string the path to Fennel compiled in Lua
+@return function a lua chunk of fennel.lua."
   (let [cached-fennel-path (cache-fennel-lua! fennel-lua-path)]
     (assert (loadfile cached-fennel-path))))
 
