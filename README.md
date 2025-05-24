@@ -49,7 +49,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 - ...and more features!
 
-The project started from scratch. _Now in Beta!_
+And this project started from scratch.
 
 ## ✔️ Requirements
 
