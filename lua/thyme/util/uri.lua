@@ -19,7 +19,7 @@ local function uri_encode(uri)
     return Path.join(prefix_encoded, suffix_encoded)
   else
     local _ = _2_
-    return error(("Invalid URI: " .. vim.inspect(uri)))
+    return error(("Invalid URI: %s\n$NVIM_APPNAME: %s"):format(vim.inspect(uri), vim.env.NVIM_APPNAME))
   end
 end
 local function hex__3echar(hex)

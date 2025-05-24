@@ -25,7 +25,9 @@
                          suffix-encoded (suffix:gsub percent-patterns
                                                      encode-with-percent)]
                      (Path.join prefix-encoded suffix-encoded))
-      _ (error (.. "Invalid URI: " (vim.inspect uri))))))
+      _ (error (-> "Invalid URI: %s\n$NVIM_APPNAME: %s"
+                   (: :format (vim.inspect uri) ;
+                      vim.env.NVIM_APPNAME))))))
 
 (fn hex->char [hex]
   (-> (tonumber hex 16)
