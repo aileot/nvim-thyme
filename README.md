@@ -62,9 +62,9 @@ The optional features can be enabled with few startup overhead thanks to
 - I don't like to mess up `lua/` as I still write Lua when it seems to be more
   comfortable than Fennel. (Type annotation helps us very much.)
 
-  > [!TIP]
-  > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
-  > directory.
+> [!TIP]
+> Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
+> directory.
 
 - ...and more features!
 
