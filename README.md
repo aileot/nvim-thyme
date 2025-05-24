@@ -32,9 +32,6 @@ The optional features can be enabled with few startup overhead thanks to
   - Colorful output on [the builtin **treesitter**][builtin treesitter].
   - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
     as if `(+ 1 2)`!_
-  - (_experimental_) Pretend to evaluate **raw Fennel expressions** to be
-    builtin commands:\
-    _Type `:(+ 1 2)<CR>` as if `:Fnl (+ 1 2)<CR>`!_
 
 ## 🔥 Motivations
 
@@ -357,11 +354,6 @@ performance.
 ### Evaluate expression and print the result
 
 With [parinfer-rust][parinfer-rust],
-
-<!--
-TODO: Comment out once the dropin feature becomes stable.
-and `nvim-thyme`'s [paren-dropin][] option enabled,
--->
 
 ```vim
 " nvim-thyme
