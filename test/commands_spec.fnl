@@ -42,9 +42,10 @@
       (it* "deletes all the thyme's cache, state, and data files"
         (let [ctx1 "{:foo :bar}"
               mod :foobar
-              fnl-path (.. mod ".fnl")]
-          (prepare-config-fnl-file! fnl-path ctx1)
+              fnl-filename (.. mod ".fnl")
+              fnl-path (prepare-config-fnl-file! fnl-filename ctx1)]
           (require mod)
+          (vim.fn.delete fnl-path)
           (tset package.loaded mod nil)
           (->> (+ (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
                                                        :thyme))
