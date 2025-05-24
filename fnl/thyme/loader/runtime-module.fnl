@@ -40,8 +40,8 @@
 fennel.lua.
 @param fennel-repo-path string the path to a fennel repository
 @return function a lua chunk of fennel.lua."
-  (let [fennel-lua-file :fennel.lua
-        [fennel-src-Makefile] (vim.fs.find :Makefile
+  (let [fennel-lua-file "fennel.lua"
+        [fennel-src-Makefile] (vim.fs.find "Makefile"
                                            {:upward true
                                             :path fennel-repo-path})
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
