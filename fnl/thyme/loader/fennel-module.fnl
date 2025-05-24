@@ -71,6 +71,7 @@ Please make sure to add the path to fennel repo in `&runtimepath`, or install a 
       (-> (vim.fs.dirname cached-fennel-path)
           (vim.fn.mkdir :p))
       (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
+          ;; NOTE: The fennel path should be hidden by `:ThymeCacheClear` or similar.
           (restore-file! cached-fennel-path)
           (fs.copyfile fennel-lua-path cached-fennel-path))
       (assert-is-file-readable cached-fennel-path))
