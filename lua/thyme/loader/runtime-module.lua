@@ -31,7 +31,6 @@ local function compile_fennel_into_rtp_21(fennel_repo_path)
   local fennel_src_Makefile = _let_7_[1]
   local _ = assert(fennel_src_Makefile, "Could not find Makefile for fennel.lua.")
   local fennel_src_root = vim.fs.dirname(fennel_src_Makefile)
-  local fennel_lua_path = Path.join(fennel_src_root, fennel_lua_file)
   local _3flua
   if executable_3f("luajit") then
     _3flua = "luajit"
@@ -53,6 +52,7 @@ local function compile_fennel_into_rtp_21(fennel_repo_path)
   end
   on_exit = _10_
   local make_cmd = {"make", "-C", fennel_src_root, fennel_lua_file}
+  local fennel_lua_path = Path.join(fennel_src_root, fennel_lua_file)
   vim.system(make_cmd, {text = true, env = env}, on_exit):wait()
   return fennel_lua_path
 end
