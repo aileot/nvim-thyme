@@ -148,13 +148,13 @@
         (let [ctx1 "{:foo :bar}"
               ctx2 "{:foo :baz}"
               mod :foobar
-              fnl-path (.. mod ".fnl")]
+              fnl-filename (.. mod ".fnl")]
           (before_each (fn []
-                         (prepare-config-fnl-file! fnl-path ctx1)
+                         (prepare-config-fnl-file! fnl-filename ctx1)
                          (require mod)
                          (tset package.loaded mod nil)
                          (vim.cmd :ThymeCacheClear)
-                         (prepare-config-fnl-file! fnl-path ctx2)
+                         (prepare-config-fnl-file! fnl-filename ctx2)
                          ;; Make sure the backup filename is changed.
                          (vim.wait 1)
                          (require mod)
