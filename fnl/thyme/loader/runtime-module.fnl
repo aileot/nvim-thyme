@@ -35,18 +35,15 @@
 ;; start with vim.o.rtp.
 (local cache {:rtp nil})
 
-(fn compile-fennel-into-rtp! []
+(fn compile-fennel-into-rtp! [fennel-repo-path]
   "Compile src/fennel.fnl into lua/ at nvim-thyme cache dir, and return the
 fennel.lua.
+@param fennel-repo-path string the path to a fennel repository
 @return function a lua chunk of fennel.lua."
-  (let [rtp (nvim-get-option :rtp)
-        fnl-src-path (or (rtp:match (Path.join "([^,]+" "fennel),"))
-                         (rtp:match (Path.join "([^,]+" "fennel)$"))
-                         (error "please make sure to add the path to fennel repo in `&runtimepath`"))
-        fennel-lua-file :fennel.lua
-        cached-fennel-path (Path.join lua-cache-prefix fennel-lua-file)
+  (let [fennel-lua-file :fennel.lua
         [fennel-src-Makefile] (vim.fs.find :Makefile
-                                           {:upward true :path fnl-src-path})
+                                           {:upward true
+                                            :path fennel-repo-path})
         _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
         fennel-src-root (vim.fs.dirname fennel-src-Makefile)
         fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
@@ -66,7 +63,35 @@ fennel.lua.
                                 (: :format out.code out.stderr))))
           make-cmd [:make :-C fennel-src-root fennel-lua-file]]
       (-> (vim.system make-cmd {:text true : env} on-exit)
-          (: :wait)))
+          (: :wait))
+      (values fennel-lua-path))))
+
+(fn locate-fennel-path! []
+  "Find a fennel module on `&rtp`; otherwise, try to load the executable.
+@return string a fennel.lua path"
+  (or (case (vim.api.nvim_get_runtime_file :fennel.lua false)
+        [fennel-lua-path] fennel-lua-path
+        [nil] false) ;
+      (case (vim.api.nvim_get_runtime_file :fennel false)
+        [fennel-lua-path] fennel-lua-path
+        [nil] false) ;
+      (let [rtp (nvim-get-option :rtp)]
+        (case (or (rtp:match (Path.join "([^,]+" "fennel),"))
+                  (rtp:match (Path.join "([^,]+" "fennel)$")))
+          fennel-repo-path (compile-fennel-into-rtp! fennel-repo-path)
+          _ (if (executable? :fennel)
+                ;; NOTE: The uv version vim.uv.exepath only returns the `nvim`
+                ;; executable path instead of `fennel`.
+                (vim.fn.exepath :fennel)
+                ;; TODO: Update the missing fennel error message.
+                (error "please make sure to add the path to fennel repo in `&runtimepath`"))))))
+
+(fn cache-fennel-lua! [fennel-lua-path]
+  "Cache fennel.lua into nvim-thyme cache dir.
+@param fennel-lua-path string the original fennel.lua path
+@return string the fennel.lua path cached by nvim-thyme"
+  (let [fennel-lua-file "fennel.lua"
+        cached-fennel-path (Path.join lua-cache-prefix fennel-lua-file)]
     (-> (vim.fs.dirname cached-fennel-path)
         (vim.fn.mkdir :p))
     (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
@@ -74,10 +99,14 @@ fennel.lua.
         (fs.copyfile fennel-lua-path cached-fennel-path))
     (assert-is-file-readable fennel-lua-path)
     (assert-is-file-readable cached-fennel-path)
-    ;; NOTE: It must return Lua expression, i.e., read-file is unsuitable.
-    ;; NOTE: Evaluating fennel.lua by (require :fennel) is unsuitable;
-    ;; otherwise, it gets into infinite loop since this function runs as
-    ;; a loader of `require`.
+    cached-fennel-path))
+
+(fn load-fennel [fennel-lua-path]
+  ;; NOTE: It must return Lua expression, i.e., read-file is unsuitable.
+  ;; NOTE: Evaluating fennel.lua by (require :fennel) is unsuitable;
+  ;; otherwise, it gets into infinite loop since this function runs as
+  ;; a loader of `require`.
+  (let [cached-fennel-path (cache-fennel-lua! fennel-lua-path)]
     (assert (loadfile cached-fennel-path))))
 
 (fn initialize-module-searcher-on-rtp! [fennel]
@@ -152,7 +181,8 @@ cache dir.
       (= :fennel module-name)
       ;; NOTE: The searchers must not be initialized here because this
       ;; searcher only receives "fennel" when the cache is cleared.
-      (compile-fennel-into-rtp!)
+      (let [fennel-lua-path (locate-fennel-path!)]
+        (load-fennel fennel-lua-path))
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [Config (require :thyme.config)]
