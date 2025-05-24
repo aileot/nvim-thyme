@@ -35,4 +35,5 @@ jobs:
           VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending"
           VUSTED_EXTRA_ARGS: ""
         run: |
-          make -j test
+          make -j build
+          make test
