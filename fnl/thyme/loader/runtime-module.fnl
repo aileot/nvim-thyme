@@ -202,7 +202,7 @@ cache dir.
                                                         raw-msg))]
                                          (values nil msg))))
                           (_ raw-msg) (values nil raw-msg))
-                    chunk chunk
+                    chunk (values chunk)
                     (_ error-msg)
                     (let [backup-path (backup-handler:determine-active-backup-path module-name)
                           max-rollbacks Config.max-rollbacks
