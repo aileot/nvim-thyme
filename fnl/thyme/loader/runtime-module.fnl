@@ -93,12 +93,13 @@ fennel.lua.
   (assert-is-file-readable fennel-lua-path)
   (let [fennel-lua-file "fennel.lua"
         cached-fennel-path (Path.join lua-cache-prefix fennel-lua-file)]
-    (-> (vim.fs.dirname cached-fennel-path)
-        (vim.fn.mkdir :p))
-    (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
-        (restore-file! cached-fennel-path)
-        (fs.copyfile fennel-lua-path cached-fennel-path))
-    (assert-is-file-readable cached-fennel-path)
+    (when-not (= cached-fennel-path fennel-lua-path)
+      (-> (vim.fs.dirname cached-fennel-path)
+          (vim.fn.mkdir :p))
+      (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
+          (restore-file! cached-fennel-path)
+          (fs.copyfile fennel-lua-path cached-fennel-path))
+      (assert-is-file-readable cached-fennel-path))
     cached-fennel-path))
 
 (fn load-fennel [fennel-lua-path]
