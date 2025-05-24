@@ -71,4 +71,5 @@
       (backup-handler:write-backup! path)
       (assert.equals 5 (length (backup-handler:list-backup-files)))
       (backup-handler:cleanup-old-backups!)
-      (assert.equals 3 (length (backup-handler:list-backup-files))))))
+      (assert.equals 3 (length (backup-handler:list-backup-files)))
+      (vim.fn.delete path))))
