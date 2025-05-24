@@ -35,7 +35,7 @@
         messenger (Messenger.new (-> "loader/%s/rollback/mounted"
                                      (: :format self._kind)))]
     (if (file-readable? rollback-path)
-        (let [msg (-> "\nrollback to backup for %s (created at %s)"
+        (let [msg (-> "rollback to backup for %s (created at %s)"
                       (: :format module-name
                          (backup-handler:determine-active-backup-birthtime module-name)))]
           (messenger:notify-once! msg vim.log.levels.WARN)
@@ -43,9 +43,9 @@
           ;; interpret the second param, but just ignore it; for macro searcher,
           ;; `fennel.eval` wrapper require both `module-name` and `fnl-path`.
           (self._file-loader rollback-path module-name))
-        (let [error-msg (-> "\nno mounted backup is found for %s"
+        (let [error-msg (-> "no mounted backup is found for %s"
                             (: :format module-name)
-                            (messenger:wrap-msg))]
+                            (messenger:mk-failure-reason))]
           (if (= self._kind "macro")
               ;; TODO: Better implementation independent of `self._kind`.
               (values nil error-msg)
