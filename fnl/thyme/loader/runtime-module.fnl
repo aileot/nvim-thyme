@@ -90,6 +90,7 @@ fennel.lua.
   "Cache fennel.lua into nvim-thyme cache dir.
 @param fennel-lua-path string the original fennel.lua path
 @return string the fennel.lua path cached by nvim-thyme"
+  (assert-is-file-readable fennel-lua-path)
   (let [fennel-lua-file "fennel.lua"
         cached-fennel-path (Path.join lua-cache-prefix fennel-lua-file)]
     (-> (vim.fs.dirname cached-fennel-path)
@@ -97,7 +98,6 @@ fennel.lua.
     (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
         (restore-file! cached-fennel-path)
         (fs.copyfile fennel-lua-path cached-fennel-path))
-    (assert-is-file-readable fennel-lua-path)
     (assert-is-file-readable cached-fennel-path)
     cached-fennel-path))
 

@@ -99,6 +99,7 @@ local function locate_fennel_path_21()
   return or_16_
 end
 local function cache_fennel_lua_21(fennel_lua_path)
+  assert_is_file_readable(fennel_lua_path)
   local fennel_lua_file = "fennel.lua"
   local cached_fennel_path = Path.join(lua_cache_prefix, fennel_lua_file)
   vim.fn.mkdir(vim.fs.dirname(cached_fennel_path), "p")
@@ -107,7 +108,6 @@ local function cache_fennel_lua_21(fennel_lua_path)
   else
     fs.copyfile(fennel_lua_path, cached_fennel_path)
   end
-  assert_is_file_readable(fennel_lua_path)
   assert_is_file_readable(cached_fennel_path)
   return cached_fennel_path
 end
