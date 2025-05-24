@@ -146,7 +146,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 ```lua
 { "aileot/nvim-thyme",
   {
-    version = "~v0.1.0",
+    version = "~v1.0.0",
     config = function()
       -- See the "Setup Optional Interfaces" section below!
     end,
