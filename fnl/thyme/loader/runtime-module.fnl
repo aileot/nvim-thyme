@@ -171,7 +171,7 @@ cache dir.
                                 ;; NOTE: Discard unwothy msg in the edge
                                 ;; cases on initializations.
                                 :function
-                                msg|chunk))
+                                (values msg|chunk)))
                   (case (case (module-name->fnl-file-on-rtp! module-name)
                           fnl-path (let [fennel (require :fennel)
                                          {: determine-lua-path} (require :thyme.compiler.cache)
