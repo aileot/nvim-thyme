@@ -166,6 +166,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 {
   "aileot/nvim-thyme",
   version = "~v1.0.0",
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
   -- For config, see the "Setup Optional Interfaces" section
   -- and "Options in .nvim-thyme.fnl" below!
   -- config = function()
