@@ -76,7 +76,7 @@ local function locate_fennel_path_21()
       if executable_3f("fennel") then
         or_13_ = vim.fn.exepath("fennel")
       else
-        or_13_ = error("please make sure to add the path to fennel repo in `&runtimepath`")
+        or_13_ = error("No `fennel.lua`, no `fennel`, no Fennel repo, and no `fennel` executable found.\nPlease make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable.")
       end
     end
   end

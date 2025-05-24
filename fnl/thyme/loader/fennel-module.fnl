@@ -57,8 +57,8 @@ fennel.lua.
                 ;; NOTE: The uv version vim.uv.exepath only returns the `nvim`
                 ;; executable path instead of `fennel`.
                 (vim.fn.exepath :fennel)
-                ;; TODO: Update the missing fennel error message.
-                (error "please make sure to add the path to fennel repo in `&runtimepath`"))))))
+                (error "No `fennel.lua`, no `fennel`, no Fennel repo, and no `fennel` executable found.
+Please make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable."))))))
 
 (fn cache-fennel-lua! [fennel-lua-path]
   "Cache fennel.lua into nvim-thyme cache dir.
