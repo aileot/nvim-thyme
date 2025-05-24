@@ -6,7 +6,8 @@
 
 (describe* "thyme.call.cache.clear"
   (it* "can be called without error."
-    (assert.has_no_error #(require "thyme.call.cache.clear"))))
+    (assert.has_no_error #(require "thyme.call.cache.clear"))
+    (tset package.loaded "thyme.call.cache.clear" nil)))
 
 (describe* "thyme.call.cache.open"
   (before_each (fn []
@@ -24,13 +25,15 @@
   (it* "should open the cache directory."
     (assert.not_equals lua-cache-prefix (vim.api.nvim_buf_get_name 0))
     (require "thyme.call.cache.open")
+    (tset package.loaded "thyme.call.cache.open" nil)
     (assert.equals lua-cache-prefix
                    (-> (vim.api.nvim_buf_get_name 0)
                        (: :gsub "/$" "")))))
 
 (describe* "thyme.call.setup"
   (it* "can be called without error."
-    (assert.has_no_error #(require "thyme.call.setup"))))
+    (assert.has_no_error #(require "thyme.call.setup"))
+    (tset package.loaded "thyme.call.setup" nil)))
 
 (describe* "Invalid tie-in thyme.call interfaces"
   (describe* "whose wrapping function require some arguments"
