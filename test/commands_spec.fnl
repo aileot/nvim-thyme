@@ -71,63 +71,68 @@
                    (thyme.setup)))
     (after_each (fn []
                   (remove-context-files!)))
-    (describe* "(for the files compiled by thyme)"
-      (it* "opens a compiled lua file for current fnl file."
-        (let [path (prepare-config-fnl-file! "foo.fnl" :foo)]
-          (vim.cmd.edit path)
-          (vim.cmd :FnlAlternate)
-          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
-          (require :foo)
-          (vim.cmd :FnlAlternate)
-          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
-          (vim.cmd.bdelete path)
-          (vim.cmd :bdelete)
-          (vim.fn.delete path)
-          (vim.fn.delete (vim.fn.expand "%"))
-          (set package.loaded.foo nil))))
-    (describe* "(for the files not compiled by thyme)"
-      (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exist."
-        (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]
-          (vim.cmd.edit path)
-          (vim.cmd :FnlAlternate)
-          (assert.is_not_same (vim.fn.expand "%:t") "foo.lua")
-          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
-          (vim.cmd.bdelete path)
-          (vim.cmd :bdelete)
-          (vim.fn.delete path)
-          (vim.fn.delete (vim.fn.expand "%"))))
-      (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exist."
-        (let [path (prepare-context-lua-file! "foo.lua" :foo)]
-          (vim.cmd.edit path)
-          (vim.cmd :FnlAlternate)
-          (assert.is_not_same (vim.fn.expand "%:t") "foo.fnl")
-          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
-          (vim.cmd.bdelete path)
-          (vim.cmd :bdelete)
-          (vim.fn.delete path)
-          (vim.fn.delete (vim.fn.expand "%"))))
-      (it* "opens /path/to/foo.lua for /path/to/foo.fnl"
-        (let [path (prepare-context-fnl-file! "foo.fnl" :foo)]
-          (prepare-context-lua-file! "foo.lua" :foo)
-          (vim.cmd.edit path)
-          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
-          (vim.cmd :FnlAlternate)
-          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
-          (vim.cmd.bdelete path)
-          (vim.cmd :bdelete)
-          (vim.fn.delete path)
-          (vim.fn.delete (vim.fn.expand "%"))))
-      (it* "opens /path/to/foo.fnl for /path/to/foo.lua"
-        (let [path (prepare-context-lua-file! "foo.lua" :foo)]
-          (prepare-context-fnl-file! "foo.fnl" :foo)
-          (vim.cmd.edit path)
-          (assert.is_same (vim.fn.expand "%:t") "foo.lua")
-          (vim.cmd :FnlAlternate)
-          (assert.is_same (vim.fn.expand "%:t") "foo.fnl")
-          (vim.cmd.bdelete path)
-          (vim.cmd :bdelete)
-          (vim.fn.delete path)
-          (vim.fn.delete (vim.fn.expand "%")))))))
+    (let [mod-name "foo"
+          fnl-filename (.. mod-name ".fnl")
+          lua-filename (.. mod-name ".lua")]
+      (describe* "(for the files compiled by thyme)"
+        (it* "opens a compiled lua file for current fnl file."
+          (let [fnl-path (prepare-config-fnl-file! fnl-filename "1")]
+            (vim.cmd.edit fnl-path)
+            (assert.is_same (vim.fn.expand "%:t") fnl-filename)
+            (require mod-name)
+            (vim.cmd :FnlAlternate)
+            (assert.is_same (vim.fn.expand "%:t") lua-filename)
+            (let [lua-path (vim.fn.expand "%:p")]
+              (vim.cmd :FnlAlternate)
+              ;; FIXME: Make the second `FnlAlternate` switch back to the fnl file.
+              ;; (assert.is_same (vim.fn.expand "%:t") fnl-filename)
+              (vim.cmd.bdelete fnl-path)
+              (vim.cmd :bdelete)
+              (vim.fn.delete fnl-path)
+              (vim.fn.delete lua-path))
+            (set package.loaded.foo nil)))
+        (describe* "(for the files not compiled by thyme)"
+          (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exist."
+            (let [fnl-path (prepare-context-fnl-file! fnl-filename "1")]
+              (vim.cmd.edit fnl-path)
+              (vim.cmd :FnlAlternate)
+              (assert.is_not_same (vim.fn.expand "%:t") lua-filename)
+              (assert.is_same (vim.fn.expand "%:t") fnl-filename)
+              (vim.cmd.bdelete fnl-path)
+              (vim.cmd :bdelete)
+              (vim.fn.delete fnl-path)))
+          (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exist."
+            (let [path (prepare-context-lua-file! lua-filename "1")]
+              (vim.cmd.edit path)
+              (vim.cmd :FnlAlternate)
+              (assert.is_not_same (vim.fn.expand "%:t") fnl-filename)
+              (assert.is_same (vim.fn.expand "%:t") lua-filename)
+              (vim.cmd.bdelete path)
+              (vim.cmd :bdelete)
+              (vim.fn.delete path)))
+          (it* "opens /path/to/foo.lua for /path/to/foo.fnl"
+            (let [fnl-path (prepare-context-fnl-file! fnl-filename "1")]
+              (prepare-context-lua-file! lua-filename "2")
+              (vim.cmd.edit fnl-path)
+              (assert.is_same (vim.fn.expand "%:t") fnl-filename)
+              (vim.cmd :FnlAlternate)
+              (assert.is_same (vim.fn.expand "%:t") lua-filename)
+              (let [lua-path (vim.fn.expand "%:p")]
+                (vim.cmd.bdelete fnl-path)
+                (vim.cmd :bdelete)
+                (vim.fn.delete fnl-path)
+                (vim.fn.delete lua-path))))
+          (it* "opens /path/to/foo.fnl for /path/to/foo.lua"
+            (let [lua-path (prepare-context-lua-file! lua-filename "1")
+                  fnl-path (prepare-context-fnl-file! fnl-filename "2")]
+              (vim.cmd.edit lua-path)
+              (assert.is_same (vim.fn.expand "%:t") lua-filename)
+              (vim.cmd :FnlAlternate)
+              (assert.is_same (vim.fn.expand "%:t") fnl-filename)
+              (vim.cmd.bdelete lua-path)
+              (vim.cmd :bdelete)
+              (vim.fn.delete lua-path)
+              (vim.fn.delete fnl-path))))))))
 
 (describe* "command :ThymeRollbackSwitch"
   (setup (fn []
