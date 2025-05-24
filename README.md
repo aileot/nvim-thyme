@@ -12,11 +12,9 @@ How about trying **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
 (_uh..., typos?_ ¯\\\_(ツ)\_/¯),\
 or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
 
-[![badge/test][]][url/to/workflow/test]
-[![badge/semver][]][url/to/semver]
+[![badge/test][]][url/to/workflow/test] [![badge/semver][]][url/to/semver]
 [![badge/license][]][url/to/license]\
-[![badge/lua][]][url/to/lua]
-[![badge/fennel][]][url/to/fennel]
+[![badge/lua][]][url/to/lua] [![badge/fennel][]][url/to/fennel]
 
 <!--
 NOTE: The colors come from the palette of catppuccin-mocha:
