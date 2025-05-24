@@ -90,6 +90,7 @@ Please make sure to add the path to fennel repo in `&runtimepath`, or install a 
       (false err-msg) (do
                         (fs.unlink cached-fennel-path)
                         (error "Failed to load fennel.lua: %s" err-msg))
+      ;; TODO: Make backup of fennel.lua here?
       lua-chunk lua-chunk)))
 
 {: locate-fennel-path! : load-fennel}
