@@ -100,6 +100,16 @@ local function cache_fennel_lua_21(fennel_lua_path)
 end
 local function load_fennel(fennel_lua_path)
   local cached_fennel_path = cache_fennel_lua_21(fennel_lua_path)
-  return assert(loadfile(cached_fennel_path))
+  local _28_, _29_ = loadfile(cached_fennel_path)
+  if ((_28_ == false) and (nil ~= _29_)) then
+    local err_msg = _29_
+    fs.unlink(cached_fennel_path)
+    return error("Failed to load fennel.lua: %s", err_msg)
+  elseif (nil ~= _28_) then
+    local lua_chunk = _28_
+    return lua_chunk
+  else
+    return nil
+  end
 end
 return {["locate-fennel-path!"] = locate_fennel_path_21, ["load-fennel"] = load_fennel}
