@@ -6,9 +6,9 @@ local function encode_with_percent(char)
 end
 local function uri_encode(uri)
   local appname = (vim.env.NVIM_APPNAME or "nvim")
-  local split_pattern = ("/" .. appname .. "/")
+  local split_pattern = ("/" .. appname .. ".-/")
   local percent_patterns = "[^A-Za-z0-9%-_.!~*'()]"
-  local _2_, _3_ = string.find(uri, split_pattern, 1, true)
+  local _2_, _3_ = string.find(uri, split_pattern)
   if (true and (nil ~= _3_)) then
     local _start = _2_
     local _end = _3_

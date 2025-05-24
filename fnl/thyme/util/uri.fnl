@@ -14,10 +14,12 @@
 
 (fn uri-encode [uri]
   (let [appname (or vim.env.NVIM_APPNAME :nvim)
-        split-pattern (.. "/" appname "/")
+        split-pattern (.. "/" appname ".-/")
         percent-patterns "[^A-Za-z0-9%-_.!~*'()]"]
     ;; NOTE: Split at $NVIM_APPNAME part to avoid ENAMETOOLONG error.
-    (case (string.find uri split-pattern 1 true)
+    ;; NOTE: Splitting at `.` file could fail because the exact file name
+    ;; resolving symbolic link could have no `.` in the path.
+    (case (string.find uri split-pattern)
       (_start end) (let [prefix (uri:sub 1 (dec end))
                          suffix (uri:sub (inc end))
                          prefix-encoded (prefix:gsub percent-patterns
