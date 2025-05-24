@@ -196,10 +196,10 @@ cache dir.
                                                               (: :format
                                                                  fnl-path
                                                                  module-name))
-                                             msg-body (LoaderMessenger:wrap-msg raw-msg-body)
-                                             msg (-> "\n%s\n\t%s"
-                                                     (: :format msg-body
-                                                        raw-msg))]
+                                             msg (-> "%s\n\t%s"
+                                                     (: :format raw-msg-body
+                                                        raw-msg)
+                                                     (LoaderMessenger:mk-failure-reason))]
                                          (values nil msg))))
                           (_ raw-msg) (values nil raw-msg))
                     chunk (values chunk)
