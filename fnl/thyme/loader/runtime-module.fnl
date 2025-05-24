@@ -197,7 +197,7 @@ cache dir.
                                                                  fnl-path
                                                                  module-name))
                                              msg-body (LoaderMessenger:wrap-msg raw-msg-body)
-                                             msg (-> "\n%s\t%s"
+                                             msg (-> "\n%s\n\t%s"
                                                      (: :format msg-body
                                                         raw-msg))]
                                          (values nil msg))))
