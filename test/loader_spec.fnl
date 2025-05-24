@@ -43,7 +43,7 @@
           (let [fnl-path (prepare-config-fnl-file! "foo.fnl" "{}")]
             (assert.equals :function (type (thyme.loader :foo)))
             (vim.fn.delete fnl-path))))
-      (it* "thus, `require` can load the module \"foo\" without any error"
+      (it* "should let `require` load the module \"foo\" without any error"
         (assert.has_error #(require :foo))
         (set package.loaded.foo nil)
         (let [fnl-path (prepare-config-fnl-file! "foo.fnl" "{}")]

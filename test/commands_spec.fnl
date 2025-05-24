@@ -42,9 +42,10 @@
       (it* "deletes all the thyme's cache, state, and data files"
         (let [ctx1 "{:foo :bar}"
               mod :foobar
-              fnl-path (.. mod ".fnl")]
-          (prepare-config-fnl-file! fnl-path ctx1)
+              fnl-filename (.. mod ".fnl")
+              fnl-path (prepare-config-fnl-file! fnl-filename ctx1)]
           (require mod)
+          (vim.fn.delete fnl-path)
           (tset package.loaded mod nil)
           (->> (+ (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
                                                        :thyme))
@@ -87,7 +88,7 @@
               ;; FIXME: Make the second `FnlAlternate` switch back to the fnl file.
               ;; (assert.is_same (vim.fn.expand "%:t") fnl-filename)
               (vim.cmd.bdelete fnl-path)
-              (vim.cmd :bdelete)
+              (vim.cmd.bdelete lua-path)
               (vim.fn.delete fnl-path)
               (vim.fn.delete lua-path))
             (set package.loaded.foo nil)))
@@ -99,7 +100,6 @@
               (assert.is_not_same (vim.fn.expand "%:t") lua-filename)
               (assert.is_same (vim.fn.expand "%:t") fnl-filename)
               (vim.cmd.bdelete fnl-path)
-              (vim.cmd :bdelete)
               (vim.fn.delete fnl-path)))
           (it* "keeps /path/to/foo.lua if /path/to/foo.fnl does not exist."
             (let [path (prepare-context-lua-file! lua-filename "1")]
@@ -119,7 +119,7 @@
               (assert.is_same (vim.fn.expand "%:t") lua-filename)
               (let [lua-path (vim.fn.expand "%:p")]
                 (vim.cmd.bdelete fnl-path)
-                (vim.cmd :bdelete)
+                (vim.cmd.bdelete lua-path)
                 (vim.fn.delete fnl-path)
                 (vim.fn.delete lua-path))))
           (it* "opens /path/to/foo.fnl for /path/to/foo.lua"
@@ -130,7 +130,7 @@
               (vim.cmd :FnlAlternate)
               (assert.is_same (vim.fn.expand "%:t") fnl-filename)
               (vim.cmd.bdelete lua-path)
-              (vim.cmd :bdelete)
+              (vim.cmd.bdelete fnl-path)
               (vim.fn.delete lua-path)
               (vim.fn.delete fnl-path))))))))
 
@@ -149,27 +149,27 @@
         (let [ctx1 "{:foo :bar}"
               ctx2 "{:foo :baz}"
               mod :foobar
-              fnl-path (.. mod ".fnl")]
-          (before_each (fn []
-                         (prepare-config-fnl-file! fnl-path ctx1)
-                         (require mod)
-                         (tset package.loaded mod nil)
-                         (vim.cmd :ThymeCacheClear)
-                         (prepare-config-fnl-file! fnl-path ctx2)
-                         ;; Make sure the backup filename is changed.
-                         (vim.wait 1)
-                         (require mod)
-                         (tset package.loaded mod nil)))
+              fnl-filename (.. mod ".fnl")]
           (it* "shows ui to select backup."
-            (var asked? false)
-            (let [raw-ui-select vim.ui.select]
-              (set vim.ui.select
-                   (fn [items _opts cb]
-                     (set asked? true)
-                     (cb (. items 1))))
-              (vim.cmd.ThymeRollbackSwitch (.. backup-kind "/" mod))
-              (assert.is_true asked?)
-              (set vim.ui.select raw-ui-select))))))))
+            (let [fnl-path (prepare-config-fnl-file! fnl-filename ctx1)]
+              (require mod)
+              (tset package.loaded mod nil)
+              (vim.cmd :ThymeCacheClear)
+              (prepare-config-fnl-file! fnl-filename ctx2)
+              ;; Make sure the backup filename is changed.
+              (vim.wait 1)
+              (require mod)
+              (tset package.loaded mod nil)
+              (var asked? false)
+              (let [raw-ui-select vim.ui.select]
+                (set vim.ui.select
+                     (fn [items _opts cb]
+                       (set asked? true)
+                       (cb (. items 1))))
+                (vim.cmd.ThymeRollbackSwitch (.. backup-kind "/" mod))
+                (assert.is_true asked?)
+                (set vim.ui.select raw-ui-select))
+              (vim.fn.delete fnl-path))))))))
 
 (describe* "command :ThymeRollbackMount"
   (setup (fn []
@@ -181,13 +181,13 @@
     (let [backup-kind "runtime/"]
       (it* "will force `require` to load module from the mounted backup."
         (let [mod :foobar
-              fnl-path (.. mod ".fnl")
+              fnl-filename (.. mod ".fnl")
               ctx1 "1"
-              ctx2 "2"]
-          (prepare-config-fnl-file! fnl-path ctx1)
+              ctx2 "2"
+              fnl-path (prepare-config-fnl-file! fnl-filename ctx1)]
           (assert.equals (tonumber ctx1) (require mod))
           (tset package.loaded mod nil)
-          (prepare-config-fnl-file! fnl-path ctx2)
+          (prepare-config-fnl-file! fnl-filename ctx2)
           (vim.cmd.ThymeRollbackMount (.. backup-kind mod))
           (vim.cmd :ThymeCacheClear)
           (assert.equals (tonumber ctx1) (require mod))
@@ -195,7 +195,8 @@
           (vim.cmd.ThymeRollbackUnmountAll)
           (vim.cmd :ThymeCacheClear)
           (assert.equals (tonumber ctx2) (require mod))
-          (tset package.loaded mod nil))))))
+          (tset package.loaded mod nil)
+          (vim.fn.delete fnl-path))))))
 
 (describe* "command :ThymeRollbackUnmountAll"
   (setup (fn []
@@ -211,7 +212,7 @@
                 filename (.. mod ".fnl")
                 ctx1 "1"
                 ctx2 "2"
-                path (prepare-config-fnl-file! filename ctx1)]
+                fnl-path (prepare-config-fnl-file! filename ctx1)]
             (assert.equals 1 (require mod))
             (tset package.loaded mod nil)
             (vim.cmd :ThymeCacheClear)
@@ -222,4 +223,4 @@
             (vim.cmd.ThymeRollbackUnmountAll)
             (assert.equals 2 (require mod))
             (tset package.loaded mod nil)
-            (vim.fn.delete path)))))))
+            (vim.fn.delete fnl-path)))))))
