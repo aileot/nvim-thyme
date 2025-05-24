@@ -97,7 +97,7 @@ Error Message:
 Contents:
 %s"
                     (: :format err-msg (read-file cached-fennel-path))
-                    (LoaderMessenger.wrap-msg))]
+                    (LoaderMessenger:mk-failure-reason))]
         (fs.unlink cached-fennel-path)
         (values msg))
       ;; TODO: Make backup of fennel.lua here?
