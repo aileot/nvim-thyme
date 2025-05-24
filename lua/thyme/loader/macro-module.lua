@@ -125,25 +125,25 @@ local function search_fnl_macro_on_rtp_21(module_name)
         or_19_ = nil
       else
         local _0 = _29_
-        local max_rollbacks = Config["max-rollbacks"]
-        local rollback_enabled_3f = (0 < max_rollbacks)
-        if (rollback_enabled_3f and file_readable_3f(backup_path)) then
-          local _34_, _35_ = macro_module__3e_3fchunk(module_name, backup_path)
-          if (nil ~= _34_) then
-            local chunk = _34_
-            local msg = ("temporarily restore backup for the macro/%s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
-            RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
-            or_19_ = chunk
-          elseif (true and (nil ~= _35_)) then
-            local _1 = _34_
-            local msg = _35_
-            or_19_ = nil
+        local _33_
+        do
+          local max_rollbacks = Config["max-rollbacks"]
+          local rollback_enabled_3f = (0 < max_rollbacks)
+          if (rollback_enabled_3f and file_readable_3f(backup_path)) then
+            local _34_ = macro_module__3e_3fchunk(module_name, backup_path)
+            if (nil ~= _34_) then
+              local chunk = _34_
+              local msg = ("temporarily restore backup for the macro/%s (created at %s) due to the following error: %s\nHINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.\nTo stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler), error_msg)
+              RollbackLoaderMessenger["notify-once!"](RollbackLoaderMessenger, msg, vim.log.levels.WARN)
+              _33_ = chunk
+            else
+              _33_ = nil
+            end
           else
-            or_19_ = nil
+            _33_ = nil
           end
-        else
-          or_19_ = nil
         end
+        or_19_ = (_33_ or nil or error_msg)
       end
     else
       or_19_ = nil
@@ -153,30 +153,30 @@ local function search_fnl_macro_on_rtp_21(module_name)
 end
 local function initialize_macro_searcher_on_rtp_21(fennel)
   table.insert(fennel["macro-searchers"], 1, search_fnl_macro_on_rtp_21)
-  local function _44_(...)
-    local _45_, _46_ = search_fnl_macro_on_rtp_21(...)
-    if (nil ~= _45_) then
-      local chunk = _45_
+  local function _42_(...)
+    local _43_, _44_ = search_fnl_macro_on_rtp_21(...)
+    if (nil ~= _43_) then
+      local chunk = _43_
       return chunk
-    elseif (true and (nil ~= _46_)) then
-      local _ = _45_
-      local msg = _46_
+    elseif (true and (nil ~= _44_)) then
+      local _ = _43_
+      local msg = _44_
       return msg
     else
       return nil
     end
   end
-  table.insert(package.loaders, _44_)
+  table.insert(package.loaders, _42_)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 local function hide_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:151")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:149")
   cache["__macro-loaded"][module_name] = cache["macro-loaded"][module_name]
   cache["macro-loaded"][module_name] = nil
   return nil
 end
 local function restore_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:158")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:156")
   cache["macro-loaded"][module_name] = cache["__macro-loaded"][module_name]
   cache["__macro-loaded"][module_name] = nil
   return nil

@@ -113,25 +113,23 @@
                 Config (require :thyme.config)]
             (case Config.?error-msg
               msg (values nil msg)
-              _ (let [max-rollbacks Config.max-rollbacks
-                      rollback-enabled? (< 0 max-rollbacks)]
-                  (if (and rollback-enabled? (file-readable? backup-path))
-                      (case (macro-module->?chunk module-name backup-path)
-                        chunk
-                        ;; TODO: As described in the error message below, append
-                        ;; thyme-backup-loader independently to fennel.macro-searchers?
-                        (let [msg (: "temporarily restore backup for the macro/%s (created at %s) due to the following error: %s
+              _ (or (let [max-rollbacks Config.max-rollbacks
+                          rollback-enabled? (< 0 max-rollbacks)]
+                      (when (and rollback-enabled? (file-readable? backup-path))
+                        (case (macro-module->?chunk module-name backup-path)
+                          chunk
+                          ;; TODO: As described in the error message below, append
+                          ;; thyme-backup-loader independently to fennel.macro-searchers?
+                          (let [msg (: "temporarily restore backup for the macro/%s (created at %s) due to the following error: %s
 HINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
-                                     :format module-name
-                                     (backup-handler:determine-active-backup-birthtime)
-                                     error-msg)]
-                          (RollbackLoaderMessenger:notify-once! msg
-                                                                vim.log.levels.WARN)
-                          (values chunk))
-                        (_ msg)
-                        (values nil msg))
-                      (values nil error-msg)))))))))
+                                       :format module-name
+                                       (backup-handler:determine-active-backup-birthtime)
+                                       error-msg)]
+                            (RollbackLoaderMessenger:notify-once! msg
+                                                                  vim.log.levels.WARN)
+                            (values chunk)))))
+                    (values nil error-msg))))))))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
   ;; Ref: src/fennel/specials.fnl @1276
