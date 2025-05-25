@@ -503,28 +503,28 @@ The commands are defined by [thyme.setup][thyme.setup].
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
-#### `:FnlBuf [bufname]`
+#### `:[range]FnlBuf [bufname]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] but to
 `[bufname]`, but respects your [&runtimepath][&runtimepath].
 
 Without `[bufname]`, it evaluates the current buffer.
 
-#### `:FnlBufCompile [bufname]`
+#### `:[range]FnlBufCompile [bufname]`
 
 Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
 `[bufname]` (or current buffer), but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### `:FnlFile [file]`
+#### `:[range]FnlFile [file]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
 respects your [&runtimepath][&runtimepath].
 
 Without `[file]`, it evaluates the current file.
 
-#### `:FnlFileCompile [file]`
+#### `:[range]FnlFileCompile [file]`
 
 Almost equivalent to [:FnlFile][]; however, it does not evaluate the
 `[file]` (or current file), but only returns the compiled lua results.
@@ -540,18 +540,18 @@ TODO: Add the spec tests first.
 With `!`, it will write the compiled lua results to `[dest-file]`.
 -->
 
-#### `:FnlCompile {fnl-expr}`
+#### `:[range]FnlCompile {fnl-expr}`
 
 Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
 `{fnl-expr}`, but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### `:FnlCompileBuf [bufname]`
+#### `:[range]FnlCompileBuf [bufname]`
 
 Same as [:FnlBufCompile][].
 
-#### `:FnlCompileFile [file]`
+#### `:[range]FnlCompileFile [file]`
 
 Same as [:FnlFileCompile][].
 
@@ -559,7 +559,7 @@ Same as [:FnlFileCompile][].
 <!--
 TODO: Add the spec tests first.
 
-#### `:FnlCompileFile[!] [src-file] [dest-file]`
+#### `:[range]FnlCompileFile[!] [src-file] [dest-file]`
 
 Same as [:FnlFileCompile!][].
 -->
