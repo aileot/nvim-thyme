@@ -59,6 +59,8 @@ fennel.lua.
           _ (if (executable? "fennel")
                 ;; NOTE: The uv version vim.uv.exepath only returns the `nvim`
                 ;; executable path instead of `fennel`.
+                ;; NOTE: The nix wrapper `fennel` does not work because it's
+                ;; wrapped into a shell script.
                 (vim.fn.exepath "fennel")
                 (error "No `fennel.lua`, no `fennel`, no Fennel repo, and no `fennel` executable found.
 Please make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable."))))))
