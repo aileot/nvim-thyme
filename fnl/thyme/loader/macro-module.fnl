@@ -3,7 +3,7 @@
 (local {: validate-type} (require :thyme.util.general))
 (local {: file-readable? : read-file} (require :thyme.util.fs))
 (local Messenger (require :thyme.util.class.messenger))
-(local SearcherMessenger (Messenger.new "loader/macro"))
+(local MacroLoaderMessenger (Messenger.new "loader/macro"))
 (local RollbackLoaderMessenger (Messenger.new "loader/macro/rollback"))
 
 (local Observer (require :thyme.dependency.observer))
@@ -69,11 +69,9 @@
       (_ raw-msg)
       (let [raw-msg-body (-> "%s is found for the macro/%s, but failed to evaluate it in a compiler environment"
                              (: :format fnl-path module-name))
-            msg-body (SearcherMessenger:wrap-msg raw-msg-body)
-            msg (-> "
-%s
-\t%s"
-                    (: :format msg-body raw-msg))]
+            msg (-> "%s\n\t%s"
+                    (: :format raw-msg-body raw-msg)
+                    (MacroLoaderMessenger:mk-failure-reason))]
         (set compiler-options.env ?env)
         ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
         ;; is supposed to return a function which must returns a table;
@@ -89,51 +87,52 @@
 @return nil|string: nil, or an error message."
   ;; NOTE: In spite of __index, it is redundant to filter out the module named
   ;; :fennel.macros, which will never be passed to macro-searchers.
-  (let [fennel (require :fennel)
-        ?chunk (if cache.mounted-rollback-searcher
-                   (cache.mounted-rollback-searcher module-name)
-                   (let [macro-file-loader (fn [fnl-path module-name]
-                                             (macro-module->?chunk module-name
-                                                                   fnl-path))]
-                     (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers
-                                                                                 macro-file-loader)
-                       searcher (do
-                                  ;; NOTE: Unlike Lua package.loaders,
-                                  ;; Fennel.macro-searchers should return `nil` at
-                                  ;; the first value for error messages.
-                                  (validate-type :function searcher)
-                                  (set cache.mounted-rollback-searcher searcher)
-                                  (searcher module-name)))))]
-    (or ?chunk ;
-        (case (case (fennel.search-module module-name fennel.macro-path)
+  (let [fennel (require :fennel)]
+    (case (if cache.mounted-rollback-searcher
+              (cache.mounted-rollback-searcher module-name)
+              (let [macro-file-loader (fn [fnl-path module-name]
+                                        (macro-module->?chunk module-name
+                                                              fnl-path))]
+                (case (MacroRollbackManager:inject-mounted-backup-searcher! fennel.macro-searchers
+                                                                            macro-file-loader)
+                  searcher (do
+                             ;; NOTE: Unlike Lua package.loaders,
+                             ;; Fennel.macro-searchers should return `nil` at
+                             ;; the first value for error messages.
+                             (validate-type :function searcher)
+                             (set cache.mounted-rollback-searcher searcher)
+                             (searcher module-name)))))
+      chunk (values chunk)
+      _ (case (case (fennel.search-module module-name fennel.macro-path)
                 fnl-path (macro-module->?chunk module-name fnl-path)
-                (_ msg) (values nil (SearcherMessenger:wrap-msg msg)))
+                (_ msg) (values nil msg))
           chunk chunk
           (_ error-msg)
           (let [backup-handler (MacroRollbackManager:backup-handler-of module-name)
                 backup-path (backup-handler:determine-active-backup-path)
                 Config (require :thyme.config)]
             (case Config.?error-msg
-              msg (values nil msg)
-              _ (let [max-rollbacks Config.max-rollbacks
-                      rollback-enabled? (< 0 max-rollbacks)]
-                  (if (and rollback-enabled? (file-readable? backup-path))
-                      (case (macro-module->?chunk module-name backup-path)
-                        chunk
-                        ;; TODO: As described in the error message below, append
-                        ;; thyme-backup-loader independently to fennel.macro-searchers?
-                        (let [msg (: "temporarily restore backup for the macro/%s (created at %s) due to the following error: %s
+              msg (values nil (MacroLoaderMessenger:mk-failure-reason msg))
+              _ (or (let [max-rollbacks Config.max-rollbacks
+                          rollback-enabled? (< 0 max-rollbacks)]
+                      (when (and rollback-enabled? (file-readable? backup-path))
+                        (case (macro-module->?chunk module-name backup-path)
+                          chunk
+                          ;; TODO: As described in the error message below, append
+                          ;; thyme-backup-loader independently to fennel.macro-searchers?
+                          (let [msg (: "temporarily restore backup for the macro/%s (created at %s) due to the following error:
+%s
+
 HINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
-                                     :format module-name
-                                     (backup-handler:determine-active-backup-birthtime)
-                                     error-msg)]
-                          (RollbackLoaderMessenger:notify-once! msg
-                                                                vim.log.levels.WARN)
-                          chunk)
-                        (_ msg)
-                        (values nil msg))
-                      (values nil error-msg)))))))))
+                                       :format module-name
+                                       (backup-handler:determine-active-backup-birthtime)
+                                       error-msg)]
+                            (RollbackLoaderMessenger:notify-once! msg
+                                                                  vim.log.levels.WARN)
+                            (values chunk)))))
+                    (values nil
+                            (MacroLoaderMessenger:mk-failure-reason error-msg)))))))))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
   ;; Ref: src/fennel/specials.fnl @1276

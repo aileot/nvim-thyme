@@ -156,22 +156,21 @@ cache dir.
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [Config (require :thyme.config)]
-        (or Config.?error-msg ;
+        (if Config.?error-msg ;
+            (LoaderMessenger:mk-failure-reason Config.?error-msg)
             (let [backup-handler (RuntimeModuleRollbackManager:backup-handler-of module-name)
-                  ?chunk (case (case (let [file-loader (fn [path ...]
-                                                         ;; Explicitly discard
-                                                         ;; the rest params, or
-                                                         ;; tests could fail.
-                                                         (loadfile path))]
-                                       (RuntimeModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
-                                                                                                     file-loader))
-                                 searcher (searcher module-name))
-                           msg|chunk (case (type msg|chunk)
-                                       ;; NOTE: Discard unwothy msg in the edge
-                                       ;; cases on initializations.
-                                       :function
-                                       msg|chunk))]
-              (or ?chunk ;
+                  file-loader (fn [path ...]
+                                ;; Explicitly discard the rest params, or tests
+                                ;; could fail.
+                                (loadfile path))]
+              (or (case (case (RuntimeModuleRollbackManager:inject-mounted-backup-searcher! package.loaders
+                                                                                            file-loader)
+                          searcher (searcher module-name))
+                    msg|chunk (case (type msg|chunk)
+                                ;; NOTE: Discard unwothy msg in the edge
+                                ;; cases on initializations.
+                                :function
+                                (values msg|chunk)))
                   (case (case (module-name->fnl-file-on-rtp! module-name)
                           fnl-path (let [fennel (require :fennel)
                                          {: determine-lua-path} (require :thyme.compiler.cache)
@@ -197,22 +196,21 @@ cache dir.
                                                               (: :format
                                                                  fnl-path
                                                                  module-name))
-                                             msg-body (LoaderMessenger:wrap-msg raw-msg-body)
-                                             msg (-> "
-%s
-\t%s"
-                                                     (: :format msg-body
-                                                        raw-msg))]
+                                             msg (-> "%s\n\t%s"
+                                                     (: :format raw-msg-body
+                                                        raw-msg)
+                                                     (LoaderMessenger:mk-failure-reason))]
                                          (values nil msg))))
-                          (_ raw-msg) (let [msg (LoaderMessenger:wrap-msg raw-msg)]
-                                        (values nil (.. "\n" msg))))
-                    chunk chunk
+                          (_ raw-msg) (values nil raw-msg))
+                    chunk (values chunk)
                     (_ error-msg)
                     (let [backup-path (backup-handler:determine-active-backup-path module-name)
                           max-rollbacks Config.max-rollbacks
                           rollback-enabled? (< 0 max-rollbacks)]
                       (if (and rollback-enabled? (file-readable? backup-path))
-                          (let [msg (: "temporarily restore backup for the module/%s (created at %s) due to the following error: %s
+                          (let [msg (: "temporarily restore backup for the module/%s (created at %s) due to the following error:
+%s
+
 HINT: You can reduce the annoying errors by `:ThymeRollbackMount` in new nvim sessions.
 To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or `:ThymeRollbackUnmountAll`."
                                        :format module-name
@@ -221,7 +219,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                             (RollbackLoaderMessenger:notify-once! msg
                                                                   vim.log.levels.WARN)
                             (loadfile backup-path))
-                          error-msg)))))))))
+                          (LoaderMessenger:mk-failure-reason error-msg))))))))))
 
 {: search-fnl-module-on-rtp!
  : write-lua-file-with-backup!

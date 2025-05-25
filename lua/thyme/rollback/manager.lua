@@ -1,7 +1,6 @@
 local Path = require("thyme.util.path")
 local _local_1_ = require("thyme.util.fs")
 local file_readable_3f = _local_1_["file-readable?"]
-local assert_is_file_readable = _local_1_["assert-is-file-readable"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
 local state_prefix = _local_2_["state-prefix"]
@@ -17,11 +16,11 @@ RollbackManager["search-module-from-mounted-backups"] = function(self, module_na
   local rollback_path = backup_handler["determine-mounted-backup-path"](backup_handler)
   local messenger = Messenger.new(("loader/%s/rollback/mounted"):format(self._kind))
   if file_readable_3f(rollback_path) then
-    local msg = ("\nrollback to backup for %s (created at %s)"):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name))
+    local msg = ("rollback to backup for %s (created at %s)"):format(module_name, backup_handler["determine-active-backup-birthtime"](backup_handler, module_name))
     messenger["notify-once!"](messenger, msg, vim.log.levels.WARN)
     return self["_file-loader"](rollback_path, module_name)
   else
-    local error_msg = messenger["wrap-msg"](messenger, ("\nno mounted backup is found for %s"):format(module_name))
+    local error_msg = messenger["mk-failure-reason"](messenger, ("no mounted backup is found for %s"):format(module_name))
     if (self._kind == "macro") then
       return nil, error_msg
     else
@@ -73,8 +72,8 @@ RollbackManager["list-backup-modules"] = function(self)
   return tbl_21_
 end
 RollbackManager.new = function(kind, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback/manager.fnl:97")
-  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback/manager.fnl:97")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback/manager.fnl:96")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback/manager.fnl:96")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, kind)
   vim.fn.mkdir(root, "p")
