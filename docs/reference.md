@@ -524,6 +524,22 @@ respects your [&runtimepath][&runtimepath].
 
 Without `[file]`, it evaluates the current file.
 
+#### `:FnlFileCompile [file]`
+
+Almost equivalent to [:FnlFile][]; however, it does not evaluate the
+`[file]` (or current file), but only returns the compiled lua results.
+
+It does not affect the file system.
+
+<!-- panvimdoc-ignore-start -->
+<!--
+TODO: Add the spec tests first.
+
+#### `:FnlFileCompile[!] [src-file] [dest-file]`
+
+With `!`, it will write the compiled lua results to `[dest-file]`.
+-->
+
 #### `:FnlCompile {fnl-expr}`
 
 Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
@@ -533,14 +549,11 @@ It does not affect the file system.
 
 #### `:FnlCompileBuf [bufname]`
 
-Same as [:FnlCompileBuf][].
+Same as [:FnlBufCompile][].
 
 #### `:FnlCompileFile [file]`
 
-Almost equivalent to [:FnlBuf][:FnlBuf]; however, it does not evaluate the
-`[file]` (or current file), but only returns the compiled lua results.
-
-It does not affect the file system.
+Same as [:FnlFileCompile][].
 
 <!-- panvimdoc-ignore-start -->
 <!--
@@ -548,7 +561,7 @@ TODO: Add the spec tests first.
 
 #### `:FnlCompileFile[!] [src-file] [dest-file]`
 
-With `!`, it will write the compiled lua results to `[dest-file]`.
+Same as [:FnlFileCompile!][].
 -->
 
 <!-- panvimdoc-ignore-end -->
