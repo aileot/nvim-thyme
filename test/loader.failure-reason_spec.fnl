@@ -2,7 +2,7 @@
 
 (include :test.helper.prerequisites)
 
-(local {: remove-context-files!} (require :test.helper.util))
+(local {: remove-context-files!} (include :test.helper.util))
 
 (local thyme (require :thyme))
 
