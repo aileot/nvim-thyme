@@ -25,8 +25,7 @@
         buildInputs = with pkgs; [
           gnumake
           cargo # for parinfer-rust integration tests
-          fennel
-          luajit
+          lua51Packages.fennel
           (fennel-ls.overrideAttrs (prevAttrs: {
             src = inputs.fennel-ls;
             buildInputs =
