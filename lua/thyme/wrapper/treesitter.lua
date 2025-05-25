@@ -51,7 +51,7 @@ local function initialize_priority_matrix_21(row, col)
   return nil
 end
 local function update_hl_chunk_matrix_21(hl_chunk_matrix, text, _3fhl_name, metadata, row01, col01)
-  local priority = (metadata.priority or 0)
+  local priority = (tonumber(metadata.priority) or 0)
   local row1 = (row01 + 1)
   local col1 = (col01 + 1)
   local last_priority = (priority_matrix[row1][col1] or 0)
