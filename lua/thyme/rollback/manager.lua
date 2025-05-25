@@ -1,7 +1,6 @@
 local Path = require("thyme.util.path")
 local _local_1_ = require("thyme.util.fs")
 local file_readable_3f = _local_1_["file-readable?"]
-local assert_is_file_readable = _local_1_["assert-is-file-readable"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
 local state_prefix = _local_2_["state-prefix"]
@@ -73,8 +72,8 @@ RollbackManager["list-backup-modules"] = function(self)
   return tbl_21_
 end
 RollbackManager.new = function(kind, file_extension)
-  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback/manager.fnl:97")
-  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback/manager.fnl:97")
+  _G.assert((nil ~= file_extension), "Missing argument file-extension on fnl/thyme/rollback/manager.fnl:96")
+  _G.assert((nil ~= kind), "Missing argument kind on fnl/thyme/rollback/manager.fnl:96")
   local self = setmetatable({}, RollbackManager)
   local root = Path.join(RollbackManager._root, kind)
   vim.fn.mkdir(root, "p")
