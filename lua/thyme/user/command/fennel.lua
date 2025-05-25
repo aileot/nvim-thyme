@@ -217,6 +217,7 @@ M["setup!"] = function(_3fopts)
     end
     cb = _42_
     local cmd_opts = {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"}
+    vim.api.nvim_create_user_command("FnlBufCompile", cb, cmd_opts)
     vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
   local function _45_(_44_)
