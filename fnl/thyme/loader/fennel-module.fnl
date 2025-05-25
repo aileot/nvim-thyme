@@ -49,21 +49,24 @@ fennel.lua.
   (or (case (vim.api.nvim_get_runtime_file "fennel.lua" false)
         [fennel-lua-path] fennel-lua-path
         [nil] false) ;
-      (case (vim.api.nvim_get_runtime_file "fennel" false)
-        [fennel-lua-path] fennel-lua-path
-        [nil] false) ;
+      ;; NOTE: Executable `fennel` does not seem to return a table to be a chunk.
+      ;; (case (vim.api.nvim_get_runtime_file "fennel" false)
+      ;;   [fennel-lua-path] fennel-lua-path
+      ;;   [nil] false) ;
       (let [rtp (nvim-get-option :rtp)]
         (case (or (rtp:match (Path.join "([^,]+" "fennel),"))
                   (rtp:match (Path.join "([^,]+" "fennel)$")))
-          fennel-repo-path (compile-fennel-into-rtp! fennel-repo-path)
-          _ (if (executable? "fennel")
-                ;; NOTE: The uv version vim.uv.exepath only returns the `nvim`
-                ;; executable path instead of `fennel`.
-                ;; NOTE: The nix wrapper `fennel` does not work because it's
-                ;; wrapped into a shell script.
-                (vim.fn.exepath "fennel")
-                (error "No `fennel.lua`, no `fennel`, no Fennel repo, and no `fennel` executable found.
-Please make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable."))))))
+          fennel-repo-path
+          (compile-fennel-into-rtp! fennel-repo-path)
+          _
+          ;; (if (executable? "fennel")
+          ;;     ;; NOTE: The uv version vim.uv.exepath only returns the `nvim`
+          ;;     ;; executable path instead of `fennel`.
+          ;;     ;; NOTE: The nix wrapper `fennel` does not work because it's
+          ;;     ;; wrapped into a shell script.
+          ;;     (vim.fn.exepath "fennel")
+          (error "No `fennel.lua`, no `fennel`, and no Fennel repo found.
+Please make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable.")))))
 
 (fn cache-fennel-lua! [fennel-lua-path]
   "Cache fennel.lua into nvim-thyme cache dir.

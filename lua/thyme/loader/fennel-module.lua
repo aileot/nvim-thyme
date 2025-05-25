@@ -57,29 +57,14 @@ local function locate_fennel_path_21()
   end
   local or_13_ = _9_
   if not or_13_ then
-    local _14_ = vim.api.nvim_get_runtime_file("fennel", false)
-    if ((_G.type(_14_) == "table") and (nil ~= _14_[1])) then
-      local fennel_lua_path = _14_[1]
-      or_13_ = fennel_lua_path
-    elseif ((_G.type(_14_) == "table") and (_14_[1] == nil)) then
-      or_13_ = false
-    else
-      or_13_ = nil
-    end
-  end
-  if not or_13_ then
     local rtp = vim.api.nvim_get_option_value("rtp", {})
-    local _20_ = (rtp:match(Path.join("([^,]+", "fennel),")) or rtp:match(Path.join("([^,]+", "fennel)$")))
-    if (nil ~= _20_) then
-      local fennel_repo_path = _20_
+    local _15_ = (rtp:match(Path.join("([^,]+", "fennel),")) or rtp:match(Path.join("([^,]+", "fennel)$")))
+    if (nil ~= _15_) then
+      local fennel_repo_path = _15_
       or_13_ = compile_fennel_into_rtp_21(fennel_repo_path)
     else
-      local _ = _20_
-      if executable_3f("fennel") then
-        or_13_ = vim.fn.exepath("fennel")
-      else
-        or_13_ = error("No `fennel.lua`, no `fennel`, no Fennel repo, and no `fennel` executable found.\nPlease make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable.")
-      end
+      local _ = _15_
+      or_13_ = error("No `fennel.lua`, no `fennel`, and no Fennel repo found.\nPlease make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable.")
     end
   end
   return or_13_
@@ -102,14 +87,14 @@ local function cache_fennel_lua_21(fennel_lua_path)
 end
 local function load_fennel(fennel_lua_path)
   local cached_fennel_path = cache_fennel_lua_21(fennel_lua_path)
-  local _28_, _29_ = loadfile(cached_fennel_path)
-  if ((_28_ == false) and (nil ~= _29_)) then
-    local err_msg = _29_
+  local _22_, _23_ = loadfile(cached_fennel_path)
+  if ((_22_ == false) and (nil ~= _23_)) then
+    local err_msg = _23_
     local msg = LoaderMessenger["mk-failure-reason"](LoaderMessenger, ("Failed to load fennel.lua.\nError Message:\n%s\nContents:\n%s"):format(err_msg, read_file(cached_fennel_path)))
     fs.unlink(cached_fennel_path)
     return msg
-  elseif (nil ~= _28_) then
-    local lua_chunk = _28_
+  elseif (nil ~= _22_) then
+    local lua_chunk = _22_
     return lua_chunk
   else
     return nil
