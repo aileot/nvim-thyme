@@ -638,11 +638,11 @@ Unmount the mounted backups.
 [autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
 [autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
 [autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
-[command.cmd-history.method]: #command-cmd-history-method
+[command.cmd-history.method]: #commandcmd-historymethod
 [fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
 [fennel.eval]: https://fennel-lang.org/api#evaluate-a-string-of-fennel
-[keymap.mappings]: #keymap-mappings
+[keymap.mappings]: #keymapmappings
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [parinfer-rust]: https://github.com/eraserhd/parinfer-rust
@@ -650,5 +650,5 @@ Unmount the mounted backups.
 [thyme]: https://github.com/aileot/nvim-thyme
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
 [vim.secure.trust]: https://neovim.io/doc/user/lua.html#_lua-module:-vim.secure
-[watch.event]: #watch-event
-[watch.strategy]: #watch-strategy
+[watch.event]: #watchevent
+[watch.strategy]: #watchstrategy
