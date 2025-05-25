@@ -24,7 +24,8 @@
     (after_each (fn []
                   (set vim.fn.confirm raw-confirm)
                   (remove-context-files!)
-                  (vim.cmd "% bdelete")))
+                  (vim.cmd "% bdelete")
+                  (vim.cmd :ThymeCacheClear)))
     (it* "returns a string if specified module is not found"
       (assert.equals :string (type (thyme.loader :foo))
                      "module 'foo' is loaded unexpectedly"))
