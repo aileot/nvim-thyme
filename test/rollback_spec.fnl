@@ -8,12 +8,16 @@
 (local RollbackManager (require :thyme.rollback.manager))
 (local TestRollbackManager (RollbackManager.new :test ".fnl"))
 
+(local thyme (require :thyme))
+
 (local Config (require :thyme.config))
 
 (fn clear-backup-files! []
   (vim.fn.delete (TestRollbackManager.get-root) :rf))
 
 (describe* "rollback"
+  (setup (fn []
+           (thyme.setup)))
   (before_each (fn []
                  (clear-backup-files!)))
   (after_each (fn []
@@ -41,6 +45,8 @@
            (assert.is_same 1)))))
 
 (describe* "rollback.cleanup-old-backups!"
+  (setup (fn []
+           (thyme.setup)))
   (before_each (fn []
                  (set Config.max-rollbacks 3)))
   (after_each (fn []
