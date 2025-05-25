@@ -510,6 +510,13 @@ Display the result of applying [fennel.dofile][fennel.dofile] but to
 
 Without `[bufname]`, it evaluates the current buffer.
 
+#### `:FnlBufCompile [bufname]`
+
+Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
+`[bufname]` (or current buffer), but only returns the compiled lua results.
+
+It does not affect the file system.
+
 #### `:FnlFile [file]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
@@ -526,10 +533,7 @@ It does not affect the file system.
 
 #### `:FnlCompileBuf [bufname]`
 
-Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
-`[bufname]` (or current buffer), but only returns the compiled lua results.
-
-It does not affect the file system.
+Same as [:FnlCompileBuf][].
 
 #### `:FnlCompileFile [file]`
 
