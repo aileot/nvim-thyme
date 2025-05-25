@@ -670,8 +670,11 @@ Unmount the mounted backups.
 [.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [.nvim-thyme.fnl]: #options-in-nvim-thymefnl
 [:FnlAlternate]: #fnlalternate
+[:FnlBufCompile]: #rangefnlbufcompile-bufname
 [:FnlBuf]: #rangefnlbuf-bufname
 [:FnlCompile]: #rangefnlcompile-fnl-expr
+[:FnlFileCompile]: #rangefnlfilecompile-file
+[:FnlFile]: #rangefnlfile-file
 [:Fnl]: #fnl-fnl-expr
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeCacheOpen]: #thymecacheopen
