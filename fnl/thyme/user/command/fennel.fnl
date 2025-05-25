@@ -188,24 +188,29 @@
                                         :discard-last? true
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! :FnlCompileBuf
-      {:range "%"
-       :nargs "?"
-       :complete :buffer
-       :desc "[thyme] display the compiled lua results of current buffer"}
-      (fn [{:fargs [?path] : line1 : line2 &as a}]
-        (let [fnl-code (let [bufnr (if ?path (vim.fn.bufnr ?path) 0)]
-                         (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
-                                                         line2 true)
-                             (table.concat "\n")))
-              cmd-history-opts {:method :ignore}
-              callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
-                                                        {:lang :lua
-                                                         :discard-last? true
-                                                         : compiler-options
-                                                         : cmd-history-opts})]
-          (set a.args fnl-code)
-          (callback a))))
+    (let [cb (fn [{:fargs [?path] : line1 : line2 &as a}]
+               (let [fnl-code (let [bufnr (if ?path
+                                              (vim.fn.bufnr ?path)
+                                              0)]
+                                (-> (vim.api.nvim_buf_get_lines bufnr
+                                                                (dec line1)
+                                                                line2 true)
+                                    (table.concat "\n")))
+                     cmd-history-opts {:method :ignore}
+                     callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
+                                                               {:lang :lua
+                                                                :discard-last? true
+                                                                : compiler-options
+                                                                : cmd-history-opts})]
+                 (set a.args fnl-code)
+                 (callback a)))
+          cmd-opts {:range "%"
+                    :nargs "?"
+                    :complete :buffer
+                    :desc "[thyme] display the compiled lua results of current buffer"}]
+      (command! :FnlCompileBuf
+        cmd-opts
+        cb))
     (command! :FnlCompileFile
       {:range "%"
        :nargs "*"

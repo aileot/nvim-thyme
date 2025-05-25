@@ -196,28 +196,33 @@ M["setup!"] = function(_3fopts)
   end
   vim.api.nvim_create_user_command("FnlFile", _40_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
   vim.api.nvim_create_user_command("FnlCompile", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
-  local function _43_(_41_)
-    local _arg_42_ = _41_["fargs"]
-    local _3fpath = _arg_42_[1]
-    local line1 = _41_["line1"]
-    local line2 = _41_["line2"]
-    local a = _41_
-    local fnl_code
-    do
-      local bufnr
-      if _3fpath then
-        bufnr = vim.fn.bufnr(_3fpath)
-      else
-        bufnr = 0
+  do
+    local cb
+    local function _43_(_41_)
+      local _arg_42_ = _41_["fargs"]
+      local _3fpath = _arg_42_[1]
+      local line1 = _41_["line1"]
+      local line2 = _41_["line2"]
+      local a = _41_
+      local fnl_code
+      do
+        local bufnr
+        if _3fpath then
+          bufnr = vim.fn.bufnr(_3fpath)
+        else
+          bufnr = 0
+        end
+        fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
       end
-      fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
+      local cmd_history_opts0 = {method = "ignore"}
+      local callback = wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
+      a.args = fnl_code
+      return callback(a)
     end
-    local cmd_history_opts0 = {method = "ignore"}
-    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
-    a.args = fnl_code
-    return callback(a)
+    cb = _43_
+    local cmd_opts = {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"}
+    vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
-  vim.api.nvim_create_user_command("FnlCompileBuf", _43_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"})
   local function _46_(_45_)
     local glob_paths = _45_["fargs"]
     local force_compile_3f = _45_["bang"]
