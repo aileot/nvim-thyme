@@ -189,13 +189,12 @@
                                         : compiler-options
                                         : cmd-history-opts}))
     (let [cb (fn [{:fargs [?path] : line1 : line2 &as a}]
-               (let [fnl-code (let [bufnr (if ?path
-                                              (vim.fn.bufnr ?path)
-                                              0)]
-                                (-> (vim.api.nvim_buf_get_lines bufnr
-                                                                (dec line1)
-                                                                line2 true)
-                                    (table.concat "\n")))
+               (let [bufnr (if ?path
+                               (vim.fn.bufnr ?path)
+                               0)
+                     fnl-code (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
+                                                              line2 true)
+                                  (table.concat "\n"))
                      cmd-history-opts {:method :ignore}
                      callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
                                                                {:lang :lua

@@ -204,16 +204,13 @@ M["setup!"] = function(_3fopts)
       local line1 = _41_["line1"]
       local line2 = _41_["line2"]
       local a = _41_
-      local fnl_code
-      do
-        local bufnr
-        if _3fpath then
-          bufnr = vim.fn.bufnr(_3fpath)
-        else
-          bufnr = 0
-        end
-        fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
+      local bufnr
+      if _3fpath then
+        bufnr = vim.fn.bufnr(_3fpath)
+      else
+        bufnr = 0
       end
+      local fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
       local cmd_history_opts0 = {method = "ignore"}
       local callback = wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
       a.args = fnl_code
