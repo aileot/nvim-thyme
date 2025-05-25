@@ -1,15 +1,8 @@
 (import-macros {: when-not : last : nvim-get-option} :thyme.macros)
 
-(local {: debug? : lua-cache-prefix} (require :thyme.const))
+(local {: debug?} (require :thyme.const))
 
-(local Path (require :thyme.util.path))
-
-(local {: executable?
-        : file-readable?
-        : assert-is-file-readable
-        : read-file
-        : write-lua-file!
-        &as fs} (require :thyme.util.fs))
+(local {: file-readable? : write-lua-file!} (require :thyme.util.fs))
 
 (local {: gsplit} (require :thyme.util.iterator))
 (local {: can-restore-file? : restore-file!} (require :thyme.util.pool))
@@ -25,6 +18,9 @@
 
 (local Observer (require :thyme.dependency.observer))
 
+(local {: locate-fennel-path! : load-fennel}
+       (require :thyme.loader.fennel-module))
+
 (local {: initialize-macro-searcher-on-rtp!}
        (require :thyme.loader.macro-module))
 
@@ -34,51 +30,6 @@
 ;; NOTE: To initialize fennel.path and fennel.macro-path, cache.rtp must not
 ;; start with vim.o.rtp.
 (local cache {:rtp nil})
-
-(fn compile-fennel-into-rtp! []
-  "Compile src/fennel.fnl into lua/ at nvim-thyme cache dir, and return the
-fennel.lua.
-@return function a lua chunk of fennel.lua."
-  (let [rtp (nvim-get-option :rtp)
-        fnl-src-path (or (rtp:match (Path.join "([^,]+" "fennel),"))
-                         (rtp:match (Path.join "([^,]+" "fennel)$"))
-                         (error "please make sure to add the path to fennel repo in `&runtimepath`"))
-        fennel-lua-file :fennel.lua
-        cached-fennel-path (Path.join lua-cache-prefix fennel-lua-file)
-        [fennel-src-Makefile] (vim.fs.find :Makefile
-                                           {:upward true :path fnl-src-path})
-        _ (assert fennel-src-Makefile "Could not find Makefile for fennel.lua.")
-        fennel-src-root (vim.fs.dirname fennel-src-Makefile)
-        fennel-lua-path (Path.join fennel-src-root fennel-lua-file)]
-    (let [?lua (if (executable? :luajit) "luajit" (executable? :lua)
-                   (let [stdout (-> (vim.system [:lua :-v] {:text true})
-                                    (: :wait)
-                                    (. :stdout))]
-                     ;; NOTE: The `lua` should be lua5.1 or luajit.
-                     (when (or (stdout:find "^LuaJIT")
-                               (stdout:find "^Lua 5%.1%."))
-                       "lua")))
-          LUA (or ?lua "nvim --clean --headless -l")
-          env {: LUA}
-          on-exit (fn [out]
-                    (assert (= 0 (tonumber out.code))
-                            (-> "failed to compile fennel.lua with code: %s\n%s"
-                                (: :format out.code out.stderr))))
-          make-cmd [:make :-C fennel-src-root fennel-lua-file]]
-      (-> (vim.system make-cmd {:text true : env} on-exit)
-          (: :wait)))
-    (-> (vim.fs.dirname cached-fennel-path)
-        (vim.fn.mkdir :p))
-    (if (can-restore-file? cached-fennel-path (read-file fennel-lua-path))
-        (restore-file! cached-fennel-path)
-        (fs.copyfile fennel-lua-path cached-fennel-path))
-    (assert-is-file-readable fennel-lua-path)
-    (assert-is-file-readable cached-fennel-path)
-    ;; NOTE: It must return Lua expression, i.e., read-file is unsuitable.
-    ;; NOTE: Evaluating fennel.lua by (require :fennel) is unsuitable;
-    ;; otherwise, it gets into infinite loop since this function runs as
-    ;; a loader of `require`.
-    (assert (loadfile cached-fennel-path))))
 
 (fn initialize-module-searcher-on-rtp! [fennel]
   (let [std-config-home (vim.fn.stdpath :config)
@@ -152,7 +103,8 @@ cache dir.
       (= :fennel module-name)
       ;; NOTE: The searchers must not be initialized here because this
       ;; searcher only receives "fennel" when the cache is cleared.
-      (compile-fennel-into-rtp!)
+      (let [fennel-lua-path (locate-fennel-path!)]
+        (load-fennel fennel-lua-path))
       ;; NOTE: `thyme.compiler` depends on the module `fennel` so that
       ;; must be loaded here; otherwise, get into infinite loop.
       (let [Config (require :thyme.config)]
