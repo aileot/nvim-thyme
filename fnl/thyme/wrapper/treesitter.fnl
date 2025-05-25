@@ -40,7 +40,7 @@
                              row01
                              col01]
   ""
-  (let [priority (or metadata.priority 0)
+  (let [priority (or (tonumber metadata.priority) 0)
         row1 (inc row01)
         col1 (inc col01)
         last-priority (or (. priority-matrix row1 col1) 0)]
