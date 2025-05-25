@@ -220,103 +220,108 @@ M["setup!"] = function(_3fopts)
     vim.api.nvim_create_user_command("FnlBufCompile", cb, cmd_opts)
     vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
-  local function _45_(_44_)
-    local glob_paths = _44_["fargs"]
-    local force_compile_3f = _44_["bang"]
-    local fnl_paths
-    if (0 == #glob_paths) then
-      fnl_paths = {vim.api.nvim_buf_get_name(0)}
-    else
-      local _46_
-      do
-        local tbl_21_ = {}
-        local i_22_ = 0
-        for _, path in ipairs(glob_paths) do
-          local val_23_ = vim.split(vim.fn.glob(path), "\n")
-          if (nil ~= val_23_) then
-            i_22_ = (i_22_ + 1)
-            tbl_21_[i_22_] = val_23_
-          else
-          end
-        end
-        _46_ = tbl_21_
-      end
-      fnl_paths = vim.fn.flatten(_46_, 1)
-    end
-    local path_pairs
-    do
-      local tbl_16_ = {}
-      for _, path in ipairs(fnl_paths) do
-        local k_17_, v_18_ = nil, nil
+  do
+    local cb
+    local function _45_(_44_)
+      local glob_paths = _44_["fargs"]
+      local force_compile_3f = _44_["bang"]
+      local fnl_paths
+      if (0 == #glob_paths) then
+        fnl_paths = {vim.api.nvim_buf_get_name(0)}
+      else
+        local _46_
         do
-          local full_path = vim.fn.fnamemodify(path, ":p")
-          k_17_, v_18_ = full_path, DependencyLogger["fnl-path->lua-path"](DependencyLogger, full_path)
+          local tbl_21_ = {}
+          local i_22_ = 0
+          for _, path in ipairs(glob_paths) do
+            local val_23_ = vim.split(vim.fn.glob(path), "\n")
+            if (nil ~= val_23_) then
+              i_22_ = (i_22_ + 1)
+              tbl_21_[i_22_] = val_23_
+            else
+            end
+          end
+          _46_ = tbl_21_
         end
-        if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
-          tbl_16_[k_17_] = v_18_
-        else
-        end
+        fnl_paths = vim.fn.flatten(_46_, 1)
       end
-      path_pairs = tbl_16_
-    end
-    local existing_lua_files = {}
-    local or_50_ = force_compile_3f
-    if not or_50_ then
-      local _51_
+      local path_pairs
       do
-        local tbl_21_ = {}
-        local i_22_ = 0
-        for _, lua_file in pairs(path_pairs) do
-          local val_23_
-          if file_readable_3f(lua_file) then
-            val_23_ = table.insert(existing_lua_files, lua_file)
-          else
-            val_23_ = nil
+        local tbl_16_ = {}
+        for _, path in ipairs(fnl_paths) do
+          local k_17_, v_18_ = nil, nil
+          do
+            local full_path = vim.fn.fnamemodify(path, ":p")
+            k_17_, v_18_ = full_path, DependencyLogger["fnl-path->lua-path"](DependencyLogger, full_path)
           end
-          if (nil ~= val_23_) then
-            i_22_ = (i_22_ + 1)
-            tbl_21_[i_22_] = val_23_
+          if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+            tbl_16_[k_17_] = v_18_
           else
           end
         end
-        _51_ = tbl_21_
+        path_pairs = tbl_16_
       end
-      local and_54_ = _51_
-      if and_54_ then
-        if (0 < #existing_lua_files) then
-          local _55_ = vim.fn.confirm(("The following files have already existed:\n    " .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
-          if (_55_ == 2) then
-            and_54_ = true
-          else
-            local _ = _55_
-            CommandMessenger["notify!"](CommandMessenger, "Abort")
-            and_54_ = false
+      local existing_lua_files = {}
+      local or_50_ = force_compile_3f
+      if not or_50_ then
+        local _51_
+        do
+          local tbl_21_ = {}
+          local i_22_ = 0
+          for _, lua_file in pairs(path_pairs) do
+            local val_23_
+            if file_readable_3f(lua_file) then
+              val_23_ = table.insert(existing_lua_files, lua_file)
+            else
+              val_23_ = nil
+            end
+            if (nil ~= val_23_) then
+              i_22_ = (i_22_ + 1)
+              tbl_21_[i_22_] = val_23_
+            else
+            end
           end
-        else
-          and_54_ = nil
+          _51_ = tbl_21_
         end
+        local and_54_ = _51_
+        if and_54_ then
+          if (0 < #existing_lua_files) then
+            local _55_ = vim.fn.confirm(("The following files have already existed:\n  " .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
+            if (_55_ == 2) then
+              and_54_ = true
+            else
+              local _ = _55_
+              CommandMessenger["notify!"](CommandMessenger, "Abort")
+              and_54_ = false
+            end
+          else
+            and_54_ = nil
+          end
+        end
+        or_50_ = and_54_
       end
-      or_50_ = and_54_
+      if or_50_ then
+        local fennel_options = Config["compiler-options"]
+        for fnl_path, lua_path in pairs(path_pairs) do
+          assert(not config_file_3f(fnl_path), "Abort. Attempted to compile config file")
+          local lua_lines = fennel_wrapper["compile-file"](fnl_path, fennel_options)
+          if (lua_lines == read_file(lua_path)) then
+            CommandMessenger["notify!"](CommandMessenger, ("Abort. Nothing has changed in " .. fnl_path))
+          else
+            local msg = (fnl_path .. " is compiled into " .. lua_path)
+            write_lua_file_21(lua_path, lua_lines)
+            CommandMessenger["notify!"](CommandMessenger, msg)
+          end
+        end
+        return nil
+      else
+        return nil
+      end
     end
-    if or_50_ then
-      local fennel_options = Config["compiler-options"]
-      for fnl_path, lua_path in pairs(path_pairs) do
-        assert(not config_file_3f(fnl_path), "Abort. Attempted to compile config file")
-        local lua_lines = fennel_wrapper["compile-file"](fnl_path, fennel_options)
-        if (lua_lines == read_file(lua_path)) then
-          CommandMessenger["notify!"](CommandMessenger, ("Abort. Nothing has changed in " .. fnl_path))
-        else
-          local msg = (fnl_path .. " is compiled into " .. lua_path)
-          write_lua_file_21(lua_path, lua_lines)
-          CommandMessenger["notify!"](CommandMessenger, msg)
-        end
-      end
-      return nil
-    else
-      return nil
-    end
+    cb = _45_
+    local cmd_opts = {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"}
+    vim.api.nvim_create_user_command("FnlCompileFile", cb, cmd_opts)
   end
-  vim.api.nvim_create_user_command("FnlCompileFile", _45_, {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"})
   local function _65_(_63_)
     local _arg_64_ = _63_["fargs"]
     local _3fpath = _arg_64_[1]
