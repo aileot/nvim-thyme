@@ -198,17 +198,16 @@ M["setup!"] = function(_3fopts)
   vim.api.nvim_create_user_command("FnlCompile", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   do
     local cb
-    local function _43_(_41_)
-      local _arg_42_ = _41_["fargs"]
-      local _3fpath = _arg_42_[1]
+    local function _42_(_41_)
+      local path = _41_["args"]
       local line1 = _41_["line1"]
       local line2 = _41_["line2"]
       local a = _41_
       local bufnr
-      if _3fpath then
-        bufnr = vim.fn.bufnr(_3fpath)
-      else
+      if path:find("^%s*$") then
         bufnr = 0
+      else
+        bufnr = vim.fn.bufnr(path)
       end
       local fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
       local cmd_history_opts0 = {method = "ignore"}
@@ -216,18 +215,18 @@ M["setup!"] = function(_3fopts)
       a.args = fnl_code
       return callback(a)
     end
-    cb = _43_
+    cb = _42_
     local cmd_opts = {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"}
     vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
-  local function _46_(_45_)
-    local glob_paths = _45_["fargs"]
-    local force_compile_3f = _45_["bang"]
+  local function _45_(_44_)
+    local glob_paths = _44_["fargs"]
+    local force_compile_3f = _44_["bang"]
     local fnl_paths
     if (0 == #glob_paths) then
       fnl_paths = {vim.api.nvim_buf_get_name(0)}
     else
-      local _47_
+      local _46_
       do
         local tbl_21_ = {}
         local i_22_ = 0
@@ -239,9 +238,9 @@ M["setup!"] = function(_3fopts)
           else
           end
         end
-        _47_ = tbl_21_
+        _46_ = tbl_21_
       end
-      fnl_paths = vim.fn.flatten(_47_, 1)
+      fnl_paths = vim.fn.flatten(_46_, 1)
     end
     local path_pairs
     do
@@ -260,9 +259,9 @@ M["setup!"] = function(_3fopts)
       path_pairs = tbl_16_
     end
     local existing_lua_files = {}
-    local or_51_ = force_compile_3f
-    if not or_51_ then
-      local _52_
+    local or_50_ = force_compile_3f
+    if not or_50_ then
+      local _51_
       do
         local tbl_21_ = {}
         local i_22_ = 0
@@ -279,26 +278,26 @@ M["setup!"] = function(_3fopts)
           else
           end
         end
-        _52_ = tbl_21_
+        _51_ = tbl_21_
       end
-      local and_55_ = _52_
-      if and_55_ then
+      local and_54_ = _51_
+      if and_54_ then
         if (0 < #existing_lua_files) then
-          local _56_ = vim.fn.confirm(("The following files have already existed:\n    " .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
-          if (_56_ == 2) then
-            and_55_ = true
+          local _55_ = vim.fn.confirm(("The following files have already existed:\n    " .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
+          if (_55_ == 2) then
+            and_54_ = true
           else
-            local _ = _56_
+            local _ = _55_
             CommandMessenger["notify!"](CommandMessenger, "Abort")
-            and_55_ = false
+            and_54_ = false
           end
         else
-          and_55_ = nil
+          and_54_ = nil
         end
       end
-      or_51_ = and_55_
+      or_50_ = and_54_
     end
-    if or_51_ then
+    if or_50_ then
       local fennel_options = Config["compiler-options"]
       for fnl_path, lua_path in pairs(path_pairs) do
         assert(not config_file_3f(fnl_path), "Abort. Attempted to compile config file")
@@ -316,25 +315,25 @@ M["setup!"] = function(_3fopts)
       return nil
     end
   end
-  vim.api.nvim_create_user_command("FnlCompileFile", _46_, {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"})
-  local function _66_(_64_)
-    local _arg_65_ = _64_["fargs"]
-    local _3fpath = _arg_65_[1]
-    local mods = _64_["smods"]
+  vim.api.nvim_create_user_command("FnlCompileFile", _45_, {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"})
+  local function _65_(_63_)
+    local _arg_64_ = _63_["fargs"]
+    local _3fpath = _arg_64_[1]
+    local mods = _63_["smods"]
     local input_path = vim.fn.expand((_3fpath or "%:p"))
     local output_path
     do
-      local _67_ = input_path:sub(-4)
-      if (_67_ == ".fnl") then
-        local _68_ = DependencyLogger["fnl-path->lua-path"](DependencyLogger, input_path)
-        if (nil ~= _68_) then
-          local lua_path = _68_
+      local _66_ = input_path:sub(-4)
+      if (_66_ == ".fnl") then
+        local _67_ = DependencyLogger["fnl-path->lua-path"](DependencyLogger, input_path)
+        if (nil ~= _67_) then
+          local lua_path = _67_
           output_path = lua_path
         else
-          local _ = _68_
-          local _69_ = (input_path:sub(1, -4) .. "lua")
-          if (nil ~= _69_) then
-            local lua_path = _69_
+          local _ = _67_
+          local _68_ = (input_path:sub(1, -4) .. "lua")
+          if (nil ~= _68_) then
+            local lua_path = _68_
             if file_readable_3f(lua_path) then
               output_path = lua_path
             else
@@ -344,14 +343,14 @@ M["setup!"] = function(_3fopts)
             output_path = nil
           end
         end
-      elseif (_67_ == ".lua") then
+      elseif (_66_ == ".lua") then
         if vim.startswith(input_path, lua_cache_prefix) then
           output_path = vim.api.nvim_get_runtime_file(input_path:sub(#lua_cache_prefix):gsub("%.lua$", ".fnl"):gsub("^", "*"), false)[1]
         else
           output_path = vim.fn.glob(input_path:gsub("/lua/", "/*/"):gsub("%.lua$", ".fnl"), false)
         end
       else
-        local _ = _67_
+        local _ = _66_
         output_path = error("expected a fnl or lua file, got", input_path)
       end
     end
@@ -365,6 +364,6 @@ M["setup!"] = function(_3fopts)
       end
     end
   end
-  return vim.api.nvim_create_user_command("FnlAlternate", _66_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
+  return vim.api.nvim_create_user_command("FnlAlternate", _65_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
 end
 return M

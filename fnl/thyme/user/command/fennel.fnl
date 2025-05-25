@@ -188,10 +188,10 @@
                                         :discard-last? true
                                         : compiler-options
                                         : cmd-history-opts}))
-    (let [cb (fn [{:fargs [?path] : line1 : line2 &as a}]
-               (let [bufnr (if ?path
-                               (vim.fn.bufnr ?path)
-                               0)
+    (let [cb (fn [{:args path : line1 : line2 &as a}]
+               (let [bufnr (if (path:find "^%s*$")
+                               0
+                               (vim.fn.bufnr path))
                      fnl-code (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
                                                               line2 true)
                                   (table.concat "\n"))
