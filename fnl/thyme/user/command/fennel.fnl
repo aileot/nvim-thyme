@@ -264,6 +264,9 @@
                     :bang true
                     :complete :file
                     :desc "Compile given fnl files, or current fnl file"}]
+      (command! :FnlFileCompile
+        cmd-opts
+        cb)
       (command! :FnlCompileFile
         cmd-opts
         cb))

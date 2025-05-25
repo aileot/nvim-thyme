@@ -320,6 +320,7 @@ M["setup!"] = function(_3fopts)
     end
     cb = _45_
     local cmd_opts = {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"}
+    vim.api.nvim_create_user_command("FnlFileCompile", cb, cmd_opts)
     vim.api.nvim_create_user_command("FnlCompileFile", cb, cmd_opts)
   end
   local function _65_(_63_)
