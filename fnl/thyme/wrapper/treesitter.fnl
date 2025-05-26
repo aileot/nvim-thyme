@@ -114,7 +114,7 @@
       ;; the end when the last char reaches vim.go.columns.
       (when (= whitespace-chunk (last hl-chunks))
         (table.remove hl-chunks))
-      hl-chunks)))
+      (values hl-chunks))))
 
 (fn text->hl-chunks [text ?opts]
   "Convert `text` into `chunks`, parsed with treesitter parser (\"fennel\" one
