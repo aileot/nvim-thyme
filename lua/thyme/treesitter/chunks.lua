@@ -86,6 +86,7 @@ local function compose_hl_chunks(text, lang_tree)
   local end_row = #vim.split(text, "\n", {plain = true})
   local end_col = vim.go.columns
   local whitespace_chunk = {" "}
+  local newline_chunk = {"\n"}
   local hl_chunk_matrix = new_matrix(end_row, end_col, whitespace_chunk)
   local cb
   local function _11_(ts_tree, tree)
@@ -134,10 +135,12 @@ local function compose_hl_chunks(text, lang_tree)
   local hl_chunks = {}
   for i = 1, end_row do
     for j = 1, end_col do
+      if ("\n" == hl_chunk_matrix[i][j][1]) then break end
       table.insert(hl_chunks, hl_chunk_matrix[i][j])
     end
+    table.insert(hl_chunks, newline_chunk)
   end
-  if (" " == hl_chunks[#hl_chunks][1]) then
+  if ("\n" ~= text:sub(-1)) then
     table.remove(hl_chunks)
   else
   end
