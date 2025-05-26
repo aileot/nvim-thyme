@@ -136,7 +136,7 @@ local function compose_hl_chunks(text, lang_tree)
       table.insert(hl_chunks, hl_chunk_matrix[i][j])
     end
   end
-  if (whitespace_chunk == hl_chunks[#hl_chunks]) then
+  if (" " == hl_chunks[#hl_chunks][1]) then
     table.remove(hl_chunks)
   else
   end
