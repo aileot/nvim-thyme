@@ -62,7 +62,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 > [!TIP]
 > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
-> directory.
+> directory. The relevant options are [fnl-dir][] and [macro-path][].
 
 ...and more features! So, this project started from scratch.
 
@@ -475,6 +475,8 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [configuration]: #%EF%B8%8F-configuration
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
+[fnl-dir]: ./docs/reference.md#fnl-dir
+[macro-path]: ./docs/reference.md#macro-path
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl
