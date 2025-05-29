@@ -76,6 +76,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
                                                                replacement)
                           _ old-cmdline)
                         old-cmdline)
+        last-lz vim.o.lazyredraw
         last-wcm vim.o.wildcharm
         tmp-wcm "\26"
         right-keys (case (new-cmdline:find old-cmdline 1 true)
@@ -87,8 +88,10 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
                  (vim.keycode)
                  (.. tmp-wcm))]
     (set vim.o.wcm (vim.fn.str2nr tmp-wcm))
+    (set vim.o.lazyredraw true)
     (vim.api.nvim_feedkeys keys "ni" false)
-    (set vim.o.wcm last-wcm)))
+    (set vim.o.wcm last-wcm)
+    (set vim.o.lazyredraw last-lz)))
 
 (λ M.enable-dropin-paren! []
   "Realize dropin-paren feature.
