@@ -22,7 +22,9 @@
               path1 (prepare-config-fnl-file! (.. mod1 ".fnl") "1")
               path2 (prepare-config-fnl-file! (.. mod2 ".fnl") "2")]
           (require mod1)
+          (tset package.loaded mod1 nil)
           (require mod2)
+          (tset package.loaded mod2 nil)
           (vim.cmd.ThymeRollbackUnmountAll)
           (assert.is_same []
                           (vim.fn.getcompletion "ThymeRollbackUnmount "
@@ -42,7 +44,5 @@
                                                   (vim.fn.getcompletion "ThymeRollbackUnmount "
                                                                         "cmdline"))
           (vim.cmd.ThymeRollbackUnmountAll)
-          (tset package.loaded mod1 nil)
-          (tset package.loaded mod2 nil)
           (vim.fn.delete path1)
           (vim.fn.delete path2))))))
