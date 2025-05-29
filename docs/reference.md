@@ -174,7 +174,7 @@ You can filter out specific notifications by this option. See
 
 The default compiler-options for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl]. If `nil`,
-it inherits the values from [compiler-options](#compiler-options) above.
+it inherits the values from the root [compiler-options](#compiler-options) above.
 
 ### `command.cmd-history.method`
 
