@@ -15,6 +15,19 @@ jobs:
           - nightly
     steps:
       - uses: actions/checkout@v4
+      - name: Get date
+        id: get-date
+        run: |
+          echo "date=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_OUTPUT
+      - uses: actions/cache/restore@v4
+        id: cache-primes-restore
+        with:
+          key: ${{ runner.os }}-${{ matrix.nvim_version }}-${{ steps.get-date.outputs.date }}
+          path: |
+            $HOME/.cargo/bin
+            $HOME/.lua
+            $HOME/.luarocks
+            $HOME/nvim-${{ matrix.nvim_version }}
       # TODO: Revert to gh-actions-lua when it's fixed to be up-to-date, and
       # remove unnecessary `sudo` in installing test dependencies.
       - name: Install luarocks
@@ -36,6 +49,14 @@ jobs:
         with:
           neovim: true
           version: ${{ matrix.nvim_version }}
+      - uses: actions/cache/save@v4
+        with:
+          key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
+          path: |
+            $HOME/.cargo/bin
+            $HOME/.lua
+            $HOME/.luarocks
+            $HOME/nvim-${{ matrix.nvim_version }}
       - name: Run tests
         env:
           VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending"
