@@ -231,9 +231,9 @@ default:
 ```
 
 The format is `{mode {action lhs}}`.\
-The keys will be only mapped on a buffer whose filetype is "fennel" other than
+The keys will be only mapped on a buffer whose filetype is `"fennel"` other than
 `alternate-file`; the key for `alternate-file` will be also mapped when the
-filetype is "lua" addition to "fennel".
+filetype is `"lua"` addition to `"fennel"`.
 
 Available Actions:
 
