@@ -129,7 +129,7 @@ and play around with Fennel first.
 },
 ```
 
-> ![IMPORTANT]
+> [!IMPORTANT]
 > With the config above, you can only load Fennel modules _after_ the `init`
 > setup is done.
 > In other words, you cannot load Fennel modules _before_ the setup of
