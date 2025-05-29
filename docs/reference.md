@@ -103,10 +103,38 @@ For the path management of macro files, see [macro-path](#macro-path).
 
 ### `macro-path`
 
-(default:
-`"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
+<details>
+<summary>
+(default: a too long string)
+</summary>
 
-The path patterns for `fennel.macro-path` to find Fennel macro module path.
+```fennel
+;; A string created by concatenating one of the following tables with `;` as the delimiter.
+
+;; If you have `fnl/` directory at `stdpath("config")`,
+["./fnl/?.fnlm"
+ "./fnl/?/init.fnlm"
+ "./fnl/?.fnl"
+ "./fnl/?/init-macros.fnl"
+ "./fnl/?/init.fnl"]
+
+;; or, if you don't have `fnl/` directory at `stdpath("config")`,
+["./fnl/?.fnlm"
+ "./fnl/?/init.fnlm"
+ "./fnl/?.fnl"
+ "./fnl/?/init-macros.fnl"
+ "./fnl/?/init.fnl"
+ "%s/lua/?.fnlm"
+ "%s/lua/?/init.fnlm"
+ "%s/lua/?.fnl"
+ "%s/lua/?/init-macros.fnl"
+ "%s/lua/?/init.fnl"]
+ ;; where %s represents `stdpath("config")` each.
+```
+
+</details>
+
+The path patterns for `fennel.macro-path` to find Fennel macro modules.
 
 Relative path markers (`./`) are internally copied and replaced with each
 directory path on `&runtimepath`. (Feel free to skip over it, but the
