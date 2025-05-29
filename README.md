@@ -146,7 +146,7 @@ It's recommended to define a <code>bootstrap</code> function for simplicity…
 </summary>
 
 ```lua
-local function bootstrap(name, url)
+local function bootstrap(url)
   -- To manage the version of repo, the path should be where your plugin manager will download it.
   local name = url:gsub("^.*/", "")
   local path = vim.fn.stdpath("data") .. "/lazy/" .. name
