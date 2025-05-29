@@ -57,3 +57,70 @@
       (assert.equals "3" (execute (.. "FnlFile " fnl-path)))
       (vim.cmd (.. "bdelete! " buf-name))
       (vim.fn.delete fnl-path))))
+
+(describe* "command :FnlCompile"
+  (setup (fn []
+           (thyme.setup)))
+  (it* "should return a Lua compile result of a fennel expression"
+    (assert.equals "return (1 + 2)" (execute "FnlCompile (+ 1 2)"))))
+
+(describe* "command :FnlBufCompile"
+  (setup (fn []
+           (thyme.setup)))
+  (it* "should return a Lua compile result of a fennel buffer"
+    (let [buf-name "foobar.fnl"]
+      (vim.cmd.edit buf-name)
+      (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+      (assert.equals "return (1 + 2)" (execute (.. "FnlBufCompile " buf-name)))
+      (vim.cmd (.. "bdelete! " buf-name))))
+  (it* "should return a Lua compile result of a unwritten buffer, instead of the actual file"
+    (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
+          buf-name fnl-path]
+      (vim.cmd.edit buf-name)
+      (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2 3)"])
+      (assert.equals "return (1 + 2 + 3)"
+                     (execute (.. "FnlBufCompile " buf-name)))
+      (vim.cmd (.. "bdelete! " buf-name))
+      (vim.fn.delete fnl-path))))
+
+(describe* "command :FnlCompileBuf"
+  (setup (fn []
+           (thyme.setup)))
+  (it* "should return a Lua compile result of a fennel buffer"
+    (let [buf-name "foobar.fnl"]
+      (vim.cmd.edit buf-name)
+      (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+      (assert.equals "return (1 + 2)" (execute (.. "FnlCompileBuf " buf-name)))
+      (vim.cmd (.. "bdelete! " buf-name))))
+  (it* "should return a Lua compile result of a unwritten buffer, instead of the actual file"
+    (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
+          buf-name fnl-path]
+      (vim.cmd.edit buf-name)
+      (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2 3)"])
+      (assert.equals "return (1 + 2 + 3)"
+                     (execute (.. "FnlCompileBuf " buf-name)))
+      (vim.cmd (.. "bdelete! " buf-name))
+      (vim.fn.delete fnl-path))))
+
+;; (describe* "command :FnlFileCompile"
+;;   ;; FIXME: Make `:FnlFileCompile` behave as described in the documentation.
+;;   (setup (fn []
+;;            (thyme.setup)))
+;;   (after_each (fn []
+;;                 (remove-context-files!)))
+;;   (it* "should return a Lua compile result of a fennel buffer"
+;;     (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
+;;           buf-name fnl-path]
+;;       (vim.cmd.edit buf-name)
+;;       (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+;;       (assert.equals "return (1 + 2)" (execute (.. "FnlFileCompile " buf-name)))
+;;       (vim.cmd (.. "bdelete! " buf-name))
+;;       (vim.fn.delete fnl-path)))
+;;   (it* "should return a Lua compile result of an actual file, instead of a unwritten buffer"
+;;     (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
+;;           buf-name fnl-path]
+;;       (vim.cmd.edit buf-name)
+;;       (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2 3)"])
+;;       (assert.equals "return (1 + 2)" (execute (.. "FnlFileCompile " fnl-path)))
+;;       (vim.cmd (.. "bdelete! " buf-name))
+;;       (vim.fn.delete fnl-path))))
