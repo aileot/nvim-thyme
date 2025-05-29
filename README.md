@@ -9,7 +9,7 @@ _Also welcome, **non-lispers**_\
 who are tired to balance quotes and parentheses for handy tests in Cmdline
 mode:\
 How about trying **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
-(_uh..., typos?_ ¯\\\_(ツ)\_/¯),\
+(_uh…, typos?_ ¯\\\_(ツ)\_/¯),\
 or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
 
 [![badge/test][]][url/to/workflow/test] [![badge/semver][]][url/to/semver]
@@ -64,7 +64,7 @@ The optional features can be enabled with few startup overhead thanks to
 > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
 > directory. The relevant options are [fnl-dir][] and [macro-path][].
 
-...and more features! So, this project started from scratch.
+…and more features! So, this project started from scratch.
 
 ## ✔️ Requirements
 
@@ -92,7 +92,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 <details>
 <summary>
-It's recommended to define a <code>bootstrap</code> function for simplicity...
+It's recommended to define a <code>bootstrap</code> function for simplicity…
 
 (The collapse shows a snippet for
 <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>.)
@@ -418,7 +418,7 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 [call stack]: https://en.wikipedia.org/wiki/Call_stack
 -->
 
-### Misleading...?
+### Misleading…?
 
 - As you may have noticed, the term of _Zero overhead_ only means it does not
   affect startup time once compiled at an nvim runtime.
