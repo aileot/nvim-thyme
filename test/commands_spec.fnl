@@ -45,8 +45,8 @@
               fnl-filename (.. mod ".fnl")
               fnl-path (prepare-config-fnl-file! fnl-filename ctx1)]
           (require mod)
-          (vim.fn.delete fnl-path)
           (tset package.loaded mod nil)
+          (vim.fn.delete fnl-path)
           (->> (+ (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :cache)
                                                        :thyme))
                   (vim.fn.isdirectory (vim.fs.joinpath (vim.fn.stdpath :data)
@@ -81,6 +81,7 @@
             (vim.cmd.edit fnl-path)
             (assert.is_same (vim.fn.expand "%:t") fnl-filename)
             (require mod-name)
+            (tset package.loaded mod-name nil)
             (vim.cmd :FnlAlternate)
             (assert.is_same (vim.fn.expand "%:t") lua-filename)
             (let [lua-path (vim.fn.expand "%:p")]
@@ -90,8 +91,7 @@
               (vim.cmd.bdelete fnl-path)
               (vim.cmd.bdelete lua-path)
               (vim.fn.delete fnl-path)
-              (vim.fn.delete lua-path))
-            (set package.loaded.foo nil)))
+              (vim.fn.delete lua-path))))
         (describe* "(for the files not compiled by thyme)"
           (it* "keeps /path/to/foo.fnl if /path/to/foo.lua does not exist."
             (let [fnl-path (prepare-context-fnl-file! fnl-filename "1")]
