@@ -30,6 +30,7 @@
                          (when use-lua-dir? (.. std-config "/lua/?.fnlm"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnlm"))
                          (when use-lua-dir? (.. std-config "/lua/?.fnl"))
+                         (when use-lua-dir? (.. std-config "/lua/?/init-macros.fnl"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                         (table.concat ";"))
         ;; (experimental)
