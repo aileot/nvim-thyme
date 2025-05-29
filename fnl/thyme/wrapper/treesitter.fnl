@@ -1,4 +1,4 @@
-(import-macros {: when-not : inc : dec : last} :thyme.macros)
+(import-macros {: when-not : inc : dec : first : last} :thyme.macros)
 
 (local {: validate-type : new-matrix} (require :thyme.util.general))
 (local {: char-by-char : uncouple-substrings} (require :thyme.util.iterator))
@@ -112,9 +112,9 @@
           (table.insert hl-chunks (. hl-chunk-matrix i j))))
       ;; NOTE: nvim_echo results are displayed as if newline is inserted at
       ;; the end when the last char reaches vim.go.columns.
-      (when (= whitespace-chunk (last hl-chunks))
+      (when (= " " (first (last hl-chunks)))
         (table.remove hl-chunks))
-      hl-chunks)))
+      (values hl-chunks))))
 
 (fn text->hl-chunks [text ?opts]
   "Convert `text` into `chunks`, parsed with treesitter parser (\"fennel\" one
