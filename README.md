@@ -82,7 +82,7 @@ The optional features can be enabled with few startup overhead thanks to
 - The [parinfer-rust][parinfer-rust] on `&rtp` (to improve UX on the commands
   and keymaps)
 
-## 🎉 Orientation
+## 🎉 Welcome Aboard
 
 (If you've decided to go along with Fennel, please skip to the [Installation][] section below.)
 
