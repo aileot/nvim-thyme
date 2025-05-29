@@ -87,7 +87,7 @@ The optional features can be enabled with few startup overhead thanks to
 Welcome to the Neovim x Fennel community!
 
 If you have never written Fennel before,
-you can try Fennel on your favorite plugin manager!
+you can try Fennel on your favorite plugin manager.
 For `lazy.nvim`,
 add the following snippet to your specs
 and play around with Fennel first.
