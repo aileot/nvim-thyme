@@ -247,7 +247,7 @@ with recommended config. See the [Configuration][configuration] section below.
 
 Ensure the setup by `:checkhealth thyme`.
 
-## 🎉 Interfaces
+## 📖 Interfaces
 
 Please read the [reference][reference] for the details and additional features.
 
