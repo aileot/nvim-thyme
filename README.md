@@ -84,7 +84,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 ## 🎉 Orientation
 
-(Please go to the [Installation][] section below, if you've decided to go along with Fennel.)
+(If you've decided to go along with Fennel, please go to the [Installation][] section below.)
 
 For newcomers who have never written Fennel before,
 you can try Fennel on your favorite plugin manager!
