@@ -62,8 +62,9 @@ M.complete = function(pattern, replacement)
   else
     new_cmdline = old_cmdline
   end
+  local last_lz = vim.o.lazyredraw
   local last_wcm = vim.o.wildcharm
-  local tmp_wcm = "\26"
+  local tmp_wcm = ""
   local right_keys
   do
     local _12_ = new_cmdline:find(old_cmdline, 1, true)
@@ -78,8 +79,10 @@ M.complete = function(pattern, replacement)
   end
   local keys = (vim.keycode((("<C-BSlash>e%q<CR>"):format(new_cmdline) .. right_keys)) .. tmp_wcm)
   vim.o.wcm = vim.fn.str2nr(tmp_wcm)
+  vim.o.lazyredraw = true
   vim.api.nvim_feedkeys(keys, "ni", false)
   vim.o.wcm = last_wcm
+  vim.o.lazyredraw = last_lz
   return nil
 end
 M["enable-dropin-paren!"] = function()
