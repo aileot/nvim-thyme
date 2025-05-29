@@ -84,14 +84,15 @@ The optional features can be enabled with few startup overhead thanks to
 
 ## 🎉 Welcome Aboard
 
-(If you've decided to go along with Fennel, please skip to the [Installation][] section below.)
+Welcome to the Neovim x Fennel community!
 
-For newcomers who have never written Fennel before,
+If you have never written Fennel before,
 you can try Fennel on your favorite plugin manager!
-
 For `lazy.nvim`,
 add the following snippet to your specs
 and play around with Fennel first.
+
+(If you've decided to go along with Fennel, please skip to the [Installation][] section below.)
 
 ```lua
 ---@type LazySpec
