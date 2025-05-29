@@ -84,6 +84,8 @@ The optional features can be enabled with few startup overhead thanks to
 
 ## 🎉 Orientation
 
+(Please go to the [Installation][] section below, if you've decided to go along with Fennel.)
+
 For newcomers who have never written Fennel before,
 you can try Fennel on your favorite plugin manager!
 
@@ -125,8 +127,6 @@ and play around with Fennel first.
   build = "cargo build --release",
 },
 ```
-
-Please go to the [Installation][] section below, if you've decided to go along with Fennel.
 
 ## 📦 Installation
 
