@@ -84,6 +84,52 @@ The optional features can be enabled with few startup overhead thanks to
 - The [parinfer-rust][parinfer-rust] on `&rtp` (to improve UX on the commands
   and keymaps)
 
+## 🎉 Orientation
+
+For newcomers who have never written Fennel before,
+you can try Fennel on your favorite plugin manager!
+
+For `lazy.nvim`,
+add the following snippet to your specs
+and play around with Fennel first.
+
+```lua
+---@type LazySpec
+{
+  "aileot/nvim-thyme",
+  version = "~v1.0.0",
+  dependencies = {
+    { "https://git.sr.ht/~technomancy/fennel" }
+  },
+  lazy = false,
+  priority = 1000,
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+  init = function()
+    -- Make your Fennel modules loadable.
+    table.insert(package.loaders, function(...)
+      return require("thyme").loader(...)
+    end)
+    local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
+    vim.opt.rtp:prepend(thyme_cache_prefix)
+  end,
+  config = function()
+    -- Create the helper interfaces.
+    require("thyme").setup()
+  end,
+},
+-- Optional
+{
+  "aileot/nvim-laurel",
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+},
+{
+  "eraserhd/parinfer-rust",
+  build = "cargo build --release",
+},
+```
+
+Please go to the [Installation][] section below, if you've decided to go along with Fennel.
+
 ## 📦 Installation
 
 ### 1. Ensure to Install Plugins (3 steps)
