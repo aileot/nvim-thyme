@@ -9,7 +9,7 @@ _Also welcome, **non-lispers**_\
 who are tired to balance quotes and parentheses for handy tests in Cmdline
 mode:\
 How about trying **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
-(_uh..., typos?_ ¯\\\_(ツ)\_/¯),\
+(_uh…, typos?_ ¯\\\_(ツ)\_/¯),\
 or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
 
 [![badge/test][]][url/to/workflow/test] [![badge/semver][]][url/to/semver]
@@ -62,9 +62,9 @@ The optional features can be enabled with few startup overhead thanks to
 
 > [!TIP]
 > Optionally, you can manage your Fennel files under `lua/` instead of `fnl/`
-> directory.
+> directory. The relevant options are [fnl-dir][] and [macro-path][].
 
-...and more features! So, this project started from scratch.
+…and more features! So, this project started from scratch.
 
 ## ✔️ Requirements
 
@@ -84,6 +84,52 @@ The optional features can be enabled with few startup overhead thanks to
 - The [parinfer-rust][parinfer-rust] on `&rtp` (to improve UX on the commands
   and keymaps)
 
+## 🎉 Orientation
+
+For newcomers who have never written Fennel before,
+you can try Fennel on your favorite plugin manager!
+
+For `lazy.nvim`,
+add the following snippet to your specs
+and play around with Fennel first.
+
+```lua
+---@type LazySpec
+{
+  "aileot/nvim-thyme",
+  version = "~v1.0.0",
+  dependencies = {
+    { "https://git.sr.ht/~technomancy/fennel" }
+  },
+  lazy = false,
+  priority = 1000,
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+  init = function()
+    -- Make your Fennel modules loadable.
+    table.insert(package.loaders, function(...)
+      return require("thyme").loader(...)
+    end)
+    local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
+    vim.opt.rtp:prepend(thyme_cache_prefix)
+  end,
+  config = function()
+    -- Create the helper interfaces.
+    require("thyme").setup()
+  end,
+},
+-- Optional
+{
+  "aileot/nvim-laurel",
+  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+},
+{
+  "eraserhd/parinfer-rust",
+  build = "cargo build --release",
+},
+```
+
+Please go to the [Installation][] section below, if you've decided to go along with Fennel.
+
 ## 📦 Installation
 
 ### 1. Ensure to Install Plugins (3 steps)
@@ -92,7 +138,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 <details>
 <summary>
-It's recommended to define a <code>bootstrap</code> function for simplicity...
+It's recommended to define a <code>bootstrap</code> function for simplicity…
 
 (The collapse shows a snippet for
 <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>.)
@@ -247,7 +293,7 @@ with recommended config. See the [Configuration][configuration] section below.
 
 Ensure the setup by `:checkhealth thyme`.
 
-## 🎉 Interfaces
+## 📖 Interfaces
 
 Please read the [reference][reference] for the details and additional features.
 
@@ -418,7 +464,7 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 [call stack]: https://en.wikipedia.org/wiki/Call_stack
 -->
 
-### Misleading...?
+### Misleading…?
 
 - As you may have noticed, the term of _Zero overhead_ only means it does not
   affect startup time once compiled at an nvim runtime.
@@ -475,6 +521,8 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [configuration]: #%EF%B8%8F-configuration
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
+[fnl-dir]: ./docs/reference.md#fnl-dir
+[macro-path]: ./docs/reference.md#macro-path
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl

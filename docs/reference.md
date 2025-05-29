@@ -1,6 +1,7 @@
 # Reference
 
 <!--toc:start-->
+
 - [Reference](#reference)
   - [Options in `.nvim-thyme.fnl`](#options-in-nvim-thymefnl)
     - [`compiler-options`](#compiler-options)
@@ -103,10 +104,38 @@ For the path management of macro files, see [macro-path](#macro-path).
 
 ### `macro-path`
 
-(default:
-`"./fnl/?.fnlm;./fnl/?/init.fnlm;./fnl/?.fnl;./fnl/?/init-macros.fnl;./fnl/?/init.fnl"`)
+<details>
+<summary>
+(default: a too long string)
+</summary>
 
-The path patterns for `fennel.macro-path` to find Fennel macro module path.
+```fennel
+;; A string created by concatenating one of the following tables with `;` as the delimiter.
+
+;; If you have `fnl/` directory at `stdpath("config")`,
+["./fnl/?.fnlm"
+ "./fnl/?/init.fnlm"
+ "./fnl/?.fnl"
+ "./fnl/?/init-macros.fnl"
+ "./fnl/?/init.fnl"]
+
+;; or, if you don't have `fnl/` directory at `stdpath("config")`,
+["./fnl/?.fnlm"
+ "./fnl/?/init.fnlm"
+ "./fnl/?.fnl"
+ "./fnl/?/init-macros.fnl"
+ "./fnl/?/init.fnl"
+ "%s/lua/?.fnlm"
+ "%s/lua/?/init.fnlm"
+ "%s/lua/?.fnl"
+ "%s/lua/?/init-macros.fnl"
+ "%s/lua/?/init.fnl"]
+ ;; where %s represents `stdpath("config")` each.
+```
+
+</details>
+
+The path patterns for `fennel.macro-path` to find Fennel macro modules.
 
 Relative path markers (`./`) are internally copied and replaced with each
 directory path on `&runtimepath`. (Feel free to skip over it, but the
@@ -146,7 +175,7 @@ You can filter out specific notifications by this option. See
 
 The default compiler-options for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl]. If `nil`,
-it inherits the values from [compiler-options](#compiler-options) above.
+it inherits the values from the root [compiler-options](#compiler-options) above.
 
 ### `command.cmd-history.method`
 
@@ -172,7 +201,7 @@ Available methods:
 This option determines the behavior for
 [Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl].
 
-This option works only when [parinfer-rust][parinfer-rust] integration is
+This option only works when [parinfer-rust][parinfer-rust] integration is
 activated and the option
 [command.cmd-history.method][command.cmd-history.method] is set to `"overwrite"`
 or `"append"`.
@@ -203,9 +232,9 @@ default:
 ```
 
 The format is `{mode {action lhs}}`.\
-The keys will be only mapped on a buffer whose filetype is "fennel" other than
+The keys will be only mapped on a buffer whose filetype is `"fennel"` other than
 `alternate-file`; the key for `alternate-file` will be also mapped when the
-filetype is "lua" addition to "fennel".
+filetype is `"lua"` addition to `"fennel"`.
 
 Available Actions:
 
