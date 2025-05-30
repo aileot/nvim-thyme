@@ -83,11 +83,35 @@ local function report_imported_macros()
   reporter = _12_
   return each_file(reporter, root)
 end
-local function _14_()
+local function report_mounted_paths()
+  report.start("Thyme Mounted Paths")
+  local mounted_paths = RollbackManager["list-mounted-paths"]()
+  if next(mounted_paths) then
+    local resolved_paths
+    do
+      local tbl_21_ = {}
+      local i_22_ = 0
+      for _, path in ipairs(mounted_paths) do
+        local val_23_ = vim.uv.fs_realpath(path)
+        if (nil ~= val_23_) then
+          i_22_ = (i_22_ + 1)
+          tbl_21_[i_22_] = val_23_
+        else
+        end
+      end
+      resolved_paths = tbl_21_
+    end
+    return report.info(("The mounted paths:\n- `%s`"):format(table.concat(resolved_paths, "`\n- `")))
+  else
+    return report.info("No paths are mounted.")
+  end
+end
+local function _16_()
   report_integrations()
   report_thyme_disk_info()
   report_fennel_paths()
   report_thyme_config()
+  report_mounted_paths()
   return report_imported_macros()
 end
-return {check = _14_}
+return {check = _16_}

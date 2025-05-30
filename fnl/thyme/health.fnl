@@ -90,22 +90,24 @@
                          (report.info msg)))))]
     (each-file reporter root)))
 
-;; TODO: Replace `.list-mounted-paths`, or just remove this check?
-;; (fn report-mounted-paths []
-;;   (report.start "Thyme Mounted Paths")
-;;   (let [mounted-paths (RollbackManager.list-mounted-paths)]
-;;     (if (next mounted-paths)
-;;         (do
-;;           ;; TODO: Split reports per rollback kind: config, macro, and module
-;;           (report.info (-> "Th mounted paths:\n- `%s`"
-;;                            (: :format
-;;                               (-> mounted-paths
-;;                                   (table.concat "`\n- `"))))))
-;;         (report.info "No paths are mounted."))))
+(fn report-mounted-paths []
+  (report.start "Thyme Mounted Paths")
+  ;; TODO: Replace `.list-mounted-paths`, or just remove this check?
+  (let [mounted-paths (RollbackManager.list-mounted-paths)]
+    (if (next mounted-paths)
+        (let [resolved-paths (icollect [_ path (ipairs mounted-paths)]
+                               (vim.uv.fs_realpath path))]
+          ;; TODO: Split reports per rollback kind: config, macro, and module
+          (report.info (-> "The mounted paths:\n- `%s`"
+                           (: :format
+                              (-> resolved-paths
+                                  (table.concat "`\n- `"))))))
+        (report.info "No paths are mounted."))))
 
 {:check (fn []
           (report-integrations)
           (report-thyme-disk-info)
           (report-fennel-paths)
           (report-thyme-config)
+          (report-mounted-paths)
           (report-imported-macros))}
