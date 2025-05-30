@@ -221,17 +221,18 @@ The default compiler-options for `nvim-thyme` operator keymaps like
 
 ### `keymap.mappings`
 
-default:
+(default: `{}`)
+
+The format is `{mode {action lhs}}`. For example,
 
 ```fennel
-{[:n :x] {:alternate-file "<LocalLeader>a"
-          :operator-echo-compile-string "<LocalLeader>s"
+{:n {:alternate-file "<LocalLeader>a"}
+ [:n :x] {:operator-echo-compile-string "<LocalLeader>s"
           :operator-echo-eval "<LocalLeader>e"
           :operator-echo-eval-compiler "<LocalLeader>c"
           :operator-echo-macrodebug "<LocalLeader>m"}}
 ```
 
-The format is `{mode {action lhs}}`.\
 The keys will be only mapped on a buffer whose filetype is `"fennel"` other than
 `alternate-file`; the key for `alternate-file` will be also mapped when the
 filetype is `"lua"` addition to `"fennel"`.
