@@ -35,7 +35,7 @@
               ];
           }))
 
-          luajitPackages.vusted
+          lua51Packages.vusted
         ];
       };
     });
