@@ -16,6 +16,9 @@ or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
 [![badge/license][]][url/to/license]\
 [![badge/fennel][]][url/to/fennel]
 
+<!-- TODO: Adjust the badge style to the others -->
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/aileot/nvim-thyme)
+
 <!--
 NOTE: The colors come from the palette of catppuccin-mocha:
 https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palettes
