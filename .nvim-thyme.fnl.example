@@ -82,8 +82,7 @@
                            :operator-echo-macrodebug "<LocalLeader>m"}
                        ;; NOTE: "print" versions will add the outputs to the
                        ;; command history.
-                       :x {:alternate-file "<LocalLeader>a"
-                           :operator-print-compile-string "<LocalLeader>s"
+                       :x {:operator-print-compile-string "<LocalLeader>s"
                            :operator-print-eval "<LocalLeader>e"
                            :operator-print-eval-compiler "<LocalLeader>c"
                            :operator-print-macrodebug "<LocalLeader>m"}}}
