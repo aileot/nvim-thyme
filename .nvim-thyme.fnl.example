@@ -39,6 +39,8 @@
                                           (true mod) mod.notify)
                                         (case (pcall require :mini.notify)
                                           (true mod) (mod.make_notify))
+                                        (case (pcall require :snacks)
+                                          (true mod) (?. mod.notifier :notify))
                                         vim.notify)]
                  ;; Extract scope
                  (case (msg:match "^thyme%((.-)%): ")
