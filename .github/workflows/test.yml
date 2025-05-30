@@ -15,16 +15,28 @@ jobs:
           - nightly
     steps:
       - uses: actions/checkout@v4
-      - uses: leafo/gh-actions-lua@v11
-        with:
-          luaVersion: "luajit-openresty"
-      - uses: leafo/gh-actions-luarocks@v5
-      - name: Install test dependencies in Luarocks
-        run: |
-          luarocks --lua-version=5.1 install fennel
-          luarocks --lua-version=5.1 install vusted
-      - name: Install cargo for parinfer-rust dependent test
-        uses: moonrepo/setup-rust@v1
+      - uses: DeterminateSystems/nix-installer-action@v17
+      # TODO: Revert to gh-actions-lua when the actions are up-to-date since
+      # nix-installer-actions does not run on `act` as is a known issue.
+      # - uses: leafo/gh-actions-lua@v11
+      #   with:
+      #     luaVersion: "luajit-openresty"
+      # - name: Install test dependencies in Luarocks
+      #   run: |
+      #     luarocks --lua-version=5.1 install fennel
+      #     luarocks --lua-version=5.1 install vusted
+      # - name: Install cargo for parinfer-rust dependent test
+      #   uses: moonrepo/setup-rust@v1
+      # - uses: leafo/gh-actions-lua@v10
+      #   with:
+      #     luaVersion: "luajit-openresty"
+      # - uses: leafo/gh-actions-luarocks@v5
+      # - name: Install test dependencies in Luarocks
+      #   run: |
+      #     luarocks --lua-version=5.1 install fennel
+      #     luarocks --lua-version=5.1 install vusted
+      # - name: Install cargo for parinfer-rust dependent test
+      #   uses: moonrepo/setup-rust@v1
       - uses: rhysd/action-setup-vim@v1
         id: vim
         with:
@@ -35,5 +47,6 @@ jobs:
           VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending"
           VUSTED_EXTRA_ARGS: ""
         run: |
+          nix develop
           make -j build
           make test
