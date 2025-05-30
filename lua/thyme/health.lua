@@ -12,12 +12,8 @@ local _local_5_ = require("thyme.util.pool")
 local get_root_of_pool = _local_5_["get-root"]
 local _local_6_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_6_["get-runtime-files"]
-local _local_7_ = require("thyme.dependency.io")
-local macro_recorded_3f = _local_7_["macro-recorded?"]
-local peek_module_name = _local_7_["peek-module-name"]
-local peek_fnl_path = _local_7_["peek-fnl-path"]
-local _local_8_ = require("thyme.dependency.unit")
-local get_root_of_modmap = _local_8_["get-root"]
+local _local_7_ = require("thyme.dependency.unit")
+local get_root_of_modmap = _local_7_["get-root"]
 local RollbackManager = require("thyme.rollback.manager")
 local report_start, report_info, report_ok, report_warn, report_error = nil, nil, nil, nil, nil
 do
@@ -41,12 +37,12 @@ local function report_integrations()
   end
   local dependency_files = {"parser/fennel.so"}
   for _, file in ipairs(dependency_files) do
-    local _11_ = get_runtime_files({file}, false)
-    if ((_G.type(_11_) == "table") and (nil ~= _11_[1])) then
-      local path = _11_[1]
+    local _10_ = get_runtime_files({file}, false)
+    if ((_G.type(_10_) == "table") and (nil ~= _10_[1])) then
+      local path = _10_[1]
       report_ok(("`%s` is detected at `%s`."):format(file, path))
     else
-      local _0 = _11_
+      local _0 = _10_
       report_warn(("missing `%s`."):format(file))
     end
   end
@@ -70,28 +66,10 @@ local function report_fennel_paths()
   report_info(("fennel.path:\n- `%s`"):format(fennel.path:gsub(";", "`\n- `")))
   return report_info(("fennel.macro-path:\n- `%s`"):format(fennel["macro-path"]:gsub(";", "`\n- `")))
 end
-local function report_imported_macros()
-  report_start("Thyme Imported Macros")
-  local root = get_root_of_modmap()
-  local reporter
-  local function _13_(log_path)
-    if macro_recorded_3f(log_path) then
-      local module_name = peek_module_name(log_path)
-      local fnl_path = peek_fnl_path(log_path)
-      local msg = ("%s\n- source file:\n  `%s`\n- dependency-map file:\n  `%s`"):format(module_name, fnl_path, log_path)
-      return report_info(msg)
-    else
-      return nil
-    end
-  end
-  reporter = _13_
-  return each_file(reporter, root)
-end
-local function _15_()
+local function _12_()
   report_integrations()
   report_thyme_disk_info()
   report_fennel_paths()
-  report_imported_macros()
   return report_thyme_config()
 end
-return {check = _15_}
+return {check = _12_}
