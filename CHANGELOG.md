@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.3](https://github.com/aileot/nvim-thyme/compare/v1.0.2...v1.0.3) (2025-05-30)
+
+
+### Bug Fixes
+
+* **config:** remove default `keymap.mappings` ([#31](https://github.com/aileot/nvim-thyme/issues/31)) ([36c8cd7](https://github.com/aileot/nvim-thyme/commit/36c8cd72f7bffed7a1827e7cfb4f28fb667f8a27)), closes [#29](https://github.com/aileot/nvim-thyme/issues/29)
+* **example:** comment out duplicated `keymap.mappings` value ([#35](https://github.com/aileot/nvim-thyme/issues/35)) ([a41d84a](https://github.com/aileot/nvim-thyme/commit/a41d84af4be8337d2b604de645edf81ee7e7788a))
+* **health:** disable broken health check ([#28](https://github.com/aileot/nvim-thyme/issues/28)) ([0f2cdc9](https://github.com/aileot/nvim-thyme/commit/0f2cdc9d466f9b7b2529e2477b0b08a6c22ae5b6))
+
 ## [1.0.2](https://github.com/aileot/nvim-thyme/compare/v1.0.1...v1.0.2) (2025-05-29)
 
 
