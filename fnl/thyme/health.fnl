@@ -7,8 +7,6 @@
 (local {:get-root get-root-of-backup} (require :thyme.rollback.manager))
 (local {:get-root get-root-of-pool} (require :thyme.util.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
-(local {: macro-recorded? : peek-module-name : peek-fnl-path}
-       (require :thyme.dependency.io))
 
 (local {:get-root get-root-of-modmap} (require :thyme.dependency.unit))
 
@@ -72,20 +70,21 @@
   (report-info (-> "fennel.macro-path:\n- `%s`"
                    (: :format (fennel.macro-path:gsub ";" "`\n- `")))))
 
-(fn report-imported-macros []
-  (report-start "Thyme Imported Macros")
-  (let [root (get-root-of-modmap)
-        reporter (fn [log-path]
-                   (when (macro-recorded? log-path)
-                     (let [module-name (peek-module-name log-path)
-                           fnl-path (peek-fnl-path log-path)
-                           msg (: "%s
-- source file:
-  `%s`
-- dependency-map file:
-  `%s`" :format module-name fnl-path log-path)]
-                       (report-info msg))))]
-    (each-file reporter root)))
+;; (fn report-imported-macros []
+;;   (report-start "Thyme Imported Macros")
+;;   (let [root (get-root-of-modmap)
+;;         reporter (fn [log-path]
+;;                    (let [modmap (ModuleMap.read-log-file log-path)]
+;;                     (when (macro-recorded? log-path)
+;;                       (let [module-name (peek-module-name log-path)
+;;                             fnl-path (peek-fnl-path log-path)
+;;                             msg (: "%s
+;; - source file:
+;;   `%s`
+;; - dependency-map file:
+;;   `%s`" :format module-name fnl-path log-path)]
+;;                         (report-info msg)))))]
+;;     (each-file reporter root)))
 
 ;; TODO: Replace `.list-mounted-paths`, or just remove this check?
 ;; (fn report-mounted-paths []
@@ -104,5 +103,5 @@
           (report-integrations)
           (report-thyme-disk-info)
           (report-fennel-paths)
-          (report-imported-macros)
+          ;; (report-imported-macros)
           (report-thyme-config))}
