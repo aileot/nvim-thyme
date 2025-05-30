@@ -40,11 +40,7 @@
         :command {:compiler-options nil
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :keymap {:compiler-options nil
-                 :mappings {[:n :x] {:alternate-file "<LocalLeader>a"
-                                     :operator-echo-compile-string "<LocalLeader>s"
-                                     :operator-echo-eval "<LocalLeader>e"
-                                     :operator-echo-eval-compiler "<LocalLeader>c"
-                                     :operator-echo-macrodebug "<LocalLeader>m"}}}
+                 :mappings {}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
                 ;; TODO: Add :strategy recommended value to
