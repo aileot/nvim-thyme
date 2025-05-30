@@ -130,7 +130,8 @@ For the path management of macro files, see [macro-path](#macro-path).
  "%s/lua/?.fnl"
  "%s/lua/?/init-macros.fnl"
  "%s/lua/?/init.fnl"]
- ;; where %s represents `stdpath("config")` each.
+
+;; where %s represents `stdpath("config")` each.
 ```
 
 </details>
