@@ -125,6 +125,7 @@ by default) for `vim.api.nvim_echo`.
   ;; TODO: Extract iterator, or map function.
   ;; NOTE: trailing whitespaces in each line are ignored, i.e., padding each
   ;; line to vim.go.columns here does not make sense.
+  (validate-type :string text)
   (let [opts (or ?opts {})
         base-lang (or opts.lang :fennel)
         tmp-text (-> (case base-lang
