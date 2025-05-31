@@ -1,6 +1,4 @@
 local Config = require("thyme.config")
-local M = {}
-local Dropin = {_commands = {}}
 local function get_cmdtype()
   if ("command" == vim.fn.win_gettype()) then
     return vim.fn.getcmdwintype()
@@ -18,12 +16,22 @@ local function extract__3finvalid_cmd(cmdline)
     return nil
   end
 end
-local function replace_invalid_cmdline(old_cmdline, invalid_cmd)
+local Dropin = {}
+Dropin.__index = Dropin
+Dropin._new = function()
+  local self = setmetatable({}, Dropin)
+  self._commands = {}
+  return self
+end
+Dropin["_replace-invalid-cmdline"] = function(self, old_cmdline, invalid_cmd)
+  _G.assert((nil ~= invalid_cmd), "Missing argument invalid-cmd on fnl/thyme/user/dropin.fnl:34")
+  _G.assert((nil ~= old_cmdline), "Missing argument old-cmdline on fnl/thyme/user/dropin.fnl:34")
+  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:34")
   local prefix = old_cmdline:sub(1, (-1 - #invalid_cmd))
   local fallback_cmd
   do
     local new_cmd = invalid_cmd
-    for _, _5_ in ipairs(Dropin._commands) do
+    for _, _5_ in ipairs(self._commands) do
       local pattern = _5_["pattern"]
       local replacement = _5_["replacement"]
       if (new_cmd ~= invalid_cmd) then break end
@@ -34,7 +42,7 @@ local function replace_invalid_cmdline(old_cmdline, invalid_cmd)
   local new_cmdline = (prefix .. fallback_cmd)
   return new_cmdline
 end
-M.replace = function()
+Dropin["replace-cmdline!"] = function(self)
   local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
   local _7_
@@ -47,7 +55,7 @@ M.replace = function()
     end
     if (nil ~= _6_) then
       local invalid_cmd = _6_
-      local new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd)
+      local new_cmdline = self["_replace-invalid-cmdline"](self, old_cmdline, invalid_cmd)
       local function _11_()
         return assert((1 == vim.fn.histadd(cmdtype, old_cmdline)), ("failed to add old command " .. old_cmdline))
       end
@@ -59,7 +67,7 @@ M.replace = function()
   end
   return (_7_ or old_cmdline)
 end
-M.complete = function()
+Dropin["complete-cmdline!"] = function(self)
   local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
   local new_cmdline
@@ -73,7 +81,7 @@ M.complete = function()
     end
     if (nil ~= _13_) then
       local invalid_cmd = _13_
-      _14_ = replace_invalid_cmdline(old_cmdline, invalid_cmd)
+      _14_ = self["_replace-invalid-cmdline"](self, old_cmdline, invalid_cmd)
     else
       _14_ = nil
     end
@@ -102,11 +110,14 @@ M.complete = function()
   vim.o.lazyredraw = last_lz
   return nil
 end
-local function register_21(pattern, replacement)
-  return table.insert(Dropin._commands, {pattern = pattern, replacement = replacement})
+Dropin["register!"] = function(self, pattern, replacement)
+  _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin.fnl:100")
+  _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin.fnl:100")
+  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:100")
+  return table.insert(self._commands, {pattern = pattern, replacement = replacement})
 end
-M["enable-dropin-paren!"] = function()
-  register_21("^[[%[%(%{].*", "Fnl %0")
+Dropin["enable-dropin-paren!"] = function(self)
+  self["register!"](self, "^[[%[%(%{].*", "Fnl %0")
   local opts = Config["dropin-paren"]
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
@@ -134,4 +145,17 @@ M["enable-dropin-paren!"] = function()
     return nil
   end
 end
-return M
+local SingletonDropin = Dropin._new()
+local function _24_(...)
+  return SingletonDropin["register!"](SingletonDropin, ...)
+end
+local function _25_(...)
+  return SingletonDropin["replace-cmdline!"](SingletonDropin, ...)
+end
+local function _26_(...)
+  return SingletonDropin["complete-cmdline!"](SingletonDropin, ...)
+end
+local function _27_()
+  return SingletonDropin["enable-dropin-paren!"](SingletonDropin)
+end
+return {register = _24_, replace = _25_, complete = _26_, ["enable-dropin-paren!"] = _27_}
