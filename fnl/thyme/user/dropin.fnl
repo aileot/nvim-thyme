@@ -43,8 +43,8 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param replacement string The dropin command"
   (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)]
-    (if (= ":" cmdtype)
-        (case (extract-?invalid-cmd old-cmdline)
+    (or (case (when (= ":" cmdtype)
+                (extract-?invalid-cmd old-cmdline))
           invalid-cmd (let [new-cmdline (replace-invalid-cmdline old-cmdline ;
                                                                  invalid-cmd ;
                                                                  pattern ;
@@ -56,8 +56,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
                                      (.. "failed to add old command "
                                          old-cmdline))
                             (vim.schedule))
-                        new-cmdline)
-          _ old-cmdline)
+                        new-cmdline)) ;
         old-cmdline)))
 
 (fn M.complete [pattern replacement]
