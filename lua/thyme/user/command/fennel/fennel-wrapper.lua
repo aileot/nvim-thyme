@@ -85,9 +85,8 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
     local verbose_3f = (-1 < smods.verbose)
     local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
     if verbose_3f then
-      tts.print(";;; Source")
-      tts.print(new_fnl_code)
-      tts.print(";;; Result")
+      local verbose_msg = (";;; Source\n%s\n;;; Result"):format(new_fnl_code)
+      tts.print(verbose_msg)
     else
     end
     local results = {callback(new_fnl_code, compiler_options)}

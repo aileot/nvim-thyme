@@ -95,10 +95,9 @@
                            (: :gsub "\r" "\n")
                            (apply-parinfer {: cmd-history-opts}))]
       (when verbose?
-        ;; TODO: Replace with nvim_echo on treesitter highlight?
-        (tts.print ";;; Source")
-        (tts.print new-fnl-code)
-        (tts.print ";;; Result"))
+        (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
+                              (: :format new-fnl-code))]
+          (tts.print verbose-msg)))
       (let [results [(callback new-fnl-code compiler-options)]]
         (case (length results)
           0 (tts.print :nil {: lang})
