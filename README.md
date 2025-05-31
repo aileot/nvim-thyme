@@ -247,10 +247,13 @@ updates! You can automate it either on spec hook like above, on user event hook
 like below; otherwise, please run `:ThymeCacheClear` manually.)
 
 ```lua
--- If you also manage macro plugin versions, please clear the Lua cache on the updates!
+-- If you also manage other Fennel macro plugin versions, please clear the Lua cache on the updates!
 vim.api.nvim_create_autocmd("User", {
-  pattern = "LazyUpdate",
-  command = "ThymeCacheClear",
+  pattern = "LazyUpdate", -- for lazy.nvim
+  callback = function()
+    require("thyme").setup()
+    vim.cmd("ThymeCacheClear")
+  end,
 })
 ```
 
