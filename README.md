@@ -89,7 +89,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 ## 🎉 Welcome Aboard
 
-Welcome to the Neovim x Fennel community!
+_Welcome to the Neovim x Fennel community!_
 
 If you have never written Fennel before,
 you can try Fennel on your favorite plugin manager.
