@@ -35,6 +35,7 @@ LUA_ALL+=$(wildcard lua/*/*/*/*.lua)
 FNL_SRC:=$(wildcard fnl/*/*.fnl)
 FNL_SRC+=$(wildcard fnl/*/*/*.fnl)
 FNL_SRC+=$(wildcard fnl/*/*/*/*.fnl)
+FNL_SRC+=$(wildcard fnl/*/*/*/*/*.fnl)
 FNL_SRC:=$(filter-out %/macros.fnl,$(FNL_SRC))
 LUA_RES:=$(FNL_SRC:fnl/%.fnl=lua/%.lua)
 LUA_OLD:=$(filter-out $(LUA_RES),$(LUA_ALL))
@@ -63,10 +64,13 @@ help: ## Show this help
 	@echo Targets:
 	@egrep -h '^\S+: .*## \S+' $(MAKEFILE_LIST) | sed 's/: .*##/:/' | column -t -s ':' | sed 's/^/  /'
 
+# NOTE: In addition to the `mkdir` in `lua/%.lua`, this directory recipee is
+# still necessary in some cases.
 lua/%/:
 	@mkdir -p $@
 
 lua/%.lua: fnl/%.fnl
+	@mkdir -p $(dir $@)
 	@$(FENNEL) \
 		$(FNL_FLAGS) \
 		--add-macro-path "$(REPO_MACRO_PATH)" \

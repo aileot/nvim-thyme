@@ -116,7 +116,7 @@
         (table.remove hl-chunks))
       (values hl-chunks))))
 
-(fn text->hl-chunks [text ?opts]
+(λ text->hl-chunks [text ?opts]
   "Convert `text` into `chunks`, parsed with treesitter parser (\"fennel\" one
 by default) for `vim.api.nvim_echo`.
 @param text string
@@ -125,6 +125,7 @@ by default) for `vim.api.nvim_echo`.
   ;; TODO: Extract iterator, or map function.
   ;; NOTE: trailing whitespaces in each line are ignored, i.e., padding each
   ;; line to vim.go.columns here does not make sense.
+  (validate-type :string text)
   (let [opts (or ?opts {})
         base-lang (or opts.lang :fennel)
         tmp-text (-> (case base-lang
@@ -152,13 +153,13 @@ by default) for `vim.api.nvim_echo`.
       ;; Make sure to destroy
       (compose-hl-chunks fixed-text lang-tree))))
 
-(fn echo [text ?opts]
+(λ echo [text ?opts]
   "Echo `text` with treesitter highlights.
 The result does not affect message history as `:echo` does not either."
   (let [hl-chunks (text->hl-chunks text ?opts)]
     (vim.api.nvim_echo hl-chunks false {})))
 
-(fn print [text ?opts]
+(λ print [text ?opts]
   "Print `text` with treesitter highlights.
 It adds the result message to message history as `vim.print` does."
   (let [hl-chunks (text->hl-chunks text ?opts)]
