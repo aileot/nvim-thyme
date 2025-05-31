@@ -100,38 +100,41 @@ and play around with Fennel first.
 (If you've decided to go along with Fennel, please skip to the [Installation][] section below.)
 
 ```lua
----@type LazySpec
-{
-  "aileot/nvim-thyme",
-  version = "^v1.1.0",
-  dependencies = {
-    { "https://git.sr.ht/~technomancy/fennel" }
+require("lazy").setup({
+  ---@type LazySpec
+  {
+    "aileot/nvim-thyme",
+    version = "^v1.1.0",
+    dependencies = {
+      { "https://git.sr.ht/~technomancy/fennel" },
+    },
+    lazy = false,
+    priority = 1000,
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+    init = function()
+      -- Make your Fennel modules loadable.
+      table.insert(package.loaders, function(...)
+        return require("thyme").loader(...)
+      end)
+      local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
+      vim.opt.rtp:prepend(thyme_cache_prefix)
+    end,
+    config = function()
+      -- Create the helper interfaces.
+      require("thyme").setup()
+    end,
   },
-  lazy = false,
-  priority = 1000,
-  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-  init = function()
-    -- Make your Fennel modules loadable.
-    table.insert(package.loaders, function(...)
-      return require("thyme").loader(...)
-    end)
-    local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
-    vim.opt.rtp:prepend(thyme_cache_prefix)
-  end,
-  config = function()
-    -- Create the helper interfaces.
-    require("thyme").setup()
-  end,
-},
--- Optional
-{
-  "aileot/nvim-laurel",
-  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-},
-{
-  "eraserhd/parinfer-rust",
-  build = "cargo build --release",
-},
+  -- Optional
+  {
+    "aileot/nvim-laurel",
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+  },
+  {
+    "eraserhd/parinfer-rust",
+    build = "cargo build --release",
+  },
+  -- and other plugin specs...
+})
 ```
 
 > [!WARNING]
