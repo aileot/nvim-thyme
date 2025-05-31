@@ -8,7 +8,8 @@
 (local {:get-root get-root-of-pool} (require :thyme.util.pool))
 (local {: get-runtime-files} (require :thyme.wrapper.nvim))
 
-(local {:get-root get-root-of-modmap} (require :thyme.dependency.unit))
+(local {:get-root get-root-of-modmap &as ModuleMap}
+       (require :thyme.dependency.unit))
 
 (local RollbackManager (require :thyme.rollback.manager))
 
@@ -70,21 +71,24 @@
   (report.info (-> "fennel.macro-path:\n- `%s`"
                    (: :format (fennel.macro-path:gsub ";" "`\n- `")))))
 
-;; (fn report-imported-macros []
-;;   (report.start "Thyme Imported Macros")
-;;   (let [root (get-root-of-modmap)
-;;         reporter (fn [log-path]
-;;                    (let [modmap (ModuleMap.read-log-file log-path)]
-;;                     (when (macro-recorded? log-path)
-;;                       (let [module-name (peek-module-name log-path)
-;;                             fnl-path (peek-fnl-path log-path)
-;;                             msg (: "%s
-;; - source file:
-;;   `%s`
-;; - dependency-map file:
-;;   `%s`" :format module-name fnl-path log-path)]
-;;                         (report.info msg)))))]
-;;     (each-file reporter root)))
+(fn report-imported-macros []
+  (report.start "Thyme Imported Macros")
+  (let [root (get-root-of-modmap)
+        reporter (fn [log-path]
+                   (let [modmap (ModuleMap.read-from-log-file log-path)]
+                     (when (modmap:macro?)
+                       (let [module-name (modmap:get-module-name)
+                             fnl-path (modmap:get-fnl-path)
+                             dependent-list (modmap:pp-dependent-list)
+                             msg (-> "%s
+- source file:
+  `%s`
+- dependent modules:
+%s"
+                                     (: :format module-name fnl-path
+                                        dependent-list))]
+                         (report.info msg)))))]
+    (each-file reporter root)))
 
 ;; TODO: Replace `.list-mounted-paths`, or just remove this check?
 ;; (fn report-mounted-paths []
@@ -103,5 +107,5 @@
           (report-integrations)
           (report-thyme-disk-info)
           (report-fennel-paths)
-          ;; (report-imported-macros)
-          (report-thyme-config))}
+          (report-thyme-config)
+          (report-imported-macros))}
