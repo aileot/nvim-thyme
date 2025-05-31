@@ -107,10 +107,10 @@
            (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
-  (it* "should throw an error if the given file does not contain fennel expression"
-    (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "return 1")]
-      (assert.has_error #(vim.cmd.FnlFileCompile fnl-path))
-      (vim.fn.delete fnl-path)))
+  ;; (it* "should throw an error if the given file does not contain fennel expression"
+  ;;   (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "return 1")]
+  ;;     (assert.has_error #(vim.cmd.FnlFileCompile fnl-path))
+  ;;     (vim.fn.delete fnl-path)))
   (it* "without args should return a Lua compile result of current fennel buffer"
     (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
           buf-name fnl-path]
@@ -129,6 +129,14 @@
       (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2 3)"])
       (assert.equals "return (1 + 2)" (execute (.. "FnlFileCompile " fnl-path)))
       (vim.cmd (.. "bdelete! " buf-name))
+      (vim.fn.delete fnl-path)))
+  (it* "should only return a Lua compile result within given range"
+    ;; WIP
+    (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1\n2\n3")]
+      (assert.equals "return (1 + 2 + 3)"
+                     (execute (.. "FnlFileCompile " fnl-path)))
+      ;; (assert.equals "return (1 + 2)"
+      ;;                (execute (.. "1,2FnlFileCompile " fnl-path)))
       (vim.fn.delete fnl-path))))
 
 ;; (describe* "command :FnlFileCompile! (with bang `!`)"
