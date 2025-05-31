@@ -134,7 +134,7 @@ and play around with Fennel first.
 },
 ```
 
-> [!CAUTION]
+> [!WARNING]
 > With the config above,
 > you cannot load Fennel modules _before_ the setup of `lazy.nvim`,
 > but only load Fennel modules _after_ the `init` setup is done.
