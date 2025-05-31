@@ -95,7 +95,7 @@
           cmd-opts {:range "%"
                     :nargs "?"
                     :complete "buffer"
-                    :desc "[thyme] display the compiled lua results of current buffer"}]
+                    :desc "[thyme] display the compiled lua results of given buffer, or current buffer as fennel expression"}]
       (command! :FnlBufCompile
         cmd-opts
         cb)

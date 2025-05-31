@@ -71,7 +71,7 @@ M["setup!"] = function()
       return callback(a)
     end
     cb = _11_
-    local cmd_opts = {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of current buffer"}
+    local cmd_opts = {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of given buffer, or current buffer as fennel expression"}
     vim.api.nvim_create_user_command("FnlBufCompile", cb, cmd_opts)
     vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
