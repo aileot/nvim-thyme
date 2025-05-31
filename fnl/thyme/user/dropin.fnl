@@ -85,7 +85,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
         last-lz vim.o.lazyredraw
         last-wcm vim.o.wildcharm
         tmp-wcm "\26"
-        right-keys (case (new-cmdline:find old-cmdline 1 true)
+        right-keys (case (old-cmdline:find new-cmdline 1 true)
                      nil ""
                      shift (string.rep "<Right>" (dec shift)))
         keys (-> "<C-BSlash>e%q<CR>"
