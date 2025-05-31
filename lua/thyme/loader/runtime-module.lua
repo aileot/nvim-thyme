@@ -117,7 +117,7 @@ local function module_name__3efnl_file_on_rtp_21(module_name)
   return fennel["search-module"](module_name, fennel.path)
 end
 local function search_fnl_module_on_rtp_21(module_name, ...)
-  if module_name:find("^vim%.") then
+  if string.find(module_name, "^vim%.") then
     local path = vim.fs.joinpath(vim.env.VIMRUNTIME, "lua")
     return loadfile(path)
   elseif ("fennel" == module_name) then
