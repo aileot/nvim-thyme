@@ -50,8 +50,8 @@
   "Prepare to replace `replacement` to replace invalid cmdline when `pattern` is
 detected with E492. The fallback command will pretend that the substrings
 matched by `pattern`, and the rests behind, are the arguments of `replacement`.
-@param pattern string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command"
+@param old-cmdline string The original cmdline
+@return string A new cmdline replaced a pre-registered `pattern` with `replacement`."
   (let [cmdtype (get-cmdtype)]
     (or (case (when (= ":" cmdtype)
                 (extract-?invalid-cmd old-cmdline))
