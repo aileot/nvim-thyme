@@ -64,7 +64,7 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
       (watch.watch-files!)
       (keymap.define-keymaps!)
       (command.define-commands!)
-      (dropin.enable-dropin-paren!)
+      (dropin:enable-dropin-paren!)
       (set has-setup? true))))
 
 (fn propagate-underscored-keys! [tbl key]

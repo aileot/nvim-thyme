@@ -49,7 +49,7 @@ M.setup = function(_3fopts)
     watch["watch-files!"]()
     keymap["define-keymaps!"]()
     command["define-commands!"]()
-    dropin["enable-dropin-paren!"]()
+    dropin["enable-dropin-paren!"](dropin)
     has_setup_3f = true
     return nil
   else
