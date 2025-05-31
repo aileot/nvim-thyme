@@ -12,7 +12,9 @@
       (vim.fn.getcmdtype)))
 
 (fn extract-?invalid-cmd [cmdline]
-  "Extract the invalid command from cmdline from E492 message."
+  "Extract the invalid command from cmdline from E492 message.
+@param cmdline string The command line to be parsed
+@return string The invalid command if detected, otherwise nil."
   ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
   ;; "Parsing command-line: E492: Not an editor command: (foobar)"
   ;; TODO: Parse "nextcmd" recursively.
