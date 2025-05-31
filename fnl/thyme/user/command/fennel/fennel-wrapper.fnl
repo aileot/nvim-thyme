@@ -113,10 +113,10 @@
                    (each [_ text (ipairs results)]
                      (tts.print (fennel.view text compiler-options)))))
         (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
-               (true cmdline)
+               (true parsed)
                ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
                ;; TODO: More accurate command detection?
-               (when (cmdline.cmd:find "^Fnl")
+               (when (parsed.cmd:find "^Fnl")
                  (edit-cmd-history! new-fnl-code cmd-history-opts)))
             (vim.schedule))))))
 

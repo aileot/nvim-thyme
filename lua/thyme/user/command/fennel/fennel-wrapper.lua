@@ -106,8 +106,8 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
     local function _23_()
       local _24_, _25_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
       if ((_24_ == true) and (nil ~= _25_)) then
-        local cmdline = _25_
-        if cmdline.cmd:find("^Fnl") then
+        local parsed = _25_
+        if parsed.cmd:find("^Fnl") then
           return edit_cmd_history_21(new_fnl_code, cmd_history_opts)
         else
           return nil
