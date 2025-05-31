@@ -100,38 +100,41 @@ and play around with Fennel first.
 (If you've decided to go along with Fennel, please skip to the [Installation][] section below.)
 
 ```lua
----@type LazySpec
-{
-  "aileot/nvim-thyme",
-  version = "^v1.1.0",
-  dependencies = {
-    { "https://git.sr.ht/~technomancy/fennel" }
+require("lazy").setup({
+  ---@type LazySpec
+  {
+    "aileot/nvim-thyme",
+    version = "^v1.1.0",
+    dependencies = {
+      { "https://git.sr.ht/~technomancy/fennel" },
+    },
+    lazy = false,
+    priority = 1000,
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+    init = function()
+      -- Make your Fennel modules loadable.
+      table.insert(package.loaders, function(...)
+        return require("thyme").loader(...)
+      end)
+      local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
+      vim.opt.rtp:prepend(thyme_cache_prefix)
+    end,
+    config = function()
+      -- Create the helper interfaces.
+      require("thyme").setup()
+    end,
   },
-  lazy = false,
-  priority = 1000,
-  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-  init = function()
-    -- Make your Fennel modules loadable.
-    table.insert(package.loaders, function(...)
-      return require("thyme").loader(...)
-    end)
-    local thyme_cache_prefix = vim.fn.stdpath("cache") .. "/thyme/compiled"
-    vim.opt.rtp:prepend(thyme_cache_prefix)
-  end,
-  config = function()
-    -- Create the helper interfaces.
-    require("thyme").setup()
-  end,
-},
--- Optional
-{
-  "aileot/nvim-laurel",
-  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-},
-{
-  "eraserhd/parinfer-rust",
-  build = "cargo build --release",
-},
+  -- Optional
+  {
+    "aileot/nvim-laurel",
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+  },
+  {
+    "eraserhd/parinfer-rust",
+    build = "cargo build --release",
+  },
+  -- and other plugin specs...
+})
 ```
 
 > [!WARNING]
@@ -208,34 +211,35 @@ vim.loader.enable() -- (optional) before the `bootstrap`s above, it could increa
 
 ### 2. (Optional) Manage `nvim-thyme` with Plugin Manager
 
-<!-- <details> -->
-<!-- <summary> -->
-
+<details open>
+<summary>
 With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
-
-<!-- </summary> -->
+</summary>
 
 ```lua
+-- As the arguments of `require("lazy").setup()`,
 {
-  "aileot/nvim-thyme",
-  version = "^v1.1.0",
-  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-  -- For config, see the "Setup Optional Interfaces" section
-  -- and "Options in .nvim-thyme.fnl" below!
-  -- config = function()
-  -- end,
-},
--- If you also manage macro plugin versions, please clear the Lua cache on the updates!
-{
-  "aileot/nvim-laurel",
-  build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-  -- and other settings
-},
--- Optional dependency plugin.
-{
-  "eraserhd/parinfer-rust",
-  build = "cargo build --release",
-},
+  {
+    "aileot/nvim-thyme",
+    version = "^v1.1.0",
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+    -- For config, see the "Setup Optional Interfaces" section
+    -- and "Options in .nvim-thyme.fnl" below!
+    -- config = function()
+    -- end,
+  },
+  -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
+  {
+    "aileot/nvim-laurel",
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+    -- and other settings
+  },
+  -- Optional dependency plugin.
+  {
+    "eraserhd/parinfer-rust",
+    build = "cargo build --release",
+  },
+}
 ```
 
 (If you also manage macro plugin versions, _please clear the Lua cache_ on the
@@ -243,45 +247,25 @@ updates! You can automate it either on spec hook like above, on user event hook
 like below; otherwise, please run `:ThymeCacheClear` manually.)
 
 ```lua
--- If you also manage macro plugin versions, please clear the Lua cache on the updates!
+-- If you also manage other Fennel macro plugin versions, please clear the Lua cache on the updates!
 vim.api.nvim_create_autocmd("User", {
-  pattern = "LazyUpdate",
-  command = "ThymeCacheClear",
-})
-```
-
-<!-- </details> -->
-
-### 3. Setup Optional Interfaces
-
-To optimize the nvim startuptime, `nvim-thyme` suggests to define the Ex command
-interfaces and its fnl file state checker some time after `VimEnter` or
-`UIEnter`. When to enable them is up to you. The following snippets are
-examples:
-
-<details>
-<summary>
-If you're on lazy.nvim, define an autocmd.
-</summary>
-
-```lua
-vim.api.nvim_create_autocmd("User", {
-  once = true,
-  pattern = "VeryLazy",
+  pattern = "LazyUpdate", -- for lazy.nvim
   callback = function()
     require("thyme").setup()
+    vim.cmd("ThymeCacheClear")
   end,
 })
 ```
 
 </details>
 
-<details open>
-<summary>
-Independently from lazy.nvim, define an autocmd.
-</summary>
+### 3. Setup Optional Interfaces
+
+To optimize the nvim startuptime, `nvim-thyme` suggests you to define the Ex command
+interfaces and its fnl file state checker some time after `VimEnter`. For example,
 
 ```lua
+-- In init.lua,
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function() -- You can substitute vim.schedule_wrap if you don't mind its tiny overhead.
@@ -291,8 +275,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 ```
-
-</details>
 
 ### 4. Start `nvim`
 
