@@ -85,7 +85,6 @@
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                           {:lang :lua
-                                           :discard-last? true
                                            : compiler-options
                                            : cmd-history-opts}))
     (let [cb (fn [a]
@@ -93,7 +92,6 @@
                      cmd-history-opts {:method :ignore}
                      callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                                                   {:lang :lua
-                                                                   :discard-last? true
                                                                    : compiler-options
                                                                    : cmd-history-opts})]
                  (set a.args fnl-code)
