@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.1.0](https://github.com/aileot/nvim-thyme/compare/v1.0.3...v1.1.0) (2025-05-31)
+
+
+### Features
+
+* **command:** add `:FnlBufCompile` and `:FnlFileCompile` as aliases ([#17](https://github.com/aileot/nvim-thyme/issues/17)) ([35a6293](https://github.com/aileot/nvim-thyme/commit/35a62932dd4c7391e59aeef46f4e7ef96469f9a4))
+* **example:** add `snacks.notifier` to fallback notifier ([#43](https://github.com/aileot/nvim-thyme/issues/43)) ([f8438f5](https://github.com/aileot/nvim-thyme/commit/f8438f5b05764238d3188cb09a4df3f3d77d8318))
+
+
+### Bug Fixes
+
+* **command:** fix `:FnlFileCompile` just to print compiled results ([#44](https://github.com/aileot/nvim-thyme/issues/44)) ([2ec08a6](https://github.com/aileot/nvim-thyme/commit/2ec08a6b5c290753d300eeb63c288dd695295856))
+
 ## [1.0.3](https://github.com/aileot/nvim-thyme/compare/v1.0.2...v1.0.3) (2025-05-30)
 
 
