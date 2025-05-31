@@ -136,7 +136,7 @@ local function create_commands_21()
     end
   end
   cb = _23_
-  local cmd_opts = {range = "%", nargs = "*", bang = true, complete = "file", desc = "Compile given fnl files, or current fnl file"}
+  local cmd_opts = {range = "%", nargs = "*", bang = true, complete = "file", desc = "[thyme] display compiled lua result of given fnl file, or current fnl file"}
   vim.api.nvim_create_user_command("FnlFileCompile", cb, cmd_opts)
   return vim.api.nvim_create_user_command("FnlCompileFile", cb, cmd_opts)
 end

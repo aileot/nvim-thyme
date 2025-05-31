@@ -86,7 +86,7 @@
                   :nargs "*"
                   :bang true
                   :complete :file
-                  :desc "Compile given fnl files, or current fnl file"}]
+                  :desc "[thyme] display compiled lua result of given fnl file, or current fnl file"}]
     (command! :FnlFileCompile
       cmd-opts
       cb)
