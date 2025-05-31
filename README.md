@@ -50,6 +50,7 @@ The optional features can be enabled with few startup overhead thanks to
 > without notice, regardless of [semantic versioning][].
 
 - **Recompile** on autocmd events, tracking macro dependencies.
+  (Check out the [watch.strategy][] option.)
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
   - Colorful output on [the builtin **treesitter**][builtin treesitter].
   - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
@@ -534,6 +535,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [reference]: ./docs/reference.md
 [fnl-dir]: ./docs/reference.md#fnl-dir
 [macro-path]: ./docs/reference.md#macro-path
+[watch.strategy]: ./docs/reference.md#watchstrategy
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl
