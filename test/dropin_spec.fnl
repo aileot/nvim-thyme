@@ -1,11 +1,24 @@
-;; (import-macros {: setup* : before-each : describe* : it*}
-;;                :test.helper.busted-macros)
+(import-macros {: setup* : before-each : describe* : it*}
+               :test.helper.busted-macros)
 
-;; (include :test.helper.prerequisites)
+(include :test.helper.prerequisites)
 
-;; (local thyme (require :thyme))
+(local Dropin (require :thyme.user.dropin))
 
-;; TODO: Comment out once dropin feature is more stable a bit.
+;; (describe* "dropin.register"
+;;   (before_each (fn []
+;;                  (Dropin.clear)))
+;;   (it* "should register a dropin function with a given name"
+;;     (Dropin.register "foo" "bar" {:lang "fennel"})
+;;     (let [old-cmdline "foo"]
+;;       (assert.has_error #(vim.api.nvim_parse_cmd old-cmdline {}))
+;;       ;; FIXME: Imitate current mode is Cmdline mode, or improve `.replace`
+;;       ;; implementation.
+;;       (vim.api.nvim_feedkeys ":" "int" false)
+;;       (assert.equals "c" (vim.fn.mode))
+;;       (assert.equals "bar" (Dropin.replace old-cmdline)))))
+
+;; ;; TODO: Comment out once dropin feature is more stable a bit.
 ;; (describe* "thyme.setup"
 ;;   (it* "maps `<CR>` on dropin function in Cmdline mode by default"
 ;;     (when (not= "" (vim.fn.maparg "<CR>" :c))
@@ -14,7 +27,7 @@
 ;;     (thyme.setup)
 ;;     (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))
 
-;; WIP: Add tests for dropin with key inputs.
+;; ;; WIP: Add tests for dropin with key inputs.
 ;; (describe* "with dropin feature in cmdline,"
 ;;   (setup (fn []
 ;;            (thyme.setup)))
