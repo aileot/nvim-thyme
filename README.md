@@ -98,7 +98,7 @@ and play around with Fennel first.
 ---@type LazySpec
 {
   "aileot/nvim-thyme",
-  version = "~v1.0.0",
+  version = "^v1.1.0",
   dependencies = {
     { "https://git.sr.ht/~technomancy/fennel" }
   },
@@ -213,7 +213,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 ```lua
 {
   "aileot/nvim-thyme",
-  version = "~v1.0.0",
+  version = "^v1.1.0",
   build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
   -- For config, see the "Setup Optional Interfaces" section
   -- and "Options in .nvim-thyme.fnl" below!
