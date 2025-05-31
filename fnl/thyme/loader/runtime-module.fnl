@@ -93,7 +93,7 @@
 cache dir.
 @param module-name string
 @return string|function a lua chunk in function, or a string to tell why failed to load module."
-  (if (module-name:find "^vim%.")
+  (if (string.find module-name "^vim%.")
       ;; NOTE: This `vim` module detection is a workaround for not to be
       ;; a suspect of the errors missing such `vim` modules due to a build
       ;; failure in neovim development; otherwise, get into infinite loop.
