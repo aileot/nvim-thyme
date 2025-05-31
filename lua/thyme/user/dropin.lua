@@ -118,10 +118,10 @@ Dropin["complete-cmdline!"] = function(self)
 end
 Dropin["register!"] = function(self, pattern, replacement, _21_)
   local lang = _21_["lang"]
-  _G.assert((nil ~= lang), "Missing argument lang on fnl/thyme/user/dropin.fnl:101")
-  _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin.fnl:101")
-  _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin.fnl:101")
-  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:101")
+  _G.assert((nil ~= lang), "Missing argument lang on fnl/thyme/user/dropin.fnl:98")
+  _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin.fnl:98")
+  _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin.fnl:98")
+  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:98")
   return table.insert(self._commands, {pattern = pattern, replacement = replacement, lang = lang})
 end
 Dropin["clear!"] = function(self)

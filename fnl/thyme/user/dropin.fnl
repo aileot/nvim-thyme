@@ -12,7 +12,7 @@
 (fn extract-?invalid-cmd [cmdline]
   "Extract the invalid command from cmdline from E492 message.
 @param cmdline string The command line to be parsed
-@return string The invalid command if detected, otherwise nil."
+@return string? The invalid command if detected, otherwise nil."
   ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
   ;; "Parsing command-line: E492: Not an editor command: (foobar)"
   ;; TODO: Parse "nextcmd" recursively.
@@ -69,10 +69,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 
 (fn Dropin.complete-cmdline! [self]
   "Complete cmdline pretending `replacement` to replace invalid cmdline when
-`pattern` is detected with E492.
-@param pattern string string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command
-@param completion-type string The completion type"
+`pattern` is detected with E492."
   (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)
         ;; NOTE: Do NOT use .replace instead. It also overrides history.
