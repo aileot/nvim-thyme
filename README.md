@@ -45,6 +45,10 @@ The optional features can be enabled with few startup overhead thanks to
 `vim.schedule`.\
 (For the details, please read the [Installation][installation] guide below.)
 
+> [!CAUTION]
+> Please note that undocumented features are subject to change
+> without notice, regardless of [semantic versioning][].
+
 - **Recompile** on autocmd events, tracking macro dependencies.
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
   - Colorful output on [the builtin **treesitter**][builtin treesitter].
@@ -522,6 +526,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 - [tangerine.nvim][tangerine.nvim] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[semantic versioning]: https://semver.org/
 [alternatives]: #-alternatives
 [installation]: #-installation
 [configuration]: #%EF%B8%8F-configuration
