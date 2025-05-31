@@ -85,7 +85,7 @@
         cmd-opts {:range "%"
                   :nargs "*"
                   :bang true
-                  :complete :file
+                  :complete "file"
                   :desc "[thyme] display compiled lua result of given fnl file, or current fnl file"}]
     (command! :FnlFileCompile
       cmd-opts

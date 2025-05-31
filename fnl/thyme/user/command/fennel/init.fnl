@@ -45,7 +45,7 @@
     (fnl-file-compile.create-commands!)
     (command! :Fnl
       {:nargs "+"
-       :complete :lua
+       :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
       (mk-fennel-wrapper-command-callback fennel-wrapper.eval
                                           {:lang :fennel
@@ -54,7 +54,7 @@
     (command! :FnlBuf
       {:range "%"
        :nargs "?"
-       :complete :buffer
+       :complete "buffer"
        :desc "[thyme] evaluate given buffer, or current buffer, and display the results"}
       (fn [a]
         (let [fnl-code (parse-cmd-buf-args a)
@@ -68,7 +68,7 @@
     (command! :FnlFile
       {:range "%"
        :nargs "?"
-       :complete :file
+       :complete "file"
        :desc "[thyme] evaluate given file, or current file, and display the results"}
       (fn [a]
         (let [fnl-code (parse-cmd-file-args a)
@@ -81,7 +81,7 @@
           (callback a))))
     (command! :FnlCompile
       {:nargs "+"
-       :complete :lua
+       :complete "lua"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                           {:lang :lua
@@ -98,7 +98,7 @@
                  (callback a)))
           cmd-opts {:range "%"
                     :nargs "?"
-                    :complete :buffer
+                    :complete "buffer"
                     :desc "[thyme] display the compiled lua results of current buffer"}]
       (command! :FnlBufCompile
         cmd-opts
@@ -128,7 +128,7 @@
     ;;           (open-buf! buf opts.mods)))))
     (command! :FnlAlternate
       ;; TODO: Alternate lua-file to fennel-file.
-      {:nargs "?" :complete :file :desc "[thyme] alternate fnl<->lua"}
+      {:nargs "?" :complete "file" :desc "[thyme] alternate fnl<->lua"}
       (fn [{:fargs [?path] :smods mods}]
         (let [input-path (vim.fn.expand (or ?path "%:p"))
               output-path (case (input-path:sub -4)
