@@ -53,6 +53,15 @@
       (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
                  method)))))
 
+(fn parse-cmd-buf-args [{:args path : line1 : line2}]
+  "Parse Vim command arguments for Fennel wrapper command which read buffer lines.
+@param args table `:help nvim_parse_cmd`
+@return string fnl-code"
+  (let [bufnr (if (path:find "^%s*$") 0 (vim.fn.bufnr path))
+        fnl-code (-> (vim.api.nvim_buf_get_lines bufnr (dec line1) line2 true)
+                     (table.concat "\n"))]
+    (values fnl-code)))
+
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
                                          : discard-last?
@@ -95,4 +104,4 @@
                  (edit-cmd-history! new-fnl-code cmd-history-opts)))
             (vim.schedule))))))
 
-{: mk-fennel-wrapper-command-callback}
+{: parse-cmd-buf-args : mk-fennel-wrapper-command-callback}

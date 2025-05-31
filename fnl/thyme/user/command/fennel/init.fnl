@@ -13,7 +13,7 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
-(local {: mk-fennel-wrapper-command-callback}
+(local {: parse-cmd-buf-args : mk-fennel-wrapper-command-callback}
        (require :thyme.user.command.fennel.fennel-wrapper))
 
 (local fnl-file-compile (require :thyme.user.command.fennel.fnl-file-compile))
@@ -54,11 +54,8 @@
        :nargs "?"
        :complete :buffer
        :desc "[thyme] evaluate given buffer, or current buffer, and display the results"}
-      (fn [{:fargs [?path] : line1 : line2 &as a}]
-        (let [fnl-code (let [bufnr (if ?path (vim.fn.bufnr ?path) 0)]
-                         (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
-                                                         line2 true)
-                             (table.concat "\n")))
+      (fn [a]
+        (let [fnl-code (parse-cmd-buf-args a)
               cmd-history-opts {:method :ignore}
               callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
                                                            {:lang :fennel
@@ -97,13 +94,8 @@
                                            :discard-last? true
                                            : compiler-options
                                            : cmd-history-opts}))
-    (let [cb (fn [{:args path : line1 : line2 &as a}]
-               (let [bufnr (if (path:find "^%s*$")
-                               0
-                               (vim.fn.bufnr path))
-                     fnl-code (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
-                                                              line2 true)
-                                  (table.concat "\n"))
+    (let [cb (fn [a]
+               (let [fnl-code (parse-cmd-buf-args a)
                      cmd-history-opts {:method :ignore}
                      callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                                                   {:lang :lua
