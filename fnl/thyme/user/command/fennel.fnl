@@ -188,76 +188,90 @@
                                         :discard-last? true
                                         : compiler-options
                                         : cmd-history-opts}))
-    (command! :FnlCompileBuf
-      {:range "%"
-       :nargs "?"
-       :complete :buffer
-       :desc "[thyme] display the compiled lua results of current buffer"}
-      (fn [{:fargs [?path] : line1 : line2 &as a}]
-        (let [fnl-code (let [bufnr (if ?path (vim.fn.bufnr ?path) 0)]
-                         (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
-                                                         line2 true)
-                             (table.concat "\n")))
-              cmd-history-opts {:method :ignore}
-              callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
-                                                        {:lang :lua
-                                                         :discard-last? true
-                                                         : compiler-options
-                                                         : cmd-history-opts})]
-          (set a.args fnl-code)
-          (callback a))))
-    (command! :FnlCompileFile
-      {:range "%"
-       :nargs "*"
-       :bang true
-       :complete :file
-       :desc "Compile given fnl files, or current fnl file"}
-      ;; NOTE: mods.confirm to confirm any files; without `bang` to confirm to
-      ;; overwrite existing file.
-      (fn [{:fargs glob-paths :bang force-compile?}]
-        (let [fnl-paths (if (= 0 (length glob-paths))
-                            [(vim.api.nvim_buf_get_name 0)]
-                            (-> (icollect [_ path (ipairs glob-paths)]
-                                  (-> (vim.fn.glob path)
-                                      (vim.split "\n")))
-                                (vim.fn.flatten 1)))
-              path-pairs (collect [_ path (ipairs fnl-paths)]
-                           (let [full-path (vim.fn.fnamemodify path ":p")]
-                             (values full-path
-                                     (DependencyLogger:fnl-path->lua-path full-path))))
-              existing-lua-files []]
-          (when (or force-compile?
-                    (and (icollect [_ lua-file (pairs path-pairs)]
-                           ;; HACK: icollect always returns truthy.
-                           (when (file-readable? lua-file)
-                             (table.insert existing-lua-files lua-file)))
-                         (if (< 0 (length existing-lua-files))
-                             (case (-> (.. "The following files have already existed:
-    " ;
-                                           (table.concat existing-lua-files
-                                                         "\n")
-                                           "\nOverride the files?")
-                                       (vim.fn.confirm "&No\n&yes"))
-                               2 true
-                               _ (do
-                                   (CommandMessenger:notify! :Abort)
-                                   ;; NOTE: Just in case, thought vim.notify returns nil.
-                                   false)))))
-            (let [;; TODO: Add interface to overwrite fennel-options in this
-                  ;; command?
-                  fennel-options Config.compiler-options]
-              (each [fnl-path lua-path (pairs path-pairs)]
-                (assert (not (config-file? fnl-path))
-                        "Abort. Attempted to compile config file")
-                (let [lua-lines (fennel-wrapper.compile-file fnl-path
-                                                             fennel-options)]
-                  (if (= lua-lines (read-file lua-path))
-                      (CommandMessenger:notify! (.. "Abort. Nothing has changed in "
-                                                    fnl-path))
-                      (let [msg (.. fnl-path " is compiled into " lua-path)]
-                        ;; TODO: Remove dependent files.
-                        (write-lua-file! lua-path lua-lines)
-                        (CommandMessenger:notify! msg))))))))))
+    (let [cb (fn [{:args path : line1 : line2 &as a}]
+               (let [bufnr (if (path:find "^%s*$")
+                               0
+                               (vim.fn.bufnr path))
+                     fnl-code (-> (vim.api.nvim_buf_get_lines bufnr (dec line1)
+                                                              line2 true)
+                                  (table.concat "\n"))
+                     cmd-history-opts {:method :ignore}
+                     callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
+                                                               {:lang :lua
+                                                                :discard-last? true
+                                                                : compiler-options
+                                                                : cmd-history-opts})]
+                 (set a.args fnl-code)
+                 (callback a)))
+          cmd-opts {:range "%"
+                    :nargs "?"
+                    :complete :buffer
+                    :desc "[thyme] display the compiled lua results of current buffer"}]
+      (command! :FnlBufCompile
+        cmd-opts
+        cb)
+      (command! :FnlCompileBuf
+        cmd-opts
+        cb))
+    (let [cb (fn [{:fargs glob-paths :bang force-compile?}]
+               (let [fnl-paths (if (= 0 (length glob-paths))
+                                   [(vim.api.nvim_buf_get_name 0)]
+                                   (-> (icollect [_ path (ipairs glob-paths)]
+                                         (-> (vim.fn.glob path)
+                                             (vim.split "\n")))
+                                       (vim.fn.flatten 1)))
+                     path-pairs (collect [_ path (ipairs fnl-paths)]
+                                  (let [full-path (vim.fn.fnamemodify path ":p")]
+                                    (values full-path
+                                            (DependencyLogger:fnl-path->lua-path full-path))))
+                     existing-lua-files []]
+                 (when (or force-compile?
+                           (and (icollect [_ lua-file (pairs path-pairs)]
+                                  ;; HACK: icollect always returns truthy.
+                                  (when (file-readable? lua-file)
+                                    (table.insert existing-lua-files lua-file)))
+                                (if (< 0 (length existing-lua-files))
+                                    (case (-> (.. "The following files have already existed:
+  " ;
+                                                  (table.concat existing-lua-files
+                                                                "\n")
+                                                  "\nOverride the files?")
+                                              (vim.fn.confirm "&No\n&yes"))
+                                      2 true
+                                      _ (do
+                                          (CommandMessenger:notify! :Abort)
+                                          ;; NOTE: Just in case, thought vim.notify returns nil.
+                                          false)))))
+                   (let [
+                         ;; TODO: Add interface to overwrite fennel-options in this
+                         ;; command?
+                         fennel-options Config.compiler-options]
+                     (each [fnl-path lua-path (pairs path-pairs)]
+                       (assert (not (config-file? fnl-path))
+                               "Abort. Attempted to compile config file")
+                       (let [lua-lines (fennel-wrapper.compile-file fnl-path
+                                                                    fennel-options)]
+                         (if (= lua-lines (read-file lua-path))
+                             (CommandMessenger:notify! (.. "Abort. Nothing has changed in "
+                                                           fnl-path))
+                             (let [msg (.. fnl-path " is compiled into "
+                                           lua-path)]
+                               ;; TODO: Remove dependent files.
+                               (write-lua-file! lua-path lua-lines)
+                               (CommandMessenger:notify! msg)))))))))
+          cmd-opts {:range "%"
+                    :nargs "*"
+                    :bang true
+                    :complete :file
+                    :desc "Compile given fnl files, or current fnl file"}]
+      (command! :FnlFileCompile
+        cmd-opts
+        cb)
+      (command! :FnlCompileFile
+        cmd-opts
+        cb))
+    ;; NOTE: mods.confirm to confirm any files; without `bang` to confirm to
+    ;; overwrite existing file.
     ;; (command! :FnlReplOnRtp)
     ;;   {:nargs "*" :desc "WIP: Start REPL in thyme"}
     ;;   (fn [a]

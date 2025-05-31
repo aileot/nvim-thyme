@@ -38,11 +38,13 @@
   - [Commands](#commands)
     - [Fennel Wrapper Commands](#fennel-wrapper-commands)
       - [`:Fnl {fnl-expr}`](#fnl-fnl-expr)
-      - [`:FnlBuf [bufname]`](#fnlbuf-bufname)
-      - [`:FnlFile [file]`](#fnlfile-file)
-      - [`:FnlCompile {fnl-expr}`](#fnlcompile-fnl-expr)
-      - [`:FnlCompileBuf [bufname]`](#fnlcompilebuf-bufname)
-      - [`:FnlCompileFile [file]`](#fnlcompilefile-file)
+      - [`:[range]FnlBuf [bufname]`](#rangefnlbuf-bufname)
+      - [`:[range]FnlBufCompile [bufname]`](#rangefnlbufcompile-bufname)
+      - [`:[range]FnlFile [file]`](#rangefnlfile-file)
+      - [`:[range]FnlFileCompile [file]`](#rangefnlfilecompile-file)
+      - [`:[range]FnlCompile {fnl-expr}`](#rangefnlcompile-fnl-expr)
+      - [`:[range]FnlCompileBuf [bufname]`](#rangefnlcompilebuf-bufname)
+      - [`:[range]FnlCompileFile [file]`](#rangefnlcompilefile-file)
     - [Fennel Misc. Commands](#fennel-misc-commands)
       - [`:FnlAlternate`](#fnlalternate)
     - [Thyme General Commands](#thyme-general-commands)
@@ -503,37 +505,30 @@ The commands are defined by [thyme.setup][thyme.setup].
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
-#### `:FnlBuf [bufname]`
+#### `:[range]FnlBuf [bufname]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] but to
 `[bufname]`, but respects your [&runtimepath][&runtimepath].
 
 Without `[bufname]`, it evaluates the current buffer.
 
-#### `:FnlFile [file]`
-
-Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
-respects your [&runtimepath][&runtimepath].
-
-Without `[file]`, it evaluates the current file.
-
-#### `:FnlCompile {fnl-expr}`
-
-Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
-`{fnl-expr}`, but only returns the compiled lua results.
-
-It does not affect the file system.
-
-#### `:FnlCompileBuf [bufname]`
+#### `:[range]FnlBufCompile [bufname]`
 
 Almost equivalent to [:FnlBuf][:FnlBuf]. However, it does not evaluate the
 `[bufname]` (or current buffer), but only returns the compiled lua results.
 
 It does not affect the file system.
 
-#### `:FnlCompileFile [file]`
+#### `:[range]FnlFile [file]`
 
-Almost equivalent to [:FnlBuf][:FnlBuf]; however, it does not evaluate the
+Display the result of applying [fennel.dofile][fennel.dofile] to `[file]`, but
+respects your [&runtimepath][&runtimepath].
+
+Without `[file]`, it evaluates the current file.
+
+#### `:[range]FnlFileCompile [file]`
+
+Almost equivalent to [:FnlFile][]; however, it does not evaluate the
 `[file]` (or current file), but only returns the compiled lua results.
 
 It does not affect the file system.
@@ -542,9 +537,33 @@ It does not affect the file system.
 <!--
 TODO: Add the spec tests first.
 
-#### `:FnlCompileFile[!] [src-file] [dest-file]`
+#### `:FnlFileCompile[!] [src-file] [dest-file]`
 
 With `!`, it will write the compiled lua results to `[dest-file]`.
+-->
+
+#### `:[range]FnlCompile {fnl-expr}`
+
+Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
+`{fnl-expr}`, but only returns the compiled lua results.
+
+It does not affect the file system.
+
+#### `:[range]FnlCompileBuf [bufname]`
+
+Same as [:FnlBufCompile][].
+
+#### `:[range]FnlCompileFile [file]`
+
+Same as [:FnlFileCompile][].
+
+<!-- panvimdoc-ignore-start -->
+<!--
+TODO: Add the spec tests first.
+
+#### `:[range]FnlCompileFile[!] [src-file] [dest-file]`
+
+Same as [:FnlFileCompile!][].
 -->
 
 <!-- panvimdoc-ignore-end -->
@@ -653,8 +672,11 @@ Unmount the mounted backups.
 [.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [.nvim-thyme.fnl]: #options-in-nvim-thymefnl
 [:FnlAlternate]: #fnlalternate
-[:FnlBuf]: #fnlbuf-bufname
-[:FnlCompile]: #fnlcompile-fnl-expr
+[:FnlBufCompile]: #rangefnlbufcompile-bufname
+[:FnlBuf]: #rangefnlbuf-bufname
+[:FnlCompile]: #rangefnlcompile-fnl-expr
+[:FnlFileCompile]: #rangefnlfilecompile-file
+[:FnlFile]: #rangefnlfile-file
 [:Fnl]: #fnl-fnl-expr
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeCacheOpen]: #thymecacheopen
