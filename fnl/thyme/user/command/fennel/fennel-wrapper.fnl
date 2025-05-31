@@ -62,6 +62,20 @@
                      (table.concat "\n"))]
     (values fnl-code)))
 
+(fn parse-cmd-file-args [{:fargs [?path] : line1 : line2}]
+  "Parse Vim command arguments for Fennel wrapper command which read lines from a file.
+@param args table `:help nvim_parse_cmd`
+@return string fnl-code"
+  (let [full-path (-> (or ?path "%:p")
+                      (vim.fn.expand)
+                      (vim.fn.fnamemodify ":p"))]
+    ;; NOTE: fs.read-file returns the contents in
+    ;; a string while vim.fn.readfile returns in
+    ;; a list.
+    (-> (vim.fn.readfile full-path "" line2)
+        (vim.list_slice line1)
+        (table.concat "\n"))))
+
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
                                          : discard-last?
@@ -104,4 +118,6 @@
                  (edit-cmd-history! new-fnl-code cmd-history-opts)))
             (vim.schedule))))))
 
-{: parse-cmd-buf-args : mk-fennel-wrapper-command-callback}
+{: parse-cmd-buf-args
+ : parse-cmd-file-args
+ : mk-fennel-wrapper-command-callback}

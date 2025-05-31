@@ -13,7 +13,9 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
-(local {: parse-cmd-buf-args : mk-fennel-wrapper-command-callback}
+(local {: parse-cmd-buf-args
+        : parse-cmd-file-args
+        : mk-fennel-wrapper-command-callback}
        (require :thyme.user.command.fennel.fennel-wrapper))
 
 (local fnl-file-compile (require :thyme.user.command.fennel.fnl-file-compile))
@@ -68,16 +70,8 @@
        :nargs "?"
        :complete :file
        :desc "[thyme] evaluate given file, or current file, and display the results"}
-      (fn [{:fargs [?path] : line1 : line2 &as a}]
-        (let [fnl-code (let [full-path (-> (or ?path "%:p")
-                                           (vim.fn.expand)
-                                           (vim.fn.fnamemodify ":p"))]
-                         ;; NOTE: fs.read-file returns the contents in
-                         ;; a string while vim.fn.readfile returns in
-                         ;; a list.
-                         (-> (vim.fn.readfile full-path "" line2)
-                             (vim.list_slice line1)
-                             (table.concat "\n")))
+      (fn [a]
+        (let [fnl-code (parse-cmd-file-args a)
               cmd-history-opts {:method :ignore}
               callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
                                                            {:lang :fennel

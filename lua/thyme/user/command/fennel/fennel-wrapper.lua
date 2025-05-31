@@ -67,17 +67,12 @@ local function parse_cmd_buf_args(_13_)
   return fnl_code
 end
 local function parse_cmd_file_args(_15_)
-  local path = _15_["args"]
+  local _arg_16_ = _15_["fargs"]
+  local _3fpath = _arg_16_[1]
   local line1 = _15_["line1"]
   local line2 = _15_["line2"]
-  local bufnr
-  if path:find("^%s*$") then
-    bufnr = 0
-  else
-    bufnr = vim.fn.bufnr(path)
-  end
-  local fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
-  return fnl_code
+  local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
+  return table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
 end
 local function mk_fennel_wrapper_command_callback(callback, _17_)
   local lang = _17_["lang"]
@@ -132,4 +127,4 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
   end
   return _19_
 end
-return {["parse-cmd-buf-args"] = parse_cmd_buf_args, ["mk-fennel-wrapper-command-callback"] = mk_fennel_wrapper_command_callback}
+return {["parse-cmd-buf-args"] = parse_cmd_buf_args, ["parse-cmd-file-args"] = parse_cmd_file_args, ["mk-fennel-wrapper-command-callback"] = mk_fennel_wrapper_command_callback}
