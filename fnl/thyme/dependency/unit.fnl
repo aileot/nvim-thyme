@@ -6,11 +6,11 @@
 
 (local {: file-readable?
         : assert-is-file-readable
-        : assert-is-fnl-file
+        : assert-is-log-file
         : read-file
         : write-log-file!} (require :thyme.util.fs))
 
-(local {: uri-encode} (require :thyme.util.uri))
+(local {: uri-encode : uri-decode} (require :thyme.util.uri))
 (local {: each-file} (require :thyme.util.iterator))
 
 (local {: hide-file! : restore-file! : has-hidden-file? : can-restore-file?}
@@ -177,6 +177,30 @@
   (let [id (ModuleMap.fnl-path->path-id raw-path)
         log-id (uri-encode id)]
     (Path.join modmap-prefix (.. log-id :.log))))
+
+(fn ModuleMap.log-path->path-id [log-path]
+  "Convert `log-path` into `path-id`.
+@param log-path string
+@return string"
+  (assert-is-log-file log-path)
+  (let [decoded (uri-decode log-path)
+        path-id (-> decoded
+                    (: :match "^(.+)%.log$")
+                    (assert (-> "log-path must end with .log, got %s"
+                                (: :format log-path)))
+                    (: :match (.. "^" modmap-prefix "/(.+)$"))
+                    (assert (-> "log-path must start with %s, got %s"
+                                (: :format modmap-prefix log-path))))]
+    path-id))
+
+(fn ModuleMap.read-from-log-file [log-path]
+  "Read `module-map` from log file.
+@param log-path string
+@return ModuleMap"
+  (assert-is-file-readable log-path)
+  (assert-is-log-file log-path)
+  (let [path-id (ModuleMap.log-path->path-id log-path)]
+    (ModuleMap.try-read-from-file path-id)))
 
 (fn ModuleMap.clear-module-map-files! []
   "Clear all the module-map log files managed by nvim-thyme."

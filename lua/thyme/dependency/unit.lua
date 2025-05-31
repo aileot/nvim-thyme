@@ -4,11 +4,12 @@ local Path = require("thyme.util.path")
 local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
-local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
+local assert_is_log_file = _local_2_["assert-is-log-file"]
 local read_file = _local_2_["read-file"]
 local write_log_file_21 = _local_2_["write-log-file!"]
 local _local_3_ = require("thyme.util.uri")
 local uri_encode = _local_3_["uri-encode"]
+local uri_decode = _local_3_["uri-decode"]
 local _local_4_ = require("thyme.util.iterator")
 local each_file = _local_4_["each-file"]
 local _local_5_ = require("thyme.util.pool")
@@ -154,6 +155,18 @@ ModuleMap["determine-log-path"] = function(raw_path)
   local id = ModuleMap["fnl-path->path-id"](raw_path)
   local log_id = uri_encode(id)
   return Path.join(modmap_prefix, (log_id .. ".log"))
+end
+ModuleMap["log-path->path-id"] = function(log_path)
+  assert_is_log_file(log_path)
+  local decoded = uri_decode(log_path)
+  local path_id = assert(assert(decoded:match("^(.+)%.log$"), ("log-path must end with .log, got %s"):format(log_path)):match(("^" .. modmap_prefix .. "/(.+)$")), ("log-path must start with %s, got %s"):format(modmap_prefix, log_path))
+  return path_id
+end
+ModuleMap["read-from-log-file"] = function(log_path)
+  assert_is_file_readable(log_path)
+  assert_is_log_file(log_path)
+  local path_id = ModuleMap["log-path->path-id"](log_path)
+  return ModuleMap["try-read-from-file"](path_id)
 end
 ModuleMap["clear-module-map-files!"] = function()
   return each_file(hide_file_21, modmap_prefix)
