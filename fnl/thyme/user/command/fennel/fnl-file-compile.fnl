@@ -12,6 +12,9 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
+(local {: parse-cmd-file-args : mk-fennel-wrapper-command-callback}
+       (require :thyme.user.command.fennel.fennel-wrapper))
+
 (fn compile-to-write! [fnl-path force-compile?]
   "Compile the given Fennel file to Lua file, and write it to disk.
 @param fnl-path The path to the Fennel file to compile.
@@ -59,13 +62,26 @@
                   (CommandMessenger:notify! msg)))))))))
 
 (fn create-commands! []
-  (let [cb (fn [{: fargs :bang should-write-file? :mods {:confirm confirm?}}]
-             (let [[fnl-path] (if (= 0 (length fargs))
+  (let [compiler-options (or Config.command.compiler-options
+                             Config.compiler-options)
+        cmd-history-opts {:method "ignore"}
+        cb (fn [{: fargs
+                 :bang should-write-file?
+                 :mods {:confirm confirm?}
+                 &as a}]
+             (let [fnl-code (parse-cmd-file-args a)
+                   [fnl-path] (if (= 0 (length fargs))
                                   [(vim.fn.expand "%:p")]
                                   fargs)]
                (if should-write-file?
-                   ;; TODO: Without bang, just print the Lua code.
-                   (compile-to-write! fnl-path (not confirm?)))))
+                   (compile-to-write! fnl-path (not confirm?))
+                   (let [opts {:lang "lua"
+                               : compiler-options
+                               : cmd-history-opts}
+                         callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
+                                                                      opts)]
+                     (set a.args fnl-code)
+                     (callback a)))))
         cmd-opts {:range "%"
                   :nargs "*"
                   :bang true
