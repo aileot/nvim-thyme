@@ -97,7 +97,7 @@
       (when verbose?
         (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
                               (: :format new-fnl-code))]
-          (tts.print verbose-msg)))
+          (tts.print verbose-msg {:lang "fennel"})))
       (let [results [(callback new-fnl-code compiler-options)]]
         (case (length results)
           0 (tts.print :nil {: lang})
