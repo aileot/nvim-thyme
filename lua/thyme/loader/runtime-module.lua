@@ -184,7 +184,7 @@ local function search_fnl_module_on_rtp_21(module_name, ...)
               local _ = _37_
               local raw_msg = _38_
               local raw_msg_body = ("%s is found for the runtime/%s, but failed to compile it"):format(fnl_path, module_name)
-              local msg = LoaderMessenger["mk-failure-reason"](LoaderMessenger, ("%s\n\9%s"):format(raw_msg_body, raw_msg))
+              local msg = LoaderMessenger["mk-failure-reason"](LoaderMessenger, ("%s\n	%s"):format(raw_msg_body, raw_msg))
               _31_, _32_ = nil, msg
             else
               _31_, _32_ = nil
