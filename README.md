@@ -213,9 +213,7 @@ vim.loader.enable() -- (optional) before the `bootstrap`s above, it could increa
 
 <details open>
 <summary>
-
 With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
-
 </summary>
 
 ```lua
