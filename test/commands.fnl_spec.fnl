@@ -131,12 +131,22 @@
       (vim.cmd (.. "bdelete! " buf-name))
       (vim.fn.delete fnl-path)))
   (it* "should only return a Lua compile result within given range"
-    ;; WIP
-    (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1\n2\n3")]
+    (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
+          buf-name fnl-path]
+      (vim.cmd.edit buf-name)
+      ;; NOTE: `util.fs.write-file!` does not seem to be able to write
+      ;; multiline strings at once so `nvim_buf_set_lines` is used as makeshift.
+      (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1" "  2" "  3)"])
+      (vim.cmd :write)
       (assert.equals "return (1 + 2 + 3)"
-                     (execute (.. "FnlFileCompile " fnl-path)))
-      ;; (assert.equals "return (1 + 2)"
-      ;;                (execute (.. "1,2FnlFileCompile " fnl-path)))
+                     (execute (.. "FnlFileCompile " fnl-path))
+                     "should compile the whole file")
+      (assert.equals "return (1 + 2)"
+                     (execute (.. "1,2FnlFileCompile " fnl-path))
+                     "should compile in a comma-separated given range")
+      (assert.equals "return 2" (execute (.. "2FnlFileCompile " fnl-path))
+                     "should compile in a oneline range")
+      (vim.cmd (.. "bdelete " buf-name))
       (vim.fn.delete fnl-path))))
 
 ;; (describe* "command :FnlFileCompile! (with bang `!`)"
