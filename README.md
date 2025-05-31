@@ -261,12 +261,8 @@ vim.api.nvim_create_autocmd("User", {
 To optimize the nvim startuptime, `nvim-thyme` suggests you to define the Ex command
 interfaces and its fnl file state checker some time after `VimEnter`. For example,
 
-<details open>
-<summary>
-Independently from lazy.nvim, define an autocmd.
-</summary>
-
 ```lua
+-- In init.lua,
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function() -- You can substitute vim.schedule_wrap if you don't mind its tiny overhead.
@@ -276,8 +272,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 ```
-
-</details>
 
 ### 4. Start `nvim`
 
