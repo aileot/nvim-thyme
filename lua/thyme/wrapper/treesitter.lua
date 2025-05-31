@@ -143,6 +143,7 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:119")
   local opts = (_3fopts or {})
   local base_lang = (opts.lang or "fennel")
   local tmp_text
@@ -172,10 +173,12 @@ local function text__3ehl_chunks(text, _3fopts)
   end
 end
 local function echo(text, _3fopts)
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:155")
   local hl_chunks = text__3ehl_chunks(text, _3fopts)
   return vim.api.nvim_echo(hl_chunks, false, {})
 end
 local function print(text, _3fopts)
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:161")
   local hl_chunks = text__3ehl_chunks(text, _3fopts)
   return vim.api.nvim_echo(hl_chunks, true, {})
 end
