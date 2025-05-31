@@ -76,7 +76,6 @@ local function parse_cmd_file_args(_15_)
 end
 local function mk_fennel_wrapper_command_callback(callback, _17_)
   local lang = _17_["lang"]
-  local discard_last_3f = _17_["discard-last?"]
   local compiler_options = _17_["compiler-options"]
   local cmd_history_opts = _17_["cmd-history-opts"]
   local function _19_(_18_)
@@ -90,29 +89,24 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
     else
     end
     local results = {callback(new_fnl_code, compiler_options)}
-    do
-      local _21_ = #results
-      if (_21_ == 0) then
-        tts.print("nil", {lang = lang})
-      elseif (nil ~= _21_) then
-        local last_idx = _21_
-        for i, _3ftext in ipairs(results) do
-          if (discard_last_3f and (last_idx <= i)) then break end
-          local text
-          if (lang == "lua") then
-            text = _3ftext
-          else
-            text = fennel.view(_3ftext, compiler_options)
-          end
-          tts.print(text, {lang = lang})
+    if (results == nil) then
+      tts.print("nil", {lang = lang})
+    elseif ((_G.type(results) == "table") and (nil ~= results[1])) then
+      local text = results[1]
+      if (lang == "lua") then
+        tts.print(text, {lang = lang})
+      elseif (lang == "fennel") then
+        for _, text0 in ipairs(results) do
+          tts.print(fennel.view(text0, compiler_options))
         end
       else
       end
+    else
     end
-    local function _24_()
-      local _25_, _26_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
-      if ((_25_ == true) and (nil ~= _26_)) then
-        local cmdline = _26_
+    local function _23_()
+      local _24_, _25_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
+      if ((_24_ == true) and (nil ~= _25_)) then
+        local cmdline = _25_
         if cmdline.cmd:find("^Fnl") then
           return edit_cmd_history_21(new_fnl_code, cmd_history_opts)
         else
@@ -122,7 +116,7 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
         return nil
       end
     end
-    return vim.schedule(_24_)
+    return vim.schedule(_23_)
   end
   return _19_
 end

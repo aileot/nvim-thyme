@@ -78,7 +78,6 @@
 
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
-                                         : discard-last?
                                          : compiler-options
                                          : cmd-history-opts}]
   "Wrap the `fennel` wrapper callback of thyme.
@@ -99,16 +98,20 @@
                               (: :format new-fnl-code))]
           (tts.print verbose-msg {:lang "fennel"})))
       (let [results [(callback new-fnl-code compiler-options)]]
-        (case (length results)
-          0 (tts.print :nil {: lang})
-          last-idx (each [i ?text (ipairs results) ;
-                          ;; NOTE: Some function like fennel.compile-string returns
-                          ;; additional table at last. That is usually unintended
-                          ;; information for users.
-                          &until (and discard-last? (<= last-idx i))]
-                     (let [text (if (= lang :lua) ?text ;
-                                    (fennel.view ?text compiler-options))]
-                       (tts.print text {: lang}))))
+        (case results
+          nil (tts.print "nil" {: lang})
+          [text] (case lang
+                   :lua
+                   ;; NOTE: It expects `fennel.compile-string` as the
+                   ;; `callback`, which should return a Lua compiled code and
+                   ;; an extra table, the latter of which is usually unintended
+                   ;; information for users.
+                   (tts.print text {: lang})
+                   :fennel
+                   ;; NOTE Print every result one by one, e.g, `(values 1 2 3)`
+                   ;; should print `1`, `2`, and `3`, individually.
+                   (each [_ text (ipairs results)]
+                     (tts.print (fennel.view text compiler-options)))))
         (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
                (true cmdline)
                ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
