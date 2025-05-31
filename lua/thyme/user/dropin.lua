@@ -49,9 +49,8 @@ Dropin["_replace-invalid-cmdline"] = function(self, old_cmdline, invalid_cmd)
   local new_cmdline = (prefix .. fallback_cmd)
   return new_cmdline
 end
-Dropin["replace-cmdline!"] = function(self)
+Dropin["replace-cmdline!"] = function(self, old_cmdline)
   local cmdtype = get_cmdtype()
-  local old_cmdline = vim.fn.getcmdline()
   local _8_
   do
     local _7_
@@ -119,10 +118,10 @@ Dropin["complete-cmdline!"] = function(self)
 end
 Dropin["register!"] = function(self, pattern, replacement, _21_)
   local lang = _21_["lang"]
-  _G.assert((nil ~= lang), "Missing argument lang on fnl/thyme/user/dropin.fnl:102")
-  _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin.fnl:102")
-  _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin.fnl:102")
-  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:102")
+  _G.assert((nil ~= lang), "Missing argument lang on fnl/thyme/user/dropin.fnl:101")
+  _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin.fnl:101")
+  _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin.fnl:101")
+  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:101")
   return table.insert(self._commands, {pattern = pattern, replacement = replacement, lang = lang})
 end
 Dropin["enable-dropin-paren!"] = function(self)
@@ -136,7 +135,7 @@ Dropin["enable-dropin-paren!"] = function(self)
     elseif (_22_ == "") then
     elseif (nil ~= _22_) then
       local key = _22_
-      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').replace()<CR><CR>", {noremap = true})
+      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').replace(getcmdline())<CR><CR>", {noremap = true})
       vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
     else
     end
