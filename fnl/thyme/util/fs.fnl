@@ -72,6 +72,7 @@
 @param path string
 @param contents string"
   (with-open [f (assert (io.open path :w) (.. "failed to write to " path))]
+    ;; TODO: Cannot `f:write` write multiple lines at once?
     (f:write contents)))
 
 (fn append-file! [path contents]
