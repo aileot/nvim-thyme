@@ -211,12 +211,12 @@ vim.loader.enable() -- (optional) before the `bootstrap`s above, it could increa
 
 ### 2. (Optional) Manage `nvim-thyme` with Plugin Manager
 
-<!-- <details> -->
-<!-- <summary> -->
+<details open>
+<summary>
 
 With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 
-<!-- </summary> -->
+</summary>
 
 ```lua
 {
@@ -253,7 +253,7 @@ vim.api.nvim_create_autocmd("User", {
 })
 ```
 
-<!-- </details> -->
+</details>
 
 ### 3. Setup Optional Interfaces
 
