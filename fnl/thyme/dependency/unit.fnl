@@ -45,20 +45,20 @@
 @param raw-fnl-path string
 @return ModuleMap|nil `nil` if the corresponding log file is not found"
   (assert-is-file-readable raw-fnl-path)
-  (let [self (setmetatable {} ModuleMap)
-        id (ModuleMap.fnl-path->path-id raw-fnl-path)
+  (let [id (ModuleMap.fnl-path->path-id raw-fnl-path)
         log-path (ModuleMap.determine-log-path raw-fnl-path)]
     (when (file-readable? log-path)
       (let [encoded (read-file log-path)
             logged-maps (vim.mpack.decode encoded)
-            entry-map (. logged-maps id)]
-        (set self._entry-map entry-map)
+            entry-map (. logged-maps id)
+            self (ModuleMap.new {:module-name entry-map.module-name
+                                 :fnl-path entry-map.fnl-path
+                                 :lua-path entry-map.lua-path})]
         (tset logged-maps id nil)
         (set self._dependent-maps
              (if (= logged-maps (vim.empty_dict))
                  {}
                  logged-maps))
-        (set self._log-path log-path)
         (values self)))))
 
 (fn ModuleMap.encode [self]
