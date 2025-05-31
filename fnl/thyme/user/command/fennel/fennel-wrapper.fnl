@@ -53,11 +53,11 @@
       (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
                  method)))))
 
-(fn wrap-fennel-wrapper-for-command [callback
-                                     {: lang
-                                      : discard-last?
-                                      : compiler-options
-                                      : cmd-history-opts}]
+(fn mk-fennel-wrapper-command-callback [callback
+                                        {: lang
+                                         : discard-last?
+                                         : compiler-options
+                                         : cmd-history-opts}]
   "Wrap the `fennel` wrapper callback of thyme.
 @param callback fun(fnl-code: string): any
 @param opts.lang string? (default: \"fennel\")
@@ -95,4 +95,4 @@
                  (edit-cmd-history! new-fnl-code cmd-history-opts)))
             (vim.schedule))))))
 
-{: wrap-fennel-wrapper-for-command}
+{: mk-fennel-wrapper-command-callback}

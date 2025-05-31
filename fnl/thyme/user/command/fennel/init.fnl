@@ -13,7 +13,7 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
-(local {: wrap-fennel-wrapper-for-command}
+(local {: mk-fennel-wrapper-command-callback}
        (require :thyme.user.command.fennel.fennel-wrapper))
 
 (local fnl-file-compile (require :thyme.user.command.fennel.fnl-file-compile))
@@ -45,10 +45,10 @@
       {:nargs "+"
        :complete :lua
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
-      (wrap-fennel-wrapper-for-command fennel-wrapper.eval
-                                       {:lang :fennel
-                                        : compiler-options
-                                        : cmd-history-opts}))
+      (mk-fennel-wrapper-command-callback fennel-wrapper.eval
+                                          {:lang :fennel
+                                           : compiler-options
+                                           : cmd-history-opts}))
     (command! :FnlBuf
       {:range "%"
        :nargs "?"
@@ -60,10 +60,10 @@
                                                          line2 true)
                              (table.concat "\n")))
               cmd-history-opts {:method :ignore}
-              callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
-                                                        {:lang :fennel
-                                                         : compiler-options
-                                                         : cmd-history-opts})]
+              callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
+                                                           {:lang :fennel
+                                                            : compiler-options
+                                                            : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
     (command! :FnlFile
@@ -82,21 +82,21 @@
                              (vim.list_slice line1)
                              (table.concat "\n")))
               cmd-history-opts {:method :ignore}
-              callback (wrap-fennel-wrapper-for-command fennel-wrapper.eval
-                                                        {:lang :fennel
-                                                         : compiler-options
-                                                         : cmd-history-opts})]
+              callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
+                                                           {:lang :fennel
+                                                            : compiler-options
+                                                            : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
     (command! :FnlCompile
       {:nargs "+"
        :complete :lua
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
-      (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
-                                       {:lang :lua
-                                        :discard-last? true
-                                        : compiler-options
-                                        : cmd-history-opts}))
+      (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
+                                          {:lang :lua
+                                           :discard-last? true
+                                           : compiler-options
+                                           : cmd-history-opts}))
     (let [cb (fn [{:args path : line1 : line2 &as a}]
                (let [bufnr (if (path:find "^%s*$")
                                0
@@ -105,11 +105,11 @@
                                                               line2 true)
                                   (table.concat "\n"))
                      cmd-history-opts {:method :ignore}
-                     callback (wrap-fennel-wrapper-for-command fennel-wrapper.compile-string
-                                                               {:lang :lua
-                                                                :discard-last? true
-                                                                : compiler-options
-                                                                : cmd-history-opts})]
+                     callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
+                                                                  {:lang :lua
+                                                                   :discard-last? true
+                                                                   : compiler-options
+                                                                   : cmd-history-opts})]
                  (set a.args fnl-code)
                  (callback a)))
           cmd-opts {:range "%"

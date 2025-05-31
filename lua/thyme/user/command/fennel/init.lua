@@ -8,7 +8,7 @@ local Config = require("thyme.config")
 local DependencyLogger = require("thyme.dependency.logger")
 local fennel_wrapper = require("thyme.wrapper.fennel")
 local _local_3_ = require("thyme.user.command.fennel.fennel-wrapper")
-local wrap_fennel_wrapper_for_command = _local_3_["wrap-fennel-wrapper-for-command"]
+local mk_fennel_wrapper_command_callback = _local_3_["mk-fennel-wrapper-command-callback"]
 local fnl_file_compile = require("thyme.user.command.fennel.fnl-file-compile")
 local M = {}
 local function open_buf_21(buf_7cpath, _4_)
@@ -47,7 +47,7 @@ M["setup!"] = function(_3fopts)
   local compiler_options = opts["compiler-options"]
   local cmd_history_opts = opts["cmd-history"]
   fnl_file_compile["create-commands!"]()
-  vim.api.nvim_create_user_command("Fnl", wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
+  vim.api.nvim_create_user_command("Fnl", mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   local function _12_(_10_)
     local _arg_11_ = _10_["fargs"]
     local _3fpath = _arg_11_[1]
@@ -65,7 +65,7 @@ M["setup!"] = function(_3fopts)
       fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
     end
     local cmd_history_opts0 = {method = "ignore"}
-    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
+    local callback = mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
     a.args = fnl_code
     return callback(a)
   end
@@ -82,12 +82,12 @@ M["setup!"] = function(_3fopts)
       fnl_code = table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
     end
     local cmd_history_opts0 = {method = "ignore"}
-    local callback = wrap_fennel_wrapper_for_command(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
+    local callback = mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
     a.args = fnl_code
     return callback(a)
   end
   vim.api.nvim_create_user_command("FnlFile", _16_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
-  vim.api.nvim_create_user_command("FnlCompile", wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
+  vim.api.nvim_create_user_command("FnlCompile", mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {nargs = "+", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   do
     local cb
     local function _18_(_17_)
@@ -103,7 +103,7 @@ M["setup!"] = function(_3fopts)
       end
       local fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
       local cmd_history_opts0 = {method = "ignore"}
-      local callback = wrap_fennel_wrapper_for_command(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
+      local callback = mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], {lang = "lua", ["discard-last?"] = true, ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
       a.args = fnl_code
       return callback(a)
     end

@@ -53,7 +53,7 @@ local function edit_cmd_history_21(new_fnl_code, _7_)
     return error(("expected one of `overwrite`, `append`, or `ignore`; got unknown method " .. method))
   end
 end
-local function wrap_fennel_wrapper_for_command(callback, _13_)
+local function mk_fennel_wrapper_command_callback(callback, _13_)
   local lang = _13_["lang"]
   local discard_last_3f = _13_["discard-last?"]
   local compiler_options = _13_["compiler-options"]
@@ -106,4 +106,4 @@ local function wrap_fennel_wrapper_for_command(callback, _13_)
   end
   return _15_
 end
-return {["wrap-fennel-wrapper-for-command"] = wrap_fennel_wrapper_for_command}
+return {["mk-fennel-wrapper-command-callback"] = mk_fennel_wrapper_command_callback}
