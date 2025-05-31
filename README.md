@@ -259,23 +259,6 @@ interfaces and its fnl file state checker some time after `VimEnter` or
 `UIEnter`. When to enable them is up to you. The following snippets are
 examples:
 
-<details>
-<summary>
-If you're on lazy.nvim, define an autocmd.
-</summary>
-
-```lua
-vim.api.nvim_create_autocmd("User", {
-  once = true,
-  pattern = "VeryLazy",
-  callback = function()
-    require("thyme").setup()
-  end,
-})
-```
-
-</details>
-
 <details open>
 <summary>
 Independently from lazy.nvim, define an autocmd.
