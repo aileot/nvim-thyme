@@ -9,9 +9,7 @@ local function get_cmdtype()
 end
 local function extract__3finvalid_cmd(cmdline)
   local _2_, _3_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
-  if (_2_ == true) then
-    return cmdline
-  elseif ((_2_ == false) and (nil ~= _3_)) then
+  if ((_2_ == false) and (nil ~= _3_)) then
     local msg = _3_
     local expected_error_msg_prefix = "Parsing command%-line: E492: Not an editor command: (.*)"
     return msg:match(expected_error_msg_prefix)
