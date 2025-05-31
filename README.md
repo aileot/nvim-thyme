@@ -45,7 +45,12 @@ The optional features can be enabled with few startup overhead thanks to
 `vim.schedule`.\
 (For the details, please read the [Installation][installation] guide below.)
 
+> [!CAUTION]
+> Please note that undocumented features are subject to change without notice,
+> regardless of [semantic versioning][].
+
 - **Recompile** on autocmd events, tracking macro dependencies.
+  (Check out the [watch.strategy][] option.)
 - Evaluate fennel code in `cmdline` and `keymap` with the following features:
   - Colorful output on [the builtin **treesitter**][builtin treesitter].
   - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
@@ -84,7 +89,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 ## 🎉 Welcome Aboard
 
-Welcome to the Neovim x Fennel community!
+_Welcome to the Neovim x Fennel community!_
 
 If you have never written Fennel before,
 you can try Fennel on your favorite plugin manager.
@@ -129,7 +134,7 @@ and play around with Fennel first.
 },
 ```
 
-> [!CAUTION]
+> [!WARNING]
 > With the config above,
 > you cannot load Fennel modules _before_ the setup of `lazy.nvim`,
 > but only load Fennel modules _after_ the `init` setup is done.
@@ -522,6 +527,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 - [tangerine.nvim][tangerine.nvim] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
+[semantic versioning]: https://semver.org/
 [alternatives]: #-alternatives
 [installation]: #-installation
 [configuration]: #%EF%B8%8F-configuration
@@ -529,6 +535,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [reference]: ./docs/reference.md
 [fnl-dir]: ./docs/reference.md#fnl-dir
 [macro-path]: ./docs/reference.md#macro-path
+[watch.strategy]: ./docs/reference.md#watchstrategy
 [Fennel]: https://git.sr.ht/~technomancy/fennel
 [aniseed]: https://github.com/Olical/aniseed
 [nfnl]: https://github.com/Olical/nfnl
