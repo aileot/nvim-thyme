@@ -257,10 +257,8 @@ vim.api.nvim_create_autocmd("User", {
 
 ### 3. Setup Optional Interfaces
 
-To optimize the nvim startuptime, `nvim-thyme` suggests to define the Ex command
-interfaces and its fnl file state checker some time after `VimEnter` or
-`UIEnter`. When to enable them is up to you. The following snippets are
-examples:
+To optimize the nvim startuptime, `nvim-thyme` suggests you to define the Ex command
+interfaces and its fnl file state checker some time after `VimEnter`. For example,
 
 <details open>
 <summary>
