@@ -97,18 +97,19 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
     (set vim.o.wcm last-wcm)
     (set vim.o.lazyredraw last-lz)))
 
-(λ Dropin.register! [self pattern replacement]
+(λ Dropin.register! [self pattern replacement {: lang}]
   "Register a pair of `pattern` and `replacement` to dropin.
 @param pattern string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command"
-  (table.insert self._commands {: pattern : replacement}))
+@param replacement string The dropin command
+@param opts.lang string The lang for treesitter highlighting."
+  (table.insert self._commands {: pattern : replacement : lang}))
 
 (fn Dropin.enable-dropin-paren! [self]
   "Realize dropin-paren feature.
 The configurations are only modifiable at the `dropin-parens` attributes in `.nvim-thyme.fnl`."
   ;; TODO: Extract dropin feature into another plugin.
   ;; TODO: Merge the dropin options to `command.dropin`?
-  (self:register! "^[[%[%(%{].*" "Fnl %0")
+  (self:register! "^[[%[%(%{].*" "Fnl %0" {:lang "fennel"})
   (let [opts Config.dropin-paren
         plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
         plug-map-complete "<Plug>(thyme-dropin-complete-Fnl)"]

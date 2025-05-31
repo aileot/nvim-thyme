@@ -110,35 +110,37 @@ Dropin["complete-cmdline!"] = function(self)
   vim.o.lazyredraw = last_lz
   return nil
 end
-Dropin["register!"] = function(self, pattern, replacement)
+Dropin["register!"] = function(self, pattern, replacement, _20_)
+  local lang = _20_["lang"]
+  _G.assert((nil ~= lang), "Missing argument lang on fnl/thyme/user/dropin.fnl:100")
   _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin.fnl:100")
   _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin.fnl:100")
   _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:100")
-  return table.insert(self._commands, {pattern = pattern, replacement = replacement})
+  return table.insert(self._commands, {pattern = pattern, replacement = replacement, lang = lang})
 end
 Dropin["enable-dropin-paren!"] = function(self)
-  self["register!"](self, "^[[%[%(%{].*", "Fnl %0")
+  self["register!"](self, "^[[%[%(%{].*", "Fnl %0", {lang = "fennel"})
   local opts = Config["dropin-paren"]
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
   do
-    local _20_ = opts["cmdline-key"]
-    if (_20_ == false) then
-    elseif (_20_ == "") then
-    elseif (nil ~= _20_) then
-      local key = _20_
+    local _21_ = opts["cmdline-key"]
+    if (_21_ == false) then
+    elseif (_21_ == "") then
+    elseif (nil ~= _21_) then
+      local key = _21_
       vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').replace()<CR><CR>", {noremap = true})
       vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
     else
     end
   end
-  local _22_ = opts["cmdline-completion-key"]
-  if (_22_ == false) then
+  local _23_ = opts["cmdline-completion-key"]
+  if (_23_ == false) then
     return nil
-  elseif (_22_ == "") then
+  elseif (_23_ == "") then
     return nil
-  elseif (nil ~= _22_) then
-    local key = _22_
+  elseif (nil ~= _23_) then
+    local key = _23_
     vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').complete()<CR>", {noremap = true})
     return vim.api.nvim_set_keymap("c", key, plug_map_complete, {noremap = true})
   else
@@ -146,16 +148,16 @@ Dropin["enable-dropin-paren!"] = function(self)
   end
 end
 local SingletonDropin = Dropin._new()
-local function _24_(...)
+local function _25_(...)
   return SingletonDropin["register!"](SingletonDropin, ...)
 end
-local function _25_(...)
+local function _26_(...)
   return SingletonDropin["replace-cmdline!"](SingletonDropin, ...)
 end
-local function _26_(...)
+local function _27_(...)
   return SingletonDropin["complete-cmdline!"](SingletonDropin, ...)
 end
-local function _27_()
+local function _28_()
   return SingletonDropin["enable-dropin-paren!"](SingletonDropin)
 end
-return {register = _24_, replace = _25_, complete = _26_, ["enable-dropin-paren!"] = _27_}
+return {register = _25_, replace = _26_, complete = _27_, ["enable-dropin-paren!"] = _28_}
