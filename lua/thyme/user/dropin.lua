@@ -63,28 +63,32 @@ M.complete = function()
   local cmdtype = get_cmdtype()
   local old_cmdline = vim.fn.getcmdline()
   local new_cmdline
-  if (":" == cmdtype) then
-    local _13_ = extract__3finvalid_cmd(old_cmdline)
+  local _14_
+  do
+    local _13_
+    if (":" == cmdtype) then
+      _13_ = extract__3finvalid_cmd(old_cmdline)
+    else
+      _13_ = nil
+    end
     if (nil ~= _13_) then
       local invalid_cmd = _13_
-      new_cmdline = replace_invalid_cmdline(old_cmdline, invalid_cmd)
+      _14_ = replace_invalid_cmdline(old_cmdline, invalid_cmd)
     else
-      local _ = _13_
-      new_cmdline = old_cmdline
+      _14_ = nil
     end
-  else
-    new_cmdline = old_cmdline
   end
+  new_cmdline = (_14_ or old_cmdline)
   local last_lz = vim.o.lazyredraw
   local last_wcm = vim.o.wildcharm
   local tmp_wcm = ""
   local right_keys
   do
-    local _16_ = new_cmdline:find(old_cmdline, 1, true)
-    if (_16_ == nil) then
+    local _18_ = new_cmdline:find(old_cmdline, 1, true)
+    if (_18_ == nil) then
       right_keys = ""
-    elseif (nil ~= _16_) then
-      local shift = _16_
+    elseif (nil ~= _18_) then
+      local shift = _18_
       right_keys = string.rep("<Right>", (shift - 1))
     else
       right_keys = nil
@@ -107,23 +111,23 @@ M["enable-dropin-paren!"] = function()
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
   do
-    local _18_ = opts["cmdline-key"]
-    if (_18_ == false) then
-    elseif (_18_ == "") then
-    elseif (nil ~= _18_) then
-      local key = _18_
+    local _20_ = opts["cmdline-key"]
+    if (_20_ == false) then
+    elseif (_20_ == "") then
+    elseif (nil ~= _20_) then
+      local key = _20_
       vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').replace()<CR><CR>", {noremap = true})
       vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
     else
     end
   end
-  local _20_ = opts["cmdline-completion-key"]
-  if (_20_ == false) then
+  local _22_ = opts["cmdline-completion-key"]
+  if (_22_ == false) then
     return nil
-  elseif (_20_ == "") then
+  elseif (_22_ == "") then
     return nil
-  elseif (nil ~= _20_) then
-    local key = _20_
+  elseif (nil ~= _22_) then
+    local key = _22_
     vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').complete()<CR>", {noremap = true})
     return vim.api.nvim_set_keymap("c", key, plug_map_complete, {noremap = true})
   else

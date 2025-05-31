@@ -68,12 +68,11 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param completion-type string The completion type"
   (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)
-        new-cmdline (if (= ":" cmdtype)
-                        ;; NOTE: Do NOT use .replace instead. It also overrides history.
-                        (case (extract-?invalid-cmd old-cmdline)
+        ;; NOTE: Do NOT use .replace instead. It also overrides history.
+        new-cmdline (or (case (when (= ":" cmdtype)
+                                (extract-?invalid-cmd old-cmdline))
                           invalid-cmd (replace-invalid-cmdline old-cmdline
-                                                               invalid-cmd)
-                          _ old-cmdline)
+                                                               invalid-cmd))
                         old-cmdline)
         last-lz vim.o.lazyredraw
         last-wcm vim.o.wildcharm
