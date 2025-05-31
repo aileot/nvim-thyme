@@ -124,6 +124,10 @@ Dropin["register!"] = function(self, pattern, replacement, _21_)
   _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin.fnl:101")
   return table.insert(self._commands, {pattern = pattern, replacement = replacement, lang = lang})
 end
+Dropin["clear!"] = function(self)
+  self._commands = {}
+  return nil
+end
 Dropin["enable-dropin-paren!"] = function(self)
   self["register!"](self, "^[[%[%(%{].*", "Fnl %0", {lang = "fennel"})
   local opts = Config["dropin-paren"]
@@ -155,15 +159,18 @@ Dropin["enable-dropin-paren!"] = function(self)
 end
 local SingletonDropin = Dropin._new()
 local function _26_(...)
-  return SingletonDropin["register!"](SingletonDropin, ...)
+  return SingletonDropin["clear!"](SingletonDropin, ...)
 end
 local function _27_(...)
-  return SingletonDropin["replace-cmdline!"](SingletonDropin, ...)
+  return SingletonDropin["register!"](SingletonDropin, ...)
 end
 local function _28_(...)
+  return SingletonDropin["replace-cmdline!"](SingletonDropin, ...)
+end
+local function _29_(...)
   return SingletonDropin["complete-cmdline!"](SingletonDropin, ...)
 end
-local function _29_()
+local function _30_()
   return SingletonDropin["enable-dropin-paren!"](SingletonDropin)
 end
-return {register = _26_, replace = _27_, complete = _28_, ["enable-dropin-paren!"] = _29_}
+return {clear = _26_, register = _27_, replace = _28_, complete = _29_, ["enable-dropin-paren!"] = _30_}

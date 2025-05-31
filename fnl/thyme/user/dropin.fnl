@@ -105,6 +105,10 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 @param opts.lang string The lang for treesitter highlighting."
   (table.insert self._commands {: pattern : replacement : lang}))
 
+(fn Dropin.clear! [self]
+  "Clear all registered dropin commands."
+  (set self._commands []))
+
 (fn Dropin.enable-dropin-paren! [self]
   "Realize dropin-paren feature.
 The configurations are only modifiable at the `dropin-parens` attributes in `.nvim-thyme.fnl`."
@@ -140,7 +144,9 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
             (vim.api.nvim_set_keymap :c key plug-map-complete {:noremap true})))))
 
 (let [SingletonDropin (Dropin._new)]
-  {:register (fn [...]
+  {:clear (fn [...]
+            (SingletonDropin:clear! ...))
+   :register (fn [...]
                (SingletonDropin:register! ...))
    :replace (fn [...]
               (SingletonDropin:replace-cmdline! ...))
