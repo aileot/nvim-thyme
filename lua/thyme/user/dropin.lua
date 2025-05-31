@@ -99,7 +99,7 @@ Dropin["complete-cmdline!"] = function(self)
   local tmp_wcm = ""
   local right_keys
   do
-    local _19_ = new_cmdline:find(old_cmdline, 1, true)
+    local _19_ = old_cmdline:find(new_cmdline, 1, true)
     if (_19_ == nil) then
       right_keys = ""
     elseif (nil ~= _19_) then
