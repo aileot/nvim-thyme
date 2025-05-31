@@ -19,6 +19,7 @@
   "Compile the given Fennel file to Lua file, and write it to disk.
 @param fnl-path The path to the Fennel file to compile.
 @param force-compile? If true, will compile even if the Lua file already exists."
+  ;; FIXME: Make it work.
   (let [fnl-paths (if (= 0 (length fnl-path))
                       [(vim.api.nvim_buf_get_name 0)]
                       (-> (icollect [_ path (ipairs fnl-path)]
