@@ -46,8 +46,8 @@ The optional features can be enabled with few startup overhead thanks to
 (For the details, please read the [Installation][installation] guide below.)
 
 > [!CAUTION]
-> Please note that undocumented features are subject to change
-> without notice, regardless of [semantic versioning][].
+> Please note that undocumented features are subject to change without notice,
+> regardless of [semantic versioning][].
 
 - **Recompile** on autocmd events, tracking macro dependencies.
   (Check out the [watch.strategy][] option.)
