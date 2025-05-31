@@ -1,4 +1,4 @@
-(import-macros {: dec} :thyme.macros)
+(import-macros {: when-not : dec} :thyme.macros)
 
 (local Config (require :thyme.config))
 
@@ -19,7 +19,9 @@
   (case (pcall vim.api.nvim_parse_cmd cmdline {})
     (false msg)
     (let [expected-error-msg-prefix "Parsing command%-line: E492: Not an editor command: (.*)"]
-      (msg:match expected-error-msg-prefix))))
+      (msg:match expected-error-msg-prefix))
+    (true {: nextcmd}) (when-not (= "" nextcmd)
+                         (extract-?invalid-cmd nextcmd))))
 
 (local Dropin {})
 
