@@ -83,8 +83,9 @@
                      (set a.args fnl-code)
                      (callback a)))))
         cmd-opts {:range "%"
-                  :nargs "*"
-                  :bang true
+                  :nargs "?"
+                  ;; TODO: Allow `bang` option to write the compiled lua result to a file.
+                  ;; :bang true
                   :complete "file"
                   :desc "[thyme] display compiled lua result of given fnl file, or current fnl file"}]
     (command! :FnlFileCompile
