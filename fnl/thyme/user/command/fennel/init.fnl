@@ -33,15 +33,11 @@
               :string (if split? :split :edit))]
     (vim.cmd {: cmd :args [buf|path] : mods})))
 
-(fn M.setup! [?opts]
-  "Define fennel wrapper commands.
-@param ?opts.compiler-options table? (default: same values as main config)
-@param ?opts.cmd-history-opts CmdHistoryOpts? (default: {:method :overwrite :trailing-parens :omit}"
-  (let [opts (if ?opts
-                 (vim.tbl_deep_extend :force Config.command ?opts)
-                 Config.command)
-        compiler-options opts.compiler-options
-        cmd-history-opts opts.cmd-history]
+(fn M.setup! []
+  "Define fennel wrapper commands."
+  (let [compiler-options (or Config.command.compiler-options
+                             Config.compiler-options)
+        cmd-history-opts Config.command.cmd-history]
     (fnl-file-compile.create-commands!)
     (command! :Fnl
       {:nargs "+"
