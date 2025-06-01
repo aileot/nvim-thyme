@@ -61,6 +61,21 @@
         (set self._log-path log-path)
         (values self)))))
 
+(fn ModuleMap.encode [self]
+  "Encode `ModuleMap` to a table ready to save to file.
+@return string encoded table of entry-map and dependent-maps in string"
+  (let [entry-map (self:get-entry-map)
+        dependent-maps (self:get-dependent-maps)
+        entry-id (self.fnl-path->path-id (self:get-fnl-path))
+        ;; Temporarily set entry-map to dependent-maps.
+        ;; TODO: Separate entry-map from dependent-maps, and stop the tweaks
+        ;; merging entry-map to dependent-maps on v2.0.0?
+        _ (tset dependent-maps entry-id entry-map)
+        encoded (vim.mpack.encode dependent-maps)]
+    ;; Reset to the previous pure dependent-maps.
+    (tset dependent-maps entry-id nil)
+    (values encoded)))
+
 (fn ModuleMap.get-log-path [self]
   self._log-path)
 
@@ -92,12 +107,7 @@
   "Write module-map to log file.
 @return ModuleMap"
   (let [log-path (self:get-log-path)
-        entry-map (self:get-entry-map)
-        dependent-maps (self:get-dependent-maps)
-        entry-id (self.fnl-path->path-id (self:get-fnl-path))
-        _ (tset dependent-maps entry-id entry-map)
-        encoded (vim.mpack.encode dependent-maps)]
-    (tset dependent-maps entry-id nil)
+        encoded (self:encode)]
     (if (can-restore-file? log-path encoded)
         (restore-file! log-path)
         (write-log-file! log-path encoded))

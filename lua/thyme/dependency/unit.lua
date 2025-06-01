@@ -54,6 +54,17 @@ ModuleMap["try-read-from-file"] = function(raw_fnl_path)
     return nil
   end
 end
+ModuleMap.encode = function(self)
+  local entry_map = self["get-entry-map"](self)
+  local dependent_maps = self["get-dependent-maps"](self)
+  local entry_id = self["fnl-path->path-id"](self["get-fnl-path"](self))
+  local _
+  dependent_maps[entry_id] = entry_map
+  _ = nil
+  local encoded = vim.mpack.encode(dependent_maps)
+  dependent_maps[entry_id] = nil
+  return encoded
+end
 ModuleMap["get-log-path"] = function(self)
   return self["_log-path"]
 end
@@ -77,14 +88,7 @@ ModuleMap["get-dependent-maps"] = function(self)
 end
 ModuleMap["write-file!"] = function(self)
   local log_path = self["get-log-path"](self)
-  local entry_map = self["get-entry-map"](self)
-  local dependent_maps = self["get-dependent-maps"](self)
-  local entry_id = self["fnl-path->path-id"](self["get-fnl-path"](self))
-  local _
-  dependent_maps[entry_id] = entry_map
-  _ = nil
-  local encoded = vim.mpack.encode(dependent_maps)
-  dependent_maps[entry_id] = nil
+  local encoded = self:encode()
   if can_restore_file_3f(log_path, encoded) then
     restore_file_21(log_path)
   else
