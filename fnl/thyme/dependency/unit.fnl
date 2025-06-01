@@ -40,26 +40,32 @@
     (set self._log-path (ModuleMap.determine-log-path fnl-path))
     (values self)))
 
+(fn ModuleMap.decode [encoded path-id]
+  "The counterpart of `ModuleMap.encode`.
+@return ModuleMap"
+  ;; TODO: On v2.0.0, remove the redundnant `path-id` parameter, separating
+  ;; entry-map.
+  (let [logged-maps (vim.mpack.decode encoded)
+        entry-map (. logged-maps path-id)
+        self (ModuleMap.new {:module-name entry-map.module-name
+                             :fnl-path entry-map.fnl-path
+                             :lua-path entry-map.lua-path})]
+    (tset logged-maps path-id nil)
+    (set self._dependent-maps (if (= logged-maps (vim.empty_dict))
+                                  {}
+                                  logged-maps))
+    (values self)))
+
 (fn ModuleMap.try-read-from-file [raw-fnl-path]
   "Try to restore `ModuleMap` from file.
 @param raw-fnl-path string
 @return ModuleMap|nil `nil` if the corresponding log file is not found"
   (assert-is-file-readable raw-fnl-path)
-  (let [id (ModuleMap.fnl-path->path-id raw-fnl-path)
-        log-path (ModuleMap.determine-log-path raw-fnl-path)]
+  (let [log-path (ModuleMap.determine-log-path raw-fnl-path)]
     (when (file-readable? log-path)
       (let [encoded (read-file log-path)
-            logged-maps (vim.mpack.decode encoded)
-            entry-map (. logged-maps id)
-            self (ModuleMap.new {:module-name entry-map.module-name
-                                 :fnl-path entry-map.fnl-path
-                                 :lua-path entry-map.lua-path})]
-        (tset logged-maps id nil)
-        (set self._dependent-maps
-             (if (= logged-maps (vim.empty_dict))
-                 {}
-                 logged-maps))
-        (values self)))))
+            path-id (ModuleMap.fnl-path->path-id raw-fnl-path)]
+        (ModuleMap.decode encoded path-id)))))
 
 (fn ModuleMap.encode [self]
   "Encode `ModuleMap` to a table ready to save to file.

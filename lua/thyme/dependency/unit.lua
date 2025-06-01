@@ -33,22 +33,25 @@ ModuleMap.new = function(_6_)
   self["_log-path"] = ModuleMap["determine-log-path"](fnl_path)
   return self
 end
+ModuleMap.decode = function(encoded, path_id)
+  local logged_maps = vim.mpack.decode(encoded)
+  local entry_map = logged_maps[path_id]
+  local self = ModuleMap.new({["module-name"] = entry_map["module-name"], ["fnl-path"] = entry_map["fnl-path"], ["lua-path"] = entry_map["lua-path"]})
+  logged_maps[path_id] = nil
+  if (logged_maps == vim.empty_dict()) then
+    self["_dependent-maps"] = {}
+  else
+    self["_dependent-maps"] = logged_maps
+  end
+  return self
+end
 ModuleMap["try-read-from-file"] = function(raw_fnl_path)
   assert_is_file_readable(raw_fnl_path)
-  local id = ModuleMap["fnl-path->path-id"](raw_fnl_path)
   local log_path = ModuleMap["determine-log-path"](raw_fnl_path)
   if file_readable_3f(log_path) then
     local encoded = read_file(log_path)
-    local logged_maps = vim.mpack.decode(encoded)
-    local entry_map = logged_maps[id]
-    local self = ModuleMap.new({["module-name"] = entry_map["module-name"], ["fnl-path"] = entry_map["fnl-path"], ["lua-path"] = entry_map["lua-path"]})
-    logged_maps[id] = nil
-    if (logged_maps == vim.empty_dict()) then
-      self["_dependent-maps"] = {}
-    else
-      self["_dependent-maps"] = logged_maps
-    end
-    return self
+    local path_id = ModuleMap["fnl-path->path-id"](raw_fnl_path)
+    return ModuleMap.decode(encoded, path_id)
   else
     return nil
   end
