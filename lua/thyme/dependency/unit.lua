@@ -4,11 +4,12 @@ local Path = require("thyme.util.path")
 local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
-local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
+local assert_is_log_file = _local_2_["assert-is-log-file"]
 local read_file = _local_2_["read-file"]
 local write_log_file_21 = _local_2_["write-log-file!"]
 local _local_3_ = require("thyme.util.uri")
 local uri_encode = _local_3_["uri-encode"]
+local uri_decode = _local_3_["uri-decode"]
 local _local_4_ = require("thyme.util.iterator")
 local each_file = _local_4_["each-file"]
 local _local_5_ = require("thyme.util.pool")
@@ -20,6 +21,29 @@ local modmap_prefix = Path.join(state_prefix, "modmap")
 vim.fn.mkdir(modmap_prefix, "p")
 local ModuleMap = {}
 ModuleMap.__index = ModuleMap
+ModuleMap["get-root"] = function()
+  return modmap_prefix
+end
+ModuleMap["clear-module-map-files!"] = function()
+  return each_file(hide_file_21, modmap_prefix)
+end
+ModuleMap["fnl-path->path-id"] = function(raw_fnl_path)
+  assert_is_file_readable(raw_fnl_path)
+  return vim.fn.resolve(raw_fnl_path)
+end
+ModuleMap["determine-log-path"] = function(raw_path)
+  assert_is_file_readable(raw_path)
+  assert((".log" ~= raw_path:sub(-4)), ".log file is not allowed")
+  local id = ModuleMap["fnl-path->path-id"](raw_path)
+  local log_id = uri_encode(id)
+  return Path.join(modmap_prefix, (log_id .. ".log"))
+end
+ModuleMap["log-path->path-id"] = function(log_path)
+  assert_is_log_file(log_path)
+  local decoded = uri_decode(log_path)
+  local path_id = assert(assert(decoded:match("^(.+)%.log$"), ("log-path must end with .log, got %s"):format(log_path)):match(("^" .. modmap_prefix .. "/(.+)$")), ("log-path must start with %s, got %s"):format(modmap_prefix, log_path))
+  return path_id
+end
 ModuleMap.new = function(_6_)
   local module_name = _6_["module-name"]
   local fnl_path = _6_["fnl-path"]
@@ -32,27 +56,45 @@ ModuleMap.new = function(_6_)
   self["_log-path"] = ModuleMap["determine-log-path"](fnl_path)
   return self
 end
+ModuleMap.decode = function(encoded, path_id)
+  local logged_maps = vim.mpack.decode(encoded)
+  local entry_map = logged_maps[path_id]
+  local self = ModuleMap.new({["module-name"] = entry_map["module-name"], ["fnl-path"] = entry_map["fnl-path"], ["lua-path"] = entry_map["lua-path"]})
+  logged_maps[path_id] = nil
+  if (logged_maps == vim.empty_dict()) then
+    self["_dependent-maps"] = {}
+  else
+    self["_dependent-maps"] = logged_maps
+  end
+  return self
+end
 ModuleMap["try-read-from-file"] = function(raw_fnl_path)
   assert_is_file_readable(raw_fnl_path)
-  local self = setmetatable({}, ModuleMap)
-  local id = ModuleMap["fnl-path->path-id"](raw_fnl_path)
   local log_path = ModuleMap["determine-log-path"](raw_fnl_path)
   if file_readable_3f(log_path) then
     local encoded = read_file(log_path)
-    local logged_maps = vim.mpack.decode(encoded)
-    local entry_map = logged_maps[id]
-    self["_entry-map"] = entry_map
-    logged_maps[id] = nil
-    if (logged_maps == vim.empty_dict()) then
-      self["_dependent-maps"] = {}
-    else
-      self["_dependent-maps"] = logged_maps
-    end
-    self["_log-path"] = log_path
-    return self
+    local path_id = ModuleMap["fnl-path->path-id"](raw_fnl_path)
+    return ModuleMap.decode(encoded, path_id)
   else
     return nil
   end
+end
+ModuleMap["read-from-log-file"] = function(log_path)
+  assert_is_file_readable(log_path)
+  assert_is_log_file(log_path)
+  local path_id = ModuleMap["log-path->path-id"](log_path)
+  return ModuleMap["try-read-from-file"](path_id)
+end
+ModuleMap.encode = function(self)
+  local entry_map = self["get-entry-map"](self)
+  local dependent_maps = self["get-dependent-maps"](self)
+  local entry_id = self["fnl-path->path-id"](self["get-fnl-path"](self))
+  local _
+  dependent_maps[entry_id] = entry_map
+  _ = nil
+  local encoded = vim.mpack.encode(dependent_maps)
+  dependent_maps[entry_id] = nil
+  return encoded
 end
 ModuleMap["get-log-path"] = function(self)
   return self["_log-path"]
@@ -77,14 +119,7 @@ ModuleMap["get-dependent-maps"] = function(self)
 end
 ModuleMap["write-file!"] = function(self)
   local log_path = self["get-log-path"](self)
-  local entry_map = self["get-entry-map"](self)
-  local dependent_maps = self["get-dependent-maps"](self)
-  local entry_id = self["fnl-path->path-id"](self["get-fnl-path"](self))
-  local _
-  dependent_maps[entry_id] = entry_map
-  _ = nil
-  local encoded = vim.mpack.encode(dependent_maps)
-  dependent_maps[entry_id] = nil
+  local encoded = self:encode()
   if can_restore_file_3f(log_path, encoded) then
     restore_file_21(log_path)
   else
@@ -141,22 +176,5 @@ ModuleMap["restore!"] = function(self)
   else
     return nil
   end
-end
-ModuleMap["fnl-path->path-id"] = function(raw_fnl_path)
-  assert_is_file_readable(raw_fnl_path)
-  return vim.fn.resolve(raw_fnl_path)
-end
-ModuleMap["determine-log-path"] = function(raw_path)
-  assert_is_file_readable(raw_path)
-  assert((".log" ~= raw_path:sub(-4)), ".log file is not allowed")
-  local id = ModuleMap["fnl-path->path-id"](raw_path)
-  local log_id = uri_encode(id)
-  return Path.join(modmap_prefix, (log_id .. ".log"))
-end
-ModuleMap["clear-module-map-files!"] = function()
-  return each_file(hide_file_21, modmap_prefix)
-end
-ModuleMap["get-root"] = function()
-  return modmap_prefix
 end
 return ModuleMap
