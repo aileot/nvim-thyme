@@ -187,7 +187,8 @@
 
 - Remove module-map log file.
 - Set module-map in memory for `dependency-fnl-path` to `nil`.
-  @param dependency-fnl-path string"
+
+@param dependency-fnl-path string"
   (let [lua-path (self:get-lua-path)
         log-path (self:get-log-path)]
     (set self.__entry-map self._entry-map)
