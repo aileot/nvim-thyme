@@ -23,6 +23,53 @@
 (local ModuleMap {})
 (set ModuleMap.__index ModuleMap)
 
+(fn ModuleMap.get-root []
+  "Return the root directory to store module-map states.
+  @return string the root path"
+  modmap-prefix)
+
+(fn ModuleMap.clear-module-map-files! []
+  "Clear all the module-map log files managed by nvim-thyme."
+  ;; NOTE: hide-dir! instead also move modmap dir wastefully.
+  (each-file hide-file! modmap-prefix))
+
+(fn ModuleMap.fnl-path->path-id [raw-fnl-path]
+  "Determine `ModuleMap` ID from `raw-fnl-path`.
+@param raw-fnl-path string
+@return string"
+  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
+  ;; unlikely to be either re-set to another file or replaced with a general
+  ;; file. Even in such cases, just executing :CacheClear would be the simple
+  ;; answer. The symbolic link issue does not belong to dependent-map, but
+  ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
+  (assert-is-file-readable raw-fnl-path)
+  (vim.fn.resolve raw-fnl-path))
+
+(fn ModuleMap.determine-log-path [raw-path]
+  "Convert `path` into `log-path`.
+@param path string
+@return string"
+  (assert-is-file-readable raw-path)
+  (assert (not= ".log" (raw-path:sub -4)) ".log file is not allowed")
+  (let [id (ModuleMap.fnl-path->path-id raw-path)
+        log-id (uri-encode id)]
+    (Path.join modmap-prefix (.. log-id :.log))))
+
+(fn ModuleMap.log-path->path-id [log-path]
+  "Convert `log-path` into `path-id`.
+@param log-path string
+@return string"
+  (assert-is-log-file log-path)
+  (let [decoded (uri-decode log-path)
+        path-id (-> decoded
+                    (: :match "^(.+)%.log$")
+                    (assert (-> "log-path must end with .log, got %s"
+                                (: :format log-path)))
+                    (: :match (.. "^" modmap-prefix "/(.+)$"))
+                    (assert (-> "log-path must start with %s, got %s"
+                                (: :format modmap-prefix log-path))))]
+    path-id))
+
 (fn ModuleMap.new [{: module-name : fnl-path : lua-path}]
   "Create a new instance of `ModuleMap`.
 @param tbl.module-name string
@@ -66,6 +113,15 @@
       (let [encoded (read-file log-path)
             path-id (ModuleMap.fnl-path->path-id raw-fnl-path)]
         (ModuleMap.decode encoded path-id)))))
+
+(fn ModuleMap.read-from-log-file [log-path]
+  "Read `module-map` from log file.
+@param log-path string
+@return ModuleMap"
+  (assert-is-file-readable log-path)
+  (assert-is-log-file log-path)
+  (let [path-id (ModuleMap.log-path->path-id log-path)]
+    (ModuleMap.try-read-from-file path-id)))
 
 (fn ModuleMap.encode [self]
   "Encode `ModuleMap` to a table ready to save to file.
@@ -161,61 +217,5 @@
       (restore-file! lua-path))
     (when (has-hidden-file? log-path)
       (restore-file! log-path))))
-
-(fn ModuleMap.fnl-path->path-id [raw-fnl-path]
-  "Determine `ModuleMap` ID from `raw-fnl-path`.
-@param raw-fnl-path string
-@return string"
-  ;; NOTE: fnl-path should be managed in resolved path. Symbolic links are
-  ;; unlikely to be either re-set to another file or replaced with a general
-  ;; file. Even in such cases, just executing :CacheClear would be the simple
-  ;; answer. The symbolic link issue does not belong to dependent-map, but
-  ;; only to the entry point, i.e., autocmd's <amatch> and <afile>.
-  (assert-is-file-readable raw-fnl-path)
-  (vim.fn.resolve raw-fnl-path))
-
-(fn ModuleMap.determine-log-path [raw-path]
-  "Convert `path` into `log-path`.
-@param path string
-@return string"
-  (assert-is-file-readable raw-path)
-  (assert (not= ".log" (raw-path:sub -4)) ".log file is not allowed")
-  (let [id (ModuleMap.fnl-path->path-id raw-path)
-        log-id (uri-encode id)]
-    (Path.join modmap-prefix (.. log-id :.log))))
-
-(fn ModuleMap.log-path->path-id [log-path]
-  "Convert `log-path` into `path-id`.
-@param log-path string
-@return string"
-  (assert-is-log-file log-path)
-  (let [decoded (uri-decode log-path)
-        path-id (-> decoded
-                    (: :match "^(.+)%.log$")
-                    (assert (-> "log-path must end with .log, got %s"
-                                (: :format log-path)))
-                    (: :match (.. "^" modmap-prefix "/(.+)$"))
-                    (assert (-> "log-path must start with %s, got %s"
-                                (: :format modmap-prefix log-path))))]
-    path-id))
-
-(fn ModuleMap.read-from-log-file [log-path]
-  "Read `module-map` from log file.
-@param log-path string
-@return ModuleMap"
-  (assert-is-file-readable log-path)
-  (assert-is-log-file log-path)
-  (let [path-id (ModuleMap.log-path->path-id log-path)]
-    (ModuleMap.try-read-from-file path-id)))
-
-(fn ModuleMap.clear-module-map-files! []
-  "Clear all the module-map log files managed by nvim-thyme."
-  ;; NOTE: hide-dir! instead also move modmap dir wastefully.
-  (each-file hide-file! modmap-prefix))
-
-(fn ModuleMap.get-root []
-  "Return the root directory to store module-map states.
-  @return string the root path"
-  modmap-prefix)
 
 ModuleMap
