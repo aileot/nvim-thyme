@@ -3,6 +3,8 @@
 (local {: validate-type : new-matrix} (require :thyme.util.general))
 (local {: char-by-char : uncouple-substrings} (require :thyme.util.iterator))
 
+(local Config (require :thyme.config))
+
 (local ts vim.treesitter)
 (local hl-cache {})
 
@@ -126,32 +128,34 @@ by default) for `vim.api.nvim_echo`.
   ;; NOTE: trailing whitespaces in each line are ignored, i.e., padding each
   ;; line to vim.go.columns here does not make sense.
   (validate-type :string text)
-  (let [opts (or ?opts {})
-        base-lang (or opts.lang :fennel)
-        tmp-text (-> (case base-lang
-                       ;; Temporarily replace address indicators in pretty print
-                       ;; to keep valid syntax tree.
-                       :fennel
-                       (text:gsub "#<(%a+):(%s+0x%x+)>" "#(%1 %2)")
-                       :lua
-                       ;; TODO: Why does @field not affect in {%1=%2}?
-                       (text:gsub "<(%a+%s+%d+)>" "\"%1\"")
-                       _
-                       text)
-                     (: :gsub "\\" "\\\\"))
-        fixed-text (-> text
-                       ;; Reset the address indicator adjustments,
-                       ;; but keep the escapes.
-                       (: :gsub "\\" "\\\\"))]
-    (validate-type :table opts)
-    (case (pcall ts.get_string_parser tmp-text base-lang)
-      (false msg)
-      (let [chunks [[text]]]
-        (vim.notify_once msg vim.log.levels.WARN)
-        chunks)
-      (true lang-tree)
-      ;; Make sure to destroy
-      (compose-hl-chunks fixed-text lang-tree))))
+  (if Config.disable-treesitter-highlights
+      [[text]]
+      (let [opts (or ?opts {})
+            base-lang (or opts.lang :fennel)
+            tmp-text (-> (case base-lang
+                           ;; Temporarily replace address indicators in pretty print
+                           ;; to keep valid syntax tree.
+                           :fennel
+                           (text:gsub "#<(%a+):(%s+0x%x+)>" "#(%1 %2)")
+                           :lua
+                           ;; TODO: Why does @field not affect in {%1=%2}?
+                           (text:gsub "<(%a+%s+%d+)>" "\"%1\"")
+                           _
+                           text)
+                         (: :gsub "\\" "\\\\"))
+            fixed-text (-> text
+                           ;; Reset the address indicator adjustments,
+                           ;; but keep the escapes.
+                           (: :gsub "\\" "\\\\"))]
+        (validate-type :table opts)
+        (case (pcall ts.get_string_parser tmp-text base-lang)
+          (false msg)
+          (let [chunks [[text]]]
+            (vim.notify_once msg vim.log.levels.WARN)
+            chunks)
+          (true lang-tree)
+          ;; Make sure to destroy
+          (compose-hl-chunks fixed-text lang-tree)))))
 
 (λ echo [text ?opts]
   "Echo `text` with treesitter highlights.

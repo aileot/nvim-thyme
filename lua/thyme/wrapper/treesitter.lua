@@ -4,6 +4,7 @@ local new_matrix = _local_1_["new-matrix"]
 local _local_2_ = require("thyme.util.iterator")
 local char_by_char = _local_2_["char-by-char"]
 local uncouple_substrings = _local_2_["uncouple-substrings"]
+local Config = require("thyme.config")
 local ts = vim.treesitter
 local hl_cache = {}
 local hl_chunk_cache = new_matrix()
@@ -143,43 +144,47 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:119")
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:121")
   validate_type("string", text)
-  local opts = (_3fopts or {})
-  local base_lang = (opts.lang or "fennel")
-  local tmp_text
-  local _20_
-  if (base_lang == "fennel") then
-    _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
-  elseif (base_lang == "lua") then
-    _20_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
+  if Config["disable-treesitter-highlights"] then
+    return {{text}}
   else
-    local _ = base_lang
-    _20_ = text
-  end
-  tmp_text = _20_:gsub("\\", "\\\\")
-  local fixed_text = text:gsub("\\", "\\\\")
-  validate_type("table", opts)
-  local _25_, _26_ = pcall(ts.get_string_parser, tmp_text, base_lang)
-  if ((_25_ == false) and (nil ~= _26_)) then
-    local msg = _26_
-    local chunks = {{text}}
-    vim.notify_once(msg, vim.log.levels.WARN)
-    return chunks
-  elseif ((_25_ == true) and (nil ~= _26_)) then
-    local lang_tree = _26_
-    return compose_hl_chunks(fixed_text, lang_tree)
-  else
-    return nil
+    local opts = (_3fopts or {})
+    local base_lang = (opts.lang or "fennel")
+    local tmp_text
+    local _20_
+    if (base_lang == "fennel") then
+      _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
+    elseif (base_lang == "lua") then
+      _20_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
+    else
+      local _ = base_lang
+      _20_ = text
+    end
+    tmp_text = _20_:gsub("\\", "\\\\")
+    local fixed_text = text:gsub("\\", "\\\\")
+    validate_type("table", opts)
+    local _25_, _26_ = pcall(ts.get_string_parser, tmp_text, base_lang)
+    if ((_25_ == false) and (nil ~= _26_)) then
+      local msg = _26_
+      local chunks = {{text}}
+      vim.notify_once(msg, vim.log.levels.WARN)
+      return chunks
+    elseif ((_25_ == true) and (nil ~= _26_)) then
+      local lang_tree = _26_
+      return compose_hl_chunks(fixed_text, lang_tree)
+    else
+      return nil
+    end
   end
 end
 local function echo(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:156")
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:160")
   local hl_chunks = text__3ehl_chunks(text, _3fopts)
   return vim.api.nvim_echo(hl_chunks, false, {})
 end
 local function print(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:162")
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:166")
   local hl_chunks = text__3ehl_chunks(text, _3fopts)
   return vim.api.nvim_echo(hl_chunks, true, {})
 end
