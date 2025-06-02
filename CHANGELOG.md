@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.2.0](https://github.com/aileot/nvim-thyme/compare/v1.1.0...v1.2.0) (2025-06-02)
+
+
+### Features
+
+* **config:** add option `disable-treesitter-highlights` ([#52](https://github.com/aileot/nvim-thyme/issues/52)) ([6423714](https://github.com/aileot/nvim-thyme/commit/64237145742e2f5e689ad4dd9b356bd61945c0a9))
+
+
+### Bug Fixes
+
+* **config:** allow option values to be `false` ([#50](https://github.com/aileot/nvim-thyme/issues/50)) ([e78845f](https://github.com/aileot/nvim-thyme/commit/e78845f7b3abd0d6eb67a11eda093d05a6ae2cb2))
+* **util:** let recursive file detection apart from `vim.fs.dir` ([#53](https://github.com/aileot/nvim-thyme/issues/53)) ([74ed9d8](https://github.com/aileot/nvim-thyme/commit/74ed9d86d70c1b11475bd4a3b136458b82ac6f95))
+
 ## [1.1.0](https://github.com/aileot/nvim-thyme/compare/v1.0.3...v1.1.0) (2025-05-31)
 
 
