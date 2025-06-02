@@ -38,6 +38,11 @@
         ;; What args should be passed to the callback?
         :preproc #$
         :notifier vim.notify
+        ;; Since the highlighting output rendering are unstable on the
+        ;; experimental vim._extui feature on the nvim v0.12.0 nightly, you can
+        ;; disable treesitter highlights and make nvim-thyme return plain text
+        ;; outputs instead on the keymap and command features.
+        :disable-treesitter-highlights false
         :command {:compiler-options false
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :keymap {:compiler-options false :mappings {}}
