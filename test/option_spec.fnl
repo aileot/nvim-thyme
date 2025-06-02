@@ -13,6 +13,26 @@
 
 (local thyme (require :thyme))
 
+(describe* "The fallback-able options"
+  (describe* "Config.command.compiler-options"
+    (it* "throws no error as getter"
+      (assert.has_no_errors #Config.command.compiler-options))
+    (it* "throws no error as setter"
+      (let [default-compiler-options Config.command.compiler-options]
+        (assert.has_no_errors #(set Config.command.compiler-options
+                                    {:correlate true}))
+        (assert.is_same {:correlate true} Config.command.compiler-options)
+        (set Config.command.compiler-options default-compiler-options))))
+  (describe* "Config.keymap.compiler-options"
+    (it* "throws no error as getter"
+      (assert.has_no_errors #Config.keymap.compiler-options))
+    (it* "throws no error as setter"
+      (let [default-compiler-options Config.keymap.compiler-options]
+        (assert.has_no_errors #(set Config.keymap.compiler-options
+                                    {:correlate true}))
+        (assert.is_same {:correlate true} Config.keymap.compiler-options)
+        (set Config.keymap.compiler-options default-compiler-options)))))
+
 (describe* "option fnl-dir"
   (let [default-fnl-dir Config.fnl-dir]
     (setup (fn []
