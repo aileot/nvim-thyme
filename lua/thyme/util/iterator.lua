@@ -100,7 +100,7 @@ local function pairs_from_longer_key(tbl)
   return _14_
 end
 local function each_file(call, dir_path)
-  for relative_path, fs_type in vim.fs.dir(dir_path, {depth = math.huge}) do
+  for relative_path, fs_type in vim.fs.dir(dir_path, {depth = 1}) do
     local full_path = Path.join(dir_path, relative_path)
     if (fs_type == "file") then
       call(full_path)
@@ -117,7 +117,7 @@ local function each_file(call, dir_path)
   return nil
 end
 local function each_dir(call, dir_path)
-  for relative_path, fs_type in vim.fs.dir(dir_path, {depth = math.huge}) do
+  for relative_path, fs_type in vim.fs.dir(dir_path, {depth = 1}) do
     local full_path = Path.join(dir_path, relative_path)
     if (fs_type == "directory") then
       each_dir(call, full_path)

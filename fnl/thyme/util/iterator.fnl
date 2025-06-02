@@ -76,7 +76,7 @@ iterator is only for plain text.
 
 (fn each-file [call dir-path]
   "Iterate over files and execute `call`. Directories are ignored."
-  (each [relative-path fs-type (vim.fs.dir dir-path {:depth math.huge})]
+  (each [relative-path fs-type (vim.fs.dir dir-path {:depth 1})]
     (let [full-path (Path.join dir-path relative-path)]
       (case fs-type
         :file (call full-path)
@@ -86,7 +86,7 @@ iterator is only for plain text.
 
 (fn each-dir [call dir-path]
   "Iterate over directories, from children to parent, and execute `call`."
-  (each [relative-path fs-type (vim.fs.dir dir-path {:depth math.huge})]
+  (each [relative-path fs-type (vim.fs.dir dir-path {:depth 1})]
     (let [full-path (Path.join dir-path relative-path)]
       (when (= fs-type :directory)
         (each-dir call full-path)
