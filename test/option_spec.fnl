@@ -13,6 +13,40 @@
 
 (local thyme (require :thyme))
 
+(describe* "Addressing undefined option"
+  (describe* "throws error"
+    (it* "as getter"
+      (assert.has_errors #Config.undefined)))
+  ;; (it* "as setter"
+  ;;   ;; TODO: Make setter throw error.
+  ;;   (assert.has_errors #(set Config.undefined true))))
+  (describe* "in table format throws error"
+    (it* "as getter"
+      (assert.has_errors #Config.undefined.compiler-options))
+    (it* "as setter"
+      (assert.has_errors #(set Config.undefined.compiler-options
+                               {:correlate true})))))
+
+(describe* "The fallback-able options"
+  (describe* "Config.command.compiler-options"
+    (it* "throws no error as getter"
+      (assert.has_no_errors #Config.command.compiler-options))
+    (it* "throws no error as setter"
+      (let [default-compiler-options Config.command.compiler-options]
+        (assert.has_no_errors #(set Config.command.compiler-options
+                                    {:correlate true}))
+        (assert.is_same {:correlate true} Config.command.compiler-options)
+        (set Config.command.compiler-options default-compiler-options))))
+  (describe* "Config.keymap.compiler-options"
+    (it* "throws no error as getter"
+      (assert.has_no_errors #Config.keymap.compiler-options))
+    (it* "throws no error as setter"
+      (let [default-compiler-options Config.keymap.compiler-options]
+        (assert.has_no_errors #(set Config.keymap.compiler-options
+                                    {:correlate true}))
+        (assert.is_same {:correlate true} Config.keymap.compiler-options)
+        (set Config.keymap.compiler-options default-compiler-options)))))
+
 (describe* "option fnl-dir"
   (let [default-fnl-dir Config.fnl-dir]
     (setup (fn []

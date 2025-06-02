@@ -30,17 +30,17 @@
                          (when use-lua-dir? (.. std-config "/lua/?.fnlm"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnlm"))
                          (when use-lua-dir? (.. std-config "/lua/?.fnl"))
-                         (when use-lua-dir? (.. std-config "/lua/?/init-macros.fnl"))
+                         (when use-lua-dir?
+                           (.. std-config "/lua/?/init-macros.fnl"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                         (table.concat ";"))
         ;; (experimental)
         ;; What args should be passed to the callback?
         :preproc #$
         :notifier vim.notify
-        :command {:compiler-options nil
+        :command {:compiler-options false
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
-        :keymap {:compiler-options nil
-                 :mappings {}}
+        :keymap {:compiler-options false :mappings {}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
                 ;; TODO: Add :strategy recommended value to
@@ -222,7 +222,9 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 _ (let [config (get-config)]
                     ;; NOTE: Do NOT overwrite self with `rawset` to keep
                     ;; __newindex working.
-                    (or (. config k)
-                        (error (.. "unexpected option detected: " k))))))
+                    (case (. default-opts k)
+                      nil (error (.. "unexpected option detected: " k))
+                      _ (. config k)))))
    :__newindex (when-not debug?
-                 #(error "thyme.config is readonly"))})
+                 (fn [_ key]
+                   (error (.. "thyme.config is readonly; accessing " key))))})
