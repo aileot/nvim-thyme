@@ -226,4 +226,5 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                       nil (error (.. "unexpected option detected: " k))
                       _ (. config k)))))
    :__newindex (when-not debug?
-                 #(error "thyme.config is readonly"))})
+                 (fn [_ key]
+                   (error (.. "thyme.config is readonly; accessing " key))))})

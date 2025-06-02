@@ -210,8 +210,8 @@ local function _38_(_self, k)
 end
 local _43_
 if not debug_3f then
-  local function _44_()
-    return error("thyme.config is readonly")
+  local function _44_(_, key)
+    return error(("thyme.config is readonly; accessing " .. key))
   end
   _43_ = _44_
 else
