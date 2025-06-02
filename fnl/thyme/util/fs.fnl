@@ -39,6 +39,11 @@
           (= ":\\" (full-path:sub 2 3)))
       (assert (.. full-path " is not a full path"))))
 
+(fn assert-is-symlink [path]
+  (when-not (= :link (vim.fn.getftype path))
+    (error (-> "expected a symbolic link; got %s as type %s"
+               (: :format path (vim.fn.getftype path))))))
+
 (fn assert-file-extension [path extension]
   (assert (= "." (extension:sub 1 1)) "`extension` must start with `.`")
   (assert (= extension (path:sub (- (length extension))))
@@ -186,6 +191,7 @@
                : directory?
                : assert-is-file-readable
                : assert-is-directory
+               : assert-is-symlink
                : assert-is-fnl-file
                : assert-is-lua-file
                : assert-is-log-file

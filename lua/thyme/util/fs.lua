@@ -42,6 +42,13 @@ local function assert_is_full_path(full_path)
   end
   return assert(_5_, (full_path .. " is not a full path"))
 end
+local function assert_is_symlink(path)
+  if not ("link" == vim.fn.getftype(path)) then
+    return error(("expected a symbolic link; got %s as type %s"):format(path, vim.fn.getftype(path)))
+  else
+    return nil
+  end
+end
 local function assert_file_extension(path, extension)
   assert(("." == extension:sub(1, 1)), "`extension` must start with `.`")
   return assert((extension == path:sub(( - #extension))), (path .. " does not end with " .. extension))
@@ -68,34 +75,34 @@ local function read_file(path)
       return error(..., 0)
     end
   end
-  local function _8_()
+  local function _9_()
     return file:read("*a")
   end
-  local _10_
+  local _11_
   do
-    local t_9_ = _G
-    if (nil ~= t_9_) then
-      t_9_ = t_9_.package
+    local t_10_ = _G
+    if (nil ~= t_10_) then
+      t_10_ = t_10_.package
     else
     end
-    if (nil ~= t_9_) then
-      t_9_ = t_9_.loaded
+    if (nil ~= t_10_) then
+      t_10_ = t_10_.loaded
     else
     end
-    if (nil ~= t_9_) then
-      t_9_ = t_9_.fennel
+    if (nil ~= t_10_) then
+      t_10_ = t_10_.fennel
     else
     end
-    _10_ = t_9_
+    _11_ = t_10_
   end
-  local or_14_ = _10_ or _G.debug
-  if not or_14_ then
-    local function _15_()
+  local or_15_ = _11_ or _G.debug
+  if not or_15_ then
+    local function _16_()
       return ""
     end
-    or_14_ = {traceback = _15_}
+    or_15_ = {traceback = _16_}
   end
-  return close_handlers_12_(_G.xpcall(_8_, or_14_.traceback))
+  return close_handlers_12_(_G.xpcall(_9_, or_15_.traceback))
 end
 local function write_file_21(path, contents)
   local f = assert(io.open(path, "w"), ("failed to write to " .. path))
@@ -107,34 +114,34 @@ local function write_file_21(path, contents)
       return error(..., 0)
     end
   end
-  local function _17_()
+  local function _18_()
     return f:write(contents)
   end
-  local _19_
+  local _20_
   do
-    local t_18_ = _G
-    if (nil ~= t_18_) then
-      t_18_ = t_18_.package
+    local t_19_ = _G
+    if (nil ~= t_19_) then
+      t_19_ = t_19_.package
     else
     end
-    if (nil ~= t_18_) then
-      t_18_ = t_18_.loaded
+    if (nil ~= t_19_) then
+      t_19_ = t_19_.loaded
     else
     end
-    if (nil ~= t_18_) then
-      t_18_ = t_18_.fennel
+    if (nil ~= t_19_) then
+      t_19_ = t_19_.fennel
     else
     end
-    _19_ = t_18_
+    _20_ = t_19_
   end
-  local or_23_ = _19_ or _G.debug
-  if not or_23_ then
-    local function _24_()
+  local or_24_ = _20_ or _G.debug
+  if not or_24_ then
+    local function _25_()
       return ""
     end
-    or_23_ = {traceback = _24_}
+    or_24_ = {traceback = _25_}
   end
-  return close_handlers_12_(_G.xpcall(_17_, or_23_.traceback))
+  return close_handlers_12_(_G.xpcall(_18_, or_24_.traceback))
 end
 local function append_file_21(path, contents)
   local f = assert(io.open(path, "a"), ("failed to append to " .. path))
@@ -146,34 +153,34 @@ local function append_file_21(path, contents)
       return error(..., 0)
     end
   end
-  local function _26_()
+  local function _27_()
     return f:write(contents)
   end
-  local _28_
+  local _29_
   do
-    local t_27_ = _G
-    if (nil ~= t_27_) then
-      t_27_ = t_27_.package
+    local t_28_ = _G
+    if (nil ~= t_28_) then
+      t_28_ = t_28_.package
     else
     end
-    if (nil ~= t_27_) then
-      t_27_ = t_27_.loaded
+    if (nil ~= t_28_) then
+      t_28_ = t_28_.loaded
     else
     end
-    if (nil ~= t_27_) then
-      t_27_ = t_27_.fennel
+    if (nil ~= t_28_) then
+      t_28_ = t_28_.fennel
     else
     end
-    _28_ = t_27_
+    _29_ = t_28_
   end
-  local or_32_ = _28_ or _G.debug
-  if not or_32_ then
-    local function _33_()
+  local or_33_ = _29_ or _G.debug
+  if not or_33_ then
+    local function _34_()
       return ""
     end
-    or_32_ = {traceback = _33_}
+    or_33_ = {traceback = _34_}
   end
-  return close_handlers_12_(_G.xpcall(_26_, or_32_.traceback))
+  return close_handlers_12_(_G.xpcall(_27_, or_33_.traceback))
 end
 local function delete_file_21(path)
   return uv.fs_unlink(path)
@@ -208,18 +215,18 @@ end
 local function async_write_file_with_flags_21(path, text, flags)
   vim.fn.mkdir(vim.fs.dirname(path), "p")
   local rw_ = 438
-  local function _34_(err, fd)
+  local function _35_(err, fd)
     assert(not err, err)
-    local function _35_(err0)
+    local function _36_(err0)
       assert(not err0, err0)
-      local function _36_(err1)
+      local function _37_(err1)
         return assert(not err1, err1)
       end
-      return uv.fs_close(fd, _36_)
+      return uv.fs_close(fd, _37_)
     end
-    return uv.fs_write(fd, text, _35_)
+    return uv.fs_write(fd, text, _36_)
   end
-  return uv.fs_open(path, flags, rw_, _34_)
+  return uv.fs_open(path, flags, rw_, _35_)
 end
 local function async_write_log_file_21(log_path, lines)
   assert_is_log_file(log_path)
@@ -230,21 +237,21 @@ local function async_append_log_file_21(log_path, lines)
   return async_write_file_with_flags_21(log_path, lines, "a")
 end
 uv["symlink!"] = function(path, new_path, ...)
-  local _let_37_ = require("thyme.util.pool")
-  local hide_file_21 = _let_37_["hide-file!"]
-  local has_hidden_file_3f = _let_37_["has-hidden-file?"]
-  local restore_file_21 = _let_37_["restore-file!"]
+  local _let_38_ = require("thyme.util.pool")
+  local hide_file_21 = _let_38_["hide-file!"]
+  local has_hidden_file_3f = _let_38_["has-hidden-file?"]
+  local restore_file_21 = _let_38_["restore-file!"]
   if file_readable_3f(new_path) then
     hide_file_21(new_path)
   else
   end
-  local _39_, _40_ = nil, nil
-  local function _41_()
+  local _40_, _41_ = nil, nil
+  local function _42_()
     return vim.uv.fs_symlink(path, new_path)
   end
-  _39_, _40_ = pcall(assert(_41_))
-  if ((_39_ == false) and (nil ~= _40_)) then
-    local msg = _40_
+  _40_, _41_ = pcall(assert(_42_))
+  if ((_40_ == false) and (nil ~= _41_)) then
+    local msg = _41_
     if has_hidden_file_3f(new_path) then
       return true
     else
@@ -253,11 +260,11 @@ uv["symlink!"] = function(path, new_path, ...)
       return false
     end
   else
-    local _ = _39_
+    local _ = _40_
     return true
   end
 end
-local function _44_(_, key)
+local function _45_(_, key)
   return uv[key]
 end
-return setmetatable({["executable?"] = executable_3f, ["file-readable?"] = file_readable_3f, ["directory?"] = directory_3f, ["assert-is-file-readable"] = assert_is_file_readable, ["assert-is-directory"] = assert_is_directory, ["assert-is-fnl-file"] = assert_is_fnl_file, ["assert-is-lua-file"] = assert_is_lua_file, ["assert-is-log-file"] = assert_is_log_file, ["read-file"] = read_file, ["write-log-file!"] = write_log_file_21, ["append-log-file!"] = append_log_file_21, ["async-write-log-file!"] = async_write_log_file_21, ["async-append-log-file!"] = async_append_log_file_21, ["delete-file!"] = delete_file_21, ["write-fnl-file!"] = write_fnl_file_21, ["write-lua-file!"] = write_lua_file_21, ["delete-lua-file!"] = delete_lua_file_21, ["delete-log-file!"] = delete_log_file_21, uv = uv}, {__index = _44_})
+return setmetatable({["executable?"] = executable_3f, ["file-readable?"] = file_readable_3f, ["directory?"] = directory_3f, ["assert-is-file-readable"] = assert_is_file_readable, ["assert-is-directory"] = assert_is_directory, ["assert-is-symlink"] = assert_is_symlink, ["assert-is-fnl-file"] = assert_is_fnl_file, ["assert-is-lua-file"] = assert_is_lua_file, ["assert-is-log-file"] = assert_is_log_file, ["read-file"] = read_file, ["write-log-file!"] = write_log_file_21, ["append-log-file!"] = append_log_file_21, ["async-write-log-file!"] = async_write_log_file_21, ["async-append-log-file!"] = async_append_log_file_21, ["delete-file!"] = delete_file_21, ["write-fnl-file!"] = write_fnl_file_21, ["write-lua-file!"] = write_lua_file_21, ["delete-lua-file!"] = delete_lua_file_21, ["delete-log-file!"] = delete_log_file_21, uv = uv}, {__index = _45_})
