@@ -30,7 +30,8 @@
                          (when use-lua-dir? (.. std-config "/lua/?.fnlm"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnlm"))
                          (when use-lua-dir? (.. std-config "/lua/?.fnl"))
-                         (when use-lua-dir? (.. std-config "/lua/?/init-macros.fnl"))
+                         (when use-lua-dir?
+                           (.. std-config "/lua/?/init-macros.fnl"))
                          (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                         (table.concat ";"))
         ;; (experimental)
@@ -39,8 +40,7 @@
         :notifier vim.notify
         :command {:compiler-options nil
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
-        :keymap {:compiler-options nil
-                 :mappings {}}
+        :keymap {:compiler-options nil :mappings {}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
                 ;; TODO: Add :strategy recommended value to
