@@ -165,6 +165,41 @@
 (fn ModuleMap.get-dependent-maps [self]
   self._dependent-maps)
 
+(fn ModuleMap.pp-module-map [self]
+  "(For health check purpose only)
+Return a pretty-print string of `module-map`.
+
+```
+- module-name: string
+  - fnl-path:
+    string
+  - lua-path:
+    string
+```
+
+@param self ModuleMap
+@return string"
+  (-> "  - {:module-name %s
+     :macro? %s
+     :fnl-path %s
+     :lua-path %s"
+      (: :format ;
+         (self:get-module-name) ;
+         (if (self:macro?) "true" "false") ;
+         (self:get-fnl-path) ;
+         (self:get-lua-path))))
+
+(fn ModuleMap.pp-dependent-list [self]
+  "(For health check purpose only)
+Get a pretty-print list of dependent module-maps in string.
+@return string"
+  (let [entries []]
+    (each [_ depmap (pairs (self:get-dependent-maps))]
+      (let [map (ModuleMap.new depmap)
+            new-entry (map:pp-module-map)]
+        (table.insert entries new-entry)))
+    (table.concat entries "\n")))
+
 (fn ModuleMap.write-file! [self]
   "Write module-map to log file.
 @return ModuleMap"

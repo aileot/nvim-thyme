@@ -117,6 +117,24 @@ end
 ModuleMap["get-dependent-maps"] = function(self)
   return self["_dependent-maps"]
 end
+ModuleMap["pp-module-map"] = function(self)
+  local _9_
+  if self["macro?"](self) then
+    _9_ = "true"
+  else
+    _9_ = "false"
+  end
+  return ("  - {:module-name %s\n     :macro? %s\n     :fnl-path %s\n     :lua-path %s"):format(self["get-module-name"](self), _9_, self["get-fnl-path"](self), self["get-lua-path"](self))
+end
+ModuleMap["pp-dependent-list"] = function(self)
+  local entries = {}
+  for _, depmap in pairs(self["get-dependent-maps"](self)) do
+    local map = ModuleMap.new(depmap)
+    local new_entry = map["pp-module-map"](map)
+    table.insert(entries, new_entry)
+  end
+  return table.concat(entries, "\n")
+end
 ModuleMap["write-file!"] = function(self)
   local log_path = self["get-log-path"](self)
   local encoded = self:encode()

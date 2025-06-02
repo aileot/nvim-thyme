@@ -14,6 +14,7 @@ local _local_6_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_6_["get-runtime-files"]
 local _local_7_ = require("thyme.dependency.unit")
 local get_root_of_modmap = _local_7_["get-root"]
+local ModuleMap = _local_7_
 local RollbackManager = require("thyme.rollback.manager")
 local report
 if vim.health.start then
@@ -63,10 +64,30 @@ local function report_fennel_paths()
   report.info(("fennel.path:\n- `%s`"):format(fennel.path:gsub(";", "`\n- `")))
   return report.info(("fennel.macro-path:\n- `%s`"):format(fennel["macro-path"]:gsub(";", "`\n- `")))
 end
-local function _12_()
+local function report_imported_macros()
+  report.start("Thyme Imported Macros")
+  local root = get_root_of_modmap()
+  local reporter
+  local function _12_(log_path)
+    local modmap = ModuleMap["read-from-log-file"](log_path)
+    if modmap["macro?"](modmap) then
+      local module_name = modmap["get-module-name"](modmap)
+      local fnl_path = modmap["get-fnl-path"](modmap)
+      local dependent_list = modmap["pp-dependent-list"](modmap)
+      local msg = ("%s\n- source file:\n  `%s`\n- dependent modules:\n%s"):format(module_name, fnl_path, dependent_list)
+      return report.info(msg)
+    else
+      return nil
+    end
+  end
+  reporter = _12_
+  return each_file(reporter, root)
+end
+local function _14_()
   report_integrations()
   report_thyme_disk_info()
   report_fennel_paths()
-  return report_thyme_config()
+  report_thyme_config()
+  return report_imported_macros()
 end
-return {check = _12_}
+return {check = _14_}
