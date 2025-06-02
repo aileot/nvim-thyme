@@ -25,9 +25,10 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.nvim_version }}-${{ steps.get-date.outputs.date }}
           path: |
             $HOME/.cargo/bin
-            $HOME/.lua
-            $HOME/.luarocks
             $HOME/nvim-${{ matrix.nvim_version }}
+            /usr/local/busted
+            /usr/local/fennel
+            /usr/local/vusted
       # TODO: Revert to gh-actions-lua when it's fixed to be up-to-date, and
       # remove unnecessary `sudo` in installing test dependencies.
       - name: Install luarocks
@@ -54,9 +55,10 @@ jobs:
           key: ${{ steps.cache-primes-restore.outputs.cache-primary-key }}
           path: |
             $HOME/.cargo/bin
-            $HOME/.lua
-            $HOME/.luarocks
             $HOME/nvim-${{ matrix.nvim_version }}
+            /usr/local/busted
+            /usr/local/fennel
+            /usr/local/vusted
       - name: Run tests
         env:
           VUSTED_EXTRA_FLAGS: "--defer-print --suppress-pending"
