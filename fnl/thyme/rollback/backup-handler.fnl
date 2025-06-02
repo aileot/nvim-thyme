@@ -7,8 +7,11 @@
 
 (local Path (require :thyme.util.path))
 
-(local {: file-readable? : assert-is-file-readable : read-file &as fs}
-       (require :thyme.util.fs))
+(local {: file-readable?
+        : assert-is-file-readable
+        : assert-is-symlink
+        : read-file
+        &as fs} (require :thyme.util.fs))
 
 (local BackupHandler {})
 
@@ -152,7 +155,7 @@ Return `true` if the following conditions are met:
   "Unmount previously mounted backup for `module-name`.
 @return boolean true if module has been successfully unmounted, false otherwise."
   (let [mounted-backup-path (self:determine-mounted-backup-path)]
-    (assert-is-file-readable mounted-backup-path)
+    (assert-is-symlink mounted-backup-path)
     (assert (fs.unlink mounted-backup-path))))
 
 (fn BackupHandler.cleanup-old-backups! [self]
