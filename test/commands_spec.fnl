@@ -198,6 +198,10 @@
           (tset package.loaded mod nil)
           (vim.fn.delete fnl-path))))))
 
+(describe* "command :ThymeRollbackUnmount"
+  (it* "should throw error if no backup exists for specified module."
+    (assert.has_error #(vim.cmd "ThymeRollbackUnmount unexisted"))))
+
 (describe* "command :ThymeRollbackUnmountAll"
   (setup (fn []
            (thyme.setup)))
