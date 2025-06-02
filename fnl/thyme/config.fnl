@@ -38,9 +38,9 @@
         ;; What args should be passed to the callback?
         :preproc #$
         :notifier vim.notify
-        :command {:compiler-options nil
+        :command {:compiler-options false
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
-        :keymap {:compiler-options nil :mappings {}}
+        :keymap {:compiler-options false :mappings {}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
                 ;; TODO: Add :strategy recommended value to
