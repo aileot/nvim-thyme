@@ -121,6 +121,8 @@
                  "*" ; for rollback kind
                  "*" ; for module
                  RollbackManager._mounted-backup-filename)
+      ;; WARN: Do not resolve the paths in this function since `unmount`
+      ;; methods require the symbolic links of mounted paths to `unlink`.
       (vim.fn.glob false true)))
 
 (fn RollbackManager.unmount-backup-all! []
