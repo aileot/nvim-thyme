@@ -172,6 +172,19 @@ It is a function which takes the same arguments as `vim.notify`.
 You can filter out specific notifications by this option. See
 [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example] for an example.
 
+### `disable-treesitter-highlights`
+
+(default: `false`)
+
+Disable treesitter highlights on the outputs
+of [commands][commands] and [keymaps][keymaps].
+`nvim-thyme` will just output plain texts instead.
+
+This option is added
+since it's unfeasible to continue to address every issues
+on the unstable highlighting output rendering
+of the experimental `vim._extui` feature in the nvim v0.12.0 nightly.
+
 ### `command.compiler-options`
 
 (default: `nil`)
