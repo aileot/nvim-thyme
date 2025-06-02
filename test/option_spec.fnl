@@ -13,6 +13,20 @@
 
 (local thyme (require :thyme))
 
+(describe* "Addressing undefined option"
+  (describe* "throws error"
+    (it* "as getter"
+      (assert.has_errors #Config.undefined)))
+  ;; (it* "as setter"
+  ;;   ;; TODO: Make setter throw error.
+  ;;   (assert.has_errors #(set Config.undefined true))))
+  (describe* "in table format throws error"
+    (it* "as getter"
+      (assert.has_errors #Config.undefined.compiler-options))
+    (it* "as setter"
+      (assert.has_errors #(set Config.undefined.compiler-options
+                               {:correlate true})))))
+
 (describe* "The fallback-able options"
   (describe* "Config.command.compiler-options"
     (it* "throws no error as getter"
