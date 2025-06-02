@@ -199,16 +199,22 @@ local function _38_(_self, k)
   else
     local _ = k
     local config = get_config()
-    return (config[k] or error(("unexpected option detected: " .. k)))
+    local _40_ = default_opts[k]
+    if (_40_ == nil) then
+      return error(("unexpected option detected: " .. k))
+    else
+      local _0 = _40_
+      return config[k]
+    end
   end
 end
-local _41_
+local _43_
 if not debug_3f then
-  local function _42_()
+  local function _44_()
     return error("thyme.config is readonly")
   end
-  _41_ = _42_
+  _43_ = _44_
 else
-  _41_ = nil
+  _43_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _36_}, {__index = _38_, __newindex = _41_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _36_}, {__index = _38_, __newindex = _43_})

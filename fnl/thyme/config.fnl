@@ -222,7 +222,8 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                 _ (let [config (get-config)]
                     ;; NOTE: Do NOT overwrite self with `rawset` to keep
                     ;; __newindex working.
-                    (or (. config k)
-                        (error (.. "unexpected option detected: " k))))))
+                    (case (. default-opts k)
+                      nil (error (.. "unexpected option detected: " k))
+                      _ (. config k)))))
    :__newindex (when-not debug?
                  #(error "thyme.config is readonly"))})
