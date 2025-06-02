@@ -1,6 +1,7 @@
 local Path = require("thyme.util.path")
 local _local_1_ = require("thyme.util.fs")
 local file_readable_3f = _local_1_["file-readable?"]
+local assert_is_symlink = _local_1_["assert-is-symlink"]
 local fs = _local_1_
 local _local_2_ = require("thyme.const")
 local state_prefix = _local_2_["state-prefix"]
@@ -96,6 +97,7 @@ RollbackManager["unmount-backup-all!"] = function()
     if (nil ~= _9_) then
       local mounted_backup_paths = _9_
       for _, path in ipairs(mounted_backup_paths) do
+        assert_is_symlink(path)
         assert(fs.unlink(path))
       end
     else

@@ -1,7 +1,7 @@
 (import-macros {: when-not : inc : first : last} :thyme.macros)
 
 (local Path (require :thyme.util.path))
-(local {: file-readable? &as fs} (require :thyme.util.fs))
+(local {: file-readable? : assert-is-symlink &as fs} (require :thyme.util.fs))
 
 (local {: state-prefix} (require :thyme.const))
 
@@ -121,6 +121,8 @@
                  "*" ; for rollback kind
                  "*" ; for module
                  RollbackManager._mounted-backup-filename)
+      ;; WARN: Do not resolve the paths in this function since `unmount`
+      ;; methods require the symbolic links of mounted paths to `unlink`.
       (vim.fn.glob false true)))
 
 (fn RollbackManager.unmount-backup-all! []
@@ -128,6 +130,7 @@
 @return boolean true if all the mounted backups are successfully unmounted, or no backup has been mounted; false otherwise"
   (case (RollbackManager.list-mounted-paths)
     mounted-backup-paths (each [_ path (ipairs mounted-backup-paths)]
+                           (assert-is-symlink path)
                            (assert (fs.unlink path))))
   true)
 

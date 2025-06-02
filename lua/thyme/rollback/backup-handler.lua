@@ -7,6 +7,7 @@ local Path = require("thyme.util.path")
 local _local_3_ = require("thyme.util.fs")
 local file_readable_3f = _local_3_["file-readable?"]
 local assert_is_file_readable = _local_3_["assert-is-file-readable"]
+local assert_is_symlink = _local_3_["assert-is-symlink"]
 local read_file = _local_3_["read-file"]
 local fs = _local_3_
 local BackupHandler = {}
@@ -109,7 +110,7 @@ BackupHandler["mount-backup!"] = function(self)
 end
 BackupHandler["unmount-backup!"] = function(self)
   local mounted_backup_path = self["determine-mounted-backup-path"](self)
-  assert_is_file_readable(mounted_backup_path)
+  assert_is_symlink(mounted_backup_path)
   return assert(fs.unlink(mounted_backup_path))
 end
 BackupHandler["cleanup-old-backups!"] = function(self)
