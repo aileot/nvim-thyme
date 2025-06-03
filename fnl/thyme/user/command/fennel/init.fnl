@@ -13,7 +13,7 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
-(local {: inject-vim-cmd-arg-query!} (require :thyme.wrapper.treesitter))
+(local {: inject-vim-cmd-arg-query!} (require :thyme.treesitter.query))
 
 (local {: parse-cmd-buf-args
         : parse-cmd-file-args

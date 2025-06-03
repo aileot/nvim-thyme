@@ -1,6 +1,8 @@
-(import-macros {: dec} :thyme.macros)
+(import-macros {: when-not : dec} :thyme.macros)
 
 (local Config (require :thyme.config))
+
+(local {: inject-dropin-query!} (require :thyme.treesitter.query))
 
 (fn get-cmdtype []
   "A wrapper to tell the current command type."
@@ -109,6 +111,8 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
   ;; TODO: Extract dropin feature into another plugin.
   ;; TODO: Merge the dropin options to `command.dropin`?
   (self:register! "^[[%[%(%{].*" "Fnl %0")
+  (when-not Config.disable-treesitter-highlights
+    (inject-dropin-query! "fennel"))
   (let [opts Config.dropin-paren
         plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
         plug-map-complete "<Plug>(thyme-dropin-complete-Fnl)"]
