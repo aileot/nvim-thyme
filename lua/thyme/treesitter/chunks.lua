@@ -144,7 +144,7 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:121")
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:128")
   validate_type("string", text)
   if Config["disable-treesitter-highlights"] then
     return {{text}}
