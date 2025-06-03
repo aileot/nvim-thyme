@@ -18,6 +18,6 @@
 
 ;; For dropin feature.
 ((ERROR) @injection.content
-  (#lua-match? @injection.content "^:?%s*[%[%({]")
+  (#lua-match? @injection.content "^[:%s]*[%[%({]")
   (#set! injection.language "fennel")
   (#set! injection.include-children))
