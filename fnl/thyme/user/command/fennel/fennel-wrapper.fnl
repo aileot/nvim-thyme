@@ -2,7 +2,7 @@
 
 (local fennel (require :fennel))
 
-(local tts (require :thyme.wrapper.treesitter))
+(local tts (require :thyme.treesitter))
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 (fn make-new-cmd [new-fnl-code {: trailing-parens}]

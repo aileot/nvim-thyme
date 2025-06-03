@@ -1,5 +1,5 @@
 local fennel = require("fennel")
-local tts = require("thyme.wrapper.treesitter")
+local tts = require("thyme.treesitter")
 local fennel_wrapper = require("thyme.wrapper.fennel")
 local _local_1_ = require("thyme.util.buf")
 local buf_marks__3etext = _local_1_["buf-marks->text"]

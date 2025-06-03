@@ -2,7 +2,7 @@
 
 (local fennel (require :fennel))
 
-(local tts (require :thyme.wrapper.treesitter))
+(local tts (require :thyme.treesitter))
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
