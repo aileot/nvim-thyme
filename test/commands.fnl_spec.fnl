@@ -20,7 +20,17 @@
   (setup (fn []
            (thyme.setup)))
   (it* "should evaluate a fennel expression"
-    (assert.equals "3" (execute "Fnl (+ 1 2)"))))
+    (assert.equals "3" (execute "Fnl (+ 1 2)")))
+  (it* "should leaves the `Fnl` command result in the `messages``"
+    (vim.cmd "messages clear")
+    (vim.cmd "Fnl (+ 1 2)")
+    (assert.equals "3" (execute "messages")
+                   "`messages` should contain the result of the Fnl command")
+    (vim.cmd "Fnl [1 2]")
+    (vim.cmd "Fnl [1 2 3]")
+    ;; FIXME: Why is a newline inserted just after the first result `3`?
+    (comment (assert.equals "3\n[1 2]\n[1 2 3]" (execute "messages")
+                            "`messages` should append the results of the Fnl command"))))
 
 (describe* "command :FnlBuf"
   (setup (fn []

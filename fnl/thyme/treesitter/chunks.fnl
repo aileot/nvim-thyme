@@ -41,7 +41,14 @@
                              ;; In the order that (node:range) returns.
                              row01
                              col01]
-  ""
+  "Override matrix `hl-chunk-matrix` with highlights for `text` considering
+`metadata.priority`.
+@param hl-chunk-matrix table
+@param text string
+@param ?hl-name string
+@param metadata table
+@param row01 integer
+@param col01 integer"
   (let [priority (or (tonumber metadata.priority) 0)
         row1 (inc row01)
         col1 (inc col01)
@@ -80,6 +87,7 @@
                     (length))
         end-col vim.go.columns
         whitespace-chunk [" "]
+        newline-chunk ["\n"]
         hl-chunk-matrix (new-matrix end-row end-col whitespace-chunk)
         cb (fn [ts-tree tree]
              (when ts-tree
@@ -110,11 +118,10 @@
       (: :for_each_tree cb))
     (let [hl-chunks []]
       (for [i 1 end-row]
-        (for [j 1 end-col]
-          (table.insert hl-chunks (. hl-chunk-matrix i j))))
-      ;; NOTE: nvim_echo results are displayed as if newline is inserted at
-      ;; the end when the last char reaches vim.go.columns.
-      (when (= " " (first (last hl-chunks)))
+        (for [j 1 end-col &until (= "\n" (first (. hl-chunk-matrix i j)))]
+          (table.insert hl-chunks (. hl-chunk-matrix i j)))
+        (table.insert hl-chunks newline-chunk))
+      (when (not= "\n" (text:sub -1))
         (table.remove hl-chunks))
       (values hl-chunks))))
 
