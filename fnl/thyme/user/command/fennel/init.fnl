@@ -13,6 +13,8 @@
 
 (local fennel-wrapper (require :thyme.wrapper.fennel))
 
+(local {: inject-vim-cmd-arg-query!} (require :thyme.wrapper.treesitter))
+
 (local {: parse-cmd-buf-args
         : parse-cmd-file-args
         : mk-fennel-wrapper-command-callback}
@@ -38,6 +40,9 @@
   (let [compiler-options (or Config.command.compiler-options
                              Config.compiler-options)
         cmd-history-opts Config.command.cmd-history]
+    (when-not Config.disable-treesitter-highlights
+      (inject-vim-cmd-arg-query! "Fnl" "fennel")
+      (inject-vim-cmd-arg-query! "FnlCompile" "fennel"))
     (fnl-file-compile.create-commands!)
     (command! :Fnl
       {:nargs "+"
