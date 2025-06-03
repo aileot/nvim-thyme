@@ -1,5 +1,5 @@
 local fennel = require("fennel")
-local tts = require("thyme.wrapper.treesitter")
+local tts = require("thyme.treesitter")
 local _local_1_ = require("thyme.wrapper.parinfer")
 local apply_parinfer = _local_1_["apply-parinfer"]
 local function make_new_cmd(new_fnl_code, _2_)

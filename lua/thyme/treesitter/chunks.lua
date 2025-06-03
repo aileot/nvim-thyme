@@ -144,7 +144,7 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:121")
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:121")
   validate_type("string", text)
   if Config["disable-treesitter-highlights"] then
     return {{text}}
@@ -178,14 +178,4 @@ local function text__3ehl_chunks(text, _3fopts)
     end
   end
 end
-local function echo(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:160")
-  local hl_chunks = text__3ehl_chunks(text, _3fopts)
-  return vim.api.nvim_echo(hl_chunks, false, {})
-end
-local function print(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/wrapper/treesitter.fnl:166")
-  local hl_chunks = text__3ehl_chunks(text, _3fopts)
-  return vim.api.nvim_echo(hl_chunks, true, {})
-end
-return {["text->hl-chunks"] = text__3ehl_chunks, get_hl_chunks = text__3ehl_chunks, echo = echo, print = print}
+return {["text->hl-chunks"] = text__3ehl_chunks}
