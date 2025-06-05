@@ -10,7 +10,14 @@
     self))
 
 (fn Registry.clear! [self]
+  (set self.__registry self._registry)
   (set self._registry []))
+
+(fn Registry.resume! [self]
+  "(For testing only) Resume once cleared registry."
+  (when self.__registry
+    (set self._registry self.__registry)
+    (set self.__registry nil)))
 
 (λ Registry.register! [self pattern replacement]
   "Register a pair of `pattern` and `replacement` to dropin.
