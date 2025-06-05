@@ -34,18 +34,19 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
       "" nil
       key (do
             (vim.api.nvim_set_keymap :c plug-map-complete
-              "<Cmd>lua require('thyme.user.dropin').cmdline.complete()<CR>"
+              "<Cmd>lua require('thyme.user.dropin').cmdline.complete(getcmdline())<CR>"
               {:noremap true})
             (vim.api.nvim_set_keymap :c key plug-map-complete {:noremap true})))))
 
 (let [registry (DropinRegistry.new)]
   (registry:register! "^[[%[%(%{].*" "Fnl %0")
   (set M.registry registry)
-  (set M.cmdline
-       {:replace #(when (or (= ":" (vim.fn.getcmdtype)) debug?)
-                    (let [dropin (DropinCmdline.new registry)]
-                      (dropin:replace-cmdline! $...)))
-        :complete #(when (or (= ":" (vim.fn.getcmdtype)) debug?)
-                     (let [dropin (DropinCmdline.new registry)]
-                       (dropin:complete-cmdline! $...)))})
+  (set M.cmdline {:replace #(if (or (= ":" (vim.fn.getcmdtype)) debug?)
+                                (let [dropin (DropinCmdline.new registry)]
+                                  (dropin:replace-cmdline! $...))
+                                $...)
+                  :complete #(if (= ":" (vim.fn.getcmdtype))
+                                 (let [dropin (DropinCmdline.new registry)]
+                                   (dropin:complete-cmdline! $...))
+                                 $...)})
   M)

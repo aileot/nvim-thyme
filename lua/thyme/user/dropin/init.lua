@@ -26,7 +26,7 @@ M["enable-dropin-paren!"] = function()
     return nil
   elseif (nil ~= _4_) then
     local key = _4_
-    vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').cmdline.complete()<CR>", {noremap = true})
+    vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').cmdline.complete(getcmdline())<CR>", {noremap = true})
     return vim.api.nvim_set_keymap("c", key, plug_map_complete, {noremap = true})
   else
     return nil
@@ -40,15 +40,15 @@ local function _6_(...)
     local dropin = DropinCmdline.new(registry)
     return dropin["replace-cmdline!"](dropin, ...)
   else
-    return nil
+    return ...
   end
 end
 local function _8_(...)
-  if ((":" == vim.fn.getcmdtype()) or debug_3f) then
+  if (":" == vim.fn.getcmdtype()) then
     local dropin = DropinCmdline.new(registry)
     return dropin["complete-cmdline!"](dropin, ...)
   else
-    return nil
+    return ...
   end
 end
 M.cmdline = {replace = _6_, complete = _8_}
