@@ -60,11 +60,9 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 (fn Dropin.complete-cmdline! [self]
   "Complete cmdline pretending `replacement` to replace invalid cmdline when
 `pattern` is detected with E492."
-  (let [cmdtype (self:get-cmdtype)
-        old-cmdline (vim.fn.getcmdline)
+  (let [old-cmdline (vim.fn.getcmdline)
         ;; NOTE: Do NOT use .replace instead. It also overrides history.
-        new-cmdline (or (case (when (= ":" cmdtype)
-                                (extract-?invalid-cmd old-cmdline))
+        new-cmdline (or (case (extract-?invalid-cmd old-cmdline)
                           invalid-cmd (self:_replace-invalid-cmdline old-cmdline
                                                                      invalid-cmd))
                         old-cmdline)
