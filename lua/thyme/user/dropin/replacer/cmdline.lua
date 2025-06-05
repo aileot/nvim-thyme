@@ -2,7 +2,7 @@ local function extract__3finvalid_cmd(cmdline)
   local _1_, _2_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
   if ((_1_ == false) and (nil ~= _2_)) then
     local msg = _2_
-    local expected_error_msg_prefix = "Parsing command%-line: E492: Not an editor command: (.*)"
+    local expected_error_msg_prefix = "E492: Not an editor command: (.*)"
     return msg:match(expected_error_msg_prefix)
   elseif ((_1_ == true) and ((_G.type(_2_) == "table") and (nil ~= _2_.nextcmd))) then
     local nextcmd = _2_.nextcmd

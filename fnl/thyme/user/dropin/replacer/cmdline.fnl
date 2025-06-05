@@ -9,7 +9,7 @@
   ;; TODO: Parse "nextcmd" recursively.
   (case (pcall vim.api.nvim_parse_cmd cmdline {})
     (false msg)
-    (let [expected-error-msg-prefix "Parsing command%-line: E492: Not an editor command: (.*)"]
+    (let [expected-error-msg-prefix "E492: Not an editor command: (.*)"]
       (msg:match expected-error-msg-prefix))
     (true {: nextcmd}) (when-not (= "" nextcmd)
                          (extract-?invalid-cmd nextcmd))))
