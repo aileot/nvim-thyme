@@ -1,5 +1,5 @@
 (local Config (require :thyme.config))
-
+(local {: debug?} (require :thyme.const))
 (local DropinRegistry (require :thyme.user.dropin.registry))
 (local DropinCmdline (require :thyme.user.dropin.replacer.cmdline))
 
@@ -42,10 +42,10 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
   (registry:register! "^[[%[%(%{].*" "Fnl %0")
   (set M.registry registry)
   (set M.cmdline
-       {:replace #(when (= ":" (vim.fn.getcmdtype))
+       {:replace #(when (or (= ":" (vim.fn.getcmdtype)) debug?)
                     (let [dropin (DropinCmdline.new registry)]
                       (dropin:replace-cmdline! $...)))
-        :complete #(when (= ":" (vim.fn.getcmdtype))
+        :complete #(when (or (= ":" (vim.fn.getcmdtype)) debug?)
                      (let [dropin (DropinCmdline.new registry)]
                        (dropin:complete-cmdline! $...)))})
   M)
