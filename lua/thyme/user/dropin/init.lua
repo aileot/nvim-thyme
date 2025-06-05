@@ -4,7 +4,7 @@ local debug_3f = _local_1_["debug?"]
 local DropinRegistry = require("thyme.user.dropin.registry")
 local DropinCmdline = require("thyme.user.dropin.replacer.cmdline")
 local M = {}
-M["enable-dropin-paren!"] = function()
+local function map_keys_in_cmdline_21()
   local opts = Config["dropin-paren"]
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
@@ -31,6 +31,9 @@ M["enable-dropin-paren!"] = function()
   else
     return nil
   end
+end
+M["enable-dropin-paren!"] = function()
+  return map_keys_in_cmdline_21()
 end
 local registry = DropinRegistry.new()
 registry["register!"](registry, "^[[%[%(%{].*", "Fnl %0")
