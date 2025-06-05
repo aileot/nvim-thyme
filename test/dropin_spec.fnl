@@ -10,6 +10,8 @@
 (describe* "dropin.register"
   (before_each (fn []
                  (Dropin.registry:clear!)))
+  (after_each (fn []
+                (Dropin.registry:resume!)))
   (it* "should not replace a valid ex command"
     (Dropin.registry:register! "edit" "bar")
     (let [old-cmdline "edit"]
