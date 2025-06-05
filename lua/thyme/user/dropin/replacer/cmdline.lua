@@ -61,17 +61,11 @@ Dropin["replace-cmdline!"] = function(self, old_cmdline)
   return (_7_ or old_cmdline)
 end
 Dropin["complete-cmdline!"] = function(self)
-  local cmdtype = self["get-cmdtype"](self)
   local old_cmdline = vim.fn.getcmdline()
   local new_cmdline
   local _13_
   do
-    local _12_
-    if (":" == cmdtype) then
-      _12_ = extract__3finvalid_cmd(old_cmdline)
-    else
-      _12_ = nil
-    end
+    local _12_ = extract__3finvalid_cmd(old_cmdline)
     if (nil ~= _12_) then
       local invalid_cmd = _12_
       _13_ = self["_replace-invalid-cmdline"](self, old_cmdline, invalid_cmd)
@@ -85,11 +79,11 @@ Dropin["complete-cmdline!"] = function(self)
   local tmp_wcm = ""
   local right_keys
   do
-    local _17_ = old_cmdline:find(new_cmdline, 1, true)
-    if (_17_ == nil) then
+    local _16_ = old_cmdline:find(new_cmdline, 1, true)
+    if (_16_ == nil) then
       right_keys = ""
-    elseif (nil ~= _17_) then
-      local shift = _17_
+    elseif (nil ~= _16_) then
+      local shift = _16_
       right_keys = string.rep("<Right>", (shift - 1))
     else
       right_keys = nil
