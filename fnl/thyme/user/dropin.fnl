@@ -1,4 +1,4 @@
-(import-macros {: dec} :thyme.macros)
+(import-macros {: when-not : dec} :thyme.macros)
 
 (local Config (require :thyme.config))
 
@@ -12,14 +12,16 @@
 (fn extract-?invalid-cmd [cmdline]
   "Extract the invalid command from cmdline from E492 message.
 @param cmdline string The command line to be parsed
-@return string The invalid command if detected, otherwise nil."
+@return string? The invalid command if detected, otherwise nil."
   ;; NOTE: nvim_parse_cmd should not parse ":(foobar)" with the following error:
   ;; "Parsing command-line: E492: Not an editor command: (foobar)"
   ;; TODO: Parse "nextcmd" recursively.
   (case (pcall vim.api.nvim_parse_cmd cmdline {})
     (false msg)
     (let [expected-error-msg-prefix "Parsing command%-line: E492: Not an editor command: (.*)"]
-      (msg:match expected-error-msg-prefix))))
+      (msg:match expected-error-msg-prefix))
+    (true {: nextcmd}) (when-not (= "" nextcmd)
+                         (extract-?invalid-cmd nextcmd))))
 
 (local Dropin {})
 
@@ -44,14 +46,13 @@
         new-cmdline (.. prefix fallback-cmd)]
     new-cmdline))
 
-(fn Dropin.replace-cmdline! [self]
+(fn Dropin.replace-cmdline! [self old-cmdline]
   "Prepare to replace `replacement` to replace invalid cmdline when `pattern` is
 detected with E492. The fallback command will pretend that the substrings
 matched by `pattern`, and the rests behind, are the arguments of `replacement`.
-@param pattern string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command"
-  (let [cmdtype (get-cmdtype)
-        old-cmdline (vim.fn.getcmdline)]
+@param old-cmdline string The original cmdline
+@return string A new cmdline replaced a pre-registered `pattern` with `replacement`."
+  (let [cmdtype (get-cmdtype)]
     (or (case (when (= ":" cmdtype)
                 (extract-?invalid-cmd old-cmdline))
           invalid-cmd (let [new-cmdline (self:_replace-invalid-cmdline old-cmdline
@@ -68,10 +69,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
 
 (fn Dropin.complete-cmdline! [self]
   "Complete cmdline pretending `replacement` to replace invalid cmdline when
-`pattern` is detected with E492.
-@param pattern string string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command
-@param completion-type string The completion type"
+`pattern` is detected with E492."
   (let [cmdtype (get-cmdtype)
         old-cmdline (vim.fn.getcmdline)
         ;; NOTE: Do NOT use .replace instead. It also overrides history.
@@ -83,7 +81,7 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
         last-lz vim.o.lazyredraw
         last-wcm vim.o.wildcharm
         tmp-wcm "\26"
-        right-keys (case (new-cmdline:find old-cmdline 1 true)
+        right-keys (case (old-cmdline:find new-cmdline 1 true)
                      nil ""
                      shift (string.rep "<Right>" (dec shift)))
         keys (-> "<C-BSlash>e%q<CR>"
@@ -97,18 +95,23 @@ matched by `pattern`, and the rests behind, are the arguments of `replacement`.
     (set vim.o.wcm last-wcm)
     (set vim.o.lazyredraw last-lz)))
 
-(λ Dropin.register! [self pattern replacement]
+(λ Dropin.register! [self pattern replacement {: lang}]
   "Register a pair of `pattern` and `replacement` to dropin.
 @param pattern string Lua patterns to be support dropin fallback.
-@param replacement string The dropin command"
-  (table.insert self._commands {: pattern : replacement}))
+@param replacement string The dropin command
+@param opts.lang string The lang for treesitter highlighting."
+  (table.insert self._commands {: pattern : replacement : lang}))
+
+(fn Dropin.clear! [self]
+  "Clear all registered dropin commands."
+  (set self._commands []))
 
 (fn Dropin.enable-dropin-paren! [self]
   "Realize dropin-paren feature.
 The configurations are only modifiable at the `dropin-parens` attributes in `.nvim-thyme.fnl`."
   ;; TODO: Extract dropin feature into another plugin.
   ;; TODO: Merge the dropin options to `command.dropin`?
-  (self:register! "^[[%[%(%{].*" "Fnl %0")
+  (self:register! "^[[%[%(%{].*" "Fnl %0" {:lang "fennel"})
   (let [opts Config.dropin-paren
         plug-map-insert "<Plug>(thyme-dropin-insert-Fnl)"
         plug-map-complete "<Plug>(thyme-dropin-complete-Fnl)"]
@@ -124,7 +127,7 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
       key (do
             (vim.api.nvim_set_keymap :c plug-map-insert
               ;; NOTE: `v:lua` interface does not support method call.
-              "<C-BSlash>ev:lua.require('thyme.user.dropin').replace()<CR><CR>"
+              "<C-BSlash>ev:lua.require('thyme.user.dropin').replace(getcmdline())<CR><CR>"
               {:noremap true})
             ;; TODO: Expose `<Plug>` keymaps once stable a bit.
             (vim.api.nvim_set_keymap :c key plug-map-insert {:noremap true})))
@@ -138,7 +141,9 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
             (vim.api.nvim_set_keymap :c key plug-map-complete {:noremap true})))))
 
 (let [SingletonDropin (Dropin._new)]
-  {:register (fn [...]
+  {:clear (fn [...]
+            (SingletonDropin:clear! ...))
+   :register (fn [...]
                (SingletonDropin:register! ...))
    :replace (fn [...]
               (SingletonDropin:replace-cmdline! ...))
