@@ -19,6 +19,16 @@
 (fn dec [x]
   `(- ,x 1))
 
+(fn ++ [x]
+  `(do
+     (set ,x (+ ,x 1))
+     ,x))
+
+(fn -- [x]
+  `(do
+     (set ,x (- ,x 1))
+     ,x))
+
 (fn first [xs]
   `(. ,xs 1))
 
@@ -61,6 +71,8 @@
  : tbl?
  : inc
  : dec
+ : ++
+ : --
  : first
  : second
  : last
