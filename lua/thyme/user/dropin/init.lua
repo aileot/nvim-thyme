@@ -6,8 +6,8 @@ local DropinCmdline = require("thyme.user.dropin.replacer.cmdline")
 local M = {}
 local function map_keys_in_cmdline_21()
   local opts = Config["dropin-paren"]
-  local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
-  local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
+  local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl-if-needed)"
+  local plug_map_complete = "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"
   do
     local _2_ = opts["cmdline-key"]
     if (_2_ == false) then
