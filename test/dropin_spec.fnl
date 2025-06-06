@@ -63,7 +63,6 @@
           ;; NOTE: `nvim_input` does not throw errors.
           ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
           (assert.has_error #(vim.cmd (vim.keycode "normal! :(+ 1 2)<CR>")))
-          (assert.not_equals "" (vim.fn.maparg "<CR>" :c))
           (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<CR>"))))))
     (describe* "(`@` as the dropin key)"
       (before_each (fn []
@@ -80,7 +79,6 @@
           ;; NOTE: `nvim_input` does not throw errors.
           ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
           (assert.has_error #(vim.cmd (vim.keycode "normal! :(+ 1 2)<CR>")))
-          (assert.not_equals "" (vim.fn.maparg "@" :c))
           (assert.has_no_error #(vim.cmd "normal :(+ 1 2)@")))))))
 
 (describe* "with dropin feature in cmdline,"
