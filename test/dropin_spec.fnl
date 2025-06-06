@@ -60,3 +60,33 @@
       ;;   (assert.has_error #(vim.api.nvim_input ":(= foo)@")))
       (it* "thus, inputting `:(+ 1 2)@` should not throw any errors."
         (assert.has_no_error #(vim.api.nvim_input ":(+ 1 2)@"))))))
+
+(describe* "with dropin feature in cmdline,"
+  (describe* "(`<Tab>` as the dropin completion key)"
+    (let [default-dropin-options Config.dropin-paren]
+      (before_each (fn []
+                     (set Config.dropin-paren.cmdline-completion-key "<Tab>")
+                     (thyme.setup)
+                     (assert.not_equals "" (vim.fn.maparg "<Tab>" :c))))
+      (after_each (fn []
+                    (set Config.dropin-paren default-dropin-options)
+                    (vim.api.nvim_del_keymap :c "<Tab>"))))
+    (describe* "`<Tab>` should trigger completion `:(+ 1 2)` as `:Fnl (+ 1 2)`;"
+      (it* "thus, inputting `:(+ 1 2)^` should not throw any errors."
+        ;; TODO: Better check to make sure completion on &wildcharm work since invalid
+        ;; &wildcharm input does not throw any errors. However, the specs for
+        ;; completion-key are only useful to make sure no errors happens due to
+        ;; invalid nvim-thyme implementation.
+        (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<Tab>"))))))
+  (describe* "(`^` as the dropin completion key)"
+    (let [default-dropin-options Config.dropin-paren]
+      (before_each (fn []
+                     (set Config.dropin-paren.cmdline-completion-key "^")
+                     (thyme.setup)
+                     (assert.not_equals "" (vim.fn.maparg "^" :c))))
+      (after_each (fn []
+                    (set Config.dropin-paren default-dropin-options)
+                    (vim.api.nvim_del_keymap :c "^"))))
+    (describe* "`^` should trigger completion `:(+ 1 2)` as `:Fnl (+ 1 2)`;"
+      (it* "thus, inputting `:(+ 1 2)^` should not throw any errors."
+        (assert.has_no_error #(vim.cmd "normal :(+ 1 2)^"))))))
