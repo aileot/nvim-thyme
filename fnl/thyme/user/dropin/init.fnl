@@ -34,7 +34,7 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
       "" nil
       key (do
             (vim.api.nvim_set_keymap :c plug-map-complete
-              "<Cmd>lua require('thyme.user.dropin').cmdline.complete(getcmdline())<CR>"
+              "<Cmd>lua require('thyme.user.dropin').cmdline.complete(vim.fn.getcmdline())<CR>"
               {:noremap true})
             (vim.api.nvim_set_keymap :c key plug-map-complete {:noremap true})))))
 

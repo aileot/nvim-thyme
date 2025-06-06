@@ -26,7 +26,7 @@ M["enable-dropin-paren!"] = function()
     return nil
   elseif (nil ~= _4_) then
     local key = _4_
-    vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').cmdline.complete(getcmdline())<CR>", {noremap = true})
+    vim.api.nvim_set_keymap("c", plug_map_complete, "<Cmd>lua require('thyme.user.dropin').cmdline.complete(vim.fn.getcmdline())<CR>", {noremap = true})
     return vim.api.nvim_set_keymap("c", key, plug_map_complete, {noremap = true})
   else
     return nil
