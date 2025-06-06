@@ -52,7 +52,8 @@
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "@" :c))))
       (after_each (fn []
-                    (set Config.dropin-paren default-dropin-options))))
+                    (set Config.dropin-paren default-dropin-options)
+                    (vim.api.nvim_del_keymap :c "@"))))
     (describe* "`@` should implicitly replace `:(+ 1 2)` with `:Fnl (+ 1 2)`;"
       ;; FIXME
       ;; (it* "however, inputting invalid fnl expressions `:(= foo)@` should throw some errors."
