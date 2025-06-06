@@ -59,7 +59,11 @@
       ;; (it* "however, inputting invalid fnl expressions `:(= foo)@` should throw some errors."
       ;;   (assert.has_error #(vim.api.nvim_input ":(= foo)@")))
       (it* "thus, inputting `:(+ 1 2)@` should not throw any errors."
-        (assert.has_no_error #(vim.api.nvim_input ":(+ 1 2)@"))))))
+        ;; NOTE: `nvim_input` does not throw errors.
+        ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
+        (assert.has_error #(vim.cmd (vim.keycode "normal! :(+ 1 2)<CR>")))
+        (assert.not_equals "" (vim.fn.maparg "@" :c))
+        (assert.has_no_error #(vim.cmd "normal :(+ 1 2)@"))))))
 
 (describe* "with dropin feature in cmdline,"
   (describe* "(`<Tab>` as the dropin completion key)"
