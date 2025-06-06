@@ -45,6 +45,25 @@
       (assert.not_equals "" (vim.fn.maparg "<CR>" :c)))))
 
 (describe* "with dropin feature in cmdline,"
+  (describe* "(`<CR>` as the dropin key)"
+    (let [default-dropin-options Config.dropin-paren]
+      (before_each (fn []
+                     (set Config.dropin-paren.cmdline-key "<CR>")
+                     (thyme.setup)
+                     (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))
+      (after_each (fn []
+                    (set Config.dropin-paren default-dropin-options)
+                    (vim.api.nvim_del_keymap :c "<CR>"))))
+    (describe* "`<CR>` should implicitly replace `:(+ 1 2)` with `:Fnl (+ 1 2)`;"
+      ;; FIXME
+      ;; (it* "however, inputting invalid fnl expressions `:(= foo)<CR>` should throw some errors."
+      ;;   (assert.has_error #(vim.api.nvim_input ":(= foo)<CR>")))
+      (it* "thus, inputting `:(+ 1 2)<CR>` should not throw any errors."
+        ;; NOTE: `nvim_input` does not throw errors.
+        ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
+        (assert.has_error #(vim.cmd (vim.keycode "normal! :(+ 1 2)<CR>")))
+        (assert.not_equals "" (vim.fn.maparg "<CR>" :c))
+        (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<CR>"))))))
   (describe* "(`@` as the dropin key)"
     (let [default-dropin-options Config.dropin-paren]
       (before_each (fn []
