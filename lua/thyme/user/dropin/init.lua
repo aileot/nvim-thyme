@@ -4,18 +4,18 @@ local debug_3f = _local_1_["debug?"]
 local DropinRegistry = require("thyme.user.dropin.registry")
 local DropinCmdline = require("thyme.user.dropin.replacer.cmdline")
 local M = {}
-M["enable-dropin-paren!"] = function()
+local function map_keys_in_cmdline_21()
   local opts = Config["dropin-paren"]
-  local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl)"
-  local plug_map_complete = "<Plug>(thyme-dropin-complete-Fnl)"
+  local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl-if-needed)"
+  local plug_map_complete = "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"
   do
     local _2_ = opts["cmdline-key"]
     if (_2_ == false) then
     elseif (_2_ == "") then
     elseif (nil ~= _2_) then
       local key = _2_
-      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR><CR>", {noremap = true})
-      vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
+      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR>", {noremap = true})
+      vim.api.nvim_set_keymap("c", key, (plug_map_insert .. "<CR>"), {noremap = true})
     else
     end
   end
@@ -31,6 +31,9 @@ M["enable-dropin-paren!"] = function()
   else
     return nil
   end
+end
+M["enable-dropin-paren!"] = function()
+  return map_keys_in_cmdline_21()
 end
 local registry = DropinRegistry.new()
 registry["register!"](registry, "^[[%[%(%{].*", "Fnl %0")
