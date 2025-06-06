@@ -6,7 +6,7 @@
 (local M {})
 
 (fn map-keys-in-cmdline! []
-  (let [opts Config.dropin-paren
+  (let [opts Config.dropin
         plug-map-insert "<Plug>(thyme-dropin-insert-Fnl-if-needed)"
         plug-map-complete "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"]
     ;; (vim.api.nvim_set_keymap :c "<C-j>" "<Plug>(thyme-precede-paren-by-Fnl)"

@@ -31,12 +31,12 @@
 
 ;; TODO: Comment out once dropin feature is more stable a bit.
 (describe* "thyme.setup enables dropin features"
-  (let [default-dropin-options Config.dropin-paren]
+  (let [default-dropin-options Config.dropin]
     (before_each (fn []
-                   (set Config.dropin-paren.cmdline-key "<CR>")
+                   (set Config.dropin.cmdline-key "<CR>")
                    (thyme.setup)))
     (after_each (fn []
-                  (set Config.dropin-paren default-dropin-options)))
+                  (set Config.dropin default-dropin-options)))
     (it* "maps `<CR>` on dropin function in Cmdline mode by default"
       (when (not= "" (vim.fn.maparg "<CR>" :c))
         (vim.keymap.del :c "<CR>"))
@@ -45,12 +45,12 @@
       (assert.not_equals "" (vim.fn.maparg "<CR>" :c)))))
 
 (describe* "with dropin feature in cmdline,"
-  (let [default-dropin-options Config.dropin-paren]
+  (let [default-dropin-options Config.dropin]
     (after_each (fn []
-                  (set Config.dropin-paren default-dropin-options)))
+                  (set Config.dropin default-dropin-options)))
     (describe* "(`<CR>` as the dropin key)"
       (before_each (fn []
-                     (set Config.dropin-paren.cmdline-key "<CR>")
+                     (set Config.dropin.cmdline-key "<CR>")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))
       (after_each (fn []
@@ -66,7 +66,7 @@
           (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<CR>"))))))
     (describe* "(`@` as the dropin key)"
       (before_each (fn []
-                     (set Config.dropin-paren.cmdline-key "@")
+                     (set Config.dropin.cmdline-key "@")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "@" :c))))
       (after_each (fn []
@@ -83,13 +83,13 @@
 
 (describe* "with dropin feature in cmdline,"
   (describe* "(`<Tab>` as the dropin completion key)"
-    (let [default-dropin-options Config.dropin-paren]
+    (let [default-dropin-options Config.dropin]
       (before_each (fn []
-                     (set Config.dropin-paren.cmdline-completion-key "<Tab>")
+                     (set Config.dropin.cmdline-completion-key "<Tab>")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "<Tab>" :c))))
       (after_each (fn []
-                    (set Config.dropin-paren default-dropin-options)
+                    (set Config.dropin default-dropin-options)
                     (vim.api.nvim_del_keymap :c "<Tab>"))))
     (describe* "`<Tab>` should trigger completion `:(+ 1 2)` as `:Fnl (+ 1 2)`;"
       (it* "thus, inputting `:(+ 1 2)^` should not throw any errors."
@@ -99,13 +99,13 @@
         ;; invalid nvim-thyme implementation.
         (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<Tab>"))))))
   (describe* "(`^` as the dropin completion key)"
-    (let [default-dropin-options Config.dropin-paren]
+    (let [default-dropin-options Config.dropin]
       (before_each (fn []
-                     (set Config.dropin-paren.cmdline-completion-key "^")
+                     (set Config.dropin.cmdline-completion-key "^")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "^" :c))))
       (after_each (fn []
-                    (set Config.dropin-paren default-dropin-options)
+                    (set Config.dropin default-dropin-options)
                     (vim.api.nvim_del_keymap :c "^"))))
     (describe* "`^` should trigger completion `:(+ 1 2)` as `:Fnl (+ 1 2)`;"
       (it* "thus, inputting `:(+ 1 2)^` should not throw any errors."
