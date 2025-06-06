@@ -5,7 +5,7 @@ local DropinRegistry = require("thyme.user.dropin.registry")
 local DropinCmdline = require("thyme.user.dropin.replacer.cmdline")
 local M = {}
 local function map_keys_in_cmdline_21()
-  local opts = Config["dropin-paren"]
+  local opts = Config.dropin
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl-if-needed)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"
   do

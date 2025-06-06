@@ -53,7 +53,7 @@ end
 local function _14_(_241)
   return _241
 end
-default_opts = {["max-rollbacks"] = 5, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_, _13_(...)}, ";"), preproc = _14_, notifier = vim.notify, command = {["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}, ["compiler-options"] = false}, keymap = {mappings = {}, ["compiler-options"] = false}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "clear-all", ["macro-strategy"] = "clear-all"}, ["dropin-paren"] = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}, ["disable-treesitter-highlights"] = false}
+default_opts = {["max-rollbacks"] = 5, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_, _13_(...)}, ";"), preproc = _14_, notifier = vim.notify, command = {["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}, ["compiler-options"] = false}, keymap = {mappings = {}, ["compiler-options"] = false}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "clear-all", ["macro-strategy"] = "clear-all"}, dropin = {["cmdline-completion-key"] = false, ["cmdline-key"] = false}, ["disable-treesitter-highlights"] = false}
 local cache = {}
 if not file_readable_3f(config_path) then
   local _15_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
