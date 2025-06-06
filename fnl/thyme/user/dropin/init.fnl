@@ -17,10 +17,11 @@
       key (do
             (vim.api.nvim_set_keymap :c plug-map-insert
               ;; NOTE: `v:lua` interface does not support method call.
-              "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR><CR>"
+              "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR>"
               {:noremap true})
             ;; TODO: Expose `<Plug>` keymaps once stable a bit.
-            (vim.api.nvim_set_keymap :c key plug-map-insert {:noremap true})))
+            (vim.api.nvim_set_keymap :c key (.. plug-map-insert "<CR>")
+              {:noremap true})))
     (case opts.cmdline-completion-key
       false nil
       "" nil

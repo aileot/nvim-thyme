@@ -14,8 +14,8 @@ local function map_keys_in_cmdline_21()
     elseif (_2_ == "") then
     elseif (nil ~= _2_) then
       local key = _2_
-      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR><CR>", {noremap = true})
-      vim.api.nvim_set_keymap("c", key, plug_map_insert, {noremap = true})
+      vim.api.nvim_set_keymap("c", plug_map_insert, "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR>", {noremap = true})
+      vim.api.nvim_set_keymap("c", key, (plug_map_insert .. "<CR>"), {noremap = true})
     else
     end
   end
