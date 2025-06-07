@@ -534,6 +534,8 @@ Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
 The evaluation includes the current buffer lines within the given [range][].
+Specify the range as `0` not to include any of current buffer lines;
+specify `%` to include the whole buffer lines.
 You can change the default range of this command
 by the option [command.Fnl.default-range][].
 
