@@ -63,11 +63,8 @@ local function update_hl_chunk_matrix_21(hl_chunk_matrix, text, _3fhl_name, meta
       if ("\n" == char) then
         row = (row + 1)
         col = 1
-        if (_3fhl_name and (_3fhl_name:find("@string") or _3fhl_name:find("@comment"))) then
-          priority_matrix[row][col] = priority
-          hl_chunk_matrix[row][col] = determine_hl_chunk(char, _3fhl_name)
-        else
-        end
+        priority_matrix[row][col] = priority
+        hl_chunk_matrix[row][col] = determine_hl_chunk(char, _3fhl_name)
       else
         priority_matrix[row][col] = priority
         hl_chunk_matrix[row][col] = determine_hl_chunk(char, _3fhl_name)
@@ -89,29 +86,29 @@ local function compose_hl_chunks(text, lang_tree)
   local newline_chunk = {"\n"}
   local hl_chunk_matrix = new_matrix(end_row, end_col, whitespace_chunk)
   local cb
-  local function _11_(ts_tree, tree)
+  local function _10_(ts_tree, tree)
     if ts_tree then
       local lang = tree:lang()
       local hl_query
-      local or_12_ = hl_cache[lang]
-      if not or_12_ then
+      local or_11_ = hl_cache[lang]
+      if not or_11_ then
         local hlq = ts.query.get(lang, "highlights")
         hl_cache[lang] = hlq
-        or_12_ = hlq
+        or_11_ = hlq
       end
-      hl_query = or_12_
+      hl_query = or_11_
       local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
       for id, node, metadata in iter do
-        local _14_ = hl_query.captures[id]
-        if ((_14_ == "spell") or (_14_ == "nospell")) then
+        local _13_ = hl_query.captures[id]
+        if ((_13_ == "spell") or (_13_ == "nospell")) then
         else
-          local and_15_ = (nil ~= _14_)
-          if and_15_ then
-            local capture = _14_
-            and_15_ = not vim.startswith(capture, "_")
+          local and_14_ = (nil ~= _13_)
+          if and_14_ then
+            local capture = _13_
+            and_14_ = not vim.startswith(capture, "_")
           end
-          if and_15_ then
-            local capture = _14_
+          if and_14_ then
+            local capture = _13_
             local txt = ts.get_node_text(node, text)
             local hl_name = ("@" .. capture)
             local row01, col01 = node:range()
@@ -125,7 +122,7 @@ local function compose_hl_chunks(text, lang_tree)
       return nil
     end
   end
-  cb = _11_
+  cb = _10_
   initialize_priority_matrix_21(end_row, end_col)
   update_hl_chunk_matrix_21(hl_chunk_matrix, text, nil, {}, top_row0, top_col0)
   do
@@ -147,7 +144,7 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:128")
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:124")
   validate_type("string", text)
   if Config["disable-treesitter-highlights"] then
     return {{text}}
@@ -155,26 +152,26 @@ local function text__3ehl_chunks(text, _3fopts)
     local opts = (_3fopts or {})
     local base_lang = (opts.lang or "fennel")
     local tmp_text
-    local _20_
+    local _19_
     if (base_lang == "fennel") then
-      _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
+      _19_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
     elseif (base_lang == "lua") then
-      _20_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
+      _19_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
     else
       local _ = base_lang
-      _20_ = text
+      _19_ = text
     end
-    tmp_text = _20_:gsub("\\", "\\\\")
+    tmp_text = _19_:gsub("\\", "\\\\")
     local fixed_text = text:gsub("\\", "\\\\")
     validate_type("table", opts)
-    local _25_, _26_ = pcall(ts.get_string_parser, tmp_text, base_lang)
-    if ((_25_ == false) and (nil ~= _26_)) then
-      local msg = _26_
+    local _24_, _25_ = pcall(ts.get_string_parser, tmp_text, base_lang)
+    if ((_24_ == false) and (nil ~= _25_)) then
+      local msg = _25_
       local chunks = {{text}}
       vim.notify_once(msg, vim.log.levels.WARN)
       return chunks
-    elseif ((_25_ == true) and (nil ~= _26_)) then
-      local lang_tree = _26_
+    elseif ((_24_ == true) and (nil ~= _25_)) then
+      local lang_tree = _25_
       return compose_hl_chunks(fixed_text, lang_tree)
     else
       return nil

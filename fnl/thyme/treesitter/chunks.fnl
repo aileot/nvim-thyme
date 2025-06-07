@@ -61,12 +61,8 @@
             (do
               (set row (inc row))
               (set col 1)
-              (when (and ?hl-name
-                         (or (?hl-name:find "@string")
-                             (?hl-name:find "@comment")))
-                (tset priority-matrix row col priority)
-                (tset hl-chunk-matrix row col
-                      (determine-hl-chunk char ?hl-name))))
+              (tset priority-matrix row col priority)
+              (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name)))
             (do
               (tset priority-matrix row col priority)
               (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name))
