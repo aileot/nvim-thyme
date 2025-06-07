@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0](https://github.com/aileot/nvim-thyme/compare/v1.2.0...v1.3.0) (2025-06-07)
+
+
+### Features
+
+* **dropin:** extract `nextcmd` recursively ([#62](https://github.com/aileot/nvim-thyme/issues/62)) ([9a8947c](https://github.com/aileot/nvim-thyme/commit/9a8947cf40330c70dc750b5e48f3d31b83bd54b9))
+* **health:** report imported macros ([#54](https://github.com/aileot/nvim-thyme/issues/54)) ([46228a2](https://github.com/aileot/nvim-thyme/commit/46228a267bb26f7ad8bb921745654eb92e35a57b)), closes [#27](https://github.com/aileot/nvim-thyme/issues/27)
+* **health:** report mounted-paths ([#57](https://github.com/aileot/nvim-thyme/issues/57)) ([f62b1fb](https://github.com/aileot/nvim-thyme/commit/f62b1fb344236497c64f26663467b9db0bab7fd3))
+* **query:** inject "fennel" highlights in Cmdline on extui ([#60](https://github.com/aileot/nvim-thyme/issues/60)) ([aa87848](https://github.com/aileot/nvim-thyme/commit/aa87848f22eefa40bc4a9b4221ee95699561c6c0))
+
+
+### Bug Fixes
+
+* **treesitter:** truncate trailing whitespace chunks ([#61](https://github.com/aileot/nvim-thyme/issues/61)) ([2dfa9b6](https://github.com/aileot/nvim-thyme/commit/2dfa9b6a6015dedc956a7098c675724aaacf1ce0))
+
 ## [1.2.0](https://github.com/aileot/nvim-thyme/compare/v1.1.0...v1.2.0) (2025-06-02)
 
 
