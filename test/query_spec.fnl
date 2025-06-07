@@ -1,7 +1,5 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include :test.helper.prerequisites)
-
 (describe* "query"
   (describe* "fennel injections"
     (it* "should be applied to `:Fnl` arguments"

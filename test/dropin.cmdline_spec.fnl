@@ -1,7 +1,5 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include :test.helper.prerequisites)
-
 (local thyme (require :thyme))
 (local Config (require :thyme.config))
 

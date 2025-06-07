@@ -1,7 +1,5 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include "test.helper.prerequisites")
-
 (local {: lua-cache-prefix} (require :thyme.const))
 
 (describe* "thyme.call.cache.clear"

@@ -1,7 +1,5 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include :test.helper.prerequisites)
-
 (local {: prepare-config-fnl-file!
         : prepare-context-fnl-file!
         : prepare-context-lua-file!

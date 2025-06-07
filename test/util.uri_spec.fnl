@@ -1,7 +1,5 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
-(include :test.helper.prerequisites)
-
 (local {: uri-encode : uri-decode} (require :thyme.util.uri))
 
 (describe* "uri-encode"
