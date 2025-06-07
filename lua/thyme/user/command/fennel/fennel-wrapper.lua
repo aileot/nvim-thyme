@@ -88,25 +88,28 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
       tts.print(verbose_msg, {lang = "fennel"})
     else
     end
-    local results = {callback(new_fnl_code, compiler_options)}
-    if (results == nil) then
-      tts.print("nil", {lang = lang})
-    elseif ((_G.type(results) == "table") and (nil ~= results[1])) then
-      local text = results[1]
-      if (lang == "lua") then
-        tts.print(text, {lang = "lua"})
-      elseif (lang == "fennel") then
-        for _, text0 in ipairs(results) do
-          tts.print(fennel.view(text0, compiler_options), {lang = "fennel"})
+    do
+      local _21_ = {callback(new_fnl_code, compiler_options)}
+      if (_21_[1] == nil) then
+        tts.print("nil", {lang = lang})
+      elseif (nil ~= _21_[1]) then
+        local text = _21_[1]
+        local results = _21_
+        if (lang == "lua") then
+          tts.print(text, {lang = "lua"})
+        elseif (lang == "fennel") then
+          for _, text0 in ipairs(results) do
+            tts.print(fennel.view(text0, compiler_options), {lang = "fennel"})
+          end
+        else
         end
       else
       end
-    else
     end
-    local function _23_()
-      local _24_, _25_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
-      if ((_24_ == true) and (nil ~= _25_)) then
-        local parsed = _25_
+    local function _24_()
+      local _25_, _26_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
+      if ((_25_ == true) and (nil ~= _26_)) then
+        local parsed = _26_
         if parsed.cmd:find("^Fnl") then
           return edit_cmd_history_21(new_fnl_code, cmd_history_opts)
         else
@@ -116,7 +119,7 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
         return nil
       end
     end
-    return vim.schedule(_23_)
+    return vim.schedule(_24_)
   end
   return _19_
 end
