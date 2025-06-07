@@ -9,6 +9,7 @@ local ts = vim.treesitter
 local hl_cache = {}
 local hl_chunk_cache = new_matrix()
 local idx_empty_hl_name = true
+local special_chunk = {whitespace = {" "}, newline = {"\n"}}
 local function set_hl_chunk_cache_21(text, _3fhl_name)
   local _3fhl_group
   if _3fhl_name then
@@ -80,9 +81,7 @@ local function compose_hl_chunks(text, lang_tree)
   local bottom_row0 = -1
   local end_row = #vim.split(text, "\n", {plain = true})
   local end_col = vim.go.columns
-  local whitespace_chunk = {" "}
-  local newline_chunk = {"\n"}
-  local hl_chunk_matrix = new_matrix(end_row, end_col, whitespace_chunk)
+  local hl_chunk_matrix = new_matrix(end_row, end_col, special_chunk.whitespace)
   local cb
   local function _10_(ts_tree, tree)
     if ts_tree then
@@ -141,7 +140,7 @@ local function compose_hl_chunks(text, lang_tree)
       if ("\n" == hl_chunk_matrix[i][j][1]) then break end
       table.insert(hl_chunks, hl_chunk_matrix[i][j])
     end
-    table.insert(hl_chunks, newline_chunk)
+    table.insert(hl_chunks, special_chunk.newline)
   end
   if ("\n" ~= text:sub(-1)) then
     table.remove(hl_chunks)
