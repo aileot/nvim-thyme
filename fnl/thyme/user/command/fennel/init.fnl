@@ -41,7 +41,7 @@
     (fnl-file-compile.create-commands!)
     (command! :Fnl
       {:range "%"
-       :nargs "+"
+       :nargs "*"
        :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
       (mk-fennel-wrapper-command-callback fennel-wrapper.eval
@@ -78,7 +78,7 @@
           (callback a))))
     (command! :FnlCompile
       {:range "%"
-       :nargs "+"
+       :nargs "*"
        :complete "lua"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
       (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
