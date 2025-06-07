@@ -45,12 +45,20 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
 (let [registry (DropinRegistry.new)]
   (registry:register! "^[[%[%(%{].*" "Fnl %0")
   (set M.registry registry)
-  (set M.cmdline {:replace #(if (or (= ":" (vim.fn.getcmdtype)) debug?)
-                                (let [dropin (DropinCmdline.new registry)]
-                                  (dropin:replace-cmdline! $...))
-                                $...)
-                  :complete #(if (= ":" (vim.fn.getcmdtype))
-                                 (let [dropin (DropinCmdline.new registry)]
-                                   (dropin:complete-cmdline! $...))
-                                 $...)})
+  (set M.cmdline {:replace (fn [old-cmdline]
+                             (let [cmdtype (vim.fn.getcmdtype)]
+                               (if (or (= ":" cmdtype) debug?)
+                                   (let [dropin (DropinCmdline.new cmdtype
+                                                                   registry
+                                                                   old-cmdline)]
+                                     (dropin:replace-cmdline!))
+                                   old-cmdline)))
+                  :complete (fn [old-cmdline]
+                              (let [cmdtype (vim.fn.getcmdtype)]
+                                (if (= ":" cmdtype)
+                                    (let [dropin (DropinCmdline.new cmdtype
+                                                                    registry
+                                                                    old-cmdline)]
+                                      (dropin:complete-cmdline!))
+                                    old-cmdline)))})
   M)

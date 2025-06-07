@@ -38,20 +38,22 @@ end
 local registry = DropinRegistry.new()
 registry["register!"](registry, "^[[%[%(%{].*", "Fnl %0")
 M.registry = registry
-local function _6_(...)
-  if ((":" == vim.fn.getcmdtype()) or debug_3f) then
-    local dropin = DropinCmdline.new(registry)
-    return dropin["replace-cmdline!"](dropin, ...)
+local function _6_(old_cmdline)
+  local cmdtype = vim.fn.getcmdtype()
+  if ((":" == cmdtype) or debug_3f) then
+    local dropin = DropinCmdline.new(cmdtype, registry, old_cmdline)
+    return dropin["replace-cmdline!"](dropin)
   else
-    return ...
+    return old_cmdline
   end
 end
-local function _8_(...)
-  if (":" == vim.fn.getcmdtype()) then
-    local dropin = DropinCmdline.new(registry)
-    return dropin["complete-cmdline!"](dropin, ...)
+local function _8_(old_cmdline)
+  local cmdtype = vim.fn.getcmdtype()
+  if (":" == cmdtype) then
+    local dropin = DropinCmdline.new(cmdtype, registry, old_cmdline)
+    return dropin["complete-cmdline!"](dropin)
   else
-    return ...
+    return old_cmdline
   end
 end
 M.cmdline = {replace = _6_, complete = _8_}
