@@ -227,6 +227,21 @@ Available options:
 - `"omit"`: Trim all the trailing parentheses in the command history.
 - `"keep"`: Keep the trailing parentheses in the command history.
 
+### `command.Fnl.default-range`
+
+(default: `0`)
+
+This option determines the default range for [:Fnl][:Fnl].
+
+Set it to `"%"` to include current buffer lines by default
+when the buffer `filetype` is `"fennel"`.
+
+### `command.FnlCompile.default-range`
+
+(default: `0`)
+
+Same as [command.Fnl.default-range][] but for [:FnlCompile][].
+
 ### `keymap.compiler-options`
 
 (default: `nil`)
@@ -706,6 +721,8 @@ Unmount the mounted backups.
 [autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
 [autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
 [autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
+[command.Fnl.default-range]: #commandfnldefault-range
+[command.FnlCompile.default-range]: #commandfnlcompiledefault-range
 [command.cmd-history.method]: #commandcmd-historymethod
 [fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
