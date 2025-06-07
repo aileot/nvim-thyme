@@ -68,7 +68,15 @@
                            ;; the method option is set to either "overwrite" or
                            ;; "append".
                            ;; "omit"|"keep"
-                           :trailing-parens "omit"}}
+                           :trailing-parens "omit"}
+             ;; NOTE: Set the range to "%" to let `:Fnl`/`:FnlCompile` command
+             ;; include the whole lines of current buffer in evaluating given
+             ;; fennel expressions by default. Set it to `0` or `nil` to
+             ;; exclude any buffer lines and just evaluate the pure fennel
+             ;; expressions by default. The range options only work when the
+             ;; current buffer filetype is `fennel`.
+             :Fnl {:default-range "%"}
+             :FnlCompile {:default-range "%"}}
    :keymap {:compiler-options {:correlate false :error-pinpoint ["|>>" "<<|"]}
             ;; NOTE: "x" for Visual mode. See `:mapmode-x` for more details.
             ;; NOTE: You can map the same keys for both normal and visual modes
