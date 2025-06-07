@@ -44,7 +44,9 @@
         ;; outputs instead on the keymap and command features.
         :disable-treesitter-highlights false
         :command {:compiler-options false
-                  :cmd-history {:method "overwrite" :trailing-parens "omit"}}
+                  :cmd-history {:method "overwrite" :trailing-parens "omit"}
+                  :Fnl {:default-range 0}
+                  :FnlCompile {:default-range 0}}
         :keymap {:compiler-options false :mappings {}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
                 :pattern "*.{fnl,fnlm}"
