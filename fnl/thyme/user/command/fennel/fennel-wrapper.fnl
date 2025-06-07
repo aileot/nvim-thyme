@@ -48,8 +48,8 @@
                                    "failed to add new fnl code"))
                  :ignore #(comment "Do nothing")}]
     (case (. methods method)
-      apply-method (let [new-cmd (make-new-cmd new-fnl-code opts)]
-                     (apply-method new-cmd))
+      apply-method (case (make-new-cmd new-fnl-code opts)
+                     new-cmd (apply-method new-cmd))
       _
       (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
                  method)))))
