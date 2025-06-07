@@ -44,10 +44,20 @@
        :nargs "*"
        :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
-      (mk-fennel-wrapper-command-callback fennel-wrapper.eval
-                                          {:lang :fennel
-                                           : compiler-options
-                                           : cmd-history-opts}))
+      (fn [a]
+        (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
+                                                           {:lang :fennel
+                                                            : compiler-options
+                                                            : cmd-history-opts})]
+          (when (= :fennel vim.bo.filetype)
+            ;; TODO: Support ft=lua.
+            (let [buf (vim.api.nvim_get_current_buf)
+                  fnl-code (-> (vim.api.nvim_buf_get_lines buf ;
+                                                           (dec a.line1) a.line2
+                                                           true)
+                               (table.concat "\n"))]
+              (set a.args (.. fnl-code "\n" a.args)))
+            (callback a)))))
     (command! :FnlBuf
       {:range "%"
        :nargs "?"
@@ -81,10 +91,19 @@
        :nargs "*"
        :complete "lua"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
-      (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
-                                          {:lang :lua
-                                           : compiler-options
-                                           : cmd-history-opts}))
+      (fn [a]
+        (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
+                                                           {:lang :lua
+                                                            : compiler-options
+                                                            : cmd-history-opts})]
+          (when (= :fennel vim.bo.filetype)
+            (let [buf (vim.api.nvim_get_current_buf)
+                  fnl-code (-> (vim.api.nvim_buf_get_lines buf ;
+                                                           (dec a.line1) a.line2
+                                                           true)
+                               (table.concat "\n"))]
+              (set a.args (.. fnl-code "\n" a.args))))
+          (callback a))))
     (let [cb (fn [a]
                (let [fnl-code (parse-cmd-buf-args a)
                      cmd-history-opts {:method :ignore}
