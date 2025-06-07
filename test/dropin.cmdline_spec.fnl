@@ -2,6 +2,8 @@
 
 (include :test.helper.prerequisites)
 
+(local {: vim/normal : vim/normal!} (include :test.helper.util))
+
 (local thyme (require :thyme))
 (local Config (require :thyme.config))
 
@@ -38,7 +40,7 @@
         (it* "thus, inputting `:(+ 1 2)<CR>` should not throw any errors."
           ;; NOTE: `nvim_input` does not throw errors.
           ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
-          (assert.has_error #(vim.cmd (vim.keycode "normal! :(+ 1 2)<CR>")))
+          (assert.has_error #(vim/normal! ":(+ 1 2)<CR>"))
           (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<CR>"))))))
     (describe* "(`@` as the dropin key)"
       (before_each (fn []
@@ -54,8 +56,8 @@
         (it* "thus, inputting `:(+ 1 2)@` should not throw any errors."
           ;; NOTE: `nvim_input` does not throw errors.
           ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
-          (assert.has_error #(vim.cmd (vim.keycode "normal! :(+ 1 2)<CR>")))
-          (assert.has_no_error #(vim.cmd "normal :(+ 1 2)@")))))))
+          (assert.has_error #(vim/normal! ":(+ 1 2)<CR>"))
+          (assert.has_no_error #(vim/normal ":(+ 1 2)@")))))))
 
 (describe* "with dropin feature in cmdline,"
   (describe* "(`<Tab>` as the dropin completion key)"
@@ -85,4 +87,4 @@
                     (vim.api.nvim_del_keymap :c "^"))))
     (describe* "`^` should trigger completion `:(+ 1 2)` as `:Fnl (+ 1 2)`;"
       (it* "thus, inputting `:(+ 1 2)^` should not throw any errors."
-        (assert.has_no_error #(vim.cmd "normal :(+ 1 2)^"))))))
+        (assert.has_no_error #(vim/normal ":(+ 1 2)^"))))))
