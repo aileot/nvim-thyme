@@ -55,7 +55,7 @@
                                      (eval-fn compiler-options))
                              text (if (str? val)
                                       val
-                                      (fennel.view))]
+                                      (fennel.view val compiler-options))]
                          (print-fn text {:lang self._lang})))
         operator-callback #(marks->print "[" "]")]
     (vim.api.nvim_set_keymap :n lhs rhs/n {:noremap true})
