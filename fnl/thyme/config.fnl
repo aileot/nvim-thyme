@@ -54,7 +54,9 @@
                 :macro-strategy "clear-all"}
         ;; (experimental)
         ;; TODO: Set the default keys once stable a bit.
-        :dropin {:cmdline-key false :cmdline-completion-key false}})
+        :dropin {:cmdline-key false
+                 :cmdline-completion-key false
+                 :cmdwin {:enter-key false}}})
 
 (local cache {})
 
