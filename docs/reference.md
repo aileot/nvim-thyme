@@ -534,6 +534,8 @@ Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
 The evaluation includes the current buffer lines within the given [range][].
+You can change the default range of this command
+by the option [command.Fnl.default-range][].
 
 #### `:[range]FnlBuf [bufname]`
 
@@ -576,6 +578,9 @@ With `!`, it will write the compiled lua results to `[dest-file]`.
 
 Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
 `{fnl-expr}`, but only returns the compiled lua results.
+
+You can change the default range of this command
+by the option [command.FnlCompile.default-range][].
 
 It does not affect the file system.
 
