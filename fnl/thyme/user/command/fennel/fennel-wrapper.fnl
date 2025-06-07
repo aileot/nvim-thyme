@@ -77,6 +77,17 @@
         (vim.list_slice line1)
         (table.concat "\n"))))
 
+(fn extract-Fnl-cmdline-args [old-cmdline]
+  (case (pcall vim.api.nvim_parse_cmd old-cmdline {})
+    (true parsed)
+    ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
+    ;; TODO: More accurate command detection?
+    (if (-> (. parsed :cmd)
+            ;; TODO: Limit to `:Fnl` and `:FnlCompile`.
+            (string.match "^Fnl"))
+        (table.concat parsed.args " ")
+        (extract-Fnl-cmdline-args parsed.nextcmd))))
+
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
                                          : compiler-options
