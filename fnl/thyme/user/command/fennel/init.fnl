@@ -1,8 +1,8 @@
 (import-macros {: when-not : dec : first : command!} :thyme.macros)
 
-(local {: lua-cache-prefix} (require :thyme.const))
+(local {: config-filename : lua-cache-prefix} (require :thyme.const))
 
-(local {: file-readable?} (require :thyme.util.fs))
+(local {: file-readable? : under-tmpdir?} (require :thyme.util.fs))
 
 (local Messenger (require :thyme.util.class.messenger))
 (local CommandMessenger (Messenger.new "command/fennel"))
@@ -33,6 +33,16 @@
               :string (if split? :split :edit))]
     (vim.cmd {: cmd :args [buf|path] : mods})))
 
+(fn should-include-buf? [buf]
+  ;; TODO: More restrictions?
+  ;; TODO: Support ft=lua, too?
+  ;; TODO: Support inline Fennel expression.
+  (when (= :fennel (?. vim.bo buf :filetype))
+    (let [buf-name (vim.api.nvim_buf_get_name buf)]
+      (or (vim.fs.root buf config-filename) ;
+          (not (file-readable? buf-name)) ;
+          (under-tmpdir? buf-name)))))
+
 (fn M.setup! []
   "Define fennel wrapper commands."
   (let [compiler-options (or Config.command.compiler-options
@@ -44,10 +54,22 @@
        :nargs "*"
        :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
-      (mk-fennel-wrapper-command-callback fennel-wrapper.eval
-                                          {:lang :fennel
-                                           : compiler-options
-                                           : cmd-history-opts}))
+      (fn [a]
+        (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
+                                                           {:lang :fennel
+                                                            : compiler-options
+                                                            : cmd-history-opts})
+              buf (vim.api.nvim_get_current_buf)]
+          ;; NOTE: `a.count` indicates `-1` when `%` is specified for the default range.
+          (when (and (not= 0 a.count) ;
+                     (should-include-buf? buf))
+            ;; TODO: Support ft=lua.
+            (let [fnl-code (-> (vim.api.nvim_buf_get_lines buf ;
+                                                           (dec a.line1) a.line2
+                                                           true)
+                               (table.concat "\n"))]
+              (set a.args (.. fnl-code "\n" a.args))))
+          (callback a))))
     (command! :FnlBuf
       {:range "%"
        :nargs "?"
@@ -81,10 +103,20 @@
        :nargs "*"
        :complete "lua"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
-      (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
-                                          {:lang :lua
-                                           : compiler-options
-                                           : cmd-history-opts}))
+      (fn [a]
+        (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
+                                                           {:lang :lua
+                                                            : compiler-options
+                                                            : cmd-history-opts})
+              buf (vim.api.nvim_get_current_buf)]
+          (when (and (not= 0 a.count) ;
+                     (should-include-buf? buf))
+            (let [fnl-code (-> (vim.api.nvim_buf_get_lines buf ;
+                                                           (dec a.line1) a.line2
+                                                           true)
+                               (table.concat "\n"))]
+              (set a.args (.. fnl-code "\n" a.args))))
+          (callback a))))
     (let [cb (fn [a]
                (let [fnl-code (parse-cmd-buf-args a)
                      cmd-history-opts {:method :ignore}
