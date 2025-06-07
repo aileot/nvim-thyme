@@ -44,6 +44,7 @@
         ;; outputs instead on the keymap and command features.
         :disable-treesitter-highlights false
         :command {:compiler-options false
+                  :silent-by-default false
                   :cmd-history {:method "overwrite" :trailing-parens "omit"}}
         :keymap {:compiler-options false :mappings {}}
         :watch {:event [:BufWritePost :FileChangedShellPost]
