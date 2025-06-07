@@ -30,7 +30,15 @@
     (vim.cmd "Fnl [1 2 3]")
     ;; FIXME: Why is a newline inserted just after the first result `3`?
     (comment (assert.equals "3\n[1 2]\n[1 2 3]" (execute "messages")
-                            "`messages` should append the results of the Fnl command"))))
+                            "`messages` should append the results of the Fnl command")))
+  (describe* "with range"
+    (describe* "set to 0"
+      (it* "can evaluate"
+        (assert.equals "" (execute "0Fnl"))))
+    (comment (it* "can evaluate current buffer without any args"
+               (let [fnl-path (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")]
+                 (vim.cmd.edit fnl-path)
+                 (assert.equals "3" (execute :Fnl)))))))
 
 (describe* "command :FnlBuf"
   (setup (fn []
