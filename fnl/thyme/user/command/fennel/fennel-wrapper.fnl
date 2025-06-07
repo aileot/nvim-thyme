@@ -119,7 +119,7 @@
                (true parsed)
                ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
                ;; TODO: More accurate command detection?
-               (when (parsed.cmd:find "^Fnl")
+               (when (string.find parsed.cmd "^Fnl")
                  (edit-cmd-history! new-fnl-code cmd-history-opts)))
             (vim.schedule))))))
 
