@@ -6,6 +6,16 @@
 
 (local test-context-root (Path.join context-root "test"))
 
+;; NOTE: Both nvim_input and nvim_feedkeys do not seem to throw errors.
+
+(λ vim/normal [str]
+  (let [keys (vim.keycode str)]
+    (vim.cmd (.. "normal " keys))))
+
+(λ vim/normal! [str]
+  (let [keys (vim.keycode str)]
+    (vim.cmd (.. "normal! " keys))))
+
 (λ prepare-config-fnl-file! [filename contents]
   "Prepare a fnl file in `Config.fnl-dir` under the test context .config/ for testing.
 @param filename string
@@ -73,7 +83,9 @@
           (vim.fs.joinpath :thyme)
           (vim.fn.delete :rf)))))
 
-{: prepare-config-fnl-file!
+{: vim/normal
+ : vim/normal!
+ : prepare-config-fnl-file!
  : prepare-config-lua-file!
  : prepare-context-fnl-file!
  : prepare-context-lua-file!
