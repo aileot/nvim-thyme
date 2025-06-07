@@ -106,7 +106,13 @@
                        (update-hl-chunk-matrix! hl-chunk-matrix txt hl-name
                                                 metadata row01 col01)))))))]
     (initialize-priority-matrix! end-row end-col)
-    (update-hl-chunk-matrix! hl-chunk-matrix text nil {} top-row0 top-col0)
+    (let [text-with-newline (if (= "\n" (text:sub -1))
+                                text
+                                ;; NOTE: Insert newline char as the marker to
+                                ;; truncate trailing whitespace chunks later.
+                                (.. text "\n"))]
+      (update-hl-chunk-matrix! hl-chunk-matrix text-with-newline nil {}
+                               top-row0 top-col0))
     (doto lang-tree
       (: :parse)
       (: :for_each_tree cb))
