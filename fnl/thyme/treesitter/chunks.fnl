@@ -57,15 +57,13 @@
       (var row row1)
       (var col col1)
       (each [_ char (char-by-char text)]
+        (tset priority-matrix row col priority)
+        (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name))
         (if (= "\n" char)
             (do
               (set row (inc row))
-              (set col 1)
-              (tset priority-matrix row col priority)
-              (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name)))
+              (set col 1))
             (do
-              (tset priority-matrix row col priority)
-              (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name))
               (set col (inc col))))))))
 
 (fn compose-hl-chunks [text lang-tree]
