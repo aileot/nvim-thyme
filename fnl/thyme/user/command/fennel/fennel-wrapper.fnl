@@ -96,6 +96,8 @@
       (when verbose?
         (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
                               (: :format new-fnl-code))]
+          ;; TODO: (low priority) Display verbose messages on extui feature
+          ;; expectedly, or just drop `verbose` support?
           (tts.print verbose-msg {:lang "fennel"})))
       (let [results [(callback new-fnl-code compiler-options)]]
         (case results
