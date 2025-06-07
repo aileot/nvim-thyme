@@ -5,6 +5,7 @@
 (local tts (require :thyme.treesitter))
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
+
 (fn make-new-cmd [new-fnl-code {: trailing-parens}]
   "Suggest a new Vim command line to replace the last command with parinfer-ed
 `new-fnl-code` in Vim command history.
