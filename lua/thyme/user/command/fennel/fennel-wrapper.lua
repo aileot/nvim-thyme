@@ -94,10 +94,10 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
     elseif ((_G.type(results) == "table") and (nil ~= results[1])) then
       local text = results[1]
       if (lang == "lua") then
-        tts.print(text, {lang = lang})
+        tts.print(text, {lang = "lua"})
       elseif (lang == "fennel") then
         for _, text0 in ipairs(results) do
-          tts.print(fennel.view(text0, compiler_options))
+          tts.print(fennel.view(text0, compiler_options), {lang = "fennel"})
         end
       else
       end
