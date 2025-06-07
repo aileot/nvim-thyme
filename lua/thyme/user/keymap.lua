@@ -38,7 +38,7 @@ Keymap["generate-plug-keymaps!"] = function(self, method)
     if ("string" == type(val)) then
       text = val
     else
-      text = fennel.view()
+      text = fennel.view(val)
     end
     return print_fn(text, {lang = self._lang})
   end
