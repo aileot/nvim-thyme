@@ -77,6 +77,17 @@
         (vim.list_slice line1)
         (table.concat "\n"))))
 
+(fn extract-Fnl-cmdline-args [old-cmdline]
+  (case (pcall vim.api.nvim_parse_cmd old-cmdline {})
+    (true parsed)
+    ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
+    ;; TODO: More accurate command detection?
+    (if (-> (. parsed :cmd)
+            ;; TODO: Limit to `:Fnl` and `:FnlCompile`.
+            (string.match "^Fnl"))
+        (table.concat parsed.args " ")
+        (extract-Fnl-cmdline-args parsed.nextcmd))))
+
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
                                          : compiler-options
@@ -116,13 +127,12 @@
                    (each [_ text (ipairs results)]
                      (tts.print (fennel.view text compiler-options)
                                 {:lang "fennel"}))))
-        (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
-               (true parsed)
-               ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
-               ;; TODO: More accurate command detection?
-               (when (-> (. parsed :cmd)
-                         (string.find "^Fnl"))
-                 (edit-cmd-history! new-fnl-code cmd-history-opts)))
+        (-> #(let [old-cmdline (vim.fn.histget ":" -1)
+                   old-Fnl-cmdline-args (extract-Fnl-cmdline-args old-cmdline)
+                   new-Fnl-cmdline-args (-> old-Fnl-cmdline-args
+                                            (: :gsub "\r" "\n")
+                                            (apply-parinfer {: cmd-history-opts}))]
+               (edit-cmd-history! new-Fnl-cmdline-args cmd-history-opts))
             (vim.schedule))))))
 
 {: parse-cmd-buf-args

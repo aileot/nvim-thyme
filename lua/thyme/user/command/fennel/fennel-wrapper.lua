@@ -79,13 +79,26 @@ local function parse_cmd_file_args(_17_)
   local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
   return table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
 end
-local function mk_fennel_wrapper_command_callback(callback, _19_)
-  local lang = _19_["lang"]
-  local compiler_options = _19_["compiler-options"]
-  local cmd_history_opts = _19_["cmd-history-opts"]
-  local function _21_(_20_)
-    local args = _20_["args"]
-    local smods = _20_["smods"]
+local function extract_Fnl_cmdline_args(old_cmdline)
+  local _19_, _20_ = pcall(vim.api.nvim_parse_cmd, old_cmdline, {})
+  if ((_19_ == true) and (nil ~= _20_)) then
+    local parsed = _20_
+    if string.match(parsed.cmd, "^Fnl") then
+      return table.concat(parsed.args, " ")
+    else
+      return extract_Fnl_cmdline_args(parsed.nextcmd)
+    end
+  else
+    return nil
+  end
+end
+local function mk_fennel_wrapper_command_callback(callback, _23_)
+  local lang = _23_["lang"]
+  local compiler_options = _23_["compiler-options"]
+  local cmd_history_opts = _23_["cmd-history-opts"]
+  local function _25_(_24_)
+    local args = _24_["args"]
+    local smods = _24_["smods"]
     local verbose_3f = (-1 < smods.verbose)
     local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
     if verbose_3f then
@@ -108,21 +121,14 @@ local function mk_fennel_wrapper_command_callback(callback, _19_)
       end
     else
     end
-    local function _25_()
-      local _26_, _27_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
-      if ((_26_ == true) and (nil ~= _27_)) then
-        local parsed = _27_
-        if string.find(parsed.cmd, "^Fnl") then
-          return edit_cmd_history_21(new_fnl_code, cmd_history_opts)
-        else
-          return nil
-        end
-      else
-        return nil
-      end
+    local function _29_()
+      local old_cmdline = vim.fn.histget(":", -1)
+      local old_Fnl_cmdline_args = extract_Fnl_cmdline_args(old_cmdline)
+      local new_Fnl_cmdline_args = apply_parinfer(old_Fnl_cmdline_args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
+      return edit_cmd_history_21(new_Fnl_cmdline_args, cmd_history_opts)
     end
-    return vim.schedule(_25_)
+    return vim.schedule(_29_)
   end
-  return _21_
+  return _25_
 end
 return {["parse-cmd-buf-args"] = parse_cmd_buf_args, ["parse-cmd-file-args"] = parse_cmd_file_args, ["mk-fennel-wrapper-command-callback"] = mk_fennel_wrapper_command_callback}
