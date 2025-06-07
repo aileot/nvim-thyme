@@ -513,10 +513,12 @@ The commands are defined by [thyme.setup][thyme.setup].
 
 ### Fennel Wrapper Commands
 
-#### `:Fnl {fnl-expr}`
+#### `:[range]Fnl {fnl-expr}`
 
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
+
+The evaluation includes the current buffer lines within the given [range][].
 
 #### `:[range]FnlBuf [bufname]`
 
@@ -690,7 +692,7 @@ Unmount the mounted backups.
 [:FnlCompile]: #rangefnlcompile-fnl-expr
 [:FnlFileCompile]: #rangefnlfilecompile-file
 [:FnlFile]: #rangefnlfile-file
-[:Fnl]: #fnl-fnl-expr
+[:Fnl]: #rangefnl-fnl-expr
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeRollbackMount]: #thymerollbackmount-target
@@ -712,6 +714,7 @@ Unmount the mounted backups.
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [parinfer-rust]: https://github.com/eraserhd/parinfer-rust
+[range]: https://neovim.io/doc/user/usr_10.html#_command-ranges
 [thyme.setup]: #thymesetup-or-thymesetup
 [thyme]: https://github.com/aileot/nvim-thyme
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()
