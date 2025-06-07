@@ -1,5 +1,4 @@
-(import-macros {: setup* : before-each : describe* : it*}
-               :test.helper.busted-macros)
+(import-macros {: describe* : it*} :test.helper.busted-macros)
 
 (local Dropin (require :thyme.user.dropin))
 
