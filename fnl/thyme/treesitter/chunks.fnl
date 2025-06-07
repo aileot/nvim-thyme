@@ -57,19 +57,13 @@
       (var row row1)
       (var col col1)
       (each [_ char (char-by-char text)]
+        (tset priority-matrix row col priority)
+        (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name))
         (if (= "\n" char)
             (do
               (set row (inc row))
-              (set col 1)
-              (when (and ?hl-name
-                         (or (?hl-name:find "@string")
-                             (?hl-name:find "@comment")))
-                (tset priority-matrix row col priority)
-                (tset hl-chunk-matrix row col
-                      (determine-hl-chunk char ?hl-name))))
+              (set col 1))
             (do
-              (tset priority-matrix row col priority)
-              (tset hl-chunk-matrix row col (determine-hl-chunk char ?hl-name))
               (set col (inc col))))))))
 
 (fn compose-hl-chunks [text lang-tree]
@@ -112,7 +106,13 @@
                        (update-hl-chunk-matrix! hl-chunk-matrix txt hl-name
                                                 metadata row01 col01)))))))]
     (initialize-priority-matrix! end-row end-col)
-    (update-hl-chunk-matrix! hl-chunk-matrix text nil {} top-row0 top-col0)
+    (let [text-with-newline (if (= "\n" (text:sub -1))
+                                text
+                                ;; NOTE: Insert newline char as the marker to
+                                ;; truncate trailing whitespace chunks later.
+                                (.. text "\n"))]
+      (update-hl-chunk-matrix! hl-chunk-matrix text-with-newline nil {}
+                               top-row0 top-col0))
     (doto lang-tree
       (: :parse)
       (: :for_each_tree cb))
