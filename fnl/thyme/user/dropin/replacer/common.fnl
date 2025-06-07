@@ -1,5 +1,7 @@
 (import-macros {: when-not : dec} :thyme.macros)
 
+(local {: validate-type} (require :thyme.util.general))
+
 (local Dropin {})
 
 (set Dropin.__index Dropin)
@@ -13,6 +15,7 @@
   (let [self (setmetatable {} Dropin)]
     (set self._cmdtype cmdtype)
     (set self._registry Registry)
+    (validate-type :string old-line)
     (set self._old-line old-line)
     self))
 
