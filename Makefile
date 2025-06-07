@@ -21,6 +21,8 @@ SCRIPT_WRITE_PCALLABLES := $(SCRIPT_ROOT)/write-pcallables
 
 TEST_ROOT:=$(REPO_ROOT)/test
 TEST_CONTEXT_DIR:=$(TEST_ROOT)/context
+TEST_HELPER_DIR:=$(TEST_ROOT)/helper
+TEST_PREREQUISITES:=$(TEST_HELPER_DIR)/prerequisites.lua
 
 FNL_SPECS:=$(wildcard $(TEST_ROOT)/*_spec.fnl)
 LUA_SPECS:=$(FNL_SPECS:%.fnl=%.lua)
@@ -123,6 +125,7 @@ test: build $(LUA_SPECS) ## Run test
 		XDG_STATE_HOME="$(TEST_CONTEXT_DIR)/.state" \
 		VUSTED_ARGS=$(VUSTED_ARGS) \
 		$(VUSTED) \
+		--helper $(TEST_PREREQUISITES) \
 		$(VUSTED_FLAGS) \
 		$(VUSTED_EXTRA_FLAGS) \
 		$(REPO_ROOT)
