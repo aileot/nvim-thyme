@@ -40,7 +40,7 @@
         cmd-history-opts Config.command.cmd-history]
     (fnl-file-compile.create-commands!)
     (command! :Fnl
-      {:range "%"
+      {:range Config.command.Fnl.default-range
        :nargs "*"
        :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
@@ -77,7 +77,7 @@
           (set a.args fnl-code)
           (callback a))))
     (command! :FnlCompile
-      {:range "%"
+      {:range Config.command.FnlCompile.default-range
        :nargs "*"
        :complete "lua"
        :desc "[thyme] display the compiled lua results of the following fennel expression"}
