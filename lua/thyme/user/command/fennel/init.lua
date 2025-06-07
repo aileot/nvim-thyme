@@ -43,7 +43,7 @@ M["setup!"] = function()
   local compiler_options = (Config.command["compiler-options"] or Config["compiler-options"])
   local cmd_history_opts = Config.command["cmd-history"]
   fnl_file_compile["create-commands!"]()
-  vim.api.nvim_create_user_command("Fnl", mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {range = "%", nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
+  vim.api.nvim_create_user_command("Fnl", mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {range = Config.command.Fnl["default-range"], nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
   local function _9_(a)
     local fnl_code = parse_cmd_buf_args(a)
     local cmd_history_opts0 = {method = "ignore"}
@@ -60,7 +60,7 @@ M["setup!"] = function()
     return callback(a)
   end
   vim.api.nvim_create_user_command("FnlFile", _10_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
-  vim.api.nvim_create_user_command("FnlCompile", mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], {lang = "lua", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {range = "%", nargs = "*", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
+  vim.api.nvim_create_user_command("FnlCompile", mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], {lang = "lua", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}), {range = Config.command.FnlCompile["default-range"], nargs = "*", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   do
     local cb
     local function _11_(a)
