@@ -30,7 +30,11 @@
     (vim.cmd "Fnl [1 2 3]")
     ;; FIXME: Why is a newline inserted just after the first result `3`?
     (comment (assert.equals "3\n[1 2]\n[1 2 3]" (execute "messages")
-                            "`messages` should append the results of the Fnl command"))))
+                            "`messages` should append the results of the Fnl command")))
+  (it* "should display `nil` result"
+    (vim.cmd "messages clear")
+    (vim.cmd "Fnl nil")
+    (assert.equals "nil" (execute "messages"))))
 
 (describe* "command :FnlBuf"
   (setup (fn []

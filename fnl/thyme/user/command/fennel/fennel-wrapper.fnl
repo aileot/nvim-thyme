@@ -5,6 +5,7 @@
 (local tts (require :thyme.treesitter))
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
+
 (fn make-new-cmd [new-fnl-code {: trailing-parens}]
   "Suggest a new Vim command line to replace the last command with parinfer-ed
 `new-fnl-code` in Vim command history.
@@ -99,29 +100,28 @@
           ;; TODO: (low priority) Display verbose messages on extui feature
           ;; expectedly, or just drop `verbose` support?
           (tts.print verbose-msg {:lang "fennel"})))
-      (let [results [(callback new-fnl-code compiler-options)]]
-        (case results
-          nil (tts.print "nil" {: lang})
-          [text] (case lang
-                   :lua
-                   ;; NOTE: It expects `fennel.compile-string` as the
-                   ;; `callback`, which should return a Lua compiled code and
-                   ;; an extra table, the latter of which is usually unintended
-                   ;; information for users.
-                   (tts.print text {:lang "lua"})
-                   :fennel
-                   ;; NOTE Print every result one by one, e.g, `(values 1 2 3)`
-                   ;; should print `1`, `2`, and `3`, individually.
-                   (each [_ text (ipairs results)]
-                     (tts.print (fennel.view text compiler-options)
-                                {:lang "fennel"}))))
-        (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
-               (true parsed)
-               ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
-               ;; TODO: More accurate command detection?
-               (when (parsed.cmd:find "^Fnl")
-                 (edit-cmd-history! new-fnl-code cmd-history-opts)))
-            (vim.schedule))))))
+      (case [(callback new-fnl-code compiler-options)]
+        [nil] (tts.print "nil" {: lang})
+        [text &as results] (case lang
+                             :lua
+                             ;; NOTE: It expects `fennel.compile-string` as the
+                             ;; `callback`, which should return a Lua compiled code and
+                             ;; an extra table, the latter of which is usually unintended
+                             ;; information for users.
+                             (tts.print text {:lang "lua"})
+                             :fennel
+                             ;; NOTE Print every result one by one, e.g, `(values 1 2 3)`
+                             ;; should print `1`, `2`, and `3`, individually.
+                             (each [_ text (ipairs results)]
+                               (tts.print (fennel.view text compiler-options)
+                                          {:lang "fennel"}))))
+      (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
+             (true parsed)
+             ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
+             ;; TODO: More accurate command detection?
+             (when (parsed.cmd:find "^Fnl")
+               (edit-cmd-history! new-fnl-code cmd-history-opts)))
+          (vim.schedule)))))
 
 {: parse-cmd-buf-args
  : parse-cmd-file-args
