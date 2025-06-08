@@ -1,4 +1,6 @@
-;; Example options for nvim-thyme; some of the values are different from the default ones.
+;; WARN: This file represents the recommended option values to be managed in
+;; `.nvim-thyme.fnl` at `stdpath('config')`. Some of the option values are
+;; different from the default ones.
 
 (let [std-config (vim.fn.stdpath :config)
       std-fnl-dir? (vim.uv.fs_stat (vim.fs.joinpath std-config "fnl"))
