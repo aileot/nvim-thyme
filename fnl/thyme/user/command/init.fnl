@@ -48,6 +48,7 @@
   (command! :ThymeConfigRecommend
     {:desc "[thyme] open a readonly buffer to demonstrate the recommended config file"}
     (fn []
+      ;; TODO: Should open the config file, too?
       (vim.cmd (.. "sview " example-config-path))
       (assert (= example-config-path (vim.api.nvim_buf_get_name 0))
               (.. "expected to open " example-config-path))
