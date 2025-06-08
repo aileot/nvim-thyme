@@ -2,6 +2,7 @@ local _local_1_ = require("thyme.const")
 local debug_3f = _local_1_["debug?"]
 local config_filename = _local_1_["config-filename"]
 local config_path = _local_1_["config-path"]
+local example_config_path = _local_1_["example-config-path"]
 local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
@@ -58,29 +59,25 @@ local cache = {}
 if not file_readable_3f(config_path) then
   local _15_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_15_ == 2) then
-    local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
-    local example_config_filename = (config_filename .. ".example")
-    local _let_16_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
-    local example_config_path = _let_16_[1]
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd(("tabedit " .. config_path))
-    local function _17_()
+    local function _16_()
       return (config_path == vim.api.nvim_buf_get_name(0))
     end
-    vim.wait(1000, _17_)
+    vim.wait(1000, _16_)
     vim.cmd("redraw!")
     if (config_path == vim.api.nvim_buf_get_name(0)) then
-      local _18_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
-      if (_18_ == 2) then
+      local _17_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+      if (_17_ == 2) then
         local buf_name = vim.api.nvim_buf_get_name(0)
         assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))
         vim.cmd("trust")
       else
-        local _ = _18_
+        local _ = _17_
         vim.secure.trust({action = "remove", path = config_path})
-        local _19_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
-        if (_19_ == 2) then
+        local _18_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
+        if (_18_ == 2) then
           os.exit(1)
         else
         end
@@ -89,16 +86,16 @@ if not file_readable_3f(config_path) then
     end
   else
     local _ = _15_
-    local _23_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
-    if (_23_ == 2) then
+    local _22_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (_22_ == 2) then
       os.exit(1)
     else
     end
   end
 else
 end
-local _local_27_ = require("thyme.util.trust")
-local denied_3f = _local_27_["denied?"]
+local _local_26_ = require("thyme.util.trust")
+local denied_3f = _local_26_["denied?"]
 local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local function notify_once_21(msg, ...)
@@ -129,10 +126,10 @@ local function read_config_with_backup_21(config_file_path)
   _ = nil
   local ok_3f, _3fresult = nil, nil
   if _3fconfig_code then
-    local function _30_()
+    local function _29_()
       return fennel.eval(_3fconfig_code, compiler_options)
     end
-    ok_3f, _3fresult = xpcall(_30_, fennel.traceback)
+    ok_3f, _3fresult = xpcall(_29_, fennel.traceback)
   else
     notify_once_21("Failed to read config, fallback to the default options", vim.log.levels.WARN)
     ok_3f, _3fresult = default_opts
@@ -176,7 +173,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _36_()
+local function _35_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -189,7 +186,7 @@ local function _36_()
   end
   return config
 end
-local function _38_(_self, k)
+local function _37_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -199,22 +196,22 @@ local function _38_(_self, k)
   else
     local _ = k
     local config = get_config()
-    local _40_ = default_opts[k]
-    if (_40_ == nil) then
+    local _39_ = default_opts[k]
+    if (_39_ == nil) then
       return error(("unexpected option detected: " .. k))
     else
-      local _0 = _40_
+      local _0 = _39_
       return config[k]
     end
   end
 end
-local _43_
+local _42_
 if not debug_3f then
-  local function _44_(_, key)
+  local function _43_(_, key)
     return error(("thyme.config is readonly; accessing " .. key))
   end
-  _43_ = _44_
+  _42_ = _43_
 else
-  _43_ = nil
+  _42_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _36_}, {__index = _38_, __newindex = _43_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _35_}, {__index = _37_, __newindex = _42_})
