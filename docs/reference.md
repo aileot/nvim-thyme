@@ -638,6 +638,10 @@ your issue, then try this command [:ThymeUninstall][:ThymeUninstall].
 
 Open your [.nvim-thyme.fnl][.nvim-thyme.fnl] file.
 
+#### `:ThymeConfigRecommend`
+
+Open a readonly buffer to demonstrate the recommended configuration.
+
 ### Thyme Cache Commands
 
 #### `:ThymeCacheClear`
