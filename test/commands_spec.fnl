@@ -21,6 +21,16 @@
       (vim.cmd :ThymeConfigOpen)
       (assert.equals ".nvim-thyme.fnl" (vim.fn.expand "%:t"))
       (vim.cmd :quit!)))
+  (describe* ":ThymeConfigRecommend"
+    (it* "opens the .nvim-thyme.fnl.example as ft=fennel in readonly mode"
+      (vim.cmd :new)
+      (vim.cmd :ThymeConfigRecommend)
+      (assert.equals ".nvim-thyme.fnl.example" (vim.fn.expand "%:t"))
+      (assert.equals "fennel" vim.bo.filetype
+                     (.. "expected filetype `fennel`, got " vim.bo.filetype))
+      (assert.equals true vim.bo.readonly "expected readonly, but not")
+      (assert.equals false vim.bo.modifiable "expected not modifiable, but modifiable")
+      (vim.cmd :quit!)))
   (describe* ":ThymeCacheClear"
     (it* "clears lua cache files"
       (vim.cmd "silent ThymeCacheClear")
