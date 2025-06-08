@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.4.0](https://github.com/aileot/nvim-thyme/compare/v1.3.0...v1.4.0) (2025-06-08)
+
+
+### Features
+
+* **dropin:** extend to cmdwin ([#67](https://github.com/aileot/nvim-thyme/issues/67)) ([d832ddf](https://github.com/aileot/nvim-thyme/commit/d832ddfe9b6cd24803157ac90cc7c1a2d552571a))
+
+
+### Bug Fixes
+
+* **command:** display `nil` result ([#72](https://github.com/aileot/nvim-thyme/issues/72)) ([9b75c15](https://github.com/aileot/nvim-thyme/commit/9b75c153e73ceaf3c56d87b1b5f6a8e33af7c33b))
+* **keymap:** correctly show results that depend on `fennel.view` ([#70](https://github.com/aileot/nvim-thyme/issues/70)) ([2f2f9bc](https://github.com/aileot/nvim-thyme/commit/2f2f9bce0a2a6599b1b4452e25c831278808f84c))
+* **treesitter:** truncate trailing whitespace chunks ([#69](https://github.com/aileot/nvim-thyme/issues/69)) ([052dc48](https://github.com/aileot/nvim-thyme/commit/052dc482ba393c2793eecade836c8894b76008cc))
+
 ## [1.3.0](https://github.com/aileot/nvim-thyme/compare/v1.2.0...v1.3.0) (2025-06-07)
 
 
