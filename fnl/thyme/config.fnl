@@ -3,7 +3,8 @@
 ;; WARN: Do NOT use `require` modules which depend on config in .nvim-thyme.fnl
 ;; until `.nvim-thyme.fnl` is loaded.
 
-(local {: debug? : config-filename : config-path} (require :thyme.const))
+(local {: debug? : config-filename : config-path : example-config-path}
+       (require :thyme.const))
 
 (local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
        (require :thyme.util.fs))
@@ -69,16 +70,7 @@
   (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
-    2 (let [this-dir (-> (debug.getinfo 1 "S")
-                         (. :source)
-                         (: :sub 2)
-                         (vim.fs.dirname))
-            example-config-filename (.. config-filename ".example")
-            [example-config-path] (vim.fs.find example-config-filename
-                                               {:upward true
-                                                :type "file"
-                                                :path this-dir})
-            recommended-config (read-file example-config-path)]
+    2 (let [recommended-config (read-file example-config-path)]
         (write-fnl-file! config-path recommended-config)
         (vim.cmd (.. "tabedit " config-path))
         (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
