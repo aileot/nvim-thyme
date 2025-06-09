@@ -211,35 +211,53 @@ vim.loader.enable() -- (optional) before the `bootstrap`s above, it could increa
 
 ### 2. (Optional) Manage `nvim-thyme` with Plugin Manager
 
+<!--
+NOTE: GFM callouts are invalid in <details>.
+-->
+
+> [!CAUTION]
+> Please make sure to disable the `lazy.nvim`'s `performance.rtp.reset`
+> option. (The option is enabled by default.)
+> Otherwise, you would get into "loop or previous error," or would be
+> complained that the literal substring `"/thyme/compile"` is missing in
+> `&runtimepath`.
+
 <details open>
 <summary>
 With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 </summary>
 
 ```lua
--- As the arguments of `require("lazy").setup()`,
-{
-  {
-    "aileot/nvim-thyme",
-    version = "^v1.1.0",
-    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-    -- For config, see the "Setup Optional Interfaces" section
-    -- and "Options in .nvim-thyme.fnl" below!
-    -- config = function()
-    -- end,
+require("lazy").setup({
+  spec = {
+    {
+      "aileot/nvim-thyme",
+      version = "^v1.1.0",
+      build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+      -- For config, see the "Setup Optional Interfaces" section
+      -- and "Options in .nvim-thyme.fnl" below!
+      -- config = function()
+      -- end,
+    },
+    -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
+    {
+      "aileot/nvim-laurel",
+      build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+      -- and other settings
+    },
+    -- Optional dependency plugin.
+    {
+      "eraserhd/parinfer-rust",
+      build = "cargo build --release",
+    },
+    -- and other plugin specs...
   },
-  -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
-  {
-    "aileot/nvim-laurel",
-    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-    -- and other settings
+  performance = {
+    rtp = {
+      reset = false, -- Important! It's unfortunately incompatible with nvim-thyme.
+    },
   },
-  -- Optional dependency plugin.
-  {
-    "eraserhd/parinfer-rust",
-    build = "cargo build --release",
-  },
-}
+})
 ```
 
 (If you also manage macro plugin versions, _please clear the Lua cache_ on the
