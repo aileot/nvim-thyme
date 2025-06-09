@@ -535,6 +535,15 @@ respects your [&runtimepath][&runtimepath].
 
 (This range support is _experimental_.)\
 The evaluation includes the current buffer lines within the given [range][].
+The range support only works when the following conditions are satisfied:
+
+- The filetype of current buffer is `"fennel"`.
+  (`:echo &ft == "fennel"` should return `1`.)
+- One of them is satisfied:
+  - The config file `.nvim-thyme.fnl` exists at the root of the current buffer.
+  - The current buffer file is under `/tmp` directory.
+  - The current buffer is not a readable file.
+
 Specify the range as `0` not to include any of current buffer lines;
 specify `%` to include the whole buffer lines.
 You can change the default range of this command
