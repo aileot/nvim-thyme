@@ -216,9 +216,11 @@ NOTE: GFM callouts are invalid in <details>.
 -->
 
 > [!CAUTION]
-> The lazy.nvim `performance.rtp.reset` option is incompatible with nvim-thyme.
-> Otherwise, you would get into "loop or previous error" or would be complained
-> that the literal substring `"/thyme/compile"` is missing in `&runtimepath`.
+> Please make sure to disable the `lazy.nvim`'s `performance.rtp.reset`
+> option. (The option is enabled by default.)
+> Otherwise, you would get into "loop or previous error," or would be
+> complained that the literal substring `"/thyme/compile"` is missing in
+> `&runtimepath`.
 
 <details open>
 <summary>
