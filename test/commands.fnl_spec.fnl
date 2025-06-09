@@ -34,7 +34,56 @@
   (it* "should display `nil` result"
     (vim.cmd "messages clear")
     (vim.cmd "Fnl nil")
-    (assert.equals "nil" (execute "messages"))))
+    (assert.equals "nil" (execute "messages")
+                   "`messages` should append the results of the Fnl command")))
+
+(describe* "command :Fnl with range"
+  (after_each (fn []
+                (remove-context-files!)))
+  (describe* "set to 0"
+    (it* "can evaluate"
+      (assert.equals "nil" (execute "0 Fnl")))
+    (it* "should evaluate arg regardless of current buffer"
+      (prepare-context-fnl-file! "foo.fnl" "(+ 1 2)")
+      (assert.equals "1" (execute "0 Fnl 1"))))
+  (describe* "set to %"
+    (describe* "but not in a fennel buffer"
+      (it* "should ignore current buffer"
+        (let [buf-name "foobar"]
+          (vim.cmd.edit buf-name)
+          (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+          (vim.cmd (.. "bdelete! " buf-name))
+          (assert.equals "nil" (execute "% Fnl")))))
+    (describe* "in a tmp file buffer"
+      (let [tmp-path (os.tmpname)]
+        (before_each (fn []
+                       (vim.cmd.edit tmp-path)))
+        (after_each (fn []
+                      (vim.cmd (.. "bdelete! " tmp-path))
+                      (vim.fn.delete tmp-path)))
+        (it* "cannot evaluate current buffer at tmp dir if not ft=fennel"
+          (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+          (assert.equals "nil" (execute "% Fnl")))
+        (it* "can evaluate current buffer at tmp dir if ft=fennel"
+          (set vim.o.filetype "fennel")
+          (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+          (assert.equals "3" (execute "% Fnl")))
+        (it* "can interpret local definition in current buffer at tmp dir if ft=fennel"
+          (set vim.o.filetype "fennel")
+          (vim.api.nvim_buf_set_lines 0 0 -1 true ["(local foo 1)"])
+          (assert.equals "1" (execute "% Fnl foo")))))
+    (describe* "in not an existing file buffer"
+      (before_each (fn []
+                     (vim.cmd.new)
+                     (set vim.bo.filetype "fennel")))
+      (it* "can evaluate current buffer without any args"
+        (vim.api.nvim_buf_set_lines 0 0 -1 true ["(+ 1 2)"])
+        (assert.equals "3" (execute "% Fnl")))
+      (it* "can interpret local definitions in current buffer"
+        (vim.api.nvim_buf_set_lines 0 0 -1 true
+                                    ["(local foo 1)" "(local bar (+ 1 2))"])
+        (assert.equals "1" (execute "% Fnl foo"))
+        (assert.equals "3" (execute "% Fnl bar"))))))
 
 (describe* "command :FnlBuf"
   (setup (fn []
