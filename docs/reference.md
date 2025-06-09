@@ -42,7 +42,7 @@
       - [`:[range]FnlBufCompile [bufname]`](#rangefnlbufcompile-bufname)
       - [`:[range]FnlFile [file]`](#rangefnlfile-file)
       - [`:[range]FnlFileCompile [file]`](#rangefnlfilecompile-file)
-      - [`:[range]FnlCompile {fnl-expr}`](#rangefnlcompile-fnl-expr)
+      - [`:FnlCompile {fnl-expr}`](#fnlcompile-fnl-expr)
       - [`:[range]FnlCompileBuf [bufname]`](#rangefnlcompilebuf-bufname)
       - [`:[range]FnlCompileFile [file]`](#rangefnlcompilefile-file)
     - [Fennel Misc. Commands](#fennel-misc-commands)
