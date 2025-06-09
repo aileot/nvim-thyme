@@ -211,6 +211,15 @@ vim.loader.enable() -- (optional) before the `bootstrap`s above, it could increa
 
 ### 2. (Optional) Manage `nvim-thyme` with Plugin Manager
 
+<!--
+NOTE: GFM callouts are invalid in <details>.
+-->
+
+> [!CAUTION]
+> The lazy.nvim `performance.rtp.reset` option is incompatible with nvim-thyme.
+> Otherwise, you would get into "loop or previous error" or would be complained
+> that the literal substring `"/thyme/compile"` is missing in `&runtimepath`.
+
 <details open>
 <summary>
 With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
