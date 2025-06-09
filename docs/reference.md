@@ -229,7 +229,7 @@ Available options:
 
 ### `command.Fnl.default-range`
 
-(default: `0`)
+(_experimental,_ default: `0`)
 
 This option determines the default range for [:Fnl][:Fnl].
 
@@ -238,7 +238,7 @@ when the buffer `filetype` is `"fennel"`.
 
 ### `command.FnlCompile.default-range`
 
-(default: `0`)
+(_experimental,_ default: `0`)
 
 Same as [command.Fnl.default-range][] but for [:FnlCompile][].
 
@@ -528,11 +528,12 @@ The commands are defined by [thyme.setup][thyme.setup].
 
 ### Fennel Wrapper Commands
 
-#### `:[range]Fnl {fnl-expr}`
+#### `:Fnl {fnl-expr}`
 
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
+(This range support is _experimental_.)\
 The evaluation includes the current buffer lines within the given [range][].
 Specify the range as `0` not to include any of current buffer lines;
 specify `%` to include the whole buffer lines.
@@ -576,15 +577,16 @@ TODO: Add the spec tests first.
 With `!`, it will write the compiled lua results to `[dest-file]`.
 -->
 
-#### `:[range]FnlCompile {fnl-expr}`
+#### `:FnlCompile {fnl-expr}`
 
 Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
 `{fnl-expr}`, but only returns the compiled lua results.
 
+It does not affect the file system.
+
+(This range support is _experimental_.)\
 You can change the default range of this command
 by the option [command.FnlCompile.default-range][].
-
-It does not affect the file system.
 
 #### `:[range]FnlCompileBuf [bufname]`
 
@@ -711,10 +713,10 @@ Unmount the mounted backups.
 [:FnlAlternate]: #fnlalternate
 [:FnlBufCompile]: #rangefnlbufcompile-bufname
 [:FnlBuf]: #rangefnlbuf-bufname
-[:FnlCompile]: #rangefnlcompile-fnl-expr
+[:FnlCompile]: #fnlcompile-fnl-expr
 [:FnlFileCompile]: #rangefnlfilecompile-file
 [:FnlFile]: #rangefnlfile-file
-[:Fnl]: #rangefnl-fnl-expr
+[:Fnl]: #fnl-fnl-expr
 [:ThymeCacheClear]: #thymecacheclear
 [:ThymeCacheOpen]: #thymecacheopen
 [:ThymeRollbackMount]: #thymerollbackmount-target
