@@ -217,8 +217,7 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 </summary>
 
 ```lua
--- As the arguments of `require("lazy").setup()`,
-{
+require("lazy").setup({
   {
     "aileot/nvim-thyme",
     version = "^v1.1.0",
@@ -239,7 +238,8 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
     "eraserhd/parinfer-rust",
     build = "cargo build --release",
   },
-}
+  -- and other plugin specs...
+})
 ```
 
 (If you also manage macro plugin versions, _please clear the Lua cache_ on the
