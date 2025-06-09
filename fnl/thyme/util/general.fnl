@@ -14,6 +14,13 @@
                 i 1 (length xs) &until eq?]
     (= ?a (. xs i))))
 
+(fn starts-with? [str prefix]
+  (= prefix (string.sub str 1 (length prefix))))
+
+(fn ends-with? [str suffix]
+  (or (= 0 (length suffix)) ;
+      (= suffix (string.sub str (- (length suffix))))))
+
 (fn validate-type [expected val]
   (let [t (type val)]
     (when-not (= t expected)
@@ -48,6 +55,8 @@
 
 {: do-nothing
  : contains?
+ : starts-with?
+ : ends-with?
  : validate-type
  : new-matrix
  : sorter/files-to-oldest-by-birthtime}

@@ -9,6 +9,12 @@ local function contains_3f(xs, _3fa)
   end
   return eq_3f
 end
+local function starts_with_3f(str, prefix)
+  return (prefix == string.sub(str, 1, #prefix))
+end
+local function ends_with_3f(str, suffix)
+  return ((0 == #suffix) or (suffix == string.sub(str, ( - #suffix))))
+end
 local function validate_type(expected, val)
   local t = type(val)
   if not (t == expected) then
@@ -45,4 +51,4 @@ local function sorter_2ffiles_to_oldest_by_birthtime(file1, file2)
   local nsec2 = _let_5_["nsec"]
   return ((sec2 < sec1) or ((sec2 == sec1) and (nsec2 < nsec1)))
 end
-return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}
+return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["starts-with?"] = starts_with_3f, ["ends-with?"] = ends_with_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}
