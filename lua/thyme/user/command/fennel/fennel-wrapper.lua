@@ -2,7 +2,7 @@ local fennel = require("fennel")
 local tts = require("thyme.treesitter")
 local _local_1_ = require("thyme.wrapper.parinfer")
 local apply_parinfer = _local_1_["apply-parinfer"]
-local function make_new_cmd(new_fnl_code, _2_)
+local function make__3fnew_cmd(new_fnl_code, _2_)
   local trailing_parens = _2_["trailing-parens"]
   local trimmed_new_fnl_code = new_fnl_code:gsub("%s*[%]}%)]*$", "")
   local last_cmd = vim.fn.histget(":", -1)
@@ -46,7 +46,7 @@ local function edit_cmd_history_21(new_fnl_code, _7_)
   local _11_ = methods[method]
   if (nil ~= _11_) then
     local apply_method = _11_
-    local _12_ = make_new_cmd(new_fnl_code, opts)
+    local _12_ = make__3fnew_cmd(new_fnl_code, opts)
     if (nil ~= _12_) then
       local new_cmd = _12_
       return apply_method(new_cmd)

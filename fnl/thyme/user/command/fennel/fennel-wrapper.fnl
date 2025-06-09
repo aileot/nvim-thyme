@@ -6,12 +6,12 @@
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 
-(fn make-new-cmd [new-fnl-code {: trailing-parens}]
+(fn make-?new-cmd [new-fnl-code {: trailing-parens}]
   "Suggest a new Vim command line to replace the last command with parinfer-ed
 `new-fnl-code` in Vim command history.
 @param new-fnl-code string expecting a fnl code balanced by parinfer
 @param opts.trailing-parens 'omit'|'keep'
-@return string a new Vim command line to be substituted to the last command"
+@return string? a new Vim command line to be substituted to the last command"
   (let [trimmed-new-fnl-code (new-fnl-code:gsub "%s*[%]}%)]*$" "")
         last-cmd (vim.fn.histget ":" -1)]
     (case (last-cmd:find trimmed-new-fnl-code 1 true)
@@ -48,7 +48,7 @@
                                    "failed to add new fnl code"))
                  :ignore #(comment "Do nothing")}]
     (case (. methods method)
-      apply-method (case (make-new-cmd new-fnl-code opts)
+      apply-method (case (make-?new-cmd new-fnl-code opts)
                      new-cmd (apply-method new-cmd))
       _
       (error (.. "expected one of `overwrite`, `append`, or `ignore`; got unknown method "
