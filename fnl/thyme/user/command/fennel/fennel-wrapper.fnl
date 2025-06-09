@@ -77,8 +77,8 @@
         (vim.list_slice line1)
         (table.concat "\n"))))
 
-(fn extract-Fnl-cmdline-args [old-cmdline]
-  (case (pcall vim.api.nvim_parse_cmd old-cmdline {})
+(fn extract-Fnl-cmdline-args [cmdline]
+  (case (pcall vim.api.nvim_parse_cmd cmdline {})
     (true parsed)
     ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
     ;; TODO: More accurate command detection?
@@ -126,12 +126,22 @@
                              (each [_ text (ipairs results)]
                                (tts.print (fennel.view text compiler-options)
                                           {:lang "fennel"}))))
-      (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
-             (true parsed)
-             ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
-             ;; TODO: More accurate command detection?
-             (when (parsed.cmd:find "^Fnl")
-               (edit-cmd-history! new-fnl-code cmd-history-opts)))
+      (-> #(let [old-cmdline (vim.fn.histget ":")]
+             (case (pcall vim.api.nvim_parse_cmd old-cmdline {})
+               (true parsed)
+               ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
+               ;; TODO: More accurate command detection?
+               (when (parsed.cmd:find "^Fnl")
+                 (let [old-fnl-expr (extract-Fnl-cmdline-args old-cmdline)
+                       ;; TODO: Extract parinfer lines.
+                       new-fnl-expr (-> old-fnl-expr
+                                        (: :gsub "\r" "\n")
+                                        (apply-parinfer {: cmd-history-opts}))
+                       new-cmdline (.. parsed.cmd " " new-fnl-expr)]
+                   ;; NOTE: Overriding new fnl cmdline should be apart from the
+                   ;; `new-fnl-code`, which could also include additional
+                   ;; buffer lines due to the range support.
+                   (edit-cmd-history! new-cmdline cmd-history-opts)))))
           (vim.schedule)))))
 
 {: parse-cmd-buf-args
