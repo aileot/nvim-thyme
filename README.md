@@ -241,6 +241,11 @@ require("lazy").setup({
     },
     -- and other plugin specs...
   },
+  performance = {
+    rtp = {
+      reset = false, -- Important! It's unfortunately incompatible with nvim-thyme.
+    },
+  },
 })
 ```
 
