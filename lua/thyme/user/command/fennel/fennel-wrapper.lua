@@ -79,8 +79,8 @@ local function parse_cmd_file_args(_17_)
   local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
   return table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
 end
-local function extract_Fnl_cmdline_args(old_cmdline)
-  local _19_, _20_ = pcall(vim.api.nvim_parse_cmd, old_cmdline, {})
+local function extract_Fnl_cmdline_args(cmdline)
+  local _19_, _20_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
   if ((_19_ == true) and (nil ~= _20_)) then
     local parsed = _20_
     if string.match(parsed.cmd, "^Fnl") then
@@ -125,11 +125,15 @@ local function mk_fennel_wrapper_command_callback(callback, _23_)
       end
     end
     local function _30_()
-      local _31_, _32_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
+      local old_cmdline = vim.fn.histget(":")
+      local _31_, _32_ = pcall(vim.api.nvim_parse_cmd, old_cmdline, {})
       if ((_31_ == true) and (nil ~= _32_)) then
         local parsed = _32_
         if parsed.cmd:find("^Fnl") then
-          return edit_cmd_history_21(new_fnl_code, cmd_history_opts)
+          local old_fnl_expr = extract_Fnl_cmdline_args(old_cmdline)
+          local new_fnl_expr = apply_parinfer(old_fnl_expr:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
+          local new_cmdline = (parsed.cmd .. " " .. new_fnl_expr)
+          return edit_cmd_history_21(new_cmdline, cmd_history_opts)
         else
           return nil
         end
