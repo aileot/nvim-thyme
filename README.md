@@ -218,27 +218,29 @@ With <a href="https://github.com/folke/lazy.nvim">folke/lazy.nvim</a>,
 
 ```lua
 require("lazy").setup({
-  {
-    "aileot/nvim-thyme",
-    version = "^v1.1.0",
-    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-    -- For config, see the "Setup Optional Interfaces" section
-    -- and "Options in .nvim-thyme.fnl" below!
-    -- config = function()
-    -- end,
+  spec = {
+    {
+      "aileot/nvim-thyme",
+      version = "^v1.1.0",
+      build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+      -- For config, see the "Setup Optional Interfaces" section
+      -- and "Options in .nvim-thyme.fnl" below!
+      -- config = function()
+      -- end,
+    },
+    -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
+    {
+      "aileot/nvim-laurel",
+      build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+      -- and other settings
+    },
+    -- Optional dependency plugin.
+    {
+      "eraserhd/parinfer-rust",
+      build = "cargo build --release",
+    },
+    -- and other plugin specs...
   },
-  -- If you also manage macro plugin versions, please clear the Lua cache on the updates!
-  {
-    "aileot/nvim-laurel",
-    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
-    -- and other settings
-  },
-  -- Optional dependency plugin.
-  {
-    "eraserhd/parinfer-rust",
-    build = "cargo build --release",
-  },
-  -- and other plugin specs...
 })
 ```
 
