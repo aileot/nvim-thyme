@@ -533,8 +533,9 @@ The commands are defined by [thyme.setup][thyme.setup].
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
-(This range support is _experimental_.)\
-The evaluation includes the current buffer lines within the given [range][].
+##### Range Support (_Experimental_)
+
+The evaluation can include the current buffer lines within the given [range][].
 The range support only works when the following conditions are satisfied:
 
 - The filetype of current buffer is `"fennel"`.
