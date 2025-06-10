@@ -76,6 +76,7 @@
 (fn remove-context-files! []
   ;; NOTE: Indiscriminately removing stdpath/data results in too many attempts
   ;; to re-download the online test deps like fennel, parinfer, etc.
+  (vim.cmd "% bdelete!")
   (vim.fn.delete test-context-root :rf)
   (let [cache-dirs [:cache :data :state]]
     (each [_ dir (ipairs cache-dirs)]
