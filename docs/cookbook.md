@@ -1,5 +1,15 @@
 # Cookbook
 
+## Creating a new buffer, inheriting `&filetype` from the last buffer
+
+```lua
+vim.keymap.set(
+  "n",
+  "<C-w>n",
+  "<Cmd>execute 'new | setlocal filetype=' .. &filetype<CR>"
+)
+```
+
 ## .nvim.fnl
 
 ```fennel
