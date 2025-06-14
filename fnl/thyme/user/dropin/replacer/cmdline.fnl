@@ -23,7 +23,8 @@ matched by `pattern`, and the rests behind, are the arguments of
 @return string A new cmdline"
   (let [new-cmdline (self:normalize-cmdline)]
     (self:restore-old-cmdhist!)
-    new-cmdline))
+    (-> "<C-BSlash>e%q<CR>"
+        (: :format new-cmdline))))
 
 (fn DropinCmdline.complete-cmdline! [self]
   "Complete cmdline pretending `replacement` to replace invalid cmdline when
@@ -31,21 +32,17 @@ matched by `pattern`, and the rests behind, are the arguments of
   (let [old-cmdline (vim.fn.getcmdline)
         ;; NOTE: Do NOT use .replace instead. It also overrides history.
         new-cmdline (self:normalize-cmdline)
-        last-lz vim.o.lazyredraw
         last-wcm vim.o.wildcharm
-        tmp-wcm "\26"
+        tmp-wcm "<C-z>"
         right-keys (case (old-cmdline:find new-cmdline 1 true)
                      nil ""
                      shift (string.rep "<Right>" (dec shift)))
         keys (-> "<C-BSlash>e%q<CR>"
                  (: :format new-cmdline)
                  (.. right-keys)
-                 (vim.keycode)
-                 (.. tmp-wcm))]
-    (set vim.o.wcm (vim.fn.str2nr tmp-wcm))
-    (set vim.o.lazyredraw true)
-    (vim.api.nvim_feedkeys keys "ni" false)
-    (set vim.o.wcm last-wcm)
-    (set vim.o.lazyredraw last-lz)))
+                 (.. "<Cmd>set wcm=" (vim.keycode tmp-wcm) "<CR>")
+                 (.. tmp-wcm)
+                 (.. "<Cmd>set wcm=" last-wcm "<CR>"))]
+    keys))
 
 DropinCmdline
