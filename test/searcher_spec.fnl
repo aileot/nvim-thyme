@@ -14,8 +14,9 @@
                 (remove-context-files!)))
   (describe* "can load the module `fennel`;"
     (it* "thus, searcher returns a chunk function."
-      (prepare-config-fnl-file! "foo.fnl" "{}")
-      (assert.equals :function (type (search-fnl-module-on-rtp! :fennel)))))
+      (let [fnl-path (prepare-config-fnl-file! "foo.fnl" "{}")]
+        (assert.equals :function (type (search-fnl-module-on-rtp! :fennel)))
+        (vim.fn.delete fnl-path))))
   (after_each (fn []
                 (let [raw-confirm vim.fn.confirm]
                   (set vim.fn.confirm
