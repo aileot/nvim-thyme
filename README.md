@@ -506,6 +506,71 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
   - Use git hooks. (See the [.githooks](./.githooks) in this project as a WIP
     example. Help wanted.)
 
+## FAQ
+
+### Q. Can I disable parinfer for editing buffers, keeping it enabled in the Cmdline integration?
+
+A. Yes, you can. Just set the variable `vim.g.parinfer_enabled` to `false`.
+
+### Q. Does the rollback system help me avoid starting in nearly mother-naked nvim due to some misconfigurations?
+
+A. Yes, but only for the modules written in Fennel.
+
+Rollbacks are automatically applied when errors are detected at _compile_ time.
+In addition to that, with the combinations of [:ThymeRollbackSwitch][] and [:ThymeRollbackMount][],
+you can also roll back for _runtime_ errors in compiled Lua.
+
+However, it is recommended to put your configuration files under git management first
+in case `nvim` even fail to reach the lines that defines the rollback helper commands.
+
+### Q. How can I mix Fennel config with Lua config in a directory?
+
+A. By default, or with the [recommended config][.nvim-thyme.fnl.example],
+`nvim-thyme` will make `nvim` load Fennel modules in `lua/` directory
+as the default `nvim` loads the other Lua modules
+unless `fnl/` exists at the directory that `stdpath("config")` returns (usually `~/.config/nvim`).
+
+Note that, if both `foo.lua` and `foo.fnl` exist at the `lua/` directory, `foo.lua` is always loaded.
+
+The relevant options are only [fnl-dir][] and [macro-path][].
+
+<details>
+<summary>
+The collapse illustrate how to merge `fnl/` into the `lua/` directory as safely as possible.
+</summary>
+
+(Assume your `nvim` config files are managed by `git`, at `~/.config/nvim`.)
+
+```sh
+# Commit current status
+git add -A
+git commit -m 'save states before merging fnl/ into lua/'
+# Note the current branch name (main or master, maybe)
+git branch --show-current
+# Create and switch a new branch. (The branch name is an example.)
+git switch -c merge-fnl-into-lua
+cd ~/.config/nvim
+# Check the results with `--dry-run`.
+git mv --dry-run fnl lua
+git mv --verbose fnl lua
+# Make sure your nvim can start without issues.
+nvim
+```
+
+If you have any issues,
+reset to the previous states where `fnl/` and `lua/` have co-existed
+by the following command.
+
+```sh
+# Assume your default branch is `main`.
+git reset --hard main
+git switch main
+# Put aside the previous cache directory.
+mv ~/.cache/nvim/thyme{,.bk}
+```
+
+</details>
+
 ## 📚 Acknowledgement
 
 Thanks to [Shougo](https://github.com/Shougo) for
@@ -548,3 +613,5 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
+[:ThymeRollbackSwitch]: ./docs/reference.md#thymerollbackswitch-target
+[:ThymeRollbackMount]: ./docs/reference.md#thymerollbackmount-target
