@@ -2,6 +2,8 @@
 
 (local fennel (require :fennel))
 
+(local Config (require :thyme.config))
+
 (local tts (require :thyme.treesitter))
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
@@ -94,28 +96,34 @@
                            ;; carriage return characters.
                            (: :gsub "\r" "\n")
                            (apply-parinfer {: cmd-history-opts}))
-          print! tts.print]
+          printer (if (and (or (not smods.silent) ;
+                               Config.silent-by-default)
+                           (or smods.unsilent ;
+                               verbose?))
+                      ;; TODO: Should consider emsg_silent more seriously?
+                      tts.print
+                      #$)]
       (when verbose?
         (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
                               (: :format new-fnl-code))]
           ;; TODO: (low priority) Display verbose messages on extui feature
           ;; expectedly, or just drop `verbose` support?
-          (print! verbose-msg {:lang "fennel"})))
+          (printer verbose-msg {:lang "fennel"})))
       (case [(callback new-fnl-code compiler-options)]
-        [nil] (print! "nil" {: lang})
+        [nil] (printer "nil" {: lang})
         [text &as results] (case lang
                              :lua
                              ;; NOTE: It expects `fennel.compile-string` as the
                              ;; `callback`, which should return a Lua compiled code and
                              ;; an extra table, the latter of which is usually unintended
                              ;; information for users.
-                             (print! text {:lang "lua"})
+                             (printer text {:lang "lua"})
                              :fennel
                              ;; NOTE Print every result one by one, e.g, `(values 1 2 3)`
                              ;; should print `1`, `2`, and `3`, individually.
                              (each [_ text (ipairs results)]
-                               (print! (fennel.view text compiler-options
-                                                    {:lang "fennel"})))))
+                               (printer (fennel.view text compiler-options
+                                                     {:lang "fennel"})))))
       (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
              (true parsed)
              ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.

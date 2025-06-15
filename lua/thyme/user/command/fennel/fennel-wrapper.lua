@@ -1,4 +1,5 @@
 local fennel = require("fennel")
+local Config = require("thyme.config")
 local tts = require("thyme.treesitter")
 local _local_1_ = require("thyme.wrapper.parinfer")
 local apply_parinfer = _local_1_["apply-parinfer"]
@@ -83,34 +84,42 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
     local smods = _18_["smods"]
     local verbose_3f = (-1 < smods.verbose)
     local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
-    local print_21 = tts.print
+    local printer
+    if ((not smods.silent or Config["silent-by-default"]) and (smods.unsilent or verbose_3f)) then
+      printer = tts.print
+    else
+      local function _20_(_241)
+        return _241
+      end
+      printer = _20_
+    end
     if verbose_3f then
       local verbose_msg = (";;; Source\n%s\n;;; Result"):format(new_fnl_code)
-      print_21(verbose_msg, {lang = "fennel"})
+      printer(verbose_msg, {lang = "fennel"})
     else
     end
     do
-      local _21_ = {callback(new_fnl_code, compiler_options)}
-      if (_21_[1] == nil) then
-        print_21("nil", {lang = lang})
-      elseif (nil ~= _21_[1]) then
-        local text = _21_[1]
-        local results = _21_
+      local _23_ = {callback(new_fnl_code, compiler_options)}
+      if (_23_[1] == nil) then
+        printer("nil", {lang = lang})
+      elseif (nil ~= _23_[1]) then
+        local text = _23_[1]
+        local results = _23_
         if (lang == "lua") then
-          print_21(text, {lang = "lua"})
+          printer(text, {lang = "lua"})
         elseif (lang == "fennel") then
           for _, text0 in ipairs(results) do
-            print_21(fennel.view(text0, compiler_options, {lang = "fennel"}))
+            printer(fennel.view(text0, compiler_options, {lang = "fennel"}))
           end
         else
         end
       else
       end
     end
-    local function _24_()
-      local _25_, _26_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
-      if ((_25_ == true) and (nil ~= _26_)) then
-        local parsed = _26_
+    local function _26_()
+      local _27_, _28_ = pcall(vim.api.nvim_parse_cmd, vim.fn.histget(":"), {})
+      if ((_27_ == true) and (nil ~= _28_)) then
+        local parsed = _28_
         if parsed.cmd:find("^Fnl") then
           return edit_cmd_history_21(new_fnl_code, cmd_history_opts)
         else
@@ -120,7 +129,7 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
         return nil
       end
     end
-    return vim.schedule(_24_)
+    return vim.schedule(_26_)
   end
   return _19_
 end
