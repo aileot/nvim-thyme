@@ -83,23 +83,24 @@ local function mk_fennel_wrapper_command_callback(callback, _17_)
     local smods = _18_["smods"]
     local verbose_3f = (-1 < smods.verbose)
     local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
+    local print_21 = tts.print
     if verbose_3f then
       local verbose_msg = (";;; Source\n%s\n;;; Result"):format(new_fnl_code)
-      tts.print(verbose_msg, {lang = "fennel"})
+      print_21(verbose_msg, {lang = "fennel"})
     else
     end
     do
       local _21_ = {callback(new_fnl_code, compiler_options)}
       if (_21_[1] == nil) then
-        tts.print("nil", {lang = lang})
+        print_21("nil", {lang = lang})
       elseif (nil ~= _21_[1]) then
         local text = _21_[1]
         local results = _21_
         if (lang == "lua") then
-          tts.print(text, {lang = "lua"})
+          print_21(text, {lang = "lua"})
         elseif (lang == "fennel") then
           for _, text0 in ipairs(results) do
-            tts.print(fennel.view(text0, compiler_options), {lang = "fennel"})
+            print_21(fennel.view(text0, compiler_options, {lang = "fennel"}))
           end
         else
         end

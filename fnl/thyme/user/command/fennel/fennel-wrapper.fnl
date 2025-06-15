@@ -93,28 +93,29 @@
                            ;; NOTE: Otherwise, parinfer seems to ignore
                            ;; carriage return characters.
                            (: :gsub "\r" "\n")
-                           (apply-parinfer {: cmd-history-opts}))]
+                           (apply-parinfer {: cmd-history-opts}))
+          print! tts.print]
       (when verbose?
         (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
                               (: :format new-fnl-code))]
           ;; TODO: (low priority) Display verbose messages on extui feature
           ;; expectedly, or just drop `verbose` support?
-          (tts.print verbose-msg {:lang "fennel"})))
+          (print! verbose-msg {:lang "fennel"})))
       (case [(callback new-fnl-code compiler-options)]
-        [nil] (tts.print "nil" {: lang})
+        [nil] (print! "nil" {: lang})
         [text &as results] (case lang
                              :lua
                              ;; NOTE: It expects `fennel.compile-string` as the
                              ;; `callback`, which should return a Lua compiled code and
                              ;; an extra table, the latter of which is usually unintended
                              ;; information for users.
-                             (tts.print text {:lang "lua"})
+                             (print! text {:lang "lua"})
                              :fennel
                              ;; NOTE Print every result one by one, e.g, `(values 1 2 3)`
                              ;; should print `1`, `2`, and `3`, individually.
                              (each [_ text (ipairs results)]
-                               (tts.print (fennel.view text compiler-options)
-                                          {:lang "fennel"}))))
+                               (print! (fennel.view text compiler-options
+                                                    {:lang "fennel"})))))
       (-> #(case (pcall vim.api.nvim_parse_cmd (vim.fn.histget ":") {})
              (true parsed)
              ;; Exclude wrapped cmd format like `(vim.cmd "Fnl (+ 1 2)"`.
