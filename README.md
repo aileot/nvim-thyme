@@ -512,6 +512,17 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 
 A. Yes, you can. Just set the variable `vim.g.parinfer_enabled` to `false`.
 
+### Q. Does the rollback system help me avoid starting in nearly mother-naked nvim due to some misconfigurations?
+
+A. Yes, but only for the modules written in Fennel.
+
+Rollbacks are automatically applied when errors are detected at _compile_ time.
+In addition to that, with the combinations of [:ThymeRollbackSwitch][] and [:ThymeRollbackMount][],
+you can also roll back for _runtime_ errors in compiled Lua.
+
+However, it is recommended to put your configuration files under git management first
+in case `nvim` even fail to reach the lines that defines the rollback helper commands.
+
 ## 📚 Acknowledgement
 
 Thanks to [Shougo](https://github.com/Shougo) for
