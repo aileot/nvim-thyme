@@ -1,5 +1,7 @@
 (import-macros {: describe* : it*} :test.helper.busted-macros)
 
+(include "test.helper.prerequisites")
+
 (local Dropin (require :thyme.user.dropin))
 
 (describe* "dropin.register"
