@@ -9,6 +9,7 @@
     - [`macro-path`](#macro-path)
     - [`max-rollbacks`](#max-rollbacks)
     - [`notifier`](#notifier)
+    - [`disable-treesitter-highlights`](#disable-treesitter-highlights)
     - [`command.compiler-options`](#commandcompiler-options)
     - [`command.cmd-history.method`](#commandcmd-historymethod)
     - [`command.cmd-history.trailing-parens`](#commandcmd-historytrailing-parens)
@@ -38,11 +39,12 @@
   - [Commands](#commands)
     - [Fennel Wrapper Commands](#fennel-wrapper-commands)
       - [`:Fnl {fnl-expr}`](#fnl-fnl-expr)
+        - [Range Support (_Experimental_)](#range-support-experimental)
       - [`:[range]FnlBuf [bufname]`](#rangefnlbuf-bufname)
       - [`:[range]FnlBufCompile [bufname]`](#rangefnlbufcompile-bufname)
       - [`:[range]FnlFile [file]`](#rangefnlfile-file)
       - [`:[range]FnlFileCompile [file]`](#rangefnlfilecompile-file)
-      - [`:[range]FnlCompile {fnl-expr}`](#rangefnlcompile-fnl-expr)
+      - [`:FnlCompile {fnl-expr}`](#fnlcompile-fnl-expr)
       - [`:[range]FnlCompileBuf [bufname]`](#rangefnlcompilebuf-bufname)
       - [`:[range]FnlCompileFile [file]`](#rangefnlcompilefile-file)
     - [Fennel Misc. Commands](#fennel-misc-commands)
@@ -518,6 +520,18 @@ The commands are defined by [thyme.setup][thyme.setup].
 Display the result of applying [fennel.eval][fennel.eval] to `{fnl-expr}`, but
 respects your [&runtimepath][&runtimepath].
 
+##### Range Support (_Experimental_)
+
+The evaluation can include the current buffer lines within the given [range][].
+The range support only works when the following conditions are satisfied:
+
+- The filetype of current buffer is `"fennel"`.
+  (`:echo &ft == "fennel"` should return `1`.)
+- One of them is satisfied:
+  - The config file `.nvim-thyme.fnl` exists at the root of the current buffer.
+  - The current buffer file is under `/tmp` directory.
+  - The current buffer is not a readable file.
+
 #### `:[range]FnlBuf [bufname]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] but to
@@ -555,12 +569,14 @@ TODO: Add the spec tests first.
 With `!`, it will write the compiled lua results to `[dest-file]`.
 -->
 
-#### `:[range]FnlCompile {fnl-expr}`
+#### `:FnlCompile {fnl-expr}`
 
 Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
 `{fnl-expr}`, but only returns the compiled lua results.
 
 It does not affect the file system.
+
+(This range support is _experimental_.)
 
 #### `:[range]FnlCompileBuf [bufname]`
 
@@ -687,7 +703,7 @@ Unmount the mounted backups.
 [:FnlAlternate]: #fnlalternate
 [:FnlBufCompile]: #rangefnlbufcompile-bufname
 [:FnlBuf]: #rangefnlbuf-bufname
-[:FnlCompile]: #rangefnlcompile-fnl-expr
+[:FnlCompile]: #fnlcompile-fnl-expr
 [:FnlFileCompile]: #rangefnlfilecompile-file
 [:FnlFile]: #rangefnlfile-file
 [:Fnl]: #fnl-fnl-expr
@@ -712,6 +728,7 @@ Unmount the mounted backups.
 [nvim-thyme]: https://github.com/aileot/nvim-thyme
 [package.loaders]: https://www.lua.org/manual/5.1/manual.html#pdf-package.loaders
 [parinfer-rust]: https://github.com/eraserhd/parinfer-rust
+[range]: https://neovim.io/doc/user/usr_10.html#_command-ranges
 [thyme.setup]: #thymesetup-or-thymesetup
 [thyme]: https://github.com/aileot/nvim-thyme
 [vim.schedule]: https://neovim.io/doc/user/lua.html#vim.schedule()

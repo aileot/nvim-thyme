@@ -1,5 +1,7 @@
 (import-macros {: when-not} :thyme.macros)
 
+(local {: starts-with?} (require :thyme.util.general))
+
 (local Path (require :thyme.util.path))
 
 (local raw-uv (or vim.uv vim.loop))
@@ -22,6 +24,13 @@
 (fn directory? [path]
   (and (= :string (type path)) ;
        (= 1 (vim.fn.isdirectory path))))
+
+(fn under-tmpdir? [path]
+  (let [tmp-dir (or (os.getenv :TMPDIR) ;
+                    (os.getenv :TEMP) ;
+                    (os.getenv :TMP) ;
+                    "/tmp")]
+    (starts-with? path tmp-dir)))
 
 (fn assert-is-file-readable [path]
   (when-not (file-readable? path)
@@ -189,6 +198,7 @@
 (setmetatable {: executable?
                : file-readable?
                : directory?
+               : under-tmpdir?
                : assert-is-file-readable
                : assert-is-directory
                : assert-is-symlink
