@@ -13,8 +13,6 @@
     - [`command.compiler-options`](#commandcompiler-options)
     - [`command.cmd-history.method`](#commandcmd-historymethod)
     - [`command.cmd-history.trailing-parens`](#commandcmd-historytrailing-parens)
-    - [`command.Fnl.default-range`](#commandfnldefault-range)
-    - [`command.FnlCompile.default-range`](#commandfnlcompiledefault-range)
     - [`keymap.compiler-options`](#keymapcompiler-options)
     - [`keymap.mappings`](#keymapmappings)
     - [`watch.event`](#watchevent)
@@ -230,21 +228,6 @@ Available options:
 
 - `"omit"`: Trim all the trailing parentheses in the command history.
 - `"keep"`: Keep the trailing parentheses in the command history.
-
-### `command.Fnl.default-range`
-
-(_experimental,_ default: `0`)
-
-This option determines the default range for [:Fnl][:Fnl].
-
-Set it to `"%"` to include current buffer lines by default
-when the buffer `filetype` is `"fennel"`.
-
-### `command.FnlCompile.default-range`
-
-(_experimental,_ default: `0`)
-
-Same as [command.Fnl.default-range][] but for [:FnlCompile][].
 
 ### `keymap.compiler-options`
 
@@ -549,11 +532,6 @@ The range support only works when the following conditions are satisfied:
   - The current buffer file is under `/tmp` directory.
   - The current buffer is not a readable file.
 
-Specify the range as `0` not to include any of current buffer lines;
-specify `%` to include the whole buffer lines.
-You can change the default range of this command
-by the option [command.Fnl.default-range][].
-
 #### `:[range]FnlBuf [bufname]`
 
 Display the result of applying [fennel.dofile][fennel.dofile] but to
@@ -598,9 +576,7 @@ Almost equivalent to [:Fnl][:Fnl]. However, it does not evaluate the
 
 It does not affect the file system.
 
-(This range support is _experimental_.)\
-You can change the default range of this command
-by the option [command.FnlCompile.default-range][].
+(This range support is _experimental_.)
 
 #### `:[range]FnlCompileBuf [bufname]`
 
@@ -744,8 +720,6 @@ Unmount the mounted backups.
 [autocmd events]: https://neovim.io/doc/user/autocmd.html#autocmd-events
 [autocmd pattern]: https://neovim.io/doc/user/autocmd.html#autocmd-pattern
 [autocmd-event-args]: https://neovim.io/doc/user/api.html#event-args
-[command.Fnl.default-range]: #commandfnldefault-range
-[command.FnlCompile.default-range]: #commandfnlcompiledefault-range
 [command.cmd-history.method]: #commandcmd-historymethod
 [fennel.compile-string]: https://fennel-lang.org/api#compile-a-string-of-fennel-code
 [fennel.dofile]: https://fennel-lang.org/api#evaluate-a-file-of-fennel
