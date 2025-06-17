@@ -27,6 +27,16 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 [url/to/semver]: https://github.com/aileot/nvim-thyme/releases/latest
 [url/to/fennel]: https://fennel-lang.org/
 
+[**Welcome Aboard**](#-welcome-aboard)
+•
+[**Installation**](#-installation)
+•
+[**Migration Guide**](#-migration-guide)
+•
+[**Reference**](./docs/reference.md)
+•
+[**FAQ**](#-faq)
+
 </div>
 
 ## ✨ Main Features
