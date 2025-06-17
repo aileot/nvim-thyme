@@ -150,7 +150,8 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                     ;; NOTE: Do NOT overwrite self with `rawset` to keep
                     ;; __newindex working.
                     (case (. default-opts k)
-                      nil (error (.. "unexpected option detected: " k))
+                      nil (error (-> "unexpected option detected: %s\ndefault-values:\n%s"
+                                     (: :format k (vim.inspect default-opts))))
                       _ (. config k)))))
    :__newindex (when-not debug?
                  (fn [_ key]

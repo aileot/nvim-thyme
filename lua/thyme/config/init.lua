@@ -121,7 +121,7 @@ local function _15_(_self, k)
     local config = get_config()
     local _17_ = default_opts[k]
     if (_17_ == nil) then
-      return error(("unexpected option detected: " .. k))
+      return error(("unexpected option detected: %s\ndefault-values:\n%s"):format(k, vim.inspect(default_opts)))
     else
       local _0 = _17_
       return config[k]
