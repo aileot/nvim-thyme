@@ -46,8 +46,9 @@
                  :append (fn [new-cmd]
                            (assert (= 1 (vim.fn.histadd ":" new-cmd))
                                    "failed to add new fnl code"))
-                 :ignore #(comment "Do nothing")}]
+                 :ignore false}]
     (case (. methods method)
+      false (comment "Do nothing")
       apply-method (case (make-?new-cmd new-fnl-code opts)
                      new-cmd (apply-method new-cmd))
       _

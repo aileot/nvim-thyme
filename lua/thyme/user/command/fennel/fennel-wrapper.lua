@@ -38,30 +38,29 @@ local function edit_cmd_history_21(new_fnl_code, _7_)
   local function _9_(new_cmd)
     return assert((1 == vim.fn.histadd(":", new_cmd)), "failed to add new fnl code")
   end
-  local function _10_()
+  methods = {overwrite = _8_, append = _9_, ignore = false}
+  local _10_ = methods[method]
+  if (_10_ == false) then
     --[[ "Do nothing" ]]
     return nil
-  end
-  methods = {overwrite = _8_, append = _9_, ignore = _10_}
-  local _11_ = methods[method]
-  if (nil ~= _11_) then
-    local apply_method = _11_
-    local _12_ = make__3fnew_cmd(new_fnl_code, opts)
-    if (nil ~= _12_) then
-      local new_cmd = _12_
+  elseif (nil ~= _10_) then
+    local apply_method = _10_
+    local _11_ = make__3fnew_cmd(new_fnl_code, opts)
+    if (nil ~= _11_) then
+      local new_cmd = _11_
       return apply_method(new_cmd)
     else
       return nil
     end
   else
-    local _ = _11_
+    local _ = _10_
     return error(("expected one of `overwrite`, `append`, or `ignore`; got unknown method " .. method))
   end
 end
-local function parse_cmd_buf_args(_15_)
-  local path = _15_["args"]
-  local line1 = _15_["line1"]
-  local line2 = _15_["line2"]
+local function parse_cmd_buf_args(_14_)
+  local path = _14_["args"]
+  local line1 = _14_["line1"]
+  local line2 = _14_["line2"]
   local bufnr
   if path:find("^%s*$") then
     bufnr = 0
@@ -71,18 +70,18 @@ local function parse_cmd_buf_args(_15_)
   local fnl_code = table.concat(vim.api.nvim_buf_get_lines(bufnr, (line1 - 1), line2, true), "\n")
   return fnl_code
 end
-local function parse_cmd_file_args(_17_)
-  local _arg_18_ = _17_["fargs"]
-  local _3fpath = _arg_18_[1]
-  local line1 = _17_["line1"]
-  local line2 = _17_["line2"]
+local function parse_cmd_file_args(_16_)
+  local _arg_17_ = _16_["fargs"]
+  local _3fpath = _arg_17_[1]
+  local line1 = _16_["line1"]
+  local line2 = _16_["line2"]
   local full_path = vim.fn.fnamemodify(vim.fn.expand((_3fpath or "%:p")), ":p")
   return table.concat(vim.list_slice(vim.fn.readfile(full_path, "", line2), line1), "\n")
 end
 local function extract_Fnl_cmdline_args(cmdline)
-  local _19_, _20_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
-  if ((_19_ == true) and (nil ~= _20_)) then
-    local parsed = _20_
+  local _18_, _19_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
+  if ((_18_ == true) and (nil ~= _19_)) then
+    local parsed = _19_
     if string.match(parsed.cmd, "^Fnl") then
       return table.concat(parsed.args, " ")
     else
@@ -92,13 +91,13 @@ local function extract_Fnl_cmdline_args(cmdline)
     return nil
   end
 end
-local function mk_fennel_wrapper_command_callback(callback, _23_)
-  local lang = _23_["lang"]
-  local compiler_options = _23_["compiler-options"]
-  local cmd_history_opts = _23_["cmd-history-opts"]
-  local function _25_(_24_)
-    local args = _24_["args"]
-    local smods = _24_["smods"]
+local function mk_fennel_wrapper_command_callback(callback, _22_)
+  local lang = _22_["lang"]
+  local compiler_options = _22_["compiler-options"]
+  local cmd_history_opts = _22_["cmd-history-opts"]
+  local function _24_(_23_)
+    local args = _23_["args"]
+    local smods = _23_["smods"]
     local verbose_3f = (-1 < smods.verbose)
     local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
     if verbose_3f then
@@ -107,12 +106,12 @@ local function mk_fennel_wrapper_command_callback(callback, _23_)
     else
     end
     do
-      local _27_ = {callback(new_fnl_code, compiler_options)}
-      if (_27_[1] == nil) then
+      local _26_ = {callback(new_fnl_code, compiler_options)}
+      if (_26_[1] == nil) then
         tts.print("nil", {lang = lang})
-      elseif (nil ~= _27_[1]) then
-        local text = _27_[1]
-        local results = _27_
+      elseif (nil ~= _26_[1]) then
+        local text = _26_[1]
+        local results = _26_
         if (lang == "lua") then
           tts.print(text, {lang = "lua"})
         elseif (lang == "fennel") then
@@ -124,11 +123,11 @@ local function mk_fennel_wrapper_command_callback(callback, _23_)
       else
       end
     end
-    local function _30_()
+    local function _29_()
       local old_cmdline = vim.fn.histget(":")
-      local _31_, _32_ = pcall(vim.api.nvim_parse_cmd, old_cmdline, {})
-      if ((_31_ == true) and (nil ~= _32_)) then
-        local parsed = _32_
+      local _30_, _31_ = pcall(vim.api.nvim_parse_cmd, old_cmdline, {})
+      if ((_30_ == true) and (nil ~= _31_)) then
+        local parsed = _31_
         if parsed.cmd:find("^Fnl") then
           local old_fnl_expr = extract_Fnl_cmdline_args(old_cmdline)
           local new_fnl_expr = apply_parinfer(old_fnl_expr:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
@@ -141,8 +140,8 @@ local function mk_fennel_wrapper_command_callback(callback, _23_)
         return nil
       end
     end
-    return vim.schedule(_30_)
+    return vim.schedule(_29_)
   end
-  return _25_
+  return _24_
 end
 return {["parse-cmd-buf-args"] = parse_cmd_buf_args, ["parse-cmd-file-args"] = parse_cmd_file_args, ["mk-fennel-wrapper-command-callback"] = mk_fennel_wrapper_command_callback}
