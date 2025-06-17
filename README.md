@@ -86,13 +86,7 @@ The optional features can be enabled with few startup overhead thanks to
 
 ## 🎉 Welcome Aboard
 
-_Welcome to the Neovim x Fennel community!_
-
-If you have never written Fennel before,
-you can try Fennel on your favorite plugin manager.
-For `lazy.nvim`,
-add the following snippet to your specs
-and play around with Fennel first.
+1. Install `nvim-thyme` with [lazy.nvim][].
 
 (If you've decided to go along with Fennel, please skip to the [Installation][] section below.)
 
@@ -140,6 +134,14 @@ require("lazy").setup({
 > but only load Fennel modules _after_ the `init` setup is done.
 > Please follow the [Installation][] section below if you'd like to write
 > Fennel more!
+
+### 2. Test Interactive Features in Cmdline
+
+```vim
+:Fnl (+ 1 2 3) " Evaluate Fennel expression
+:Fnl (vim.notify "Hello, Fennel!") " Call nvim APIs
+:FnlBuf % " Evaluate Fennel expression in the current buffer
+```
 
 ## 📦 Installation
 
