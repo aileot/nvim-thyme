@@ -101,7 +101,7 @@ require("lazy").setup({
   ---@type LazySpec
   {
     "aileot/nvim-thyme",
-    version = "^v1.1.0",
+    version = "^v1.4.0",
     dependencies = {
       { "https://git.sr.ht/~technomancy/fennel" },
     },
@@ -229,7 +229,7 @@ require("lazy").setup({
   spec = {
     {
       "aileot/nvim-thyme",
-      version = "^v1.1.0",
+      version = "^v1.4.0",
       build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
       -- For config, see the "Setup Optional Interfaces" section
       -- and "Options in .nvim-thyme.fnl" below!
