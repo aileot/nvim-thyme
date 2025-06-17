@@ -321,7 +321,7 @@ Please read the [reference][reference] for the details and additional features.
 
 ### Options in `.nvim-thyme.fnl`
 
-All the configurations should be managed in a config file `.nvim-thyme.fnl`
+`nvim-thyme` manages all the configurations in a separate config file `.nvim-thyme.fnl`
 instead of `thyme.setup`.
 
 > [!NOTE]
