@@ -2,12 +2,9 @@
 
 # 🕛 nvim-thyme
 
-_Once compiled, **ZERO** overhead_\
-A JIT compiler for nvim config, but no impact on nvim startup.
+**Zero-overhead Fennel JIT compiler for Neovim**
 
 _Also welcome, **non-lispers**_\
-who are tired to balance quotes and parentheses for handy tests in Cmdline
-mode:\
 How about trying **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
 (_uh…, typos?_ ¯\\\_(ツ)\_/¯),\
 or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
