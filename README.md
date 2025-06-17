@@ -505,7 +505,7 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
   - Use git hooks. (See the [.githooks](./.githooks) in this project as a WIP
     example. Help wanted.)
 
-## FAQ
+## ❓ FAQ
 
 ### Q. Can I disable parinfer for editing buffers, keeping it enabled in the Cmdline integration?
 
