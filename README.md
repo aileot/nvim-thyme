@@ -380,9 +380,9 @@ loaded once a session of nvim. For example,
 | -------------------------------------- | ------------- | ----------------------- | -------------- | ---- |
 | **Runtime Compiler**                   | ✅            | ✅                      | ✅             | ❌   |
 | _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
-| **Zero startup overhead**              | ✅            | ❌                      | ❌             | ✅   |
-| **Safety rollbacks**                   | ✅            | ❌                      | ❌             | ❌   |
-| **Parinfer integration**               | ✅            | ❌                      | ❌             | ❌   |
+| **Zero Startup Overhead**              | ✅            | ❌                      | ❌             | ✅   |
+| **Safety Rollbacks**                   | ✅            | ❌                      | ❌             | ❌   |
+| **Parinfer Integration**               | ✅            | ❌                      | ❌             | ❌   |
 
 ### 🚚 Migration Guide
 
