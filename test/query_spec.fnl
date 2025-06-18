@@ -56,6 +56,28 @@
                            (-> parser
                                (: :language_for_range [0 1 0 1])
                                (: :lang)))))
+        (it* "preceded by range"
+          (let [ranges ["%"
+                        "."
+                        "'<,'>"
+                        "$"
+                        "1,$"
+                        "1,/pattern/"
+                        "?pattern?"
+                        "'t"
+                        "'T"]]
+            (each [_ range (ipairs ranges)]
+              (let [fnl-expr (-> "%s(+ 1 1)" (: :format range))
+                    range-length (string.len range)
+                    parser (vim.treesitter.get_string_parser fnl-expr "vim")]
+                (parser:parse true)
+                (assert.equals "fennel"
+                               (-> parser
+                                   (: :language_for_range
+                                      [0 range-length 0 range-length])
+                                   (: :lang))
+                               (-> "expected Fennel expression just after optional :range %q"
+                                   (: :format range)))))))
         (it* "following whitespaces"
           (let [parser (vim.treesitter.get_string_parser "  (+ 1 1)" "vim")]
             (parser:parse true)
