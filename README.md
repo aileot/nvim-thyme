@@ -605,6 +605,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [alternatives]: #-alternatives
 [installation]: #-installation
 [configuration]: #%EF%B8%8F-configuration
+[lazy.nvim]: https://github.com/folke/lazy.nvim
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [reference]: ./docs/reference.md
 [fnl-dir]: ./docs/reference.md#fnl-dir
