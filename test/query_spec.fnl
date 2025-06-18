@@ -24,7 +24,7 @@
                                     (: :lang)))))
     (describe* "in dropin cmdline arguments"
       (it* "should not be applied by non-Fennel expression vim commands"
-        (let [cmds [")))"]]
+        (let [cmds [")))" "% <" "1,$ }"]]
           (each [_ cmd (ipairs cmds)]
             (let [parser (vim.treesitter.get_string_parser cmd "vim")]
               (parser:parse true)
