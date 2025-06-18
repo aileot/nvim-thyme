@@ -31,7 +31,7 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 •
 [**Installation**](#-installation)
 •
-[**Migration Guide**](#-migration-guide)
+[**Usage**](#-usage)
 •
 [**Reference**](./docs/reference.md)
 •
@@ -306,7 +306,7 @@ with recommended config. See the [Configuration][configuration] section below.
 
 Ensure the setup by `:checkhealth thyme`.
 
-## 📖 Interfaces
+## 🚀 Usage
 
 Please read the [reference][reference] for the details and additional features.
 
@@ -376,13 +376,13 @@ loaded once a session of nvim. For example,
 
 ## 💥 Comparisons
 
-| feature                                | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
-| :------------------------------------- | ------------- | ----------------------- | -------------- | ---- |
-| **Runtime Compiler**                   | ✅            | ✅                      | ✅             | ❌   |
+| feature                        | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
+| :----------------------------- | ------------- | ----------------------- | -------------- | ---- |
+| **Runtime Compiler**           | ✅            | ✅                      | ✅             | ❌   |
 | _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
-| **Zero Startup Overhead**              | ✅            | ❌                      | ❌             | ✅   |
-| **Safety Rollbacks**                   | ✅            | ❌                      | ❌             | ❌   |
-| **Parinfer Integration**               | ✅            | ❌                      | ❌             | ❌   |
+| **Zero Startup Overhead**      | ✅            | ❌                      | ❌             | ✅   |
+| **Safety Rollbacks**           | ✅            | ❌                      | ❌             | ❌   |
+| **Parinfer Integration**       | ✅            | ❌                      | ❌             | ❌   |
 
 ### 🚚 Migration Guide
 
