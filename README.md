@@ -601,27 +601,27 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 - [tangerine.nvim][tangerine.nvim] suggests to start the missing `init.fnl` from
   `plugin/`. Not in compiler sandbox.
 
-[semantic versioning]: https://semver.org/
-[alternatives]: #-alternatives
-[installation]: #-installation
-[configuration]: #%EF%B8%8F-configuration
-[lazy.nvim]: https://github.com/folke/lazy.nvim
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
-[reference]: ./docs/reference.md
-[fnl-dir]: ./docs/reference.md#fnl-dir
-[macro-path]: ./docs/reference.md#macro-path
-[watch.strategy]: ./docs/reference.md#watchstrategy
-[Fennel]: https://git.sr.ht/~technomancy/fennel
-[aniseed]: https://github.com/Olical/aniseed
-[nfnl]: https://github.com/Olical/nfnl
-[hotpot.nvim]: https://github.com/rktjmp/hotpot.nvim
-[tangerine.nvim]: https://github.com/udayvir-singh/tangerine.nvim
-[parinfer]: https://shaunlebron.github.io/parinfer/
-[parinfer-rust]: https://github.com/eraserhd/parinfer-rust
-[nvim-parinfer-rust]: https://github.com/harrygallagher4/nvim-parinfer-rust
-[builtin treesitter]: https://neovim.io/doc/user/treesitter.html
-[nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
-[tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
-[overseer.nvim]: https://github.com/stevearc/overseer.nvim
-[:ThymeRollbackSwitch]: ./docs/reference.md#thymerollbackswitch-target
 [:ThymeRollbackMount]: ./docs/reference.md#thymerollbackmount-target
+[:ThymeRollbackSwitch]: ./docs/reference.md#thymerollbackswitch-target
+[Fennel]: https://git.sr.ht/~technomancy/fennel
+[alternatives]: #-alternatives
+[aniseed]: https://github.com/Olical/aniseed
+[builtin treesitter]: https://neovim.io/doc/user/treesitter.html
+[configuration]: #%EF%B8%8F-configuration
+[fnl-dir]: ./docs/reference.md#fnl-dir
+[hotpot.nvim]: https://github.com/rktjmp/hotpot.nvim
+[installation]: #-installation
+[lazy.nvim]: https://github.com/folke/lazy.nvim
+[macro-path]: ./docs/reference.md#macro-path
+[nfnl]: https://github.com/Olical/nfnl
+[nvim-parinfer-rust]: https://github.com/harrygallagher4/nvim-parinfer-rust
+[nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
+[overseer.nvim]: https://github.com/stevearc/overseer.nvim
+[parinfer-rust]: https://github.com/eraserhd/parinfer-rust
+[parinfer]: https://shaunlebron.github.io/parinfer/
+[reference]: ./docs/reference.md
+[semantic versioning]: https://semver.org/
+[tangerine.nvim]: https://github.com/udayvir-singh/tangerine.nvim
+[tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
+[watch.strategy]: ./docs/reference.md#watchstrategy
