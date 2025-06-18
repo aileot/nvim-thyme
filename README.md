@@ -517,6 +517,10 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 
 ## ❓ FAQ
 
+### Q. Is it compatible with `vim.loader`?
+
+A. Yes, it is. `vim.loader.enable()` optimizes the `nvim-thyme` loader.
+
 ### Q. Can I disable parinfer for editing buffers, keeping it enabled in the Cmdline integration?
 
 A. Yes, you can. Just set the variable `vim.g.parinfer_enabled` to `false`.
