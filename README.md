@@ -514,6 +514,13 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
 
 A. Yes, it is. `vim.loader.enable()` optimizes the `nvim-thyme` loader.
 
+### Q: "loop or previous error"?
+
+A. `nvim-thyme` is incompatible the option `performance.rtp.reset` of [lazy.nvim][].
+
+Make sure you've disabled the lazy.nvim's `performance.rtp.reset` option.
+(The option is enabled by default.)
+
 ### Q. Can I disable parinfer for editing buffers, keeping it enabled in the Cmdline integration?
 
 A. Yes, you can. Just set the variable `vim.g.parinfer_enabled` to `false`.
