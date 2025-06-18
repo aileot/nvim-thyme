@@ -376,12 +376,13 @@ loaded once a session of nvim. For example,
 
 ## 💥 Comparisons
 
-| Feature                   | nvim-thyme | hotpot.nvim | tangerine.nvim | nfnl |
-| ------------------------- | ---------- | ----------- | -------------- | ---- |
-| **Runtime Compiler**      | ✅         | ✅          | ✅             | ❌   |
-| **Zero startup overhead** | ✅         | ❌          | ❌             | ✅   |
-| **Safety rollbacks**      | ✅         | ❌          | ❌             | ❌   |
-| **Parinfer integration**  | ✅         | ❌          | ❌             | ❌   |
+| Feature                                | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
+| -------------------------------------- | ------------- | ----------------------- | -------------- | ---- |
+| **Runtime Compiler**                   | ✅            | ✅                      | ✅             | ❌   |
+| _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
+| **Zero startup overhead**              | ✅            | ❌                      | ❌             | ✅   |
+| **Safety rollbacks**                   | ✅            | ❌                      | ❌             | ❌   |
+| **Parinfer integration**               | ✅            | ❌                      | ❌             | ❌   |
 
 ### 🚚 Migration Guide
 
