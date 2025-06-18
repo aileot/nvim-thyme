@@ -376,8 +376,8 @@ loaded once a session of nvim. For example,
 
 ## 💥 Comparisons
 
-| Feature                                | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
-| -------------------------------------- | ------------- | ----------------------- | -------------- | ---- |
+| feature                                | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
+| :------------------------------------- | ------------- | ----------------------- | -------------- | ---- |
 | **Runtime Compiler**                   | ✅            | ✅                      | ✅             | ❌   |
 | _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
 | **Zero Startup Overhead**              | ✅            | ❌                      | ❌             | ✅   |
