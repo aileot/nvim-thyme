@@ -39,29 +39,22 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 
 </div>
 
-## ✨ Main Features
+## ✨ Features
 
-- Compile Fennel source just as Lua fallback **at nvim runtime**.
-- Get optimized with `vim.loader` **out of box**.
-- Safely **roll back** to the last successfully compiled backups if compilation
+- **JIT Compiler**:
+  Compile fennel source **_at nvim runtime_**.
+- **Rollbacks**:
+  Safely roll back to the last successfully compiled backups if compilation
   fails.
-
-## 🔌 Optional Features
-
-The optional features can be enabled with few startup overhead thanks to
-`vim.schedule`.\
-(For the details, please read the [Installation][installation] guide below.)
+- **Integrations**:
+  Evaluate fennel code in `cmdline` and `keymap` with the following features:
+  - Colorful output on [the builtin **treesitter**][builtin treesitter].
+  - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
+    as if `(+ 1 2)`!_
 
 > [!CAUTION]
 > Please note that undocumented features are subject to change without notice,
 > regardless of [semantic versioning][].
-
-- **Recompile** on autocmd events, tracking macro dependencies.
-  (Check out the [watch.strategy][] option.)
-- Evaluate fennel code in `cmdline` and `keymap` with the following features:
-  - Colorful output on [the builtin **treesitter**][builtin treesitter].
-  - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
-    as if `(+ 1 2)`!_
 
 ## 🔥 Motivations
 
