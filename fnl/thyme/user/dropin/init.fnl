@@ -85,10 +85,10 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
                          (dropin:replace-cmdline!)))))
         :complete (fn [old-cmdline]
                     (let [cmdtype (vim.fn.getcmdtype)]
-                      (if (= ":" cmdtype)
-                          (let [dropin (DropinCmdline.new cmdtype registry
-                                                          old-cmdline)]
-                            (dropin:complete-cmdline!)))))})
+                      (when (= ":" cmdtype)
+                        (let [dropin (DropinCmdline.new cmdtype registry
+                                                        old-cmdline)]
+                          (dropin:complete-cmdline!)))))})
   (set M.cmdwin
        {:replace (fn [row]
                    (let [cmdtype (vim.fn.getcmdwintype)]
