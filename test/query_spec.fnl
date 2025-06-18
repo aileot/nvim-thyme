@@ -71,12 +71,19 @@
                     range-length (string.len range)
                     parser (vim.treesitter.get_string_parser fnl-expr "vim")]
                 (parser:parse true)
+                ;; TODO: Detect `:range` as lang=vim.
+                ;; (assert.equals "vim"
+                ;;                (-> parser
+                ;;                    (: :language_for_range [0 1 0 1])
+                ;;                    (: :lang))
+                ;;                (-> "expected lang=vim at optional :range %q"
+                ;;                    (: :format range)))
                 (assert.equals "fennel"
                                (-> parser
                                    (: :language_for_range
                                       [0 range-length 0 range-length])
                                    (: :lang))
-                               (-> "expected Fennel expression just after optional :range %q"
+                               (-> "expected lang=fennel just after optional :range %q"
                                    (: :format range)))))))
         (it* "following whitespaces"
           (let [parser (vim.treesitter.get_string_parser "  (+ 1 1)" "vim")]
