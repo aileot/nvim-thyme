@@ -23,13 +23,17 @@
                                     (: :language_for_range [0 11 0 11])
                                     (: :lang)))))
     (describe* "in dropin cmdline arguments"
-      (it* "should not be applied by non Fennel expression"
-        (let [parser (vim.treesitter.get_string_parser ")))" "vim")]
-          (parser:parse true)
-          (assert.not_equals "fennel"
-                             (-> parser
-                                 (: :language_for_range [0 1 0 1])
-                                 (: :lang)))))
+      (it* "should not be applied by non-Fennel expression vim commands"
+        (let [cmds [")))"]]
+          (each [_ cmd (ipairs cmds)]
+            (let [parser (vim.treesitter.get_string_parser cmd "vim")]
+              (parser:parse true)
+              (assert.not_equals "fennel"
+                                 (-> parser
+                                     (: :language_for_range [0 1 0 1])
+                                     (: :lang))
+                                 (-> "%q should not be detected as Fennel expression"
+                                     (: :format cmd)))))))
       (describe* "should be applied by a Fennel expression"
         (it* "which starts with `(`"
           (let [parser (vim.treesitter.get_string_parser "(+ 1 1)" "vim")]
