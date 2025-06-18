@@ -473,6 +473,24 @@ With [parinfer-rust][parinfer-rust],
 :NfnlFile (vim.fn.expand "%:p")
 ```
 
+### Not in Plan
+
+- Unlike [tangerine.nvim][tangerine.nvim], `nvim-thyme` does _**not** compile
+  `$XDG_CONFIG_HOME/nvim/init.fnl`._
+- Unlike [hotpot.nvim][hotpot.nvim], `nvim-thyme` does _**not** load_
+  `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on; `nvim-thyme` does
+  _**not** support_ Vim commands (e.g., `:source` and `:runtime`) to load your
+  Fennel files. `nvim-thyme` _**only** supports_ Lua/Fennel loader like
+  `require`.
+- Unlike [nfnl][nfnl], `nvim-thyme` does _**not** compile_ Fennel files which is
+  not loaded in nvim runtime by default. If you still need to compile Fennel
+  files in a project apart from nvim runtime, you have several options:
+  - Define some `autocmd`s in your config or in .nvim.lua.
+  - Use another compiler plugin _together_ like [nfnl][nfnl].
+  - Use a task runner like [overseer.nvim][overseer.nvim].
+  - Use git hooks. (See the [.githooks](./.githooks) in this project as a WIP
+    example. Help wanted.)
+
 ## 🕶️ Disclosure
 
 <!--
@@ -498,24 +516,6 @@ TODO: Comment out once recompile strategy work on BufWritePost at macro files.
   [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation): it
   compiles missing modules, and optionally recompiles them on `BufWritePost` and
   `FileChangedShellPost`.
-
-### Not in Plan
-
-- Unlike [tangerine.nvim][tangerine.nvim], `nvim-thyme` does _**not** compile
-  `$XDG_CONFIG_HOME/nvim/init.fnl`._
-- Unlike [hotpot.nvim][hotpot.nvim], `nvim-thyme` does _**not** load_
-  `plugin/*.fnl`, `ftplugin/*.fnl`, `lsp/*.fnl` and so on; `nvim-thyme` does
-  _**not** support_ Vim commands (e.g., `:source` and `:runtime`) to load your
-  Fennel files. `nvim-thyme` _**only** supports_ Lua/Fennel loader like
-  `require`.
-- Unlike [nfnl][nfnl], `nvim-thyme` does _**not** compile_ Fennel files which is
-  not loaded in nvim runtime by default. If you still need to compile Fennel
-  files in a project apart from nvim runtime, you have several options:
-  - Define some `autocmd`s in your config or in .nvim.lua.
-  - Use another compiler plugin _together_ like [nfnl][nfnl].
-  - Use a task runner like [overseer.nvim][overseer.nvim].
-  - Use git hooks. (See the [.githooks](./.githooks) in this project as a WIP
-    example. Help wanted.)
 
 ## ❓ FAQ
 
