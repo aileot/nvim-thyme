@@ -18,6 +18,9 @@
 
 ;; For dropin feature.
 ((ERROR) @injection.content
-  (#lua-match? @injection.content "^[:%s]*[%[%({]")
+  ;; NOTE: The content could start with `:`, and now it also support range.
+  (#lua-match? @injection.content "^.-[%[%(%{]")
+  ;; TODO: Exclude vim-range pattern from lang=fennel
+  ;; (#gsub! @injection.content "^.-([%[%(%{].*)" "%1")
   (#set! injection.language "fennel")
   (#set! injection.include-children))

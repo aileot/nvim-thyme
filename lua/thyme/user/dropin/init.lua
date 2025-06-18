@@ -71,7 +71,7 @@ M["enable-dropin-paren!"] = function()
   return vim.api.nvim_create_autocmd("CmdWinEnter", {group = group, pattern = ":", callback = _12_})
 end
 local registry = DropinRegistry.new()
-registry["register!"](registry, "^[[%[%(%{].*", "Fnl %0")
+registry["register!"](registry, "^(.-)([[%[%(%{].*)", "%1Fnl %2")
 M.registry = registry
 local function _13_(old_cmdline)
   local cmdtype = vim.fn.getcmdtype()
