@@ -16,10 +16,13 @@
       false nil
       "" nil
       key (do
-            (vim.api.nvim_set_keymap :c plug-map-insert
-              ;; NOTE: `v:lua` interface does not support method call.
-              "<C-BSlash>ev:lua.require('thyme.user.dropin').cmdline.replace(getcmdline())<CR>"
-              {:noremap true})
+            (vim.api.nvim_set_keymap :c
+              plug-map-insert
+              ""
+              {:noremap true
+               :expr true
+               :replace_keycodes true
+               :callback #(M.cmdline.replace (vim.fn.getcmdline))})
             ;; TODO: Expose `<Plug>` keymaps once stable a bit.
             (vim.api.nvim_set_keymap :c key (.. plug-map-insert "<CR>")
               {:noremap true})))
@@ -27,19 +30,25 @@
       false nil
       "" nil
       key (do
-            (vim.api.nvim_set_keymap :c plug-map-complete
-              "<Cmd>lua require('thyme.user.dropin').cmdline.complete(vim.fn.getcmdline())<CR>"
-              {:noremap true})
+            (vim.api.nvim_set_keymap :c
+              plug-map-complete
+              ""
+              {:noremap true
+               :expr true
+               :replace_keycodes true
+               :callback #(M.cmdline.complete (vim.fn.getcmdline))})
             (vim.api.nvim_set_keymap :c key plug-map-complete {:noremap true})))))
 
 (fn map-keys-in-cmdwin! [buf]
   (let [plug-map-insert "<Plug>(thyme-dropin-insert-Fnl-if-needed)"]
-    (vim.api.nvim_set_keymap :n plug-map-insert
-      "<Cmd>lua require('thyme.user.dropin').cmdwin.replace(vim.fn.line('.'))<CR>"
-      {:noremap true})
-    (vim.api.nvim_set_keymap :i plug-map-insert
-      "<Cmd>lua require('thyme.user.dropin').cmdwin.replace(vim.fn.line('.'))<CR>"
-      {:noremap true})
+    (vim.api.nvim_set_keymap :n
+      plug-map-insert
+      ""
+      {:noremap true :callback #(M.cmdwin.replace (vim.fn.line "."))})
+    (vim.api.nvim_set_keymap :i
+      plug-map-insert
+      ""
+      {:noremap true :callback #(M.cmdwin.replace (vim.fn.line "."))})
     (case Config.dropin.cmdwin.enter-key
       false nil
       "" nil
@@ -67,26 +76,23 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
 (let [registry (DropinRegistry.new)]
   (registry:register! "^[[%[%(%{].*" "Fnl %0")
   (set M.registry registry)
-  (set M.cmdline {:replace (fn [old-cmdline]
-                             (let [cmdtype (vim.fn.getcmdtype)]
-                               (if (or (= ":" cmdtype) debug?)
-                                   (let [dropin (DropinCmdline.new cmdtype
-                                                                   registry
-                                                                   old-cmdline)]
-                                     (dropin:replace-cmdline!))
-                                   old-cmdline)))
-                  :complete (fn [old-cmdline]
-                              (let [cmdtype (vim.fn.getcmdtype)]
-                                (if (= ":" cmdtype)
-                                    (let [dropin (DropinCmdline.new cmdtype
-                                                                    registry
-                                                                    old-cmdline)]
-                                      (dropin:complete-cmdline!))
-                                    old-cmdline)))})
+  (set M.cmdline
+       {:replace (fn [old-cmdline]
+                   (let [cmdtype (vim.fn.getcmdtype)]
+                     (when (or (= ":" cmdtype) debug?)
+                       (let [dropin (DropinCmdline.new cmdtype registry
+                                                       old-cmdline)]
+                         (dropin:replace-cmdline!)))))
+        :complete (fn [old-cmdline]
+                    (let [cmdtype (vim.fn.getcmdtype)]
+                      (when (= ":" cmdtype)
+                        (let [dropin (DropinCmdline.new cmdtype registry
+                                                        old-cmdline)]
+                          (dropin:complete-cmdline!)))))})
   (set M.cmdwin
        {:replace (fn [row]
                    (let [cmdtype (vim.fn.getcmdwintype)]
-                     (if (or (= ":" cmdtype) debug?)
-                         (let [dropin (DropinCmdwin.new cmdtype registry row)]
-                           (dropin:replace-cmdline!)))))})
+                     (when (or (= ":" cmdtype) debug?)
+                       (let [dropin (DropinCmdwin.new cmdtype registry row)]
+                         (dropin:replace-cmdline!)))))})
   M)
