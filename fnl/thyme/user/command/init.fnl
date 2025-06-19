@@ -2,12 +2,15 @@
 
 (local Path (require :thyme.util.path))
 
-(local {: lua-cache-prefix : config-filename : config-path}
-       (require :thyme.const))
+(local {: lua-cache-prefix
+        : config-filename
+        : config-path
+        : example-config-path} (require :thyme.const))
 
 (local {: directory?} (require :thyme.util.fs))
 
 (local Messenger (require :thyme.util.class.messenger))
+(local ConfigCommandMessenger (Messenger.new "command/config"))
 (local UninstallCommandMessenger (Messenger.new "command/uninstall"))
 
 (local cache-commands (require :thyme.user.command.cache))
@@ -42,6 +45,16 @@
     {:desc (.. "[thyme] open the main config file " config-filename)}
     (fn []
       (vim.cmd (.. "edit " config-path))))
+  (command! :ThymeConfigRecommend
+    {:desc "[thyme] open a readonly buffer to demonstrate the recommended config file"}
+    (fn []
+      ;; TODO: Should open the config file, too?
+      (vim.cmd (.. "sview " example-config-path))
+      (assert (= example-config-path (vim.api.nvim_buf_get_name 0))
+              (.. "expected to open " example-config-path))
+      (set vim.bo.modifiable false)
+      (set vim.bo.filetype "fennel")
+      (ConfigCommandMessenger:notify! "Opened a readonly buffer with the recommended config")))
   (command! :ThymeUninstall
     {:desc "[thyme] delete all the thyme's cache, state, and data files"}
     (fn []

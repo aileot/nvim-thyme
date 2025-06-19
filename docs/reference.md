@@ -53,6 +53,7 @@
       - [`:ThymeUninstall`](#thymeuninstall)
     - [Thyme Config Commands](#thyme-config-commands)
       - [`:ThymeConfigOpen`](#thymeconfigopen)
+      - [`:ThymeConfigRecommend`](#thymeconfigrecommend)
     - [Thyme Cache Commands](#thyme-cache-commands)
       - [`:ThymeCacheClear`](#thymecacheclear)
       - [`:ThymeCacheOpen`](#thymecacheopen)
@@ -637,6 +638,10 @@ your issue, then try this command [:ThymeUninstall][:ThymeUninstall].
 #### `:ThymeConfigOpen`
 
 Open your [.nvim-thyme.fnl][.nvim-thyme.fnl] file.
+
+#### `:ThymeConfigRecommend`
+
+Open a readonly buffer to demonstrate the recommended configuration.
 
 ### Thyme Cache Commands
 

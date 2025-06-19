@@ -24,9 +24,21 @@
 (local lua-cache-prefix (-> (Path.join cache-prefix :lua)
                             (vim.fn.expand)))
 
+(local example-config-path
+       (let [this-dir (-> (debug.getinfo 1 "S")
+                          (. :source)
+                          (: :sub 2)
+                          (vim.fs.dirname))
+             example-config-filename (.. config-filename ".example")
+             [example-config-path] (vim.fs.find example-config-filename
+                                                {:upward true} :type "file"
+                                                :path this-dir)]
+         (values example-config-path)))
+
 {:debug? (= :1 vim.env.THYME_DEBUG)
  : stdpath-config
  : lua-cache-prefix
  : config-filename
  : config-path
+ : example-config-path
  :state-prefix (Path.join (vim.fn.stdpath :state) :thyme)}
