@@ -8,19 +8,20 @@
 (local Config (require :thyme.config))
 
 ;; TODO: Comment out once dropin feature is more stable a bit.
-(describe* "thyme.setup enables dropin features"
-  (let [default-dropin-options Config.dropin]
-    (before_each (fn []
-                   (set Config.dropin.cmdline.enter-key "<CR>")
-                   (thyme.setup)))
-    (after_each (fn []
-                  (set Config.dropin default-dropin-options)))
-    (it* "maps `<CR>` on dropin function in Cmdline mode by default"
-      (when (not= "" (vim.fn.maparg "<CR>" :c))
-        (vim.keymap.del :c "<CR>"))
-      (assert.equals "" (vim.fn.maparg "<CR>" :c))
-      (thyme.setup)
-      (assert.not_equals "" (vim.fn.maparg "<CR>" :c)))))
+(describe* "dropin options take effects"
+  (describe* "with thyme.setup"
+    (let [default-dropin-options Config.dropin]
+      (before_each (fn []
+                     (set Config.dropin.cmdline.enter-key "<CR>")
+                     (thyme.setup)))
+      (after_each (fn []
+                    (set Config.dropin default-dropin-options)))
+      (it* "as it maps `<CR>` on dropin function in Cmdline mode by default"
+        (when (not= "" (vim.fn.maparg "<CR>" :c))
+          (vim.keymap.del :c "<CR>"))
+        (assert.equals "" (vim.fn.maparg "<CR>" :c))
+        (thyme.setup)
+        (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))))
 
 (describe* "with dropin feature in cmdline,"
   (let [default-dropin-options Config.dropin]
