@@ -10,7 +10,7 @@ local function map_keys_in_cmdline_21()
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl-if-needed)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"
   do
-    local _2_ = opts["cmdline-key"]
+    local _2_ = opts.cmdline["enter-key"]
     if (_2_ == false) then
     elseif (_2_ == "") then
     elseif (nil ~= _2_) then
@@ -23,7 +23,7 @@ local function map_keys_in_cmdline_21()
     else
     end
   end
-  local _5_ = opts["cmdline-completion-key"]
+  local _5_ = opts.cmdline["completion-key"]
   if (_5_ == false) then
     return nil
   elseif (_5_ == "") then

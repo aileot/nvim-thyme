@@ -12,7 +12,7 @@
         plug-map-complete "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"]
     ;; (vim.api.nvim_set_keymap :c "<C-j>" "<Plug>(thyme-precede-paren-by-Fnl)"
     ;;   {})
-    (case opts.cmdline-key
+    (case opts.cmdline.enter-key
       false nil
       "" nil
       key (do
@@ -26,7 +26,7 @@
             ;; TODO: Expose `<Plug>` keymaps once stable a bit.
             (vim.api.nvim_set_keymap :c key (.. plug-map-insert "<CR>")
               {:noremap true})))
-    (case opts.cmdline-completion-key
+    (case opts.cmdline.completion-key
       false nil
       "" nil
       key (do
