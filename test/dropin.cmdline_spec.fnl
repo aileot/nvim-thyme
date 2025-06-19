@@ -11,7 +11,7 @@
 (describe* "thyme.setup enables dropin features"
   (let [default-dropin-options Config.dropin]
     (before_each (fn []
-                   (set Config.dropin.cmdline-key "<CR>")
+                   (set Config.dropin.cmdline.enter-key "<CR>")
                    (thyme.setup)))
     (after_each (fn []
                   (set Config.dropin default-dropin-options)))
@@ -28,7 +28,7 @@
                   (set Config.dropin default-dropin-options)))
     (describe* "(`<CR>` as the dropin key)"
       (before_each (fn []
-                     (set Config.dropin.cmdline-key "<CR>")
+                     (set Config.dropin.cmdline.enter-key "<CR>")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))
       (after_each (fn []
@@ -44,7 +44,7 @@
           (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<CR>"))))))
     (describe* "(`@` as the dropin key)"
       (before_each (fn []
-                     (set Config.dropin.cmdline-key "@")
+                     (set Config.dropin.cmdline.enter-key "@")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "@" :c))))
       (after_each (fn []
@@ -63,7 +63,7 @@
   (describe* "(`<Tab>` as the dropin completion key)"
     (let [default-dropin-options Config.dropin]
       (before_each (fn []
-                     (set Config.dropin.cmdline-completion-key "<Tab>")
+                     (set Config.dropin.cmdline.completion-key "<Tab>")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "<Tab>" :c))))
       (after_each (fn []
@@ -79,7 +79,7 @@
   (describe* "(`^` as the dropin completion key)"
     (let [default-dropin-options Config.dropin]
       (before_each (fn []
-                     (set Config.dropin.cmdline-completion-key "^")
+                     (set Config.dropin.cmdline.completion-key "^")
                      (thyme.setup)
                      (assert.not_equals "" (vim.fn.maparg "^" :c))))
       (after_each (fn []
