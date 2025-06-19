@@ -7,7 +7,6 @@
 (local thyme (require :thyme))
 (local Config (require :thyme.config))
 
-;; TODO: Comment out once dropin feature is more stable a bit.
 (describe* "dropin options take effects"
   (describe* "with thyme.setup"
     (let [default-dropin-options Config.dropin]
