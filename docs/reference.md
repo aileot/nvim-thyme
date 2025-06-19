@@ -53,6 +53,7 @@
       - [`:ThymeUninstall`](#thymeuninstall)
     - [Thyme Config Commands](#thyme-config-commands)
       - [`:ThymeConfigOpen`](#thymeconfigopen)
+      - [`:ThymeConfigRecommend`](#thymeconfigrecommend)
     - [Thyme Cache Commands](#thyme-cache-commands)
       - [`:ThymeCacheClear`](#thymecacheclear)
       - [`:ThymeCacheOpen`](#thymecacheopen)
