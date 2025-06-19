@@ -10,9 +10,19 @@
 (user_command
   (command_name) @_excmd
   . (arguments) @injection.content
-  (#any-of? @_excmd
-    "Fnl"
-    "FnlCompile")
+  (#any-lua-match? @_excmd
+    "^F[nN][lL]?$"
+    "^FnlCompile$")
+  (#set! injection.language "fennel")
+  (#set! injection.include-children))
+
+(unknown_builtin_statement
+  (unknown_command_name) @_excmd
+  . (arguments) @injection.content
+  (#any-lua-match? @_excmd
+    ;; TODO: Extend dropin pattern for case-insensitive `:FnlCompile` and
+    ;; others?
+    "^f[nN][lL]?$")
   (#set! injection.language "fennel")
   (#set! injection.include-children))
 
