@@ -606,15 +606,6 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [file](./fnl/thyme/wrapper/parinfer.fnl) on `parinfer` is also on the license
 [CC0-1.0](https://github.com/harrygallagher4/nvim-parinfer-rust/blob/34e2e5902399e4f1e75f4d83575caddb8154af26/LICENSE).
 
-## 🤔 Alternatives
-
-- [aniseed][aniseed] provides Clojure-like interfaces. I've never used it.
-- [hotpot.nvim][hotpot.nvim] loads fennel first. I've been indebted so long. Big
-  thanks.
-- [nfnl][nfnl] compiles to the `lua/`.
-- [tangerine.nvim][tangerine.nvim] suggests to start the missing `init.fnl` from
-  `plugin/`. Not in compiler sandbox.
-
 [.nvim-thyme.fnl.example]: ./.nvim-thyme.fnl.example
 [:ThymeRollbackMount]: ./docs/reference.md#thymerollbackmount-target
 [:ThymeRollbackSwitch]: ./docs/reference.md#thymerollbackswitch-target
