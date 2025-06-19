@@ -22,11 +22,11 @@
         (thyme.setup)
         (assert.not_equals "" (vim.fn.maparg "<CR>" :c))))))
 
-(describe* "with dropin feature in cmdline,"
+(describe* "with dropin option cmdline.enter-key"
   (let [default-dropin-options Config.dropin]
     (after_each (fn []
                   (set Config.dropin default-dropin-options)))
-    (describe* "(`<CR>` as the dropin key)"
+    (describe* "mapped to `<CR>`,"
       (before_each (fn []
                      (set Config.dropin.cmdline.enter-key "<CR>")
                      (thyme.setup)
@@ -42,7 +42,7 @@
           ;; (assert.has_error #(vim.api.nvim_input ":(+ 1 2)<CR>"))
           (assert.has_error #(vim/normal! ":(+ 1 2)<CR>"))
           (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<CR>"))))))
-    (describe* "(`@` as the dropin key)"
+    (describe* "mapped to `@`,"
       (before_each (fn []
                      (set Config.dropin.cmdline.enter-key "@")
                      (thyme.setup)
@@ -59,8 +59,8 @@
           (assert.has_error #(vim/normal! ":(+ 1 2)<CR>"))
           (assert.has_no_error #(vim/normal ":(+ 1 2)@")))))))
 
-(describe* "with dropin feature in cmdline,"
-  (describe* "(`<Tab>` as the dropin completion key)"
+(describe* "with dropin option cmdline.completion-key"
+  (describe* "mapped to `<Tab>`,"
     (let [default-dropin-options Config.dropin]
       (before_each (fn []
                      (set Config.dropin.cmdline.completion-key "<Tab>")
@@ -76,7 +76,7 @@
         ;; completion-key are only useful to make sure no errors happens due to
         ;; invalid nvim-thyme implementation.
         (assert.has_no_error #(vim.cmd (vim.keycode "normal :(+ 1 2)<Tab>"))))))
-  (describe* "(`^` as the dropin completion key)"
+  (describe* "mapped to `^`,"
     (let [default-dropin-options Config.dropin]
       (before_each (fn []
                      (set Config.dropin.cmdline.completion-key "^")
