@@ -431,7 +431,7 @@ require([[tangerine]]).setup({})
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
-### 🔥 Ex Command Comparisons
+### 🍿 Ex Command Comparisons
 
 Note: `nvim-thyme` only provides user commands after you call
 [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`) for
