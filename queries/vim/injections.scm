@@ -10,9 +10,19 @@
 (user_command
   (command_name) @_excmd
   . (arguments) @injection.content
-  (#any-lua-match? @_excmd
-    "^F[nN][lL]?$"
-    "^FnlCompile$")
+  ;; NOTE: #any-lua-match? is not for multi lua-patterns, but for multiple nodes:
+  ;; #any-lua-match? interprets args unlike `any-of?`, but like `any-eq?`.
+  (#any-of? @_excmd
+   "Fnl"
+   "FnlCompile")
+  (#set! injection.language "fennel")
+  (#set! injection.include-children))
+
+(user_command
+  (command_name) @_excmd
+  . (arguments) @injection.content
+  (#lua-match? @_excmd
+   "^F[nN][lL]?$")
   (#set! injection.language "fennel")
   (#set! injection.include-children))
 
