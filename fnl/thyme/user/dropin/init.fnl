@@ -74,6 +74,8 @@ The configurations are only modifiable at the `dropin-parens` attributes in `.nv
       {: group :pattern ":" :callback #(map-keys-in-cmdwin! $.buf)})))
 
 (let [registry (DropinRegistry.new)]
+  ;; NOTE: The order matters: The earlier one has higher priority.
+  (registry:register! "^(.-)[fF][nN][lL]?(.*)" "%1Fnl%2")
   (registry:register! "^(.-)([[%[%(%{].*)" "%1Fnl %2")
   (set M.registry registry)
   (set M.cmdline
