@@ -60,7 +60,8 @@
         ;; (experimental)
         ;; TODO: Set the default keys once stable a bit.
         :dropin {:cmdline {:enter-key false :completion-key false}
-                 :cmdwin {:enter-key false}}})
+                 :cmdwin {:enter-key false}}
+        :integration {:dropin true}})
 
 (local cache {})
 
