@@ -51,6 +51,8 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
   - Colorful output on [the builtin **treesitter**][builtin treesitter].
   - Implicit paren-completions on **[parinfer][parinfer]**: _Evaluate `(+ 1 2`
     as if `(+ 1 2)`!_
+  - Pseudo builtin lisp (Fennel) experience in Cmdline mode with [nvim-dropin][]:
+    _Expand `:(. package.loaded :vim.fs` to `:Fnl (. package.loaded :vim.fs`_.
 
 > [!CAUTION]
 > Please note that undocumented features are subject to change without notice,
@@ -635,6 +637,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [lazy.nvim]: https://github.com/folke/lazy.nvim
 [macro-path]: ./docs/reference.md#macro-path
 [nfnl]: https://github.com/Olical/nfnl
+[nvim-dropin]: https://github.com/aileot/nvim-dropin
 [nvim-parinfer-rust]: https://github.com/harrygallagher4/nvim-parinfer-rust
 [nvim-treesitter]: https://github.com/nvim-treesitter/nvim-treesitter
 [overseer.nvim]: https://github.com/stevearc/overseer.nvim
