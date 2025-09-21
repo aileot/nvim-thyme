@@ -57,10 +57,6 @@
                 ;; .nvim-thyme.fnl.example.
                 :strategy "clear-all"
                 :macro-strategy "clear-all"}
-        ;; (experimental)
-        ;; TODO: Set the default keys once stable a bit.
-        :dropin {:cmdline {:enter-key false :completion-key false}
-                 :cmdwin {:enter-key false}}
         :integration {:dropin true}})
 
 (local cache {})
