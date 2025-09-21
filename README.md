@@ -5,9 +5,10 @@
 **Zero-overhead Fennel JIT compiler for Neovim**
 
 _Also welcome, **non-lispers**_\
-How about trying **`:Fnl (vim.tbl_extend :force {:foo :bar} {:foo :qux`**
-(_uh…, typos?_ ¯\\\_(ツ)\_/¯),\
-or `:=vim.tbl_extend("force", {foo = "bar"}, {foo = "baz"})`?
+How about trying
+**`:(. package.loaded :vim.fs`**
+for
+`:=package.loaded["vim.fs"]`?
 
 [![badge/test][]][url/to/workflow/test] [![badge/semver][]][url/to/semver]
 [![badge/license][]][url/to/license]\
