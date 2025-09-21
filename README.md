@@ -147,6 +147,12 @@ require("lazy").setup({
     build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
   },
   {
+    -- For pseudo builtin lisp experience in Cmdline mode.
+    "aileot/nvim-dropin",
+    build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
+    opts = {},
+  },
+  {
     "eraserhd/parinfer-rust",
     build = "cargo build --release",
   },
