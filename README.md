@@ -58,14 +58,13 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 
 ### 💥 Comparisons
 
-| feature                        | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
-| :----------------------------- | ------------- | ----------------------- | -------------- | ---- |
-| **Runtime Compiler**           | ✅            | ✅                      | ✅             | ❌   |
-| _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
-| **Zero Startup Overhead**      | ✅            | ❌                      | ❌             | ✅   |
-| **Safety Rollbacks**           | ✅            | ❌                      | ❌             | ❌   |
-| **Parinfer Integration**       | ✅            | ❌                      | ❌             | ❌   |
-
+| feature                        | nvim-thyme    | hotpot.nvim             | nfnl | tangerine.nvim |
+| :----------------------------- | ------------- | ----------------------- | ---- | -------------- |
+| **Runtime Compiler**           | ✅            | ✅                      | ❌   | ✅             |
+| _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌   | ❌             |
+| **Zero Startup Overhead**      | ✅            | ❌                      | ✅   | ❌             |
+| **Safety Rollbacks**           | ✅            | ❌                      | ❌   | ❌             |
+| **Parinfer Integration**       | ✅            | ❌                      | ❌   | ❌             |
 
 See also
 [Migration Guide][migration-guide]
