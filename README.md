@@ -58,13 +58,13 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 
 ### 💥 Comparisons
 
-| Feature                        | nvim-thyme    | hotpot.nvim             | nfnl | tangerine.nvim |
+|                        Feature | nvim-thyme    | hotpot.nvim             | nfnl | tangerine.nvim |
 | -----------------------------: | ------------- | ----------------------- | ---- | -------------- |
-| Runtime Compiler           | ✅            | ✅                      | ❌   | ✅             |
+|               Runtime Compiler | ✅            | ✅                      | ❌   | ✅             |
 | _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌   | ❌             |
-| **Zero** Startup Overhead      | ✅            | ❌                      | ✅   | ❌             |
-| Safety **Rollbacks**           | ✅            | ❌                      | ❌   | ❌             |
-| **Parinfer** Integration       | ✅            | ❌                      | ❌   | ❌             |
+|      **Zero** Startup Overhead | ✅            | ❌                      | ✅   | ❌             |
+|           Safety **Rollbacks** | ✅            | ❌                      | ❌   | ❌             |
+|       **Parinfer** Integration | ✅            | ❌                      | ❌   | ❌             |
 
 See also
 [Migration Guide][migration-guide]
@@ -414,6 +414,17 @@ require("hotpot").setup({
 {:compiler-options {:correlate true}
 ```
 
+### From nfnl.nvim
+
+1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
+   like`mv lua/ lua.bk/`.\
+   Otherwise, there's some chances that nvim would unquestionably load lua files
+   under the `lua/` directory apart from `nvim-thyme`.
+2. Add codes to enable thyme's auto-compile system. See the
+   [Installation][installation] section above.
+3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
+   directory `vim.fn.stdpath('config')`.
+
 ### From tangerine.nvim
 
 ```lua
@@ -425,17 +436,6 @@ require([[tangerine]]).setup({})
 {:compiler-options {:compilerEnv _G
                     :useBitLib true}
 ```
-
-### From nfnl.nvim
-
-1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
-   like`mv lua/ lua.bk/`.\
-   Otherwise, there's some chances that nvim would unquestionably load lua files
-   under the `lua/` directory apart from `nvim-thyme`.
-2. Add codes to enable thyme's auto-compile system. See the
-   [Installation][installation] section above.
-3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
-   directory `vim.fn.stdpath('config')`.
 
 ## 🍿 Ex Command Comparisons
 
@@ -474,10 +474,10 @@ With [parinfer-rust][parinfer-rust],
 :FnlFile %
 " hotpot.nvim
 :Fnlfile %
-" tangerine.nvim
-:FnlFile %:p
 " nfnl.nvim
 :NfnlFile (vim.fn.expand "%:p")
+" tangerine.nvim
+:FnlFile %:p
 ```
 
 ### Not in Plan
