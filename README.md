@@ -565,7 +565,7 @@ The relevant options are only [fnl-dir][] and [macro-path][].
 
 <details>
 <summary>
-The collapse illustrate how to merge `fnl/` into the `lua/` directory as safely as possible.
+The collapse illustrates how to merge `fnl/` into the `lua/` directory as safely as possible.
 </summary>
 
 (Assume your `nvim` config files are managed by `git`, at `~/.config/nvim`.)
