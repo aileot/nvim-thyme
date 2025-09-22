@@ -417,7 +417,7 @@ require("hotpot").setup({
 ### From nfnl.nvim
 
 1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
-   like`mv lua/ lua.bk/`.\
+   like `mv lua/ lua.bk/`.\
    Otherwise, there's some chances that nvim would unquestionably load lua files
    under the `lua/` directory apart from `nvim-thyme`.
 2. Add codes to enable thyme's auto-compile system. See the
