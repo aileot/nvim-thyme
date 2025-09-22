@@ -60,11 +60,11 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 
 | Feature                        | nvim-thyme    | hotpot.nvim             | nfnl | tangerine.nvim |
 | -----------------------------: | ------------- | ----------------------- | ---- | -------------- |
-| **Runtime Compiler**           | ✅            | ✅                      | ❌   | ✅             |
+| Runtime Compiler           | ✅            | ✅                      | ❌   | ✅             |
 | _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌   | ❌             |
-| **Zero Startup Overhead**      | ✅            | ❌                      | ✅   | ❌             |
-| **Safety Rollbacks**           | ✅            | ❌                      | ❌   | ❌             |
-| **Parinfer Integration**       | ✅            | ❌                      | ❌   | ❌             |
+| **Zero** Startup Overhead      | ✅            | ❌                      | ✅   | ❌             |
+| Safety **Rollbacks**           | ✅            | ❌                      | ❌   | ❌             |
+| **Parinfer** Integration       | ✅            | ❌                      | ❌   | ❌             |
 
 See also
 [Migration Guide][migration-guide]
