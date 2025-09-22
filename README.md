@@ -56,6 +56,23 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 > Please note that undocumented features are subject to change without notice,
 > regardless of [semantic versioning][].
 
+### 💥 Comparisons
+
+| feature                        | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
+| :----------------------------- | ------------- | ----------------------- | -------------- | ---- |
+| **Runtime Compiler**           | ✅            | ✅                      | ✅             | ❌   |
+| _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
+| **Zero Startup Overhead**      | ✅            | ❌                      | ❌             | ✅   |
+| **Safety Rollbacks**           | ✅            | ❌                      | ❌             | ❌   |
+| **Parinfer Integration**       | ✅            | ❌                      | ❌             | ❌   |
+
+
+See also
+[Migration Guide][migration-guide]
+and
+[Ex Command Comparisons][ex-command-comparisons]
+below.
+
 ## 🔥 Motivations
 
 - To cut down startuptime, checking Fennel should be skipped at startup if
@@ -374,17 +391,7 @@ loaded once a session of nvim. For example,
 
 -->
 
-## 💥 Comparisons
-
-| feature                        | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
-| :----------------------------- | ------------- | ----------------------- | -------------- | ---- |
-| **Runtime Compiler**           | ✅            | ✅                      | ✅             | ❌   |
-| _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
-| **Zero Startup Overhead**      | ✅            | ❌                      | ❌             | ✅   |
-| **Safety Rollbacks**           | ✅            | ❌                      | ❌             | ❌   |
-| **Parinfer Integration**       | ✅            | ❌                      | ❌             | ❌   |
-
-### 🚚 Migration Guide
+## 🚚 Migration Guide
 
 ### From hotpot.nvim
 
@@ -431,7 +438,7 @@ require([[tangerine]]).setup({})
 3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
    directory `vim.fn.stdpath('config')`.
 
-### 🍿 Ex Command Comparisons
+## 🍿 Ex Command Comparisons
 
 Note: `nvim-thyme` only provides user commands after you call
 [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`) for
@@ -617,6 +624,8 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [fnl-dir]: ./docs/reference.md#fnl-dir
 [hotpot.nvim]: https://github.com/rktjmp/hotpot.nvim
 [installation]: #-installation
+[migration-guide]: #-migration-guide
+[ex-command-comparisons]: #-ex-command-comparisons
 [lazy.nvim]: https://github.com/folke/lazy.nvim
 [macro-path]: ./docs/reference.md#macro-path
 [nfnl]: https://github.com/Olical/nfnl
