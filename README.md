@@ -61,7 +61,7 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 |                                      Feature |                                         nvim-thyme                                         |       hotpot.nvim        |   nfnl   | tangerine.nvim |
 | -------------------------------------------: | :----------------------------------------------------------------------------------------: | :----------------------: | :------: | :------------: |
 |                    **Zero** Startup Overhead |                                             ✅                                             |            ❌            |    ✅    |       ❌       |
-|                             Runtime Compiler |                                             ✅                                             |            ✅            |    ❌    |       ✅       |
+|                             **Runtime** Compiler |                                             ✅                                             |            ✅            |    ❌    |       ✅       |
 |           _(Compile in lua/<br> at runtime)_ |                                     ✅ <br> (optional)                                     | ✅ <br> (with `:source`) |    ❌    |       ❌       |
 |                         Safety **Rollbacks** |                                             ✅                                             |            ❌            |    ❌    |       ❌       |
 | **Parinfer** Integration<br> in Cmdline mode |                                             ✅                                             |            ❌            |    ❌    |       ❌       |
