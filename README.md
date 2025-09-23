@@ -90,8 +90,8 @@ below.
 
 - Neovim v0.11.1+
 - [Fennel][Fennel] on your [`&runtimepath`][&runtimepath],
-  in short, [`&rtp`][&runtimepath].
-  (_not embedded_ unlike [the alternative plugins][comparisons])
+  in short, [`&rtp`][&runtimepath].\
+  (_not embedded_ unlike [the alternative plugins][comparisons]. See [Installation][installation].)
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
   `&rtp` by yourself)
 
