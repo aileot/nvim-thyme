@@ -702,7 +702,7 @@ Unmount the mounted backups for the `{target}`.
 
 Unmount the mounted backups.
 
-[&runtimepath]: https://vim-jp.org/vimdoc-ja/options.html#'runtimepath'
+[&runtimepath]: https://vim-jp.org/vimdoc-en/options.html#'runtimepath'
 [.nvim-thyme.fnl.example]: ../.nvim-thyme.fnl.example
 [.nvim-thyme.fnl]: #options-in-nvim-thymefnl
 [:FnlAlternate]: #fnlalternate
