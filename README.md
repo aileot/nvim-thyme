@@ -58,14 +58,14 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 
 ### 💥 Comparisons
 
-|                                                          Feature |                                 nvim-thyme                                 |         hotpot.nvim          |             nfnl             | tangerine.nvim |
-| ---------------------------------------------------------------: | :------------------------------------------------------------------------: | :--------------------------: | :--------------------------: | :------------: |
-|                                                 Runtime Compiler |                                     ✅                                     |              ✅              |              ❌              |       ✅       |
-|                               _(Compile in lua/<br> at runtime)_ |                             ✅ <br> (optional)                             | ✅ <br> (but with `:source`) |              ❌              |       ❌       |
-|                                        **Zero** Startup Overhead |                                     ✅                                     |              ❌              |              ✅              |       ❌       |
-|                                             Safety **Rollbacks** |                                     ✅                                     |              ❌              |              ❌              |       ❌       |
-|                     **Parinfer** Integration<br> in Cmdline mode |                                     ✅                                     |              ❌              |              ❌              |       ❌       |
-|                                                Fennel Dependency | **_Not embedded_** <br> (Any compatible version <br> should be on `&rtp`.) |           Embedded           |           Embedded           |    Embedded    |
+|                                      Feature |                                 nvim-thyme                                 |         hotpot.nvim          |   nfnl   | tangerine.nvim |
+| -------------------------------------------: | :------------------------------------------------------------------------: | :--------------------------: | :------: | :------------: |
+|                             Runtime Compiler |                                     ✅                                     |              ✅              |    ❌    |       ✅       |
+|           _(Compile in lua/<br> at runtime)_ |                             ✅ <br> (optional)                             | ✅ <br> (but with `:source`) |    ❌    |       ❌       |
+|                    **Zero** Startup Overhead |                                     ✅                                     |              ❌              |    ✅    |       ❌       |
+|                         Safety **Rollbacks** |                                     ✅                                     |              ❌              |    ❌    |       ❌       |
+| **Parinfer** Integration<br> in Cmdline mode |                                     ✅                                     |              ❌              |    ❌    |       ❌       |
+|                            Fennel Dependency | **_Not embedded_** <br> (Any compatible version <br> should be on `&rtp`.) |           Embedded           | Embedded |    Embedded    |
 
 See also
 [Migration Guide][migration-guide]
@@ -89,8 +89,9 @@ below.
 ## ✔️ Requirements
 
 - Neovim v0.11.1+
-- [Fennel][Fennel] on your `&runtimepath`, in short, `&rtp`. (_not embedded_
-  unlike [the alternative plugins][comparisons])
+- [Fennel][Fennel] on your [`&runtimepath`][&runtimepath],
+  in short, [`&rtp`][&runtimepath].
+  (_not embedded_ unlike [the alternative plugins][comparisons])
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
   `&rtp` by yourself)
 
@@ -639,3 +640,4 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [tangerine.nvim]: https://github.com/udayvir-singh/tangerine.nvim
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [watch.strategy]: ./docs/reference.md#watchstrategy
+[&runtimepath]: https://vim-jp.org/vimdoc-en/options.html#'runtimepath'
