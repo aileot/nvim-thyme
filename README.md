@@ -363,8 +363,8 @@ you will be asked for confirmation. Once you agree, a new `.nvim-thyme.fnl` will
 be generated to `vim.fn.stdpath('config')` with recommended settings there. The
 generated file is a copy of [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
 
-For all the available options, see the
-[section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
+For all the available options, see
+[Options](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
 
 <!--
 
