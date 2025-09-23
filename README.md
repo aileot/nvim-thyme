@@ -56,6 +56,23 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 > Please note that undocumented features are subject to change without notice,
 > regardless of [semantic versioning][].
 
+### 💥 Comparisons
+
+|                                      Feature |                                         nvim-thyme                                         |       hotpot.nvim        |   nfnl   | tangerine.nvim |
+| -------------------------------------------: | :----------------------------------------------------------------------------------------: | :----------------------: | :------: | :------------: |
+|                    **Zero** Startup Overhead |                                             ✅                                             |            ❌            |    ✅    |       ❌       |
+|                             **Runtime** Compiler |                                             ✅                                             |            ✅            |    ❌    |       ✅       |
+|           _(Compile in lua/<br> at runtime)_ |                                     ✅ <br> (optional)                                     | ✅ <br> (with `:source`) |    ❌    |       ❌       |
+|                         Safety **Rollbacks** |                                             ✅                                             |            ❌            |    ❌    |       ❌       |
+| **Parinfer** Integration<br> in Cmdline mode |                                             ✅                                             |            ❌            |    ❌    |       ❌       |
+|                            Fennel Dependency | **_Not embedded_** <br> ([Any compatible version <br> should be on `&rtp`.][installation]) |         Embedded         | Embedded |    Embedded    |
+
+See also
+[Migration Guide][migration-guide]
+and
+[Ex Command Comparisons][ex-command-comparisons]
+below.
+
 ## 🔥 Motivations
 
 - To cut down startuptime, checking Fennel should be skipped at startup if
@@ -72,20 +89,23 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 ## ✔️ Requirements
 
 - Neovim v0.11.1+
-- [Fennel][Fennel] on your `&runtimepath`, in short, `&rtp`. (_not embedded_
-  unlike [the alternative plugins][alternatives])
-- `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
-  `&rtp` by yourself)
+- [Fennel][Fennel] on your [`&runtimepath`][&runtimepath],
+  in short, [`&rtp`][&runtimepath].\
+  (_not embedded_ unlike [the alternative plugins][comparisons]. See [Installation][installation].)
+- `make`
+  (or please locate a compiled `fennel.lua`
+  in a `lua/` directory on `&rtp` by yourself)
 
 ### Optional Dependencies
 
-- `luajit` or `lua5.1` (to compile `fennel` on `&rtp` on `make`)\
-  If none of them is available, `nvim --clean --headless -l` will be used as a
-  `lua` fallback.
-- A tree-sitter parser for fennel like [tree-sitter-fennel], or via
-  [nvim-treesitter][nvim-treesitter] on `&rtp`.
-- The [parinfer-rust][parinfer-rust] on `&rtp` (to improve UX on the commands
-  and keymaps)
+- `luajit` or `lua5.1`
+  (to compile `fennel` on `&rtp` on `make`)\
+  If none of them is available,
+  `nvim --clean --headless -l` will be used as a `lua` fallback.
+- A tree-sitter parser for fennel like [tree-sitter-fennel],
+  or via [nvim-treesitter][nvim-treesitter] on `&rtp`.
+- The [parinfer-rust][parinfer-rust] on `&rtp`
+  (to improve UX on the commands and keymaps)
 
 ## 🎉 Welcome Aboard
 
@@ -235,6 +255,9 @@ require("lazy").setup({
     {
       "aileot/nvim-thyme",
       version = "^v1.4.0",
+      dependencies = {
+        { "https://git.sr.ht/~technomancy/fennel" },
+      },
       build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
       -- For config, see the "Setup Optional Interfaces" section
       -- and "Options in .nvim-thyme.fnl" below!
@@ -340,8 +363,8 @@ you will be asked for confirmation. Once you agree, a new `.nvim-thyme.fnl` will
 be generated to `vim.fn.stdpath('config')` with recommended settings there. The
 generated file is a copy of [.nvim-thyme.fnl.example][.nvim-thyme.fnl.example].
 
-For all the available options, see the
-[section](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
+For all the available options, see
+[Options](./docs/reference.md#options-in-nvim-thymefnl) in the reference.
 
 <!--
 
@@ -374,17 +397,7 @@ loaded once a session of nvim. For example,
 
 -->
 
-## 💥 Comparisons
-
-| feature                        | nvim-thyme    | hotpot.nvim             | tangerine.nvim | nfnl |
-| :----------------------------- | ------------- | ----------------------- | -------------- | ---- |
-| **Runtime Compiler**           | ✅            | ✅                      | ✅             | ❌   |
-| _(Compile in lua/ at runtime)_ | ✅ (optional) | ✅ (but with `:source`) | ❌             | ❌   |
-| **Zero Startup Overhead**      | ✅            | ❌                      | ❌             | ✅   |
-| **Safety Rollbacks**           | ✅            | ❌                      | ❌             | ❌   |
-| **Parinfer Integration**       | ✅            | ❌                      | ❌             | ❌   |
-
-### 🚚 Migration Guide
+## 🚚 Migration Guide
 
 ### From hotpot.nvim
 
@@ -408,6 +421,17 @@ require("hotpot").setup({
 {:compiler-options {:correlate true}
 ```
 
+### From nfnl.nvim
+
+1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
+   like `mv lua/ lua.bk/`.\
+   Otherwise, there's some chances that nvim would unquestionably load lua files
+   under the `lua/` directory apart from `nvim-thyme`.
+2. Add codes to enable thyme's auto-compile system. See the
+   [Installation][installation] section above.
+3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
+   directory `vim.fn.stdpath('config')`.
+
 ### From tangerine.nvim
 
 ```lua
@@ -420,18 +444,7 @@ require([[tangerine]]).setup({})
                     :useBitLib true}
 ```
 
-### From nfnl.nvim
-
-1. (_important_) Rename `lua/` at `vim.fn.stdpath('config')`,
-   like`mv lua/ lua.bk/`.\
-   Otherwise, there's some chances that nvim would unquestionably load lua files
-   under the `lua/` directory apart from `nvim-thyme`.
-2. Add codes to enable thyme's auto-compile system. See the
-   [Installation][installation] section above.
-3. Start `nvim`. You will be asked to generate `.nvim-thyme.fnl` at the
-   directory `vim.fn.stdpath('config')`.
-
-### 🍿 Ex Command Comparisons
+## 🍿 Ex Command Comparisons
 
 Note: `nvim-thyme` only provides user commands after you call
 [`thyme.setup`](./docs/reference.md#thyme-setup--or--thyme-setup`) for
@@ -468,10 +481,10 @@ With [parinfer-rust][parinfer-rust],
 :FnlFile %
 " hotpot.nvim
 :Fnlfile %
-" tangerine.nvim
-:FnlFile %:p
 " nfnl.nvim
 :NfnlFile (vim.fn.expand "%:p")
+" tangerine.nvim
+:FnlFile %:p
 ```
 
 ### Not in Plan
@@ -559,7 +572,7 @@ The relevant options are only [fnl-dir][] and [macro-path][].
 
 <details>
 <summary>
-The collapse illustrate how to merge `fnl/` into the `lua/` directory as safely as possible.
+The collapse illustrates how to merge `fnl/` into the `lua/` directory as safely as possible.
 </summary>
 
 (Assume your `nvim` config files are managed by `git`, at `~/.config/nvim`.)
@@ -610,13 +623,15 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [:ThymeRollbackMount]: ./docs/reference.md#thymerollbackmount-target
 [:ThymeRollbackSwitch]: ./docs/reference.md#thymerollbackswitch-target
 [Fennel]: https://git.sr.ht/~technomancy/fennel
-[alternatives]: #-alternatives
+[comparisons]: #-comparisons
 [aniseed]: https://github.com/Olical/aniseed
 [builtin treesitter]: https://neovim.io/doc/user/treesitter.html
 [configuration]: #%EF%B8%8F-configuration
 [fnl-dir]: ./docs/reference.md#fnl-dir
 [hotpot.nvim]: https://github.com/rktjmp/hotpot.nvim
 [installation]: #-installation
+[migration-guide]: #-migration-guide
+[ex-command-comparisons]: #-ex-command-comparisons
 [lazy.nvim]: https://github.com/folke/lazy.nvim
 [macro-path]: ./docs/reference.md#macro-path
 [nfnl]: https://github.com/Olical/nfnl
@@ -630,3 +645,4 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [tangerine.nvim]: https://github.com/udayvir-singh/tangerine.nvim
 [tree-sitter-fennel]: https://github.com/alexmozaidze/tree-sitter-fennel
 [watch.strategy]: ./docs/reference.md#watchstrategy
+[&runtimepath]: https://vim-jp.org/vimdoc-en/options.html#'runtimepath'
