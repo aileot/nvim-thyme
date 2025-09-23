@@ -58,13 +58,14 @@ https://github.com/catppuccin/catppuccin/tree/v0.2.0?tab=readme-ov-file#-palette
 
 ### 💥 Comparisons
 
-|                        Feature | nvim-thyme        | hotpot.nvim         | nfnl        | tangerine.nvim |
-| -----------------------------: | :---------------: | :-----------------: | :---------: | :------------: |
-|               Runtime Compiler | ✅                | ✅                  | ❌          | ✅             |
-| _(Compile in lua/<br> at runtime)_ | ✅ <br> (optional)     | ✅ <br> (but with `:source`) | ❌          | ❌             |
-|      **Zero** Startup Overhead | ✅                | ❌                  | ✅          | ❌             |
-|           Safety **Rollbacks** | ✅                | ❌                  | ❌          | ❌             |
-|       **Parinfer** Integration | ✅                | ❌                  | ❌          | ❌             |
+|                                        Feature |     nvim-thyme     |         hotpot.nvim          |    nfnl     | tangerine.nvim |
+| ---------------------------------------------: | :----------------: | :--------------------------: | :---------: | :------------: |
+|                               Runtime Compiler |         ✅         |              ✅              |     ❌      |       ✅       |
+|             _(Compile in lua/<br> at runtime)_ | ✅ <br> (optional) | ✅ <br> (but with `:source`) |     ❌      |       ❌       |
+|                      **Zero** Startup Overhead |         ✅         |              ❌              |     ✅      |       ❌       |
+|                           Safety **Rollbacks** |         ✅         |              ❌              |     ❌      |       ❌       |
+|   **Parinfer** Integration<br> in Cmdline mode |         ✅         |              ❌              |     ❌      |       ❌       |
+| **Treesitter** Integration<br> in Cmdline mode |         ✅         |              ❌              |     ❌      |       ❌       |
 
 See also
 [Migration Guide][migration-guide]
