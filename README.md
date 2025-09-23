@@ -90,7 +90,7 @@ below.
 
 - Neovim v0.11.1+
 - [Fennel][Fennel] on your `&runtimepath`, in short, `&rtp`. (_not embedded_
-  unlike [the alternative plugins][alternatives])
+  unlike [the alternative plugins][comparisons])
 - `make` (or please locate a compiled `fennel.lua` in a `lua/` directory on
   `&rtp` by yourself)
 
@@ -617,7 +617,7 @@ Thanks to [harrygallagher4](https://github.com/harrygallagher4) for
 [:ThymeRollbackMount]: ./docs/reference.md#thymerollbackmount-target
 [:ThymeRollbackSwitch]: ./docs/reference.md#thymerollbackswitch-target
 [Fennel]: https://git.sr.ht/~technomancy/fennel
-[alternatives]: #-alternatives
+[comparisons]: #-comparisons
 [aniseed]: https://github.com/Olical/aniseed
 [builtin treesitter]: https://neovim.io/doc/user/treesitter.html
 [configuration]: #%EF%B8%8F-configuration
