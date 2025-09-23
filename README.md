@@ -255,6 +255,9 @@ require("lazy").setup({
     {
       "aileot/nvim-thyme",
       version = "^v1.4.0",
+      dependencies = {
+        { "https://git.sr.ht/~technomancy/fennel" },
+      },
       build = ":lua require('thyme').setup(); vim.cmd('ThymeCacheClear')",
       -- For config, see the "Setup Optional Interfaces" section
       -- and "Options in .nvim-thyme.fnl" below!
