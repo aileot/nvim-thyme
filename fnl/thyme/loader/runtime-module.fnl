@@ -119,8 +119,8 @@ cache dir.
                                                                                             file-loader)
                           searcher (searcher module-name))
                     msg|chunk (case (type msg|chunk)
-                                ;; NOTE: Discard unwothy msg in the edge
-                                ;; cases on initializations.
+                                ;; NOTE: Discard unworthy msg in the edge cases
+                                ;; on initializations.
                                 :function
                                 (values msg|chunk)))
                   (case (case (module-name->fnl-file-on-rtp! module-name)
