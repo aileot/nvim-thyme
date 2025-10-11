@@ -113,9 +113,9 @@
                 Config (require :thyme.config)]
             (case Config.?error-msg
               msg (values nil (MacroLoaderMessenger:mk-failure-reason msg))
-              _ (or (let [max-rollbacks Config.max-rollbacks
-                          rollback-enabled? (< 0 max-rollbacks)]
-                      (when (and rollback-enabled? (file-readable? backup-path))
+              _ (let [max-rollbacks Config.max-rollbacks
+                      rollback-enabled? (< 0 max-rollbacks)]
+                  (or (when (and rollback-enabled? (file-readable? backup-path))
                         (case (macro-module->?chunk module-name backup-path)
                           chunk
                           ;; TODO: As described in the error message below, append
@@ -130,9 +130,9 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
                                        error-msg)]
                             (RollbackLoaderMessenger:notify-once! msg
                                                                   vim.log.levels.WARN)
-                            (values chunk)))))
-                    (values nil
-                            (MacroLoaderMessenger:mk-failure-reason error-msg)))))))))
+                            (values chunk))))
+                      (values nil
+                              (MacroLoaderMessenger:mk-failure-reason error-msg))))))))))
 
 (fn initialize-macro-searcher-on-rtp! [fennel]
   ;; Ref: src/fennel/specials.fnl @1276
