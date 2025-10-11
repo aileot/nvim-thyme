@@ -68,7 +68,7 @@ if not file_readable_3f(config_path) then
     vim.wait(1000, _16_)
     vim.cmd("redraw!")
     if (config_path == vim.api.nvim_buf_get_name(0)) then
-      local _17_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&Yes\n&no", 1, "Question")
+      local _17_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
       if (_17_ == 2) then
         local buf_name = vim.api.nvim_buf_get_name(0)
         assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))

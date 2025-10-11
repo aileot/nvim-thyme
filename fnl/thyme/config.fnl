@@ -76,7 +76,7 @@
         (vim.cmd "redraw!")
         (when (= config-path (vim.api.nvim_buf_get_name 0))
           (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                "&Yes\n&no" 1 :Question)
+                                "&No\n&yes" 1 :Question)
             2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
                 (assert (= config-path buf-name)
                         (-> "expected %s, got %s"
