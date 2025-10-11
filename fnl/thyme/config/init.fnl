@@ -3,10 +3,9 @@
 ;; WARN: Do NOT use `require` modules which depend on config in .nvim-thyme.fnl
 ;; until `.nvim-thyme.fnl` is loaded.
 
-(local {: debug? : config-filename : config-path : example-config-path}
-       (require :thyme.const))
+(local {: debug? : config-filename : config-path} (require :thyme.const))
 
-(local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
+(local {: file-readable? : assert-is-fnl-file : read-file}
        (require :thyme.util.fs))
 
 (local default-opts (require :thyme.config.defaults))
@@ -18,35 +17,7 @@
 (local cache {})
 
 (when (not (file-readable? config-path))
-  ;; Generate main-config-file if missing.
-  (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
-                           :format config-filename (vim.fn.stdpath :config))
-                        "&No\n&yes" 1 :Warning)
-    2 (let [recommended-config (read-file example-config-path)]
-        (write-fnl-file! config-path recommended-config)
-        (vim.cmd (.. "tabedit " config-path))
-        (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
-        (vim.cmd "redraw!")
-        (when (= config-path (vim.api.nvim_buf_get_name 0))
-          (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                "&No\n&yes" 1 :Question)
-            2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
-                (assert (= config-path buf-name)
-                        (-> "expected %s, got %s"
-                            (: :format config-path buf-name)))
-                ;; NOTE: vim.secure.trust specifying path in its arg cannot
-                ;; set "allow" to the "action" value.
-                ;; NOTE: `:trust` to "allow" cannot take any path as the arg.
-                (vim.cmd :trust))
-            _ (do
-                (vim.secure.trust {:action "remove" :path config-path})
-                (case (vim.fn.confirm (-> "Aborted trusting %s. Exit?"
-                                          (: :format config-path))
-                                      "&No\n&yes" 1 :WarningMsg)
-                  2 (os.exit 1))))))
-    _ (case (vim.fn.confirm "Aborted proceeding with nvim-thyme. Exit?"
-                            "&No\n&yes" 1 :WarningMsg)
-        2 (os.exit 1))))
+  (require :thyme.config.fallback))
 
 ;; HACK: Make sure to use `require` to modules which depend on config in
 ;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
