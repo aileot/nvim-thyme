@@ -15,9 +15,9 @@
     (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
                           "&No\n&yes" 1 :Question)
       2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
-          (assert (= config-path buf-name)
+          (assert (= buf-name example-config-path)
                   (-> "expected %s, got %s"
-                      (: :format config-path buf-name)))
+                      (: :format example-config-path buf-name)))
           (vim.cmd (.. "saveas " config-path))
           ;; NOTE: vim.secure.trust specifying path in its arg cannot
           ;; set "allow" to the "action" value.
