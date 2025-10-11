@@ -44,7 +44,7 @@ local function read_config_with_backup_21(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
-  local ok_3f, _3fresult = nil, nil
+  local ok_3f, _3fresult
   if _3fconfig_code then
     local function _7_()
       return fennel.eval(_3fconfig_code, compiler_options)
@@ -116,11 +116,11 @@ local function _15_(_self, k)
   else
     local _ = k
     local config = get_config()
-    local _17_ = default_opts[k]
-    if (_17_ == nil) then
+    local case_17_ = default_opts[k]
+    if (case_17_ == nil) then
       return error(("unexpected option detected: " .. k))
     else
-      local _0 = _17_
+      local _0 = case_17_
       return config[k]
     end
   end

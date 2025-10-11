@@ -73,9 +73,9 @@ local function assert_is_log_file(log_path)
 end
 local function read_file(path)
   local file = assert(io.open(path, "r"), ("failed to read " .. path))
-  local function close_handlers_12_(ok_13_, ...)
+  local function close_handlers_13_(ok_14_, ...)
     file:close()
-    if ok_13_ then
+    if ok_14_ then
       return ...
     else
       return error(..., 0)
@@ -108,13 +108,13 @@ local function read_file(path)
     end
     or_16_ = {traceback = _17_}
   end
-  return close_handlers_12_(_G.xpcall(_10_, or_16_.traceback))
+  return close_handlers_13_(_G.xpcall(_10_, or_16_.traceback))
 end
 local function write_file_21(path, contents)
   local f = assert(io.open(path, "w"), ("failed to write to " .. path))
-  local function close_handlers_12_(ok_13_, ...)
+  local function close_handlers_13_(ok_14_, ...)
     f:close()
-    if ok_13_ then
+    if ok_14_ then
       return ...
     else
       return error(..., 0)
@@ -147,13 +147,13 @@ local function write_file_21(path, contents)
     end
     or_25_ = {traceback = _26_}
   end
-  return close_handlers_12_(_G.xpcall(_19_, or_25_.traceback))
+  return close_handlers_13_(_G.xpcall(_19_, or_25_.traceback))
 end
 local function append_file_21(path, contents)
   local f = assert(io.open(path, "a"), ("failed to append to " .. path))
-  local function close_handlers_12_(ok_13_, ...)
+  local function close_handlers_13_(ok_14_, ...)
     f:close()
-    if ok_13_ then
+    if ok_14_ then
       return ...
     else
       return error(..., 0)
@@ -186,7 +186,7 @@ local function append_file_21(path, contents)
     end
     or_34_ = {traceback = _35_}
   end
-  return close_handlers_12_(_G.xpcall(_28_, or_34_.traceback))
+  return close_handlers_13_(_G.xpcall(_28_, or_34_.traceback))
 end
 local function delete_file_21(path)
   return uv.fs_unlink(path)
@@ -251,13 +251,13 @@ uv["symlink!"] = function(path, new_path, ...)
     hide_file_21(new_path)
   else
   end
-  local _41_, _42_ = nil, nil
+  local case_41_, case_42_
   local function _43_()
     return vim.uv.fs_symlink(path, new_path)
   end
-  _41_, _42_ = pcall(assert(_43_))
-  if ((_41_ == false) and (nil ~= _42_)) then
-    local msg = _42_
+  case_41_, case_42_ = pcall(assert(_43_))
+  if ((case_41_ == false) and (nil ~= case_42_)) then
+    local msg = case_42_
     if has_hidden_file_3f(new_path) then
       return true
     else
@@ -266,7 +266,7 @@ uv["symlink!"] = function(path, new_path, ...)
       return false
     end
   else
-    local _ = _41_
+    local _ = case_41_
     return true
   end
 end

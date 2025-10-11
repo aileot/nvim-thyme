@@ -59,22 +59,22 @@ BackupHandler["determine-active-backup-path"] = function(self)
   return Path.join(backup_dir, filename)
 end
 BackupHandler["determine-active-backup-birthtime"] = function(self)
-  local _5_
+  local case_5_
   do
     local tmp_3_ = self["determine-active-backup-path"](self, self["_module-name"])
     if (nil ~= tmp_3_) then
       local tmp_3_0 = fs.stat(tmp_3_)
       if (nil ~= tmp_3_0) then
-        _5_ = tmp_3_0.birthtime.sec
+        case_5_ = tmp_3_0.birthtime.sec
       else
-        _5_ = nil
+        case_5_ = nil
       end
     else
-      _5_ = nil
+      case_5_ = nil
     end
   end
-  if (nil ~= _5_) then
-    local time = _5_
+  if (nil ~= case_5_) then
+    local time = case_5_
     return os.date("%c", time)
   else
     return nil

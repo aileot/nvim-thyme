@@ -5,8 +5,8 @@ local example_config_path = _local_1_["example-config-path"]
 local _local_2_ = require("thyme.util.fs")
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
-local _3_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-if (_3_ == 2) then
+local case_3_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+if (case_3_ == 2) then
   local recommended_config = read_file(example_config_path)
   write_fnl_file_21(config_path, recommended_config)
   vim.cmd(("tabedit " .. config_path))
@@ -16,16 +16,16 @@ if (_3_ == 2) then
   vim.wait(1000, _4_)
   vim.cmd("redraw!")
   if (config_path == vim.api.nvim_buf_get_name(0)) then
-    local _5_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
-    if (_5_ == 2) then
+    local case_5_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
+    if (case_5_ == 2) then
       local buf_name = vim.api.nvim_buf_get_name(0)
       assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))
       return vim.cmd("trust")
     else
-      local _ = _5_
+      local _ = case_5_
       vim.secure.trust({action = "remove", path = config_path})
-      local _6_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
-      if (_6_ == 2) then
+      local case_6_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
+      if (case_6_ == 2) then
         return os.exit(1)
       else
         return nil
@@ -35,9 +35,9 @@ if (_3_ == 2) then
     return nil
   end
 else
-  local _ = _3_
-  local _10_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
-  if (_10_ == 2) then
+  local _ = case_3_
+  local case_10_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+  if (case_10_ == 2) then
     return os.exit(1)
   else
     return nil
