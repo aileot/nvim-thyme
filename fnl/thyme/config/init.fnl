@@ -9,7 +9,8 @@
        (require :thyme.util.fs))
 
 (when-not (file-readable? config-path)
-  (require :thyme.config.fallback))
+  (let [fallback (require :thyme.config.fallback)]
+    (fallback.prompt-fallback-config!)))
 
 (local default-opts (require :thyme.config.defaults))
 

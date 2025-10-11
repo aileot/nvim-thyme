@@ -7,7 +7,8 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 if not file_readable_3f(config_path) then
-  require("thyme.config.fallback")
+  local fallback = require("thyme.config.fallback")
+  fallback["prompt-fallback-config!"]()
 else
 end
 local default_opts = require("thyme.config.defaults")
@@ -23,7 +24,6 @@ local function notify_once_21(msg, ...)
 end
 local function read_config_with_backup_21(config_file_path)
   assert_is_fnl_file(config_file_path)
-  require("thyme.config")
   local fennel = require("fennel")
   local backup_name = "default"
   local backup_handler = ConfigRollbackManager["backup-handler-of"](ConfigRollbackManager, backup_name)
