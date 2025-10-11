@@ -3,105 +3,29 @@
 ;; WARN: Do NOT use `require` modules which depend on config in .nvim-thyme.fnl
 ;; until `.nvim-thyme.fnl` is loaded.
 
-(local {: debug? : config-filename : config-path : example-config-path}
-       (require :thyme.const))
+(local {: debug? : config-filename : config-path} (require :thyme.const))
 
-(local {: file-readable? : assert-is-fnl-file : read-file : write-fnl-file!}
+(local {: file-readable? : assert-is-fnl-file : read-file}
        (require :thyme.util.fs))
 
-;; NOTE: Please keep this security check simple.
-(local nvim-appname vim.env.NVIM_APPNAME)
-(local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
+(when-not (file-readable? config-path)
+  (require :thyme.config.fallback))
 
-(local std-config (vim.fn.stdpath :config))
-(local std-fnl-dir? (vim.uv.fs_stat (vim.fs.joinpath std-config "fnl")))
-(local use-lua-dir? (not std-fnl-dir?))
-
-(local default-opts ;
-       {:max-rollbacks 5
-        :compiler-options {}
-        :fnl-dir (if use-lua-dir? "lua" "fnl")
-        ;; Set to fennel.macro-path for macro modules.
-        :macro-path (-> ["./fnl/?.fnlm"
-                         "./fnl/?/init.fnlm"
-                         "./fnl/?.fnl"
-                         "./fnl/?/init-macros.fnl"
-                         "./fnl/?/init.fnl"
-                         ;; NOTE: Only the last items can be `nil`s without errors.
-                         (when use-lua-dir? (.. std-config "/lua/?.fnlm"))
-                         (when use-lua-dir? (.. std-config "/lua/?/init.fnlm"))
-                         (when use-lua-dir? (.. std-config "/lua/?.fnl"))
-                         (when use-lua-dir?
-                           (.. std-config "/lua/?/init-macros.fnl"))
-                         (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
-                        (table.concat ";"))
-        ;; (experimental)
-        ;; What args should be passed to the callback?
-        :preproc #$
-        :notifier vim.notify
-        ;; Since the highlighting output rendering are unstable on the
-        ;; experimental vim._extui feature on the nvim v0.12.0 nightly, you can
-        ;; disable treesitter highlights and make nvim-thyme return plain text
-        ;; outputs instead on the keymap and command features.
-        :disable-treesitter-highlights false
-        :command {:compiler-options false
-                  :cmd-history {:method "overwrite" :trailing-parens "omit"}
-                  :Fnl {;; (experimental)
-                        :default-range 0}
-                  :FnlCompile {;; (experimental)
-                               :default-range 0}}
-        :keymap {:compiler-options false :mappings {}}
-        :watch {:event [:BufWritePost :FileChangedShellPost]
-                :pattern "*.{fnl,fnlm}"
-                ;; TODO: Add :strategy recommended value to
-                ;; .nvim-thyme.fnl.example.
-                :strategy "clear-all"
-                :macro-strategy "clear-all"}
-        ;; (experimental)
-        ;; TODO: Set the default keys once stable a bit.
-        :dropin {:cmdline {:enter-key false :completion-key false}
-                 :cmdwin {:enter-key false}}})
-
-(local cache {})
-
-(when (not (file-readable? config-path))
-  ;; Generate main-config-file if missing.
-  (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
-                           :format config-filename (vim.fn.stdpath :config))
-                        "&No\n&yes" 1 :Warning)
-    2 (let [recommended-config (read-file example-config-path)]
-        (write-fnl-file! config-path recommended-config)
-        (vim.cmd (.. "tabedit " config-path))
-        (vim.wait 1000 #(= config-path (vim.api.nvim_buf_get_name 0)))
-        (vim.cmd "redraw!")
-        (when (= config-path (vim.api.nvim_buf_get_name 0))
-          (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                "&No\n&yes" 1 :Question)
-            2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
-                (assert (= config-path buf-name)
-                        (-> "expected %s, got %s"
-                            (: :format config-path buf-name)))
-                ;; NOTE: vim.secure.trust specifying path in its arg cannot
-                ;; set "allow" to the "action" value.
-                ;; NOTE: `:trust` to "allow" cannot take any path as the arg.
-                (vim.cmd :trust))
-            _ (do
-                (vim.secure.trust {:action "remove" :path config-path})
-                (case (vim.fn.confirm (-> "Aborted trusting %s. Exit?"
-                                          (: :format config-path))
-                                      "&No\n&yes" 1 :WarningMsg)
-                  2 (os.exit 1))))))
-    _ (case (vim.fn.confirm "Aborted proceeding with nvim-thyme. Exit?"
-                            "&No\n&yes" 1 :WarningMsg)
-        2 (os.exit 1))))
-
-;; HACK: Make sure to use `require` to modules which depend on config in
-;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
+(local default-opts (require :thyme.config.defaults))
 
 (local {: denied?} (require :thyme.util.trust))
 
 (local RollbackManager (require :thyme.rollback.manager))
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
+
+;; NOTE: Please keep this security check simple.
+(local nvim-appname vim.env.NVIM_APPNAME)
+(local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
+
+(local cache {})
+
+;; HACK: Make sure to use `require` to modules which depend on config in
+;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
 
 (fn notify-once! [msg ...]
   ;; NOTE: Avoid `Messenger:notify!`, which depends on this module
