@@ -6,18 +6,18 @@ local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
-local default_opts = require("thyme.config.defaults")
 if not file_readable_3f(config_path) then
   require("thyme.config.fallback")
 else
 end
-local nvim_appname = vim.env.NVIM_APPNAME
-local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local cache = {}
+local default_opts = require("thyme.config.defaults")
 local _local_4_ = require("thyme.util.trust")
 local denied_3f = _local_4_["denied?"]
 local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
+local nvim_appname = vim.env.NVIM_APPNAME
+local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
+local cache = {}
 local function notify_once_21(msg, ...)
   return vim.notify_once(("thyme(config): " .. msg), ...)
 end

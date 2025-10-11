@@ -8,10 +8,15 @@
 (local {: file-readable? : assert-is-fnl-file : read-file}
        (require :thyme.util.fs))
 
-(local default-opts (require :thyme.config.defaults))
-
 (when-not (file-readable? config-path)
   (require :thyme.config.fallback))
+
+(local default-opts (require :thyme.config.defaults))
+
+(local {: denied?} (require :thyme.util.trust))
+
+(local RollbackManager (require :thyme.rollback.manager))
+(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
@@ -21,11 +26,6 @@
 
 ;; HACK: Make sure to use `require` to modules which depend on config in
 ;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
-
-(local {: denied?} (require :thyme.util.trust))
-
-(local RollbackManager (require :thyme.rollback.manager))
-(local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 (fn notify-once! [msg ...]
   ;; NOTE: Avoid `Messenger:notify!`, which depends on this module
