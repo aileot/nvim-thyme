@@ -8,76 +8,32 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_fnl_file_21 = _local_2_["write-fnl-file!"]
+local default_opts = require("thyme.config.defaults")
 local nvim_appname = vim.env.NVIM_APPNAME
 local secure_nvim_env_3f = ((nil == nvim_appname) or ("" == nvim_appname))
-local std_config = vim.fn.stdpath("config")
-local std_fnl_dir_3f = vim.uv.fs_stat(vim.fs.joinpath(std_config, "fnl"))
-local use_lua_dir_3f = not std_fnl_dir_3f
-local default_opts
-local _3_
-if use_lua_dir_3f then
-  _3_ = "lua"
-else
-  _3_ = "fnl"
-end
-local _5_
-if use_lua_dir_3f then
-  _5_ = (std_config .. "/lua/?.fnlm")
-else
-  _5_ = nil
-end
-local _7_
-if use_lua_dir_3f then
-  _7_ = (std_config .. "/lua/?/init.fnlm")
-else
-  _7_ = nil
-end
-local _9_
-if use_lua_dir_3f then
-  _9_ = (std_config .. "/lua/?.fnl")
-else
-  _9_ = nil
-end
-local _11_
-if use_lua_dir_3f then
-  _11_ = (std_config .. "/lua/?/init-macros.fnl")
-else
-  _11_ = nil
-end
-local function _13_(...)
-  if use_lua_dir_3f then
-    return (std_config .. "/lua/?/init.fnl")
-  else
-    return nil
-  end
-end
-local function _14_(_241)
-  return _241
-end
-default_opts = {["max-rollbacks"] = 5, ["compiler-options"] = {}, ["fnl-dir"] = _3_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _5_, _7_, _9_, _11_, _13_(...)}, ";"), preproc = _14_, notifier = vim.notify, command = {["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}, Fnl = {["default-range"] = 0}, FnlCompile = {["default-range"] = 0}, ["compiler-options"] = false}, keymap = {mappings = {}, ["compiler-options"] = false}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "clear-all", ["macro-strategy"] = "clear-all"}, dropin = {cmdline = {["completion-key"] = false, ["enter-key"] = false}, cmdwin = {["enter-key"] = false}}, ["disable-treesitter-highlights"] = false}
 local cache = {}
 if not file_readable_3f(config_path) then
-  local _15_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-  if (_15_ == 2) then
+  local _3_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  if (_3_ == 2) then
     local recommended_config = read_file(example_config_path)
     write_fnl_file_21(config_path, recommended_config)
     vim.cmd(("tabedit " .. config_path))
-    local function _16_()
+    local function _4_()
       return (config_path == vim.api.nvim_buf_get_name(0))
     end
-    vim.wait(1000, _16_)
+    vim.wait(1000, _4_)
     vim.cmd("redraw!")
     if (config_path == vim.api.nvim_buf_get_name(0)) then
-      local _17_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
-      if (_17_ == 2) then
+      local _5_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
+      if (_5_ == 2) then
         local buf_name = vim.api.nvim_buf_get_name(0)
         assert((config_path == buf_name), ("expected %s, got %s"):format(config_path, buf_name))
         vim.cmd("trust")
       else
-        local _ = _17_
+        local _ = _5_
         vim.secure.trust({action = "remove", path = config_path})
-        local _18_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
-        if (_18_ == 2) then
+        local _6_ = vim.fn.confirm(("Aborted trusting %s. Exit?"):format(config_path), "&No\n&yes", 1, "WarningMsg")
+        if (_6_ == 2) then
           os.exit(1)
         else
         end
@@ -85,17 +41,17 @@ if not file_readable_3f(config_path) then
     else
     end
   else
-    local _ = _15_
-    local _22_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
-    if (_22_ == 2) then
+    local _ = _3_
+    local _10_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (_10_ == 2) then
       os.exit(1)
     else
     end
   end
 else
 end
-local _local_26_ = require("thyme.util.trust")
-local denied_3f = _local_26_["denied?"]
+local _local_14_ = require("thyme.util.trust")
+local denied_3f = _local_14_["denied?"]
 local RollbackManager = require("thyme.rollback.manager")
 local ConfigRollbackManager = RollbackManager.new("config", ".fnl")
 local function notify_once_21(msg, ...)
@@ -126,10 +82,10 @@ local function read_config_with_backup_21(config_file_path)
   _ = nil
   local ok_3f, _3fresult = nil, nil
   if _3fconfig_code then
-    local function _29_()
+    local function _17_()
       return fennel.eval(_3fconfig_code, compiler_options)
     end
-    ok_3f, _3fresult = xpcall(_29_, fennel.traceback)
+    ok_3f, _3fresult = xpcall(_17_, fennel.traceback)
   else
     notify_once_21("Failed to read config, fallback to the default options", vim.log.levels.WARN)
     ok_3f, _3fresult = default_opts
@@ -173,7 +129,7 @@ end
 local function config_file_3f(path)
   return (config_filename == vim.fs.basename(path))
 end
-local function _35_()
+local function _23_()
   local config = vim.deepcopy(get_config())
   config["compiler-options"].source = nil
   config["compiler-options"]["module-name"] = nil
@@ -186,7 +142,7 @@ local function _35_()
   end
   return config
 end
-local function _37_(_self, k)
+local function _25_(_self, k)
   if (k == "?error-msg") then
     if cache["evaluating?"] then
       return ("recursion detected in evaluating " .. config_filename)
@@ -196,22 +152,22 @@ local function _37_(_self, k)
   else
     local _ = k
     local config = get_config()
-    local _39_ = default_opts[k]
-    if (_39_ == nil) then
+    local _27_ = default_opts[k]
+    if (_27_ == nil) then
       return error(("unexpected option detected: " .. k))
     else
-      local _0 = _39_
+      local _0 = _27_
       return config[k]
     end
   end
 end
-local _42_
+local _30_
 if not debug_3f then
-  local function _43_(_, key)
+  local function _31_(_, key)
     return error(("thyme.config is readonly; accessing " .. key))
   end
-  _42_ = _43_
+  _30_ = _31_
 else
-  _42_ = nil
+  _30_ = nil
 end
-return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _35_}, {__index = _37_, __newindex = _42_})
+return setmetatable({["config-file?"] = config_file_3f, ["get-config"] = _23_}, {__index = _25_, __newindex = _30_})
