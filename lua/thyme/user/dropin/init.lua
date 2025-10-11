@@ -1,4 +1,4 @@
-local Config = require("thyme.config")
+local Config = require("thyme.lazy-config")
 local _local_1_ = require("thyme.const")
 local debug_3f = _local_1_["debug?"]
 local DropinRegistry = require("thyme.user.dropin.registry")

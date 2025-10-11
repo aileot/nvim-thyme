@@ -5,7 +5,7 @@
 (local Stackframe (require :thyme.dependency.stackframe))
 (local DependencyLogger (require :thyme.dependency.logger))
 
-(local Config (require :thyme.config))
+(local Config (require :thyme.lazy-config))
 
 (local Observer {})
 

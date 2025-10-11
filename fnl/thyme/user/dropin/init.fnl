@@ -1,4 +1,4 @@
-(local Config (require :thyme.config))
+(local Config (require :thyme.lazy-config))
 (local {: debug?} (require :thyme.const))
 (local DropinRegistry (require :thyme.user.dropin.registry))
 (local DropinCmdline (require :thyme.user.dropin.replacer.cmdline))

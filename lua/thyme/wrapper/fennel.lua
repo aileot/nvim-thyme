@@ -5,7 +5,7 @@ local _local_2_ = require("thyme.util.fs")
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
 local write_lua_file_21 = _local_2_["write-lua-file!"]
-local _local_3_ = require("thyme.config")
+local _local_3_ = require("thyme.lazy-config")
 local config_file_3f = _local_3_["config-file?"]
 local Config = _local_3_
 local function fnl_code__3efennel_ready(fnl_code, _3fopts)
