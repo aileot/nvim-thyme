@@ -10,14 +10,14 @@
 
 (local default-opts (require :thyme.config.defaults))
 
+(when-not (file-readable? config-path)
+  (require :thyme.config.fallback))
+
 ;; NOTE: Please keep this security check simple.
 (local nvim-appname vim.env.NVIM_APPNAME)
 (local secure-nvim-env? (or (= nil nvim-appname) (= "" nvim-appname)))
 
 (local cache {})
-
-(when (not (file-readable? config-path))
-  (require :thyme.config.fallback))
 
 ;; HACK: Make sure to use `require` to modules which depend on config in
 ;; .nvim-thyme.fnl after `.nvim-thyme.fnl` is loaded.
