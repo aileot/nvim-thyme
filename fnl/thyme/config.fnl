@@ -76,7 +76,7 @@
         (vim.cmd "redraw!")
         (when (= config-path (vim.api.nvim_buf_get_name 0))
           (case (vim.fn.confirm "Trust this file? Otherwise, it will ask your trust again on nvim restart"
-                                "&Yes\n&no" 1 :Question)
+                                "&No\n&yes" 1 :Question)
             2 (let [buf-name (vim.api.nvim_buf_get_name 0)]
                 (assert (= config-path buf-name)
                         (-> "expected %s, got %s"
@@ -104,7 +104,7 @@
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 (fn notify-once! [msg ...]
-  ;; NOTE: Avoid `Messenger:notyfy!`, which depends on this module
+  ;; NOTE: Avoid `Messenger:notify!`, which depends on this module
   ;; `thyme.config`; otherwise, stack overflow.
   ;; NOTE: The message format follows that of Messenger.
   (vim.notify_once (.. "thyme(config): " msg) ;
@@ -197,7 +197,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   (= config-filename (vim.fs.basename path)))
 
 (setmetatable {: config-file?
-               ;; Make sure `get-config` readonly. It is only intedended to be
+               ;; Make sure `get-config` readonly. It is only intended to be
                ;; called for checkhealth.
                :get-config #(let [config (vim.deepcopy (get-config))]
                               ;; NOTE: The options .source, .module-name, and
