@@ -8,7 +8,7 @@
 
 (fn prompt-fallback-config! []
   (display-example-config!)
-  (case (vim.fn.confirm (: "Missing \"%s\" at %s. Generate and open it?"
+  (case (vim.fn.confirm (: "Missing \"%s\" at %s. Copy the sane example config?"
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
     2

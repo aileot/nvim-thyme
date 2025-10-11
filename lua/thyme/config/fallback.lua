@@ -8,7 +8,7 @@ local function display_example_config_21()
 end
 local function prompt_fallback_config_21()
   display_example_config_21()
-  local case_2_ = vim.fn.confirm(("Missing \"%s\" at %s. Generate and open it?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  local case_2_ = vim.fn.confirm(("Missing \"%s\" at %s. Copy the sane example config?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (case_2_ == 2) then
     local case_3_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
     if (case_3_ == 2) then
