@@ -143,7 +143,13 @@ local function search_fnl_macro_on_rtp_21(module_name)
         else
           _26_ = nil
         end
-        return (_26_ or nil or MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, error_msg))
+        if (nil ~= _26_) then
+          local chunk = _26_
+          return chunk
+        else
+          local _2 = _26_
+          return nil, MacroLoaderMessenger["mk-failure-reason"](MacroLoaderMessenger, error_msg)
+        end
       end
     else
       return nil
@@ -152,30 +158,30 @@ local function search_fnl_macro_on_rtp_21(module_name)
 end
 local function initialize_macro_searcher_on_rtp_21(fennel)
   table.insert(fennel["macro-searchers"], 1, search_fnl_macro_on_rtp_21)
-  local function _36_(...)
-    local _37_, _38_ = search_fnl_macro_on_rtp_21(...)
-    if (nil ~= _37_) then
-      local chunk = _37_
+  local function _34_(...)
+    local _35_, _36_ = search_fnl_macro_on_rtp_21(...)
+    if (nil ~= _35_) then
+      local chunk = _35_
       return chunk
-    elseif (true and (nil ~= _38_)) then
-      local _ = _37_
-      local msg = _38_
+    elseif (true and (nil ~= _36_)) then
+      local _ = _35_
+      local msg = _36_
       return msg
     else
       return nil
     end
   end
-  table.insert(package.loaders, _36_)
+  table.insert(package.loaders, _34_)
   return overwrite_metatable_21(fennel["macro-loaded"], cache["macro-loaded"])
 end
 local function hide_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:152")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:154")
   cache["__macro-loaded"][module_name] = cache["macro-loaded"][module_name]
   cache["macro-loaded"][module_name] = nil
   return nil
 end
 local function restore_macro_cache_21(module_name)
-  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:159")
+  _G.assert((nil ~= module_name), "Missing argument module-name on fnl/thyme/loader/macro-module.fnl:161")
   cache["macro-loaded"][module_name] = cache["__macro-loaded"][module_name]
   cache["__macro-loaded"][module_name] = nil
   return nil
