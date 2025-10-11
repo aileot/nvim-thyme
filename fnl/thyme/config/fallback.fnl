@@ -16,7 +16,11 @@
   (case (vim.fn.confirm (: "Missing \"%s\" at %s. Copy the sane example config?"
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
-    2 (vim.cmd (.. "saveas " config-path))
+    2 (let [config-root-dir (vim.fs.dirname config-path)]
+        ;; Especially on CI, ~/.config/nvim/ would be missing.
+        (-> config-root-dir
+            (vim.fn.mkdir :p))
+        (vim.cmd (.. "saveas " config-path)))
     _ (case (vim.fn.confirm "Aborted proceeding with nvim-thyme. Exit?"
                             "&No\n&yes" 1 :WarningMsg)
         2 (os.exit 1))))
