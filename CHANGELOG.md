@@ -8,10 +8,6 @@
 * **command:** (experimental) support range for `:Fnl` ([#74](https://github.com/aileot/nvim-thyme/issues/74)) ([0c158e1](https://github.com/aileot/nvim-thyme/commit/0c158e18960f4191144dce13599c4a9a7c8f99f5))
 * **command:** add `:ThymeConfigRecommend` ([#83](https://github.com/aileot/nvim-thyme/issues/83)) ([77239eb](https://github.com/aileot/nvim-thyme/commit/77239eb102556ead2be1c26534aeee6c9f6fa744))
 
-### Bug Fixes
-
-* **command:** do not try to edit cmd history with `ignore` method ([#79](https://github.com/aileot/nvim-thyme/issues/79)) ([39acc34](https://github.com/aileot/nvim-thyme/commit/39acc349fb2b4414e23123d1e95d34f0af542050))
-
 ## [1.4.0](https://github.com/aileot/nvim-thyme/compare/v1.3.0...v1.4.0) (2025-06-08)
 
 
