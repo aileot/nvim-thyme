@@ -5,9 +5,8 @@
 ;; NOTE: This module is only for nvim main-config, never for project.
 (import-macros {: require-with-key : lazy-require-with-key} :thyme.macros)
 
-(local {: search-fnl-module-on-rtp!} (require :thyme.loader.runtime-module))
-
-(local M {:loader search-fnl-module-on-rtp!
+(local M {:loader (lazy-require-with-key :thyme.loader.runtime-module
+                                         :search-fnl-module-on-rtp!)
           :fennel {:view (lazy-require-with-key :thyme.wrapper.fennel :view)
                    :eval (lazy-require-with-key :thyme.wrapper.fennel :eval)
                    :compile-string (lazy-require-with-key :thyme.wrapper.fennel
@@ -57,6 +56,7 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
           "Please call `thyme.setup` without any args, or with an empty table.")
   (when (or (not has-setup?) ;
             (= :1 vim.env.THYME_DEBUG))
+    (require :thyme.config)
     (let [watch (require :thyme.user.watch)
           keymap (require :thyme.user.keymap)
           command (require :thyme.user.command)

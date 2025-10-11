@@ -4,7 +4,7 @@
 (local {: assert-is-fnl-file : read-file : write-lua-file!}
        (require :thyme.util.fs))
 
-(local {: config-file? &as Config} (require :thyme.config))
+(local {: config-file? &as Config} (require :thyme.lazy-config))
 
 (fn fnl-code->fennel-ready [fnl-code ?opts]
   "Convert `fnl-code` ready to execute on fennel interface.

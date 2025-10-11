@@ -3,9 +3,18 @@ local validate_type = _local_1_["validate-type"]
 local Dropin = {}
 Dropin.__index = Dropin
 Dropin.new = function(cmdtype, Registry, old_line)
-  _G.assert((nil ~= old_line), "Missing argument old-line on fnl/thyme/user/dropin/replacer/common.fnl:9")
-  _G.assert((nil ~= Registry), "Missing argument Registry on fnl/thyme/user/dropin/replacer/common.fnl:9")
-  _G.assert((nil ~= cmdtype), "Missing argument cmdtype on fnl/thyme/user/dropin/replacer/common.fnl:9")
+  if (nil == old_line) then
+    _G.error("Missing argument old-line on fnl/thyme/user/dropin/replacer/common.fnl:9", 2)
+  else
+  end
+  if (nil == Registry) then
+    _G.error("Missing argument Registry on fnl/thyme/user/dropin/replacer/common.fnl:9", 2)
+  else
+  end
+  if (nil == cmdtype) then
+    _G.error("Missing argument cmdtype on fnl/thyme/user/dropin/replacer/common.fnl:9", 2)
+  else
+  end
   local self = setmetatable({}, Dropin)
   self._cmdtype = cmdtype
   self._registry = Registry
@@ -15,21 +24,27 @@ Dropin.new = function(cmdtype, Registry, old_line)
 end
 Dropin["restore-old-cmdhist!"] = function(self)
   local old_cmdline = self["_old-line"]
-  local function _2_()
+  local function _5_()
     return assert((1 == vim.fn.histadd(self._cmdtype, old_cmdline)), ("failed to add old command " .. old_cmdline))
   end
-  return vim.schedule(_2_)
+  return vim.schedule(_5_)
 end
 Dropin["_extract-?invalid-cmd"] = function(self, cmdline)
-  _G.assert((nil ~= cmdline), "Missing argument cmdline on fnl/thyme/user/dropin/replacer/common.fnl:30")
-  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin/replacer/common.fnl:30")
-  local _3_, _4_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
-  if ((_3_ == false) and (nil ~= _4_)) then
-    local msg = _4_
+  if (nil == cmdline) then
+    _G.error("Missing argument cmdline on fnl/thyme/user/dropin/replacer/common.fnl:30", 2)
+  else
+  end
+  if (nil == self) then
+    _G.error("Missing argument self on fnl/thyme/user/dropin/replacer/common.fnl:30", 2)
+  else
+  end
+  local case_8_, case_9_ = pcall(vim.api.nvim_parse_cmd, cmdline, {})
+  if ((case_8_ == false) and (nil ~= case_9_)) then
+    local msg = case_9_
     local expected_error_msg_prefix = "E492: Not an editor command: (.*)"
     return msg:match(expected_error_msg_prefix)
-  elseif ((_3_ == true) and ((_G.type(_4_) == "table") and (nil ~= _4_.nextcmd))) then
-    local nextcmd = _4_.nextcmd
+  elseif ((case_8_ == true) and ((_G.type(case_9_) == "table") and (nil ~= case_9_.nextcmd))) then
+    local nextcmd = case_9_.nextcmd
     if not ("" == nextcmd) then
       return self["_extract-?invalid-cmd"](self, nextcmd)
     else
@@ -40,16 +55,25 @@ Dropin["_extract-?invalid-cmd"] = function(self, cmdline)
   end
 end
 Dropin["_replace-invalid-cmdline"] = function(self, old_cmdline, invalid_cmd)
-  _G.assert((nil ~= invalid_cmd), "Missing argument invalid-cmd on fnl/thyme/user/dropin/replacer/common.fnl:44")
-  _G.assert((nil ~= old_cmdline), "Missing argument old-cmdline on fnl/thyme/user/dropin/replacer/common.fnl:44")
-  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin/replacer/common.fnl:44")
+  if (nil == invalid_cmd) then
+    _G.error("Missing argument invalid-cmd on fnl/thyme/user/dropin/replacer/common.fnl:44", 2)
+  else
+  end
+  if (nil == old_cmdline) then
+    _G.error("Missing argument old-cmdline on fnl/thyme/user/dropin/replacer/common.fnl:44", 2)
+  else
+  end
+  if (nil == self) then
+    _G.error("Missing argument self on fnl/thyme/user/dropin/replacer/common.fnl:44", 2)
+  else
+  end
   local prefix = old_cmdline:sub(1, (-1 - #invalid_cmd))
   local fallback_cmd
   do
     local new_cmd = invalid_cmd
-    for _, _7_ in self._registry:iter() do
-      local pattern = _7_["pattern"]
-      local replacement = _7_["replacement"]
+    for _, _15_ in self._registry:iter() do
+      local pattern = _15_.pattern
+      local replacement = _15_.replacement
       if (new_cmd ~= invalid_cmd) then break end
       new_cmd = invalid_cmd:gsub(pattern, replacement)
     end
@@ -60,16 +84,16 @@ Dropin["_replace-invalid-cmdline"] = function(self, old_cmdline, invalid_cmd)
 end
 Dropin["normalize-cmdline"] = function(self)
   local old_line = self["_old-line"]
-  local _9_
+  local _17_
   do
-    local _8_ = self["_extract-?invalid-cmd"](self, old_line)
-    if (nil ~= _8_) then
-      local invalid_cmd = _8_
-      _9_ = self["_replace-invalid-cmdline"](self, old_line, invalid_cmd)
+    local case_16_ = self["_extract-?invalid-cmd"](self, old_line)
+    if (nil ~= case_16_) then
+      local invalid_cmd = case_16_
+      _17_ = self["_replace-invalid-cmdline"](self, old_line, invalid_cmd)
     else
-      _9_ = nil
+      _17_ = nil
     end
   end
-  return (_9_ or old_line)
+  return (_17_ or old_line)
 end
 return Dropin

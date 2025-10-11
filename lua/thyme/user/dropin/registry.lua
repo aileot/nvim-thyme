@@ -20,29 +20,38 @@ Registry["resume!"] = function(self)
   end
 end
 Registry["register!"] = function(self, pattern, replacement)
-  _G.assert((nil ~= replacement), "Missing argument replacement on fnl/thyme/user/dropin/registry.fnl:22")
-  _G.assert((nil ~= pattern), "Missing argument pattern on fnl/thyme/user/dropin/registry.fnl:22")
-  _G.assert((nil ~= self), "Missing argument self on fnl/thyme/user/dropin/registry.fnl:22")
+  if (nil == replacement) then
+    _G.error("Missing argument replacement on fnl/thyme/user/dropin/registry.fnl:22", 2)
+  else
+  end
+  if (nil == pattern) then
+    _G.error("Missing argument pattern on fnl/thyme/user/dropin/registry.fnl:22", 2)
+  else
+  end
+  if (nil == self) then
+    _G.error("Missing argument self on fnl/thyme/user/dropin/registry.fnl:22", 2)
+  else
+  end
   local unit = {pattern = pattern, replacement = replacement}
   return table.insert(self._registry, unit)
 end
 Registry.iter = function(self)
   local i = 0
-  local function _2_()
-    local _3_
-    local _4_
+  local function _5_()
+    local case_6_
+    local _7_
     do
       i = (i + 1)
-      _4_ = i
+      _7_ = i
     end
-    _3_ = self._registry[_4_]
-    if (nil ~= _3_) then
-      local val = _3_
+    case_6_ = self._registry[_7_]
+    if (nil ~= case_6_) then
+      local val = case_6_
       return i, val
     else
       return nil
     end
   end
-  return _2_
+  return _5_
 end
 return Registry

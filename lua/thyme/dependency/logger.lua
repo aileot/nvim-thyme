@@ -14,12 +14,12 @@ ModuleMapLogger["log-module-map!"] = function(self, dependency_stackframe, depen
   local dependency_fnl_path = dependency_stackframe["get-fnl-path"](dependency_stackframe)
   local module_map
   do
-    local _4_ = ModuleMap["try-read-from-file"](dependency_fnl_path)
-    if (_4_ == nil) then
+    local case_4_ = ModuleMap["try-read-from-file"](dependency_fnl_path)
+    if (case_4_ == nil) then
       local tgt_5_ = ModuleMap.new(dependency_stackframe)
       module_map = (tgt_5_)["write-file!"](tgt_5_)
-    elseif (nil ~= _4_) then
-      local map = _4_
+    elseif (nil ~= case_4_) then
+      local map = case_4_
       if (map["macro?"](map) and dependency_stackframe["get-lua-path"](dependency_stackframe)) then
         local tgt_6_ = ModuleMap.new(dependency_stackframe)
         module_map = (tgt_6_)["write-file!"](tgt_6_)
@@ -32,9 +32,9 @@ ModuleMapLogger["log-module-map!"] = function(self, dependency_stackframe, depen
   end
   self["_module-name->fnl-path"]["insert!"](self["_module-name->fnl-path"], dependency_stackframe["module-name"], dependency_stackframe["fnl-path"])
   self["_fnl-path->module-map"]["insert!"](self["_fnl-path->module-map"], dependency_stackframe["fnl-path"], module_map)
-  local _9_ = dependent_callstack[#dependent_callstack]
-  if (nil ~= _9_) then
-    local dependent_stackframe = _9_
+  local case_9_ = dependent_callstack[#dependent_callstack]
+  if (nil ~= case_9_) then
+    local dependent_stackframe = case_9_
     return module_map["log-dependent!"](module_map, dependent_stackframe)
   else
     return nil
@@ -43,9 +43,9 @@ end
 ModuleMapLogger["fnl-path->module-map"] = function(self, raw_fnl_path)
   local or_11_ = self["_fnl-path->module-map"]:get(raw_fnl_path)
   if not or_11_ then
-    local _12_ = ModuleMap["try-read-from-file"](raw_fnl_path)
-    if (nil ~= _12_) then
-      local modmap = _12_
+    local case_12_ = ModuleMap["try-read-from-file"](raw_fnl_path)
+    if (nil ~= case_12_) then
+      local modmap = case_12_
       self["_fnl-path->module-map"]["insert!"](self["_fnl-path->module-map"], raw_fnl_path, modmap)
       or_11_ = modmap
     else
@@ -67,9 +67,9 @@ ModuleMapLogger["fnl-path->module-name"] = function(self, raw_fnl_path)
   end
 end
 ModuleMapLogger["module-name->module-map"] = function(self, module_name)
-  local _17_ = self["module-name->fnl-path"](self, module_name)
-  if (nil ~= _17_) then
-    local fnl_path = _17_
+  local case_17_ = self["module-name->fnl-path"](self, module_name)
+  if (nil ~= case_17_) then
+    local fnl_path = case_17_
     return self["_fnl-path->module-map"]:get(fnl_path)
   else
     return nil

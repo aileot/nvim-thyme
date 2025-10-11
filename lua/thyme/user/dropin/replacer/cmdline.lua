@@ -18,11 +18,11 @@ DropinCmdline["complete-cmdline!"] = function(self)
   local tmp_wcm = "<C-z>"
   local right_keys
   do
-    local _1_ = old_cmdline:find(new_cmdline, 1, true)
-    if (_1_ == nil) then
+    local case_1_ = old_cmdline:find(new_cmdline, 1, true)
+    if (case_1_ == nil) then
       right_keys = ""
-    elseif (nil ~= _1_) then
-      local shift = _1_
+    elseif (nil ~= case_1_) then
+      local shift = case_1_
       right_keys = string.rep("<Right>", (shift - 1))
     else
       right_keys = nil

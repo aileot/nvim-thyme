@@ -35,12 +35,12 @@ local function report_integrations()
   end
   local dependency_files = {"parser/fennel.so"}
   for _, file in ipairs(dependency_files) do
-    local _10_ = get_runtime_files({file}, false)
-    if ((_G.type(_10_) == "table") and (nil ~= _10_[1])) then
-      local path = _10_[1]
+    local case_10_ = get_runtime_files({file}, false)
+    if ((_G.type(case_10_) == "table") and (nil ~= case_10_[1])) then
+      local path = case_10_[1]
       report.ok(("`%s` is detected at `%s`."):format(file, path))
     else
-      local _0 = _10_
+      local _0 = case_10_
       report.warn(("missing `%s`."):format(file))
     end
   end
@@ -89,17 +89,17 @@ local function report_mounted_paths()
   if next(mounted_paths) then
     local resolved_paths
     do
-      local tbl_21_ = {}
-      local i_22_ = 0
+      local tbl_26_ = {}
+      local i_27_ = 0
       for _, path in ipairs(mounted_paths) do
-        local val_23_ = vim.uv.fs_realpath(path)
-        if (nil ~= val_23_) then
-          i_22_ = (i_22_ + 1)
-          tbl_21_[i_22_] = val_23_
+        local val_28_ = vim.uv.fs_realpath(path)
+        if (nil ~= val_28_) then
+          i_27_ = (i_27_ + 1)
+          tbl_26_[i_27_] = val_28_
         else
         end
       end
-      resolved_paths = tbl_21_
+      resolved_paths = tbl_26_
     end
     return report.info(("The mounted paths:\n- `%s`"):format(table.concat(resolved_paths, "`\n- `")))
   else

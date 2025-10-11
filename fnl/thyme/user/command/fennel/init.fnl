@@ -7,7 +7,7 @@
 (local Messenger (require :thyme.util.class.messenger))
 (local CommandMessenger (Messenger.new "command/fennel"))
 
-(local Config (require :thyme.config))
+(local Config (require :thyme.lazy-config))
 
 (local DependencyLogger (require :thyme.dependency.logger))
 

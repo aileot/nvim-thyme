@@ -3,7 +3,7 @@
 (local {: validate-type : new-matrix} (require :thyme.util.general))
 (local {: char-by-char : uncouple-substrings} (require :thyme.util.iterator))
 
-(local Config (require :thyme.config))
+(local Config (require :thyme.lazy-config))
 
 (local ts vim.treesitter)
 (local hl-cache {})

@@ -7,7 +7,7 @@
 (local {: allowed?} (require :thyme.util.trust))
 (local Messenger (require :thyme.util.class.messenger))
 
-(local Config (require :thyme.config))
+(local Config (require :thyme.lazy-config))
 
 (local Modmap (require :thyme.dependency.unit))
 (local DepObserver (require :thyme.dependency.observer))

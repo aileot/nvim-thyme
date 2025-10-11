@@ -8,8 +8,9 @@
 (local {: file-readable? : assert-is-fnl-file : read-file}
        (require :thyme.util.fs))
 
-(when-not (file-readable? config-path)
-  (require :thyme.config.fallback))
+(let [Fallback (require :thyme.config.fallback)]
+  (when (Fallback.should-fallback?)
+    (Fallback.prompt-fallback-config!)))
 
 (local default-opts (require :thyme.config.defaults))
 

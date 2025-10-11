@@ -4,7 +4,7 @@ local new_matrix = _local_1_["new-matrix"]
 local _local_2_ = require("thyme.util.iterator")
 local char_by_char = _local_2_["char-by-char"]
 local uncouple_substrings = _local_2_["uncouple-substrings"]
-local Config = require("thyme.config")
+local Config = require("thyme.lazy-config")
 local ts = vim.treesitter
 local hl_cache = {}
 local hl_chunk_cache = new_matrix()
@@ -96,16 +96,16 @@ local function compose_hl_chunks(text, lang_tree)
       hl_query = or_11_
       local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
       for id, node, metadata in iter do
-        local _13_ = hl_query.captures[id]
-        if ((_13_ == "spell") or (_13_ == "nospell")) then
+        local case_13_ = hl_query.captures[id]
+        if ((case_13_ == "spell") or (case_13_ == "nospell")) then
         else
-          local and_14_ = (nil ~= _13_)
+          local and_14_ = (nil ~= case_13_)
           if and_14_ then
-            local capture = _13_
+            local capture = case_13_
             and_14_ = not vim.startswith(capture, "_")
           end
           if and_14_ then
-            local capture = _13_
+            local capture = case_13_
             local txt = ts.get_node_text(node, text)
             local hl_name = ("@" .. capture)
             local row01, col01 = node:range()
@@ -149,7 +149,10 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
-  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:128")
+  if (nil == text) then
+    _G.error("Missing argument text on fnl/thyme/treesitter/chunks.fnl:128", 2)
+  else
+  end
   validate_type("string", text)
   if Config["disable-treesitter-highlights"] then
     return {{text}}
@@ -157,26 +160,26 @@ local function text__3ehl_chunks(text, _3fopts)
     local opts = (_3fopts or {})
     local base_lang = (opts.lang or "fennel")
     local tmp_text
-    local _20_
+    local _21_
     if (base_lang == "fennel") then
-      _20_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
+      _21_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
     elseif (base_lang == "lua") then
-      _20_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
+      _21_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
     else
       local _ = base_lang
-      _20_ = text
+      _21_ = text
     end
-    tmp_text = _20_:gsub("\\", "\\\\")
+    tmp_text = _21_:gsub("\\", "\\\\")
     local fixed_text = text:gsub("\\", "\\\\")
     validate_type("table", opts)
-    local _25_, _26_ = pcall(ts.get_string_parser, tmp_text, base_lang)
-    if ((_25_ == false) and (nil ~= _26_)) then
-      local msg = _26_
+    local case_26_, case_27_ = pcall(ts.get_string_parser, tmp_text, base_lang)
+    if ((case_26_ == false) and (nil ~= case_27_)) then
+      local msg = case_27_
       local chunks = {{text}}
       vim.notify_once(msg, vim.log.levels.WARN)
       return chunks
-    elseif ((_25_ == true) and (nil ~= _26_)) then
-      local lang_tree = _26_
+    elseif ((case_26_ == true) and (nil ~= case_27_)) then
+      local lang_tree = case_27_
       return compose_hl_chunks(fixed_text, lang_tree)
     else
       return nil

@@ -44,11 +44,11 @@ local function new_matrix(row, col, val)
 end
 local function sorter_2ffiles_to_oldest_by_birthtime(file1, file2)
   local _let_4_ = vim.uv.fs_stat(file1).birthtime
-  local sec1 = _let_4_["sec"]
-  local nsec1 = _let_4_["nsec"]
+  local sec1 = _let_4_.sec
+  local nsec1 = _let_4_.nsec
   local _let_5_ = vim.uv.fs_stat(file2).birthtime
-  local sec2 = _let_5_["sec"]
-  local nsec2 = _let_5_["nsec"]
+  local sec2 = _let_5_.sec
+  local nsec2 = _let_5_.nsec
   return ((sec2 < sec1) or ((sec2 == sec1) and (nsec2 < nsec1)))
 end
 return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["starts-with?"] = starts_with_3f, ["ends-with?"] = ends_with_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}

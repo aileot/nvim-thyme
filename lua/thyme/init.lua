@@ -1,6 +1,7 @@
-local _local_1_ = require("thyme.loader.runtime-module")
-local search_fnl_module_on_rtp_21 = _local_1_["search-fnl-module-on-rtp!"]
 local M
+local function _1_(...)
+  return require("thyme.loader.runtime-module")["search-fnl-module-on-rtp!"](...)
+end
 local function _2_(...)
   return require("thyme.wrapper.fennel").view(...)
 end
@@ -37,11 +38,12 @@ end
 local function _12_(...)
   return require("thyme.user.command.cache").clear(...)
 end
-M = {loader = search_fnl_module_on_rtp_21, fennel = {view = _2_, eval = _3_, ["compile-string"] = _4_, compile_file = _5_, ["compile-file"] = _7_, ["compile-file!"] = _8_, ["compile-buf"] = _9_, macrodebug = _10_}, cache = {open = _11_, clear = _12_}}
+M = {loader = _1_, fennel = {view = _2_, eval = _3_, ["compile-string"] = _4_, compile_file = _5_, ["compile-file"] = _7_, ["compile-file!"] = _8_, ["compile-buf"] = _9_, macrodebug = _10_}, cache = {open = _11_, clear = _12_}}
 local has_setup_3f = false
 M.setup = function(_3fopts)
   assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
   if (not has_setup_3f or ("1" == vim.env.THYME_DEBUG)) then
+    require("thyme.config")
     local watch = require("thyme.user.watch")
     local keymap = require("thyme.user.keymap")
     local command = require("thyme.user.command")
@@ -66,8 +68,8 @@ local function propagate_underscored_keys_21(tbl, key)
     end
   else
   end
-  local _16_ = type(val)
-  if (_16_ == "table") then
+  local case_16_ = type(val)
+  if (case_16_ == "table") then
     for k in pairs(val) do
       propagate_underscored_keys_21(val, k)
     end

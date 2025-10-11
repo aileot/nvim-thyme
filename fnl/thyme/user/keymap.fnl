@@ -8,7 +8,7 @@
 
 (local {: buf-marks->text} (require :thyme.util.buf))
 
-(local Config (require :thyme.config))
+(local Config (require :thyme.lazy-config))
 
 (local M {})
 

@@ -4,7 +4,10 @@ local deps = {
     "https://github.com/nvim-treesitter/nvim-treesitter",
     build = ":lua require('nvim-treesitter.configs').setup({ sync_install = true, ensure_installed = { 'vim', 'fennel', 'lua' } })",
   },
-  { "https://github.com/eraserhd/parinfer-rust", build = "cargo build --release" },
+  {
+    "https://github.com/eraserhd/parinfer-rust",
+    build = "cargo build --release",
+  },
 }
 
 -- NOTE: Because this file is supposed to be `include`d, vim.fn.fnamemodify is
@@ -14,7 +17,10 @@ local repo_root = vim.env.REPO_ROOT
 
 do -- Assert test contexts.
   local function assert_is_under_repo(path)
-    assert(vim.startswith(path, repo_root), path .. " is not under nvim-thyme repository.")
+    assert(
+      vim.startswith(path, repo_root),
+      path .. " is not under nvim-thyme repository."
+    )
   end
   assert_is_under_repo(vim.fn.stdpath("config"))
   assert_is_under_repo(vim.fn.stdpath("cache"))
@@ -110,6 +116,9 @@ do -- A workaround to generate .nvim-thyme.fnl with recommended config.
     local idx_yes = 2
     return idx_yes
   end
-  require("thyme.config")
+  local fallback = require("thyme.config.fallback")
+  if fallback["should-fallback?"]() then
+    fallback["prompt-fallback-config!"]()
+  end
   vim.fn.confirm = raw_confirm
 end

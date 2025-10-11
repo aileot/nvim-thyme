@@ -3,13 +3,13 @@ local tts = require("thyme.treesitter")
 local fennel_wrapper = require("thyme.wrapper.fennel")
 local _local_1_ = require("thyme.util.buf")
 local buf_marks__3etext = _local_1_["buf-marks->text"]
-local Config = require("thyme.config")
+local Config = require("thyme.lazy-config")
 local M = {}
 local Keymap = {}
 Keymap.__index = Keymap
 Keymap.new = function(_2_)
-  local backend = _2_["backend"]
-  local lang = _2_["lang"]
+  local backend = _2_.backend
+  local lang = _2_.lang
   local self = setmetatable({}, Keymap)
   self["_module-name"] = "thyme.user.keymap"
   self["_callback-prefix"] = "new_operator_"
@@ -80,9 +80,9 @@ Keymap["map-keys-on-ft=lua!"] = function()
   for _, rhs_key in ipairs(lhs_rhs_pairs_on_ft_3dlua) do
     local rhs = plug_keymap_template(rhs_key)
     for mode, rhs__3elhs in pairs(keymap_recipes) do
-      local _8_ = rhs__3elhs[rhs_key]
-      if (nil ~= _8_) then
-        local lhs = _8_
+      local case_8_ = rhs__3elhs[rhs_key]
+      if (nil ~= case_8_) then
+        local lhs = case_8_
         vim.keymap.set(mode, lhs, rhs, {buffer = true})
       else
       end

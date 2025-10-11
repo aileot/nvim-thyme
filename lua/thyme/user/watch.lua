@@ -8,7 +8,7 @@ local read_file = _local_2_["read-file"]
 local _local_3_ = require("thyme.util.trust")
 local allowed_3f = _local_3_["allowed?"]
 local Messenger = require("thyme.util.class.messenger")
-local Config = require("thyme.config")
+local Config = require("thyme.lazy-config")
 local Modmap = require("thyme.dependency.unit")
 local DepObserver = require("thyme.dependency.observer")
 local _local_4_ = require("thyme.loader.macro-module")
@@ -16,7 +16,7 @@ local hide_macro_cache_21 = _local_4_["hide-macro-cache!"]
 local restore_macro_cache_21 = _local_4_["restore-macro-cache!"]
 local _local_5_ = require("thyme.loader.runtime-module")
 local write_lua_file_with_backup_21 = _local_5_["write-lua-file-with-backup!"]
-local RuntimeModuleRollbackManager = _local_5_["RuntimeModuleRollbackManager"]
+local RuntimeModuleRollbackManager = _local_5_.RuntimeModuleRollbackManager
 local _local_6_ = require("thyme.compiler.cache")
 local clear_cache_21 = _local_6_["clear-cache!"]
 local _local_7_ = require("thyme.wrapper.fennel")
@@ -31,9 +31,9 @@ Watcher["get-modmap"] = function(self)
   do
     local fnl_path = self["get-fnl-path"](self)
     if file_readable_3f(fnl_path) then
-      local _8_ = Modmap["try-read-from-file"](fnl_path)
-      if (nil ~= _8_) then
-        local latest_modmap = _8_
+      local case_8_ = Modmap["try-read-from-file"](fnl_path)
+      if (nil ~= case_8_) then
+        local latest_modmap = case_8_
         self._modmap = latest_modmap
       else
       end
@@ -71,9 +71,9 @@ Watcher["should-update?"] = function(self)
   if modmap["macro?"](modmap) then
     return true
   else
-    local _15_ = modmap["get-lua-path"](modmap)
-    if (nil ~= _15_) then
-      local lua_path = _15_
+    local case_15_ = modmap["get-lua-path"](modmap)
+    if (nil ~= case_15_) then
+      local lua_path = case_15_
       if file_readable_3f(lua_path) then
         local fnl_path = modmap["get-fnl-path"](modmap)
         return (read_file(lua_path) ~= compile_file(fnl_path))
@@ -81,7 +81,7 @@ Watcher["should-update?"] = function(self)
         return false
       end
     else
-      local _ = _15_
+      local _ = case_15_
       return error(("invalid ModuleMap instance for %s: %s"):format(modmap["get-module-name"](modmap), vim.inspect(modmap)))
     end
   end
@@ -106,18 +106,18 @@ Watcher["try-recompile!"] = function(self)
   assert(not modmap["macro?"](modmap), "Invalid attempt to recompile macro")
   compiler_options["module-name"] = module_name
   modmap["hide!"](modmap, fnl_path)
-  local _19_, _20_ = DepObserver["observe!"](DepObserver, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
-  if ((_19_ == true) and (nil ~= _20_)) then
-    local lua_code = _20_
+  local case_19_, case_20_ = DepObserver["observe!"](DepObserver, fennel["compile-string"], fnl_path, lua_path, compiler_options, module_name)
+  if ((case_19_ == true) and (nil ~= case_20_)) then
+    local lua_code = case_20_
     local msg = ("successfully recompiled " .. fnl_path)
     local backup_handler = RuntimeModuleRollbackManager["backup-handler-of"](RuntimeModuleRollbackManager, module_name)
     write_lua_file_with_backup_21(lua_path, lua_code, module_name)
     backup_handler["cleanup-old-backups!"](backup_handler)
     WatchMessenger["notify!"](WatchMessenger, msg)
     return true
-  elseif (true and (nil ~= _20_)) then
-    local _ = _19_
-    local error_msg = _20_
+  elseif (true and (nil ~= case_20_)) then
+    local _ = case_19_
+    local error_msg = case_20_
     local msg = ("abort recompiling %s due to the following error:\n%s"):format(fnl_path, error_msg)
     WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.WARN)
     package.loaded[module_name] = last_chunk
@@ -133,11 +133,11 @@ Watcher["try-reload!"] = function(self)
   local last_chunk = package.loaded[modname]
   package.loaded[modname] = nil
   if modmap["macro?"](modmap) then
-    local _22_, _23_ = pcall(require, modname)
-    if (_22_ == true) then
+    local case_22_, case_23_ = pcall(require, modname)
+    if (case_22_ == true) then
       return WatchMessenger["notify!"](WatchMessenger, ("Successfully reloaded " .. modname))
-    elseif ((_22_ == false) and (nil ~= _23_)) then
-      local error_msg = _23_
+    elseif ((case_22_ == false) and (nil ~= case_23_)) then
+      local error_msg = case_23_
       local msg = ("Failed to reload %s due to the following error:\n%s"):format(modname, error_msg)
       package.loaded[modname] = last_chunk
       return WatchMessenger["notify!"](WatchMessenger, msg, vim.log.levels.ERROR)
@@ -156,14 +156,14 @@ Watcher["update!"] = function(self)
   else
     raw_strategy = Config.watch.strategy
   end
-  local always_3f, strategy = nil, nil
+  local always_3f, strategy
   do
-    local _27_, _28_ = raw_strategy:match("^(%S-%-)(%S+)$")
-    if ((_27_ == "always-") and (nil ~= _28_)) then
-      local strategy0 = _28_
+    local case_27_, case_28_ = raw_strategy:match("^(%S-%-)(%S+)$")
+    if ((case_27_ == "always-") and (nil ~= case_28_)) then
+      local strategy0 = case_28_
       always_3f, strategy = true, strategy0
     else
-      local _ = _27_
+      local _ = case_27_
       always_3f, strategy = false, raw_strategy
     end
   end
@@ -248,9 +248,9 @@ Watcher.new = function(fnl_path)
   local self = setmetatable({}, Watcher)
   self["_fnl-path"] = fnl_path
   if file_readable_3f(fnl_path) then
-    local _43_ = Modmap["try-read-from-file"](fnl_path)
-    if (nil ~= _43_) then
-      local modmap = _43_
+    local case_43_ = Modmap["try-read-from-file"](fnl_path)
+    if (nil ~= case_43_) then
+      local modmap = case_43_
       self._modmap = modmap
       return self
     else
@@ -265,7 +265,7 @@ local function watch_files_21()
   local opts = Config.watch
   local callback
   local function _47_(_46_)
-    local fnl_path = _46_["match"]
+    local fnl_path = _46_.match
     local resolved_path = vim.fn.resolve(fnl_path)
     if (config_path == resolved_path) then
       if allowed_3f(config_path) then
@@ -278,9 +278,9 @@ local function watch_files_21()
       else
       end
     else
-      local _50_ = Watcher.new(fnl_path)
-      if (nil ~= _50_) then
-        local watcher = _50_
+      local case_50_ = Watcher.new(fnl_path)
+      if (nil ~= case_50_) then
+        local watcher = case_50_
         watcher["update!"](watcher)
       else
       end

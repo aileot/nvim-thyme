@@ -6,9 +6,12 @@ local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
-if not file_readable_3f(config_path) then
-  require("thyme.config.fallback")
-else
+do
+  local Fallback = require("thyme.config.fallback")
+  if Fallback["should-fallback?"]() then
+    Fallback["prompt-fallback-config!"]()
+  else
+  end
 end
 local default_opts = require("thyme.config.defaults")
 local _local_4_ = require("thyme.util.trust")

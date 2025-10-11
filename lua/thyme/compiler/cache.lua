@@ -10,15 +10,15 @@ local function determine_lua_path(module_name)
   return Path.join(lua_cache_prefix, lua_module_path)
 end
 local function clear_cache_21()
-  local _4_
+  local case_4_
   local function _5_(_241)
     return (".lua" == _241:sub(-4))
   end
-  _4_ = vim.fs.find(_5_, {type = "file", path = lua_cache_prefix})
-  if ((_G.type(_4_) == "table") and (_4_[1] == nil)) then
+  case_4_ = vim.fs.find(_5_, {type = "file", path = lua_cache_prefix})
+  if ((_G.type(case_4_) == "table") and (case_4_[1] == nil)) then
     return false
   else
-    local _ = _4_
+    local _ = case_4_
     hide_files_in_dir_21(lua_cache_prefix)
     clear_module_map_files_21()
     return true

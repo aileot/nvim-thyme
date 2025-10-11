@@ -19,66 +19,66 @@ local function compile_to_write_21(fnl_path, force_compile_3f)
   else
     local _4_
     do
-      local tbl_21_ = {}
-      local i_22_ = 0
+      local tbl_26_ = {}
+      local i_27_ = 0
       for _, path in ipairs(fnl_path) do
-        local val_23_ = vim.split(vim.fn.glob(path), "\n")
-        if (nil ~= val_23_) then
-          i_22_ = (i_22_ + 1)
-          tbl_21_[i_22_] = val_23_
+        local val_28_ = vim.split(vim.fn.glob(path), "\n")
+        if (nil ~= val_28_) then
+          i_27_ = (i_27_ + 1)
+          tbl_26_[i_27_] = val_28_
         else
         end
       end
-      _4_ = tbl_21_
+      _4_ = tbl_26_
     end
     fnl_paths = vim.fn.flatten(_4_, 1)
   end
   local path_pairs
   do
-    local tbl_16_ = {}
+    local tbl_21_ = {}
     for _, path in ipairs(fnl_paths) do
-      local k_17_, v_18_ = nil, nil
+      local k_22_, v_23_
       do
         local full_path = vim.fn.fnamemodify(path, ":p")
-        k_17_, v_18_ = full_path, DependencyLogger["fnl-path->lua-path"](DependencyLogger, full_path)
+        k_22_, v_23_ = full_path, DependencyLogger["fnl-path->lua-path"](DependencyLogger, full_path)
       end
-      if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
-        tbl_16_[k_17_] = v_18_
+      if ((k_22_ ~= nil) and (v_23_ ~= nil)) then
+        tbl_21_[k_22_] = v_23_
       else
       end
     end
-    path_pairs = tbl_16_
+    path_pairs = tbl_21_
   end
   local existing_lua_files = {}
   local or_8_ = force_compile_3f
   if not or_8_ then
     local _9_
     do
-      local tbl_21_ = {}
-      local i_22_ = 0
+      local tbl_26_ = {}
+      local i_27_ = 0
       for _, lua_file in pairs(path_pairs) do
-        local val_23_
+        local val_28_
         if file_readable_3f(lua_file) then
-          val_23_ = table.insert(existing_lua_files, lua_file)
+          val_28_ = table.insert(existing_lua_files, lua_file)
         else
-          val_23_ = nil
+          val_28_ = nil
         end
-        if (nil ~= val_23_) then
-          i_22_ = (i_22_ + 1)
-          tbl_21_[i_22_] = val_23_
+        if (nil ~= val_28_) then
+          i_27_ = (i_27_ + 1)
+          tbl_26_[i_27_] = val_28_
         else
         end
       end
-      _9_ = tbl_21_
+      _9_ = tbl_26_
     end
     local and_12_ = _9_
     if and_12_ then
       if (0 < #existing_lua_files) then
-        local _13_ = vim.fn.confirm(("The following files have already existed:\n" .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
-        if (_13_ == 2) then
+        local case_13_ = vim.fn.confirm(("The following files have already existed:\n" .. table.concat(existing_lua_files, "\n") .. "\nOverride the files?"), "&No\n&yes")
+        if (case_13_ == 2) then
           and_12_ = true
         else
-          local _ = _13_
+          local _ = case_13_
           CommandMessenger["notify!"](CommandMessenger, "Abort")
           and_12_ = false
         end
@@ -111,10 +111,10 @@ local function create_commands_21()
   local cmd_history_opts = {method = "ignore"}
   local cb
   local function _23_(_21_)
-    local fargs = _21_["fargs"]
-    local should_write_file_3f = _21_["bang"]
-    local _arg_22_ = _21_["mods"]
-    local confirm_3f = _arg_22_["confirm"]
+    local fargs = _21_.fargs
+    local should_write_file_3f = _21_.bang
+    local _arg_22_ = _21_.mods
+    local confirm_3f = _arg_22_.confirm
     local a = _21_
     local fnl_code = parse_cmd_file_args(a)
     local function _24_()

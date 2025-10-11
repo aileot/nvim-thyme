@@ -6,7 +6,7 @@ local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local Stackframe = require("thyme.dependency.stackframe")
 local DependencyLogger = require("thyme.dependency.logger")
-local Config = require("thyme.config")
+local Config = require("thyme.lazy-config")
 local Observer = {}
 Observer.__index = Observer
 Observer._new = function()
@@ -25,7 +25,7 @@ Observer["observe!"] = function(self, callback, fnl_path, _3flua_path, compiler_
   self.callstack["push!"](self.callstack, stackframe)
   compiler_options["module-name"] = module_name
   compiler_options.filename = fnl_path
-  local ok_3f, result = nil, nil
+  local ok_3f, result
   local function _3_()
     return callback(new_fnl_code, compiler_options, module_name)
   end
@@ -42,12 +42,12 @@ Observer["observed?"] = function(self, module_name)
   return (nil ~= self["module-name->stackframe"][module_name])
 end
 Observer["log-dependent!"] = function(self, module_name)
-  local _5_ = self["module-name->stackframe"][module_name]
-  if (nil ~= _5_) then
-    local stackframe = _5_
+  local case_5_ = self["module-name->stackframe"][module_name]
+  if (nil ~= case_5_) then
+    local stackframe = case_5_
     return DependencyLogger["log-module-map!"](DependencyLogger, stackframe, self.callstack:get())
   else
-    local _ = _5_
+    local _ = case_5_
     return error(("the module " .. module_name .. " is not logged yet."))
   end
 end
