@@ -104,7 +104,7 @@
 (local ConfigRollbackManager (RollbackManager.new :config ".fnl"))
 
 (fn notify-once! [msg ...]
-  ;; NOTE: Avoid `Messenger:notyfy!`, which depends on this module
+  ;; NOTE: Avoid `Messenger:notify!`, which depends on this module
   ;; `thyme.config`; otherwise, stack overflow.
   ;; NOTE: The message format follows that of Messenger.
   (vim.notify_once (.. "thyme(config): " msg) ;
