@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/aileot/nvim-thyme/compare/v1.4.0...v1.5.0) (2025-10-11)
+
+
+### Features
+
+* **command:** (experimental) support range for `:Fnl` ([#74](https://github.com/aileot/nvim-thyme/issues/74)) ([0c158e1](https://github.com/aileot/nvim-thyme/commit/0c158e18960f4191144dce13599c4a9a7c8f99f5))
+* **command:** add `:ThymeConfigRecommend` ([#83](https://github.com/aileot/nvim-thyme/issues/83)) ([77239eb](https://github.com/aileot/nvim-thyme/commit/77239eb102556ead2be1c26534aeee6c9f6fa744))
+
 ## [1.4.0](https://github.com/aileot/nvim-thyme/compare/v1.3.0...v1.4.0) (2025-06-08)
 
 
