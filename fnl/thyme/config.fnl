@@ -197,7 +197,7 @@ To stop the forced rollback after repair, please run `:ThymeRollbackUnmount` or 
   (= config-filename (vim.fs.basename path)))
 
 (setmetatable {: config-file?
-               ;; Make sure `get-config` readonly. It is only intedended to be
+               ;; Make sure `get-config` readonly. It is only intended to be
                ;; called for checkhealth.
                :get-config #(let [config (vim.deepcopy (get-config))]
                               ;; NOTE: The options .source, .module-name, and
