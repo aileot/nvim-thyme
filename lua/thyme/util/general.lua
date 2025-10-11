@@ -51,10 +51,4 @@ local function sorter_2ffiles_to_oldest_by_birthtime(file1, file2)
   local nsec2 = _let_5_.nsec
   return ((sec2 < sec1) or ((sec2 == sec1) and (nsec2 < nsec1)))
 end
-local function new_lazy_config()
-  local function _6_(_self, key)
-    return require("thyme.config")[key]
-  end
-  return setmetatable({}, {__index = _6_})
-end
-return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["starts-with?"] = starts_with_3f, ["ends-with?"] = ends_with_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime, ["new-lazy-config"] = new_lazy_config}
+return {["do-nothing"] = do_nothing, ["contains?"] = contains_3f, ["starts-with?"] = starts_with_3f, ["ends-with?"] = ends_with_3f, ["validate-type"] = validate_type, ["new-matrix"] = new_matrix, ["sorter/files-to-oldest-by-birthtime"] = sorter_2ffiles_to_oldest_by_birthtime}
