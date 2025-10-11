@@ -10,11 +10,11 @@ local function prompt_fallback_config_21()
   display_example_config_21()
   local case_2_ = vim.fn.confirm(("Missing \"%s\" at %s. Copy the sane example config?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (case_2_ == 2) then
+    vim.cmd(("saveas " .. config_path))
     local case_3_ = vim.fn.confirm("Trust this file? Otherwise, it will ask your trust again on nvim restart", "&No\n&yes", 1, "Question")
     if (case_3_ == 2) then
       local buf_name = vim.api.nvim_buf_get_name(0)
       assert((buf_name == example_config_path), ("expected %s, got %s"):format(example_config_path, buf_name))
-      vim.cmd(("saveas " .. config_path))
       return vim.cmd("trust")
     else
       local _ = case_3_
