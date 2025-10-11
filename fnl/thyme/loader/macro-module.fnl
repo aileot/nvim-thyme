@@ -75,7 +75,7 @@
         (set compiler-options.env ?env)
         ;; NOTE: Unlike Lua's package.loaders, Fennel macro-searcher
         ;; is supposed to return a function which must returns a table;
-        ;; otherwise when the searhcer fails to find a macro module,
+        ;; otherwise when the searcher fails to find a macro module,
         ;; it must return nil. See the implementation of
         ;; search-macro-module in src/fennel/specials.fnl @1276
         (values nil msg)))))
