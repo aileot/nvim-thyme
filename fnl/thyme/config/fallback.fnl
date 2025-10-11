@@ -1,6 +1,11 @@
 (local {: config-filename : config-path : example-config-path}
        (require :thyme.const))
 
+(local {: file-readable?} (require :thyme.util.fs))
+
+(fn should-fallback? []
+  (not (file-readable? config-path)))
+
 (fn display-example-config! []
   (vim.cmd (.. "tabedit " example-config-path))
   ;; Force to apply lazy treesitter syntax.
@@ -16,4 +21,4 @@
                             "&No\n&yes" 1 :WarningMsg)
         2 (os.exit 1))))
 
-{: prompt-fallback-config!}
+{: should-fallback? : prompt-fallback-config!}

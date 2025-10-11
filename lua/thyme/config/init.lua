@@ -6,10 +6,12 @@ local _local_2_ = require("thyme.util.fs")
 local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_fnl_file = _local_2_["assert-is-fnl-file"]
 local read_file = _local_2_["read-file"]
-if not file_readable_3f(config_path) then
-  local fallback = require("thyme.config.fallback")
-  fallback["prompt-fallback-config!"]()
-else
+do
+  local Fallback = require("thyme.config.fallback")
+  if Fallback["should-fallback?"]() then
+    Fallback["prompt-fallback-config!"]()
+  else
+  end
 end
 local default_opts = require("thyme.config.defaults")
 local _local_4_ = require("thyme.util.trust")
@@ -45,7 +47,7 @@ local function read_config_with_backup_21(config_file_path)
   local _
   cache["evaluating?"] = true
   _ = nil
-  local ok_3f, _3fresult
+  local ok_3f, _3fresult = nil, nil
   if _3fconfig_code then
     local function _7_()
       return fennel.eval(_3fconfig_code, compiler_options)
@@ -117,11 +119,11 @@ local function _15_(_self, k)
   else
     local _ = k
     local config = get_config()
-    local case_17_ = default_opts[k]
-    if (case_17_ == nil) then
+    local _17_ = default_opts[k]
+    if (_17_ == nil) then
       return error(("unexpected option detected: " .. k))
     else
-      local _0 = case_17_
+      local _0 = _17_
       return config[k]
     end
   end
