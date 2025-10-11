@@ -3,7 +3,7 @@
 
 (fn display-example-config! []
   (vim.cmd (.. "tabedit " example-config-path))
-  (vim.fn.wait 1e3 #(= config-path (vim.api.nvim_buf_get_name 0)))
+  ;; Force to apply lazy treesitter syntax.
   (vim.cmd "redraw!"))
 
 (fn prompt-fallback-config! []
