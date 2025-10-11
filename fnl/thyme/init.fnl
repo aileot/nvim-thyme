@@ -56,6 +56,7 @@ NOTE: This function is expected to be called after `VimEnter` events wrapped in
           "Please call `thyme.setup` without any args, or with an empty table.")
   (when (or (not has-setup?) ;
             (= :1 vim.env.THYME_DEBUG))
+    (require :thyme.config)
     (let [watch (require :thyme.user.watch)
           keymap (require :thyme.user.keymap)
           command (require :thyme.user.command)

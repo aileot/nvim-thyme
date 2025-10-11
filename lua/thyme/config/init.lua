@@ -23,6 +23,7 @@ local function notify_once_21(msg, ...)
 end
 local function read_config_with_backup_21(config_file_path)
   assert_is_fnl_file(config_file_path)
+  require("thyme.config")
   local fennel = require("fennel")
   local backup_name = "default"
   local backup_handler = ConfigRollbackManager["backup-handler-of"](ConfigRollbackManager, backup_name)

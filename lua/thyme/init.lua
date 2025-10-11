@@ -43,6 +43,7 @@ local has_setup_3f = false
 M.setup = function(_3fopts)
   assert(((nil == _3fopts) or (nil == next(_3fopts)) or (_3fopts == M)), "Please call `thyme.setup` without any args, or with an empty table.")
   if (not has_setup_3f or ("1" == vim.env.THYME_DEBUG)) then
+    require("thyme.config")
     local watch = require("thyme.user.watch")
     local keymap = require("thyme.user.keymap")
     local command = require("thyme.user.command")
