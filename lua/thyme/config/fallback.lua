@@ -13,7 +13,7 @@ local function display_example_config_21()
 end
 local function prompt_fallback_config_21()
   display_example_config_21()
-  local _3_ = vim.fn.confirm(("Missing \"%s\" at %s. Copy the sane example config?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  local _3_ = vim.fn.confirm(("Missing %s. Copy the sane example config to %s?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
   if (_3_ == 2) then
     local config_root_dir = vim.fs.dirname(config_path)
     vim.fn.mkdir(config_root_dir, "p")

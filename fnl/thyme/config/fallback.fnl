@@ -13,7 +13,7 @@
 
 (fn prompt-fallback-config! []
   (display-example-config!)
-  (case (vim.fn.confirm (: "Missing \"%s\" at %s. Copy the sane example config?"
+  (case (vim.fn.confirm (: "Missing %s. Copy the sane example config to %s?"
                            :format config-filename (vim.fn.stdpath :config))
                         "&No\n&yes" 1 :Warning)
     2 (let [config-root-dir (vim.fs.dirname config-path)]
