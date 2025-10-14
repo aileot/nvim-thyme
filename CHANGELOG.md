@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.1](https://github.com/aileot/nvim-thyme/compare/v1.5.0...v1.5.1) (2025-10-14)
+
+
+### Bug Fixes
+
+* **config:** correct option order to trust generated .nvim-thyme.fnl ([#90](https://github.com/aileot/nvim-thyme/issues/90)) ([67f0544](https://github.com/aileot/nvim-thyme/commit/67f05441ca40eb38955d53dd5b0038bfcc38a447))
+* **config:** stop loop in missing config file with certain cache ([#94](https://github.com/aileot/nvim-thyme/issues/94)) ([b240efb](https://github.com/aileot/nvim-thyme/commit/b240efbb8899241a23e3aabd7e2201bf7b180fd6))
+* **loader:** make failure reason at 2nd return value for macro ([#93](https://github.com/aileot/nvim-thyme/issues/93)) ([e2d0ad4](https://github.com/aileot/nvim-thyme/commit/e2d0ad4e08d7a308b745dd6a523df951bbcd7883))
+* **watch:** filter schemes ([#95](https://github.com/aileot/nvim-thyme/issues/95)) ([5e8f3ee](https://github.com/aileot/nvim-thyme/commit/5e8f3eee9225ca74c56c921f357e57796c8f5fd6))
+
 ## [1.5.0](https://github.com/aileot/nvim-thyme/compare/v1.4.0...v1.5.0) (2025-10-11)
 
 
