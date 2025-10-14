@@ -223,24 +223,29 @@ the same. The configurations are only modifiable at the `watch` attributes in
 @return number autocmd-id"
   (let [group (augroup! :ThymeWatch {})
         opts Config.watch
-        callback (fn [{:match fnl-path}]
-                   (let [resolved-path (vim.fn.resolve fnl-path)]
-                     (if (= config-path resolved-path)
-                         (do
-                           (when (allowed? config-path)
-                             ;; Automatically re-trust the user config file
-                             ;; regardless of the recorded hash; otherwise, the
-                             ;; user will be annoyed being asked to trust
-                             ;; his/her config file on every change.
-                             (vim.cmd "silent trust"))
-                           (when (clear-cache!)
-                             (let [msg (.. "Cleared all the cache under "
-                                           lua-cache-prefix)]
-                               (WatchMessenger:notify! msg))))
-                         (case (Watcher.new fnl-path)
-                           watcher (watcher:update!)))
-                     ;; Prevent not to destroy the autocmd.
-                     nil))]
+        callback (fn [{: buf :match fnl-path}]
+                   ;; NOTE: Exclude scheme://uri.fnl
+                   ;; NOTE: `<amatch>` against a file name is always expanded to
+                   ;; the fullpath with forward slash regardless of &shellslash.
+                   (when (and (= "/" (fnl-path:sub 1 1))
+                              (= "" (. vim.bo buf :buftype)))
+                     (let [resolved-path (vim.fn.resolve fnl-path)]
+                       (if (= config-path resolved-path)
+                           (do
+                             (when (allowed? config-path)
+                               ;; Automatically re-trust the user config file
+                               ;; regardless of the recorded hash; otherwise, the
+                               ;; user will be annoyed being asked to trust
+                               ;; his/her config file on every change.
+                               (vim.cmd "silent trust"))
+                             (when (clear-cache!)
+                               (let [msg (.. "Cleared all the cache under "
+                                             lua-cache-prefix)]
+                                 (WatchMessenger:notify! msg))))
+                           (case (Watcher.new fnl-path)
+                             watcher (watcher:update!)))
+                       ;; Prevent not to destroy the autocmd.
+                       nil)))]
     (autocmd! opts.event {: group :pattern opts.pattern : callback})))
 
 {: watch-files!}
