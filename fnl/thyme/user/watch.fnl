@@ -224,7 +224,11 @@ the same. The configurations are only modifiable at the `watch` attributes in
   (let [group (augroup! :ThymeWatch {})
         opts Config.watch
         callback (fn [{: buf :match fnl-path}]
-                   (when (= "" (. vim.bo buf :buftype))
+                   ;; NOTE: Exclude scheme://uri.fnl
+                   ;; NOTE: `<amatch>` against a file name is always expanded to
+                   ;; the fullpath with forward slash regardless of &shellslash.
+                   (when (and (= "/" (fnl-path:sub 1 1))
+                              (= "" (. vim.bo buf :buftype)))
                      (let [resolved-path (vim.fn.resolve fnl-path)]
                        (if (= config-path resolved-path)
                            (do
