@@ -7,7 +7,7 @@
 
 (local {: search-fnl-macro-on-rtp!} (require :thyme.loader.macro-module))
 
-(describe* "macro loader failure-reason as 2nd return value"
+(describe* "macro module loader failure-reason as 2nd return value"
   ;; TODO: Add specs on its rollback loader.
   (it* "should start with \\n"
     (assert.is_true (vim.startswith (select 2

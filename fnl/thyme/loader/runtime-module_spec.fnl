@@ -23,7 +23,7 @@
     (assert.is_false (vim.startswith (search-fnl-module-on-rtp! "invalid-runtime-file")
                                      "\n\n"))))
 
-(describe* "module searcher"
+(describe* "runtime module searcher"
   (setup (fn []
            (thyme.setup)))
   (after_each (fn []
