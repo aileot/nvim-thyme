@@ -3,10 +3,11 @@
 (include :test.helper.prerequisites)
 
 (local thyme (require :thyme))
-(local thyme-health (require :thyme.health))
 
-(describe* "health.check"
+(describe* "`:checkhealth thyme`"
   (setup (fn []
            (thyme.setup)))
-  (it* "can be called without error"
-    (assert.has_no_error thyme-health.check)))
+  (it* "opens a healthcheck buffer"
+    (vim.cmd "checkhealth thyme")
+    (assert.equals :checkhealth vim.bo.filetype)
+    (vim.cmd :close)))
