@@ -7,7 +7,23 @@
 (local thyme (require :thyme))
 (local {: search-fnl-module-on-rtp!} (require :thyme.loader.runtime-module))
 
-(describe* "module searcher"
+(describe* "runtime module loader failure-reason"
+  (setup (fn []
+           (thyme.setup)))
+  (after_each (fn []
+                (remove-context-files!)))
+  ;; TODO: Add specs on its rollback loader.
+  (it* "should start with \\n"
+    (assert.is_true (vim.startswith (search-fnl-module-on-rtp! "invalid-runtime-file")
+                                    "\n")))
+  (it* "should start with \\nthyme("
+    (assert.is_true (vim.startswith (search-fnl-module-on-rtp! "invalid-runtime-file")
+                                    "\nthyme(")))
+  (it* "should not start with duplicated \\n\\n"
+    (assert.is_false (vim.startswith (search-fnl-module-on-rtp! "invalid-runtime-file")
+                                     "\n\n"))))
+
+(describe* "runtime module searcher"
   (setup (fn []
            (thyme.setup)))
   (after_each (fn []
