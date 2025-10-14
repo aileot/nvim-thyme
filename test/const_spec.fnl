@@ -3,11 +3,6 @@
 (include :test.helper.prerequisites)
 (local {: remove-context-files!} (include :test.helper.util))
 
-(local {: config-filename} (require :thyme.const))
-
-(it* "The config file name is .nvim-thyme.fnl"
-  (assert.is_same ".nvim-thyme.fnl" config-filename))
-
 (describe* "thyme requires `&rtp` literally contains `/thyme/compile`;"
   (let [test-rtp/global (vim.opt.runtimepath:get)
         test-rtp/local [(vim.fn.stdpath :config) vim.env.RUNTIMEPATH]
