@@ -68,8 +68,8 @@ local function propagate_underscored_keys_21(tbl, key)
     end
   else
   end
-  local _16_ = type(val)
-  if (_16_ == "table") then
+  local case_16_ = type(val)
+  if (case_16_ == "table") then
     for k in pairs(val) do
       propagate_underscored_keys_21(val, k)
     end

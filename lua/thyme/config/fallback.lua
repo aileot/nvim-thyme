@@ -13,15 +13,15 @@ local function display_example_config_21()
 end
 local function prompt_fallback_config_21()
   display_example_config_21()
-  local _3_ = vim.fn.confirm(("Missing %s. Copy the sane example config to %s?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
-  if (_3_ == 2) then
+  local case_3_ = vim.fn.confirm(("Missing %s. Copy the sane example config to %s?"):format(config_filename, vim.fn.stdpath("config")), "&No\n&yes", 1, "Warning")
+  if (case_3_ == 2) then
     local config_root_dir = vim.fs.dirname(config_path)
     vim.fn.mkdir(config_root_dir, "p")
     return vim.cmd(("saveas " .. config_path))
   else
-    local _ = _3_
-    local _4_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
-    if (_4_ == 2) then
+    local _ = case_3_
+    local case_4_ = vim.fn.confirm("Aborted proceeding with nvim-thyme. Exit?", "&No\n&yes", 1, "WarningMsg")
+    if (case_4_ == 2) then
       return os.exit(1)
     else
       return nil
