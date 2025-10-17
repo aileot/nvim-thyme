@@ -38,6 +38,8 @@
                    "`messages` should append the results of the Fnl command")))
 
 (describe* "command :Fnl with range"
+  (setup (fn []
+           (thyme.setup)))
   (after_each (fn []
                 (remove-context-files!)))
   (describe* "set to 0"
