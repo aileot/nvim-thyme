@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/aileot/nvim-thyme/compare/v1.5.1...v1.6.0) (2025-10-17)
+
+
+### Features
+
+* **health:** display thyme installation path ([#102](https://github.com/aileot/nvim-thyme/issues/102)) ([436adc4](https://github.com/aileot/nvim-thyme/commit/436adc4de8a1ac9ac14e2f9a5f664d1a37169b78)), closes [#100](https://github.com/aileot/nvim-thyme/issues/100)
+* **health:** display thyme version ([#103](https://github.com/aileot/nvim-thyme/issues/103)) ([b63ed2c](https://github.com/aileot/nvim-thyme/commit/b63ed2c37cda8e6c4c09cddc1705ad833d1e296b))
+
 ## [1.5.1](https://github.com/aileot/nvim-thyme/compare/v1.5.0...v1.5.1) (2025-10-14)
 
 

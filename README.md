@@ -118,7 +118,7 @@ require("lazy").setup({
   ---@type LazySpec
   {
     "aileot/nvim-thyme",
-    version = "^v1.5.1",
+    version = "^v1.6.0",
     dependencies = {
       { "https://git.sr.ht/~technomancy/fennel" },
     },
@@ -254,7 +254,7 @@ require("lazy").setup({
   spec = {
     {
       "aileot/nvim-thyme",
-      version = "^v1.5.1",
+      version = "^v1.6.0",
       dependencies = {
         { "https://git.sr.ht/~technomancy/fennel" },
       },
