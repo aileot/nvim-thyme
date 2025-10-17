@@ -46,7 +46,9 @@
   (let [git-cmd/get-version (-> "git -C %q describe --tags || git -C %q status"
                                 (: :format thyme-repo-root thyme-repo-root))]
     (report.info (-> "The version of nvim-thyme: %s"
-                     (: :format (vim.fn.system git-cmd/get-version)))))
+                     (: :format (-> (vim.fn.system git-cmd/get-version)
+                                    ;; Trim the newline at the end.
+                                    (: :sub 1 -2))))))
   (report.info (-> "The installation path of nvim-thyme: `%s`"
                    (: :format thyme-repo-root)))
   (report.info (-> "The path to .nvim-thyme.fnl: `%s`" (: :format config-path)))
