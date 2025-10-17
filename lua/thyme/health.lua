@@ -2,6 +2,7 @@ local fennel = require("fennel")
 local _local_1_ = require("thyme.const")
 local lua_cache_prefix = _local_1_["lua-cache-prefix"]
 local config_path = _local_1_["config-path"]
+local thyme_repo_root = _local_1_["thyme-repo-root"]
 local _local_2_ = require("thyme.config")
 local get_config = _local_2_["get-config"]
 local _local_3_ = require("thyme.util.iterator")
@@ -35,12 +36,12 @@ local function report_integrations()
   end
   local dependency_files = {"parser/fennel.so"}
   for _, file in ipairs(dependency_files) do
-    local case_10_ = get_runtime_files({file}, false)
-    if ((_G.type(case_10_) == "table") and (nil ~= case_10_[1])) then
-      local path = case_10_[1]
+    local _10_ = get_runtime_files({file}, false)
+    if ((_G.type(_10_) == "table") and (nil ~= _10_[1])) then
+      local path = _10_[1]
       report.ok(("`%s` is detected at `%s`."):format(file, path))
     else
-      local _0 = case_10_
+      local _0 = _10_
       report.warn(("missing `%s`."):format(file))
     end
   end
@@ -48,6 +49,7 @@ local function report_integrations()
 end
 local function report_thyme_disk_info()
   report.start("Thyme Disk Info")
+  report.info(("The installation path of nvim-thyme: `%s`"):format(thyme_repo_root))
   report.info(("The path to .nvim-thyme.fnl: `%s`"):format(config_path))
   report.info(("The root path of Lua cache:  `%s`"):format(lua_cache_prefix))
   report.info(("The root path of backups for rollback: `%s`"):format(get_root_of_backup()))
@@ -89,17 +91,17 @@ local function report_mounted_paths()
   if next(mounted_paths) then
     local resolved_paths
     do
-      local tbl_26_ = {}
-      local i_27_ = 0
+      local tbl_21_ = {}
+      local i_22_ = 0
       for _, path in ipairs(mounted_paths) do
-        local val_28_ = vim.uv.fs_realpath(path)
-        if (nil ~= val_28_) then
-          i_27_ = (i_27_ + 1)
-          tbl_26_[i_27_] = val_28_
+        local val_23_ = vim.uv.fs_realpath(path)
+        if (nil ~= val_23_) then
+          i_22_ = (i_22_ + 1)
+          tbl_21_[i_22_] = val_23_
         else
         end
       end
-      resolved_paths = tbl_26_
+      resolved_paths = tbl_21_
     end
     return report.info(("The mounted paths:\n- `%s`"):format(table.concat(resolved_paths, "`\n- `")))
   else

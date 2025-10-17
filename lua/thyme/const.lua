@@ -13,4 +13,5 @@ do
   local example_config_path0 = _let_1_[1]
   example_config_path = example_config_path0
 end
-return {["debug?"] = ("1" == vim.env.THYME_DEBUG), ["stdpath-config"] = stdpath_config, ["lua-cache-prefix"] = lua_cache_prefix, ["config-filename"] = config_filename, ["config-path"] = config_path, ["example-config-path"] = example_config_path, ["state-prefix"] = Path.join(vim.fn.stdpath("state"), "thyme")}
+local thyme_repo_root = vim.fs.dirname(example_config_path)
+return {["debug?"] = ("1" == vim.env.THYME_DEBUG), ["stdpath-config"] = stdpath_config, ["lua-cache-prefix"] = lua_cache_prefix, ["config-filename"] = config_filename, ["config-path"] = config_path, ["example-config-path"] = example_config_path, ["thyme-repo-root"] = thyme_repo_root, ["state-prefix"] = Path.join(vim.fn.stdpath("state"), "thyme")}
