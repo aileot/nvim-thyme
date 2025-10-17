@@ -43,6 +43,10 @@
 
 (fn report-thyme-disk-info []
   (report.start "Thyme Disk Info")
+  (let [git-cmd/get-version (-> "git -C %q describe --tags || git -C %q status"
+                                (: :format thyme-repo-root thyme-repo-root))]
+    (report.info (-> "The version of nvim-thyme: %s"
+                     (: :format (vim.fn.system git-cmd/get-version)))))
   (report.info (-> "The installation path of nvim-thyme: `%s`"
                    (: :format thyme-repo-root)))
   (report.info (-> "The path to .nvim-thyme.fnl: `%s`" (: :format config-path)))
