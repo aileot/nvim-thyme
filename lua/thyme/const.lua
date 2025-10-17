@@ -9,7 +9,7 @@ local example_config_path
 do
   local this_dir = vim.fs.dirname(debug.getinfo(1, "S").source:sub(2))
   local example_config_filename = (config_filename .. ".example")
-  local _let_1_ = vim.fs.find(example_config_filename, {upward = true}, "type", "file", "path", this_dir)
+  local _let_1_ = vim.fs.find(example_config_filename, {upward = true, type = "file", path = this_dir})
   local example_config_path0 = _let_1_[1]
   example_config_path = example_config_path0
 end

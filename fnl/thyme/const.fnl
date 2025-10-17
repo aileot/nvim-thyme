@@ -31,8 +31,9 @@
                           (vim.fs.dirname))
              example-config-filename (.. config-filename ".example")
              [example-config-path] (vim.fs.find example-config-filename
-                                                {:upward true} :type "file"
-                                                :path this-dir)]
+                                                {:upward true
+                                                 :type "file"
+                                                 :path this-dir})]
          (values example-config-path)))
 
 (local thyme-repo-root (vim.fs.dirname example-config-path))
