@@ -49,6 +49,10 @@ local function report_integrations()
 end
 local function report_thyme_disk_info()
   report.start("Thyme Disk Info")
+  do
+    local git_cmd_2fget_version = ("git -C %q describe --tags || git -C %q status"):format(thyme_repo_root, thyme_repo_root)
+    report.info(("The version of nvim-thyme: %s"):format(vim.fn.system(git_cmd_2fget_version):sub(1, -2)))
+  end
   report.info(("The installation path of nvim-thyme: `%s`"):format(thyme_repo_root))
   report.info(("The path to .nvim-thyme.fnl: `%s`"):format(config_path))
   report.info(("The root path of Lua cache:  `%s`"):format(lua_cache_prefix))
