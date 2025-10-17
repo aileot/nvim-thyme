@@ -1,6 +1,7 @@
 (local fennel (require :fennel))
 
-(local {: lua-cache-prefix : config-path} (require :thyme.const))
+(local {: lua-cache-prefix : config-path : thyme-repo-root}
+       (require :thyme.const))
 
 (local {: get-config} (require :thyme.config))
 (local {: each-file} (require :thyme.util.iterator))
@@ -42,6 +43,8 @@
 
 (fn report-thyme-disk-info []
   (report.start "Thyme Disk Info")
+  (report.info (-> "The installation path of nvim-thyme: `%s`"
+                   (: :format thyme-repo-root)))
   (report.info (-> "The path to .nvim-thyme.fnl: `%s`" (: :format config-path)))
   (report.info (-> "The root path of Lua cache:  `%s`"
                    (: :format lua-cache-prefix)))
