@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/aileot/nvim-thyme/compare/v1.6.0...v1.6.1) (2025-10-17)
+
+
+### Bug Fixes
+
+* **const:** detect example config path regardless of cwd ([#109](https://github.com/aileot/nvim-thyme/issues/109)) ([3150d69](https://github.com/aileot/nvim-thyme/commit/3150d69058a3b1b24038de2e61dc1be766150898))
+
 ## [1.6.0](https://github.com/aileot/nvim-thyme/compare/v1.5.1...v1.6.0) (2025-10-17)
 
 
