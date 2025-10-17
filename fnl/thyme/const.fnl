@@ -35,10 +35,13 @@
                                                 :path this-dir)]
          (values example-config-path)))
 
+(local thyme-repo-root (vim.fs.dirname example-config-path))
+
 {:debug? (= :1 vim.env.THYME_DEBUG)
  : stdpath-config
  : lua-cache-prefix
  : config-filename
  : config-path
  : example-config-path
+ : thyme-repo-root
  :state-prefix (Path.join (vim.fn.stdpath :state) :thyme)}
