@@ -1,0 +1,26 @@
+name: Upload to LuaRocks
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  luarocks-upload:
+    runs-on: ubuntu-24.04
+    name: Upload Package to LuaRocks
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload package to luarocks
+        uses: lumen-oss/luarocks-tag-release@v7
+        env:
+          LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
+        with:
+          labels: |
+            neovim
+            fennel
+          dependencies: |
+            fennel
+          test_dependencies: |
+            vusted
