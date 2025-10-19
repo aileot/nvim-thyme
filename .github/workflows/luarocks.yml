@@ -6,7 +6,7 @@ on:
       ref:
         description: 'tag/branch/commit to be uploaded to luarocks'
         required: true
-        default: 'main'
+        default: ''
         type: string
   push:
     tags:
