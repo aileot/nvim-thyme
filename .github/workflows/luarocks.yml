@@ -26,6 +26,7 @@ jobs:
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         with:
+          version: ${{ inputs.ref || github.ref_name }}
           labels: |
             neovim
             fennel
