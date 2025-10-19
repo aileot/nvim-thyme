@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.ref }}
+          fetch-tags: true
       - name: Upload package to luarocks
         uses: lumen-oss/luarocks-tag-release@v7
         env:
