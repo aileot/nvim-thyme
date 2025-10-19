@@ -2,6 +2,12 @@ name: Upload to LuaRocks
 
 on:
   workflow_dispatch:
+    inputs:
+      ref:
+        description: 'tag/branch/commit to be uploaded to luarocks'
+        required: true
+        default: 'main'
+        type: string
   push:
     tags:
       - "v*"
@@ -12,6 +18,8 @@ jobs:
     name: Upload Package to LuaRocks
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
       - name: Upload package to luarocks
         uses: lumen-oss/luarocks-tag-release@v7
         env:
