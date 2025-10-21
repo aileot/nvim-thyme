@@ -60,6 +60,12 @@
    :disable-treesitter-highlights false
    :command {;; Set it to nil to inherit the values from the root option.
              :compiler-options {:correlate false :error-pinpoint ["|>>" "<<|"]}
+             ;; Uncomment `preproc` option below rewriting the macro modules
+             ;; to be available in Cmdline mode by default. The parameters are
+             ;; the same as the Fennel API functions `fennel.compile`,
+             ;; `fennel.eval`, etc.
+             ;; :preproc (fn [fnl-code {: env : module-name : filename}]
+             ;;            (.. "(require-macros :my.macros)\n" fnl-code))
              :cmd-history {;; With parinfer integration and the options below,
                            ;; nvim-thyme will modify your command history with
                            ;; parinfer-ed command results for fennel wrapper
