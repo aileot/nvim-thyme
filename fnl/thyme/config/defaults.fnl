@@ -29,6 +29,7 @@
  :disable-treesitter-highlights false
  :command {:compiler-options false
            :cmd-history {:method "overwrite" :trailing-parens "omit"}
+           :preproc false
            :Fnl {;; (experimental)
                  :default-range 0}
            :FnlCompile {;; (experimental)
