@@ -92,6 +92,7 @@
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
                                          : compiler-options
+                                         : preproc
                                          : cmd-history-opts}]
   "Wrap the `fennel` wrapper callback of thyme.
 @param callback fun(fnl-code: string): any
@@ -105,7 +106,8 @@
                            ;; NOTE: Otherwise, parinfer seems to ignore
                            ;; carriage return characters.
                            (: :gsub "\r" "\n")
-                           (apply-parinfer {: cmd-history-opts}))]
+                           (apply-parinfer {: cmd-history-opts})
+                           (preproc compiler-options))]
       (when verbose?
         (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
                               (: :format new-fnl-code))]

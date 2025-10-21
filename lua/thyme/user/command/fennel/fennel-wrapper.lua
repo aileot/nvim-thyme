@@ -94,12 +94,13 @@ end
 local function mk_fennel_wrapper_command_callback(callback, _22_)
   local lang = _22_["lang"]
   local compiler_options = _22_["compiler-options"]
+  local preproc = _22_["preproc"]
   local cmd_history_opts = _22_["cmd-history-opts"]
   local function _24_(_23_)
     local args = _23_["args"]
     local smods = _23_["smods"]
     local verbose_3f = (-1 < smods.verbose)
-    local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
+    local new_fnl_code = preproc(apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts}), compiler_options)
     if verbose_3f then
       local verbose_msg = (";;; Source\n%s\n;;; Result"):format(new_fnl_code)
       tts.print(verbose_msg, {lang = "fennel"})

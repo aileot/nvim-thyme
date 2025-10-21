@@ -47,6 +47,10 @@
   "Define fennel wrapper commands."
   (let [compiler-options (or Config.command.compiler-options
                              Config.compiler-options)
+        preproc (or Config.command.preproc ;
+                    Config.preproc ;
+                    (fn [fnl-code _compiler-options]
+                      fnl-code))
         cmd-history-opts Config.command.cmd-history]
     (fnl-file-compile.create-commands!)
     (command! :Fnl
@@ -58,6 +62,7 @@
         (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
                                                            {:lang :fennel
                                                             : compiler-options
+                                                            : preproc
                                                             : cmd-history-opts})
               buf (vim.api.nvim_get_current_buf)]
           ;; NOTE: `a.count` indicates `-1` when `%` is specified for the default range.
@@ -81,6 +86,7 @@
               callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
                                                            {:lang :fennel
                                                             : compiler-options
+                                                            : preproc
                                                             : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
@@ -95,6 +101,7 @@
               callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
                                                            {:lang :fennel
                                                             : compiler-options
+                                                            : preproc
                                                             : cmd-history-opts})]
           (set a.args fnl-code)
           (callback a))))
@@ -107,6 +114,7 @@
         (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                                            {:lang :lua
                                                             : compiler-options
+                                                            : preproc
                                                             : cmd-history-opts})
               buf (vim.api.nvim_get_current_buf)]
           (when (and (not= 0 a.count) ;
@@ -123,6 +131,7 @@
                      callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                                                   {:lang :lua
                                                                    : compiler-options
+                                                                   : preproc
                                                                    : cmd-history-opts})]
                  (set a.args fnl-code)
                  (callback a)))
