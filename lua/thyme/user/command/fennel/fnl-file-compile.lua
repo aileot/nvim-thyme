@@ -108,34 +108,43 @@ local function compile_to_write_21(fnl_path, force_compile_3f)
 end
 local function create_commands_21()
   local compiler_options = (Config.command["compiler-options"] or Config["compiler-options"])
+  local preproc
+  local or_21_ = Config.command.preproc or Config.preproc
+  if not or_21_ then
+    local function _22_(fnl_code, _compiler_options)
+      return fnl_code
+    end
+    or_21_ = _22_
+  end
+  preproc = or_21_
   local cmd_history_opts = {method = "ignore"}
   local cb
-  local function _23_(_21_)
-    local fargs = _21_["fargs"]
-    local should_write_file_3f = _21_["bang"]
-    local _arg_22_ = _21_["mods"]
-    local confirm_3f = _arg_22_["confirm"]
-    local a = _21_
+  local function _25_(_23_)
+    local fargs = _23_["fargs"]
+    local should_write_file_3f = _23_["bang"]
+    local _arg_24_ = _23_["mods"]
+    local confirm_3f = _arg_24_["confirm"]
+    local a = _23_
     local fnl_code = parse_cmd_file_args(a)
-    local function _24_()
+    local function _26_()
       if (0 == #fargs) then
         return {vim.fn.expand("%:p")}
       else
         return fargs
       end
     end
-    local _let_25_ = _24_()
-    local fnl_path = _let_25_[1]
+    local _let_27_ = _26_()
+    local fnl_path = _let_27_[1]
     if should_write_file_3f then
       return compile_to_write_21(fnl_path, not confirm_3f)
     else
-      local opts = {lang = "lua", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts}
+      local opts = {lang = "lua", ["compiler-options"] = compiler_options, preproc = preproc, ["cmd-history-opts"] = cmd_history_opts}
       local callback = mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], opts)
       a.args = fnl_code
       return callback(a)
     end
   end
-  cb = _23_
+  cb = _25_
   local cmd_opts = {range = "%", nargs = "?", complete = "file", desc = "[thyme] display compiled lua result of given fnl file, or current fnl file"}
   vim.api.nvim_create_user_command("FnlFileCompile", cb, cmd_opts)
   return vim.api.nvim_create_user_command("FnlCompileFile", cb, cmd_opts)

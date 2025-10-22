@@ -65,6 +65,10 @@
 (fn create-commands! []
   (let [compiler-options (or Config.command.compiler-options
                              Config.compiler-options)
+        preproc (or Config.command.preproc
+                    Config.preproc
+                    (fn [fnl-code _compiler-options]
+                      fnl-code))
         cmd-history-opts {:method "ignore"}
         cb (fn [{: fargs
                  :bang should-write-file?
@@ -78,6 +82,7 @@
                    (compile-to-write! fnl-path (not confirm?))
                    (let [opts {:lang "lua"
                                : compiler-options
+                               : preproc
                                : cmd-history-opts}
                          callback (mk-fennel-wrapper-command-callback fennel-wrapper.compile-string
                                                                       opts)]
