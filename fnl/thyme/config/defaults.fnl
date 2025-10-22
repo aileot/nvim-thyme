@@ -34,7 +34,7 @@
                  :default-range 0}
            :FnlCompile {;; (experimental)
                         :default-range 0}}
- :keymap {:compiler-options false :mappings {}}
+ :keymap {:compiler-options false :preproc false :mappings {}}
  :watch {:event [:BufWritePost :FileChangedShellPost]
          :pattern "*.{fnl,fnlm}"
          ;; TODO: Add :strategy recommended value to
