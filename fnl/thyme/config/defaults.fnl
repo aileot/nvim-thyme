@@ -19,9 +19,8 @@
                     (.. std-config "/lua/?/init-macros.fnl"))
                   (when use-lua-dir? (.. std-config "/lua/?/init.fnl"))]
                  (table.concat ";"))
- ;; (experimental)
- ;; What args should be passed to the callback?
- :preproc #$
+ :preproc (fn [fnl-code _compiler-options]
+            fnl-code)
  :notifier vim.notify
  ;; Since the highlighting output rendering are unstable on the
  ;; experimental vim._extui feature on the nvim v0.12.0 nightly, you can

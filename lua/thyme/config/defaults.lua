@@ -38,7 +38,7 @@ local function _11_(...)
     return nil
   end
 end
-local function _12_(_241)
-  return _241
+local function _12_(fnl_code, _compiler_options)
+  return fnl_code
 end
 return {["max-rollbacks"] = 5, ["compiler-options"] = {}, ["fnl-dir"] = _1_, ["macro-path"] = table.concat({"./fnl/?.fnlm", "./fnl/?/init.fnlm", "./fnl/?.fnl", "./fnl/?/init-macros.fnl", "./fnl/?/init.fnl", _3_, _5_, _7_, _9_, _11_(...)}, ";"), preproc = _12_, notifier = vim.notify, command = {["cmd-history"] = {method = "overwrite", ["trailing-parens"] = "omit"}, Fnl = {["default-range"] = 0}, FnlCompile = {["default-range"] = 0}, ["compiler-options"] = false}, keymap = {mappings = {}, ["compiler-options"] = false}, watch = {event = {"BufWritePost", "FileChangedShellPost"}, pattern = "*.{fnl,fnlm}", strategy = "clear-all", ["macro-strategy"] = "clear-all"}, dropin = {cmdline = {["completion-key"] = false, ["enter-key"] = false}, cmdwin = {["enter-key"] = false}}, ["disable-treesitter-highlights"] = false}
