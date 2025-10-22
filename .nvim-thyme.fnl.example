@@ -64,8 +64,16 @@
              ;; to be available in Cmdline mode by default. The parameters are
              ;; the same as the Fennel API functions `fennel.compile`,
              ;; `fennel.eval`, etc.
-             ;; :preproc (fn [fnl-code {: env : module-name : filename}]
-             ;;            (.. "(require-macros :my.macros)\n" fnl-code))
+             :preproc (fn [fnl-code {: env : module-name : filename}]
+                        ;; NOTE: (= env :_COMPILER) checks if the module is a macro.
+                        (if (or (= env :_COMPILER) ;
+                                (module-name:find ".util" 1 true)
+                                (and (not= 1 (module-name:find "my." 1 true)
+                                           (not= 1 (module-name:find "rc." 1 true)))))
+                            fnl-code
+                            ;; To keep correlate option make sense, avoid adding `\n` in te
+                            ;; results.
+                            (.. "(require-macros :my.macros)" fnl-code)))
              :cmd-history {;; With parinfer integration and the options below,
                            ;; nvim-thyme will modify your command history with
                            ;; parinfer-ed command results for fennel wrapper
