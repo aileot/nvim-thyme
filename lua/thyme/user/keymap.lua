@@ -30,10 +30,19 @@ Keymap["generate-plug-keymaps!"] = function(self, method)
   local rhs_2fx = (":lua %s('<','>')<CR>"):format(callback_in_string)
   local marks__3eprint
   local function _3_(mark1, mark2)
+    local preproc
+    local or_4_ = Config.keymap.preproc or Config.preproc
+    if not or_4_ then
+      local function _5_(fnl_code, _compiler_options)
+        return fnl_code
+      end
+      or_4_ = _5_
+    end
+    preproc = or_4_
     local compiler_options = (Config.keymap["compiler-options"] or Config["compiler-options"])
     local eval_fn = fennel_wrapper[self._backend]
     local print_fn = tts[method]
-    local val = eval_fn(buf_marks__3etext(0, mark1, mark2), compiler_options)
+    local val = eval_fn(preproc(buf_marks__3etext(0, mark1, mark2), compiler_options), compiler_options)
     local text
     if ("string" == type(val)) then
       text = val
@@ -44,10 +53,10 @@ Keymap["generate-plug-keymaps!"] = function(self, method)
   end
   marks__3eprint = _3_
   local operator_callback
-  local function _5_()
+  local function _7_()
     return marks__3eprint("[", "]")
   end
-  operator_callback = _5_
+  operator_callback = _7_
   vim.api.nvim_set_keymap("n", lhs, rhs_2fn, {noremap = true})
   vim.api.nvim_set_keymap("x", lhs, rhs_2fx, {noremap = true, silent = true})
   M[callback_name] = marks__3eprint
@@ -57,10 +66,10 @@ end
 Keymap["map-keys-on-ft=fennel!"] = function()
   local keymap_recipes = Config.keymap.mappings
   local plug_keymap_template
-  local function _6_(_241)
+  local function _8_(_241)
     return ("<Plug>(thyme-%s)"):format(_241)
   end
-  plug_keymap_template = _6_
+  plug_keymap_template = _8_
   for mode, rhs__3elhs in pairs(keymap_recipes) do
     for rhs_key, lhs in pairs(rhs__3elhs) do
       local rhs = plug_keymap_template(rhs_key)
@@ -72,17 +81,17 @@ end
 Keymap["map-keys-on-ft=lua!"] = function()
   local keymap_recipes = Config.keymap.mappings
   local plug_keymap_template
-  local function _7_(_241)
+  local function _9_(_241)
     return ("<Plug>(thyme-%s)"):format(_241)
   end
-  plug_keymap_template = _7_
+  plug_keymap_template = _9_
   local lhs_rhs_pairs_on_ft_3dlua = {"alternate-file"}
   for _, rhs_key in ipairs(lhs_rhs_pairs_on_ft_3dlua) do
     local rhs = plug_keymap_template(rhs_key)
     for mode, rhs__3elhs in pairs(keymap_recipes) do
-      local _8_ = rhs__3elhs[rhs_key]
-      if (nil ~= _8_) then
-        local lhs = _8_
+      local _10_ = rhs__3elhs[rhs_key]
+      if (nil ~= _10_) then
+        local lhs = _10_
         vim.keymap.set(mode, lhs, rhs, {buffer = true})
       else
       end
@@ -97,10 +106,10 @@ local function define_autocmds_to_map_keys_21()
   if vim.v.vim_did_enter then
     for buffer in ipairs(vim.api.nvim_list_bufs()) do
       if vim.api.nvim_buf_is_valid(buffer) then
-        local function _10_()
+        local function _12_()
           return vim.api.nvim_exec_autocmds("FileType", {group = group, buffer = buffer})
         end
-        vim.api.nvim_buf_call(buffer, _10_)
+        vim.api.nvim_buf_call(buffer, _12_)
       else
       end
     end

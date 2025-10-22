@@ -47,11 +47,16 @@
         rhs/x (: ":lua %s('<','>')<CR>" ;
                  :format callback-in-string)
         marks->print (fn [mark1 mark2]
-                       (let [compiler-options (or Config.keymap.compiler-options
+                       (let [preproc (or Config.keymap.preproc ;
+                                         Config.preproc ;
+                                         (fn [fnl-code _compiler-options]
+                                           fnl-code))
+                             compiler-options (or Config.keymap.compiler-options
                                                   Config.compiler-options)
                              eval-fn (. fennel-wrapper self._backend)
                              print-fn (. tts method)
                              val (-> (buf-marks->text 0 mark1 mark2)
+                                     (preproc compiler-options)
                                      (eval-fn compiler-options))
                              text (if (str? val)
                                       val
