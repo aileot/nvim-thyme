@@ -226,7 +226,7 @@ Passed Options:
 Parinfer Result:
 %s"
                       (: :format text ;
-                         (vim.inspect (or ?opts {})) ;
+                         (vim.inspect options) ;
                          (vim.inspect result)))]
           (error msg)))))
 
