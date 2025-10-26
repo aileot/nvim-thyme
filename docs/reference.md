@@ -193,8 +193,9 @@ of the experimental `vim._extui` feature in the nvim v0.12.0 nightly.
 (default: `nil`)
 
 The default compiler-options for
-[Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl]. If `nil`,
-it inherits the values from the root [compiler-options](#compiler-options) above.
+[Fennel Wrapper Commands][Fennel Wrapper Commands] like [:Fnl][:Fnl].
+If `nil`, it inherits the values
+from the root [compiler-options](#compiler-options) above.
 
 ### `command.cmd-history.method`
 
