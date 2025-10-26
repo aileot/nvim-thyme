@@ -43,6 +43,29 @@
           (not (file-readable? buf-name)) ;
           (under-tmpdir? buf-name)))))
 
+(λ complete-missing-modules [callback old-fnl-expr]
+  "Insert `(local missing :missing)` to `old-fnl-expr` regardless of the module
+existences.
+@param old-fnl-expr string
+@param compiler-options table
+@return any callback results"
+  (var new-fnl-expr old-fnl-expr)
+  (var continue? true)
+  (var results nil)
+  ;; Just complete modules which is not in _G.
+  (while continue?
+    (case [(pcall #(callback new-fnl-expr))]
+      [true & rest] (do
+                      (set continue? false)
+                      (set results rest))
+      [false msg] (case (string.match msg "unknown identifier: ([^\n%s]+)")
+                    missing-sym (let [new-line (-> "(local %s (require %q))\n"
+                                                   (: :format ;
+                                                      missing-sym ;
+                                                      missing-sym))]
+                                  (set new-fnl-expr (.. new-line new-fnl-expr))))))
+  (unpack results))
+
 (fn M.setup! []
   "Define fennel wrapper commands."
   (let [compiler-options (or Config.command.compiler-options
@@ -55,20 +78,23 @@
        :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
       (fn [a]
-        (let [callback (mk-fennel-wrapper-command-callback fennel-wrapper.eval
+        (let [cb #(complete-missing-modules fennel-wrapper.eval $...)
+              callback (mk-fennel-wrapper-command-callback cb
                                                            {:lang :fennel
                                                             : compiler-options
-                                                            : cmd-history-opts})
-              buf (vim.api.nvim_get_current_buf)]
-          ;; NOTE: `a.count` indicates `-1` when `%` is specified for the default range.
-          (when (and (not= 0 a.count) ;
-                     (should-include-buf? buf))
-            ;; TODO: Support ft=lua.
-            (let [fnl-code (-> (vim.api.nvim_buf_get_lines buf ;
-                                                           (dec a.line1) a.line2
-                                                           true)
-                               (table.concat "\n"))]
-              (set a.args (.. fnl-code "\n" a.args))))
+                                                            : cmd-history-opts})]
+          ;; NOTE: `a.count` indicates `-1` when `%` is specified for the
+          ;; default range.
+          (when-not (= 0 a.count)
+            (let [buf (vim.api.nvim_get_current_buf)]
+              (when (should-include-buf? buf)
+                ;; TODO: Support ft=lua.
+                (let [buf-lines (-> (vim.api.nvim_buf_get_lines buf ;
+                                                                (dec a.line1)
+                                                                a.line2 true)
+                                    (table.concat "\n"))
+                      fnl-args (.. buf-lines "\n" a.args)]
+                  (set a.args fnl-args)))))
           (callback a))))
     (command! :FnlBuf
       {:range "%"
