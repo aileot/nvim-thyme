@@ -6,6 +6,14 @@
 
 (local {: apply-parinfer} (require :thyme.wrapper.parinfer))
 
+(macro when-verbose [a ...]
+  "Execute `...` only when parsed nvim command args indicates to be verbose.
+@param a vim.api.keyset.create_user_command.command_args
+@param ... Conditional execution expressions
+@return list"
+  `(when (< -1 (. ,a :smods :verbose))
+     ,...))
+
 (fn make-?new-cmd [new-fnl-code {: trailing-parens}]
   "Suggest a new Vim command line to replace the last command with parinfer-ed
 `new-fnl-code` in Vim command history.
@@ -89,6 +97,12 @@
         (table.concat parsed.args " ")
         (extract-Fnl-cmdline-args parsed.nextcmd))))
 
+(fn parinfer [old-fnl-code]
+  ;; NOTE: Handling `gsub` in `->` list is hard.
+  ;; NOTE: Otherwise, parinfer seems to ignore carriage return characters.
+  (let [new-fnl-code (string.gsub old-fnl-code "\r" "\n")]
+    (apply-parinfer new-fnl-code)))
+
 (fn mk-fennel-wrapper-command-callback [callback
                                         {: lang
                                          : compiler-options
@@ -99,14 +113,13 @@
 @param opts.compiler-options table? (default: same values as main config)
 @param opts.cmd-history-opts.method string (default: \"overwrite\")
 @param opts.cmd-history-opts.trailing-parens string (default: \"omit\")"
-  (fn [{: args : smods}]
-    (let [verbose? (< -1 smods.verbose)
-          new-fnl-code (-> args
+  (fn [{: args &as a}]
+    (let [new-fnl-code (-> args
                            ;; NOTE: Otherwise, parinfer seems to ignore
                            ;; carriage return characters.
                            (: :gsub "\r" "\n")
                            (apply-parinfer {: cmd-history-opts}))]
-      (when verbose?
+      (when-verbose a
         (let [verbose-msg (-> ";;; Source\n%s\n;;; Result"
                               (: :format new-fnl-code))]
           ;; TODO: (low priority) Display verbose messages on extui feature

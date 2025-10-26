@@ -91,16 +91,19 @@ local function extract_Fnl_cmdline_args(cmdline)
     return nil
   end
 end
+local function parinfer(old_fnl_code)
+  local new_fnl_code = string.gsub(old_fnl_code, "\r", "\n")
+  return apply_parinfer(new_fnl_code)
+end
 local function mk_fennel_wrapper_command_callback(callback, _22_)
   local lang = _22_["lang"]
   local compiler_options = _22_["compiler-options"]
   local cmd_history_opts = _22_["cmd-history-opts"]
   local function _24_(_23_)
     local args = _23_["args"]
-    local smods = _23_["smods"]
-    local verbose_3f = (-1 < smods.verbose)
+    local a = _23_
     local new_fnl_code = apply_parinfer(args:gsub("\r", "\n"), {["cmd-history-opts"] = cmd_history_opts})
-    if verbose_3f then
+    if (-1 < a.smods.verbose) then
       local verbose_msg = (";;; Source\n%s\n;;; Result"):format(new_fnl_code)
       tts.print(verbose_msg, {lang = "fennel"})
     else
