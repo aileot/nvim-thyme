@@ -197,6 +197,14 @@ The default compiler-options for
 If `nil`, it inherits the values
 from the root [compiler-options](#compiler-options) above.
 
+### `command.implicit-resolve`
+
+(default: `true`)
+
+If `true`, `require` is implicitly applied to module names
+in the arguments of [:Fnl][:Fnl] in Cmdline mode.
+To disable the implicit module resolution, set it to `false`.
+
 ### `command.cmd-history.method`
 
 (default: `"overwrite"`)
