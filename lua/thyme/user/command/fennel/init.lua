@@ -62,7 +62,7 @@ local function should_include_buf_3f(buf)
     return nil
   end
 end
-local function complete_missing_modules(callback, old_fnl_expr)
+local function resolve_missing_modules(callback, old_fnl_expr)
   _G.assert((nil ~= old_fnl_expr), "Missing argument old-fnl-expr on fnl/thyme/user/command/fennel/init.fnl:46")
   _G.assert((nil ~= callback), "Missing argument callback on fnl/thyme/user/command/fennel/init.fnl:46")
   local new_fnl_expr = old_fnl_expr
@@ -97,11 +97,16 @@ M["setup!"] = function()
   local cmd_history_opts = Config.command["cmd-history"]
   fnl_file_compile["create-commands!"]()
   local function _19_(a)
+    local implicit_resolve_3f = Config.command["implicit-resolve"]
     local cb
-    local function _20_(...)
-      return complete_missing_modules(fennel_wrapper.eval, ...)
+    if implicit_resolve_3f then
+      local function _20_(...)
+        return resolve_missing_modules(fennel_wrapper.eval, ...)
+      end
+      cb = _20_
+    else
+      cb = fennel_wrapper.eval
     end
-    cb = _20_
     local callback = mk_fennel_wrapper_command_callback(cb, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts})
     if not (0 == a.count) then
       local buf = vim.api.nvim_get_current_buf()
@@ -116,23 +121,23 @@ M["setup!"] = function()
     return callback(a)
   end
   vim.api.nvim_create_user_command("Fnl", _19_, {range = Config.command.Fnl["default-range"], nargs = "*", complete = "lua", desc = "[thyme] evaluate the following fennel expression, and display the results"})
-  local function _23_(a)
+  local function _24_(a)
     local fnl_code = parse_cmd_buf_args(a)
     local cmd_history_opts0 = {method = "ignore"}
     local callback = mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlBuf", _23_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
-  local function _24_(a)
+  vim.api.nvim_create_user_command("FnlBuf", _24_, {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] evaluate given buffer, or current buffer, and display the results"})
+  local function _25_(a)
     local fnl_code = parse_cmd_file_args(a)
     local cmd_history_opts0 = {method = "ignore"}
     local callback = mk_fennel_wrapper_command_callback(fennel_wrapper.eval, {lang = "fennel", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
     a.args = fnl_code
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlFile", _24_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
-  local function _25_(a)
+  vim.api.nvim_create_user_command("FnlFile", _25_, {range = "%", nargs = "?", complete = "file", desc = "[thyme] evaluate given file, or current file, and display the results"})
+  local function _26_(a)
     local callback = mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], {lang = "lua", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts})
     local buf = vim.api.nvim_get_current_buf()
     if ((0 ~= a.count) and should_include_buf_3f(buf)) then
@@ -142,39 +147,39 @@ M["setup!"] = function()
     end
     return callback(a)
   end
-  vim.api.nvim_create_user_command("FnlCompile", _25_, {range = Config.command.FnlCompile["default-range"], nargs = "*", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
+  vim.api.nvim_create_user_command("FnlCompile", _26_, {range = Config.command.FnlCompile["default-range"], nargs = "*", complete = "lua", desc = "[thyme] display the compiled lua results of the following fennel expression"})
   do
     local cb
-    local function _27_(a)
+    local function _28_(a)
       local fnl_code = parse_cmd_buf_args(a)
       local cmd_history_opts0 = {method = "ignore"}
       local callback = mk_fennel_wrapper_command_callback(fennel_wrapper["compile-string"], {lang = "lua", ["compiler-options"] = compiler_options, ["cmd-history-opts"] = cmd_history_opts0})
       a.args = fnl_code
       return callback(a)
     end
-    cb = _27_
+    cb = _28_
     local cmd_opts = {range = "%", nargs = "?", complete = "buffer", desc = "[thyme] display the compiled lua results of given buffer, or current buffer as fennel expression"}
     vim.api.nvim_create_user_command("FnlBufCompile", cb, cmd_opts)
     vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
-  local function _30_(_28_)
-    local _arg_29_ = _28_["fargs"]
-    local _3fpath = _arg_29_[1]
-    local mods = _28_["smods"]
+  local function _31_(_29_)
+    local _arg_30_ = _29_["fargs"]
+    local _3fpath = _arg_30_[1]
+    local mods = _29_["smods"]
     local input_path = vim.fn.expand((_3fpath or "%:p"))
     local output_path
     do
-      local _31_ = input_path:sub(-4)
-      if (_31_ == ".fnl") then
-        local _32_ = DependencyLogger["fnl-path->lua-path"](DependencyLogger, input_path)
-        if (nil ~= _32_) then
-          local lua_path = _32_
+      local _32_ = input_path:sub(-4)
+      if (_32_ == ".fnl") then
+        local _33_ = DependencyLogger["fnl-path->lua-path"](DependencyLogger, input_path)
+        if (nil ~= _33_) then
+          local lua_path = _33_
           output_path = lua_path
         else
-          local _ = _32_
-          local _33_ = (input_path:sub(1, -4) .. "lua")
-          if (nil ~= _33_) then
-            local lua_path = _33_
+          local _ = _33_
+          local _34_ = (input_path:sub(1, -4) .. "lua")
+          if (nil ~= _34_) then
+            local lua_path = _34_
             if file_readable_3f(lua_path) then
               output_path = lua_path
             else
@@ -184,14 +189,14 @@ M["setup!"] = function()
             output_path = nil
           end
         end
-      elseif (_31_ == ".lua") then
+      elseif (_32_ == ".lua") then
         if vim.startswith(input_path, lua_cache_prefix) then
           output_path = vim.api.nvim_get_runtime_file(input_path:sub(#lua_cache_prefix):gsub("%.lua$", ".fnl"):gsub("^", "*"), false)[1]
         else
           output_path = vim.fn.glob(input_path:gsub("/lua/", "/*/"):gsub("%.lua$", ".fnl"), false)
         end
       else
-        local _ = _31_
+        local _ = _32_
         output_path = error("expected a fnl or lua file, got", input_path)
       end
     end
@@ -205,6 +210,6 @@ M["setup!"] = function()
       end
     end
   end
-  return vim.api.nvim_create_user_command("FnlAlternate", _30_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
+  return vim.api.nvim_create_user_command("FnlAlternate", _31_, {nargs = "?", complete = "file", desc = "[thyme] alternate fnl<->lua"})
 end
 return M

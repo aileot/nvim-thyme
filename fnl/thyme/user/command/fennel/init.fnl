@@ -43,7 +43,7 @@
           (not (file-readable? buf-name)) ;
           (under-tmpdir? buf-name)))))
 
-(λ complete-missing-modules [callback old-fnl-expr]
+(λ resolve-missing-modules [callback old-fnl-expr]
   "Insert `(local missing :missing)` to `old-fnl-expr` regardless of the module
 existences.
 @param old-fnl-expr string
@@ -78,7 +78,10 @@ existences.
        :complete "lua"
        :desc "[thyme] evaluate the following fennel expression, and display the results"}
       (fn [a]
-        (let [cb #(complete-missing-modules fennel-wrapper.eval $...)
+        (let [implicit-resolve? Config.command.implicit-resolve
+              cb (if implicit-resolve?
+                     #(resolve-missing-modules fennel-wrapper.eval $...)
+                     fennel-wrapper.eval)
               callback (mk-fennel-wrapper-command-callback cb
                                                            {:lang :fennel
                                                             : compiler-options

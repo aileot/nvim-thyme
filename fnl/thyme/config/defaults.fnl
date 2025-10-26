@@ -29,6 +29,7 @@
  ;; outputs instead on the keymap and command features.
  :disable-treesitter-highlights false
  :command {:compiler-options false
+           :implicit-resolve true
            :cmd-history {:method "overwrite" :trailing-parens "omit"}
            :Fnl {;; (experimental)
                  :default-range 0}
