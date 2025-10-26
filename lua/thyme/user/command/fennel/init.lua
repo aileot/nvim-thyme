@@ -62,17 +62,17 @@ local function should_include_buf_3f(buf)
     return nil
   end
 end
-local function resolve_missing_modules(callback, old_fnl_expr, compiler_options)
+local function resolve_missing_modules(callback, old_fnl_code, compiler_options)
   _G.assert((nil ~= compiler_options), "Missing argument compiler-options on fnl/thyme/user/command/fennel/init.fnl:46")
-  _G.assert((nil ~= old_fnl_expr), "Missing argument old-fnl-expr on fnl/thyme/user/command/fennel/init.fnl:46")
+  _G.assert((nil ~= old_fnl_code), "Missing argument old-fnl-code on fnl/thyme/user/command/fennel/init.fnl:46")
   _G.assert((nil ~= callback), "Missing argument callback on fnl/thyme/user/command/fennel/init.fnl:46")
-  local new_fnl_expr = old_fnl_expr
+  local new_fnl_code = old_fnl_code
   local continue_3f = true
   local results = nil
   while continue_3f do
     local _14_
     local function _15_()
-      return callback(new_fnl_expr, compiler_options)
+      return callback(new_fnl_code, compiler_options)
     end
     _14_ = {pcall(_15_)}
     if (_14_[1] == true) then
@@ -85,7 +85,7 @@ local function resolve_missing_modules(callback, old_fnl_expr, compiler_options)
       if (nil ~= _16_) then
         local missing_sym = _16_
         local new_line = ("(local %s (require %q))\n"):format(missing_sym, missing_sym)
-        new_fnl_expr = (new_line .. new_fnl_expr)
+        new_fnl_code = (new_line .. new_fnl_code)
       else
       end
     else

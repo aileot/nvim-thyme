@@ -43,19 +43,19 @@
           (not (file-readable? buf-name)) ;
           (under-tmpdir? buf-name)))))
 
-(λ resolve-missing-modules [callback old-fnl-expr compiler-options]
-  "Insert `(local missing :missing)` to `old-fnl-expr` regardless of the module
+(λ resolve-missing-modules [callback old-fnl-code compiler-options]
+  "Insert `(local missing :missing)` to `old-fnl-code` regardless of the module
 existences.
-@param callback fun(fnl-expr: string): any
-@param old-fnl-expr string
+@param callback fun(fnl-code: string): any
+@param old-fnl-code string
 @param compiler-options table
 @return any callback results"
-  (var new-fnl-expr old-fnl-expr)
+  (var new-fnl-code old-fnl-code)
   (var continue? true)
   (var results nil)
   ;; Just complete modules which is not in _G.
   (while continue?
-    (case [(pcall #(callback new-fnl-expr compiler-options))]
+    (case [(pcall #(callback new-fnl-code compiler-options))]
       [true & rest] (do
                       (set continue? false)
                       (set results rest))
@@ -64,7 +64,7 @@ existences.
                                                    (: :format ;
                                                       missing-sym ;
                                                       missing-sym))]
-                                  (set new-fnl-expr (.. new-line new-fnl-expr))))))
+                                  (set new-fnl-code (.. new-line new-fnl-code))))))
   (unpack results))
 
 (fn M.setup! []
