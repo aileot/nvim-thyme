@@ -46,3 +46,13 @@
           (set package.loaded.missing nil)
           (vim.fn.delete fnl-path)
           (set Config.command.implicit-resolve perv-target-opt))))))
+
+(describe* "command `:verbose Fnl`"
+  (setup (fn []
+           (thyme.setup)))
+  (it* "should also display completed `require`s in the output."
+    (let [fnl-path (prepare-config-fnl-file! "missing.fnl" "{:inc #(+ $ 1)}")
+          output (execute "verbose Fnl (missing.inc 1)")]
+      (assert.is_true (string.find output "require.missing"))
+      (set package.loaded.missing nil)
+      (vim.fn.delete fnl-path))))
