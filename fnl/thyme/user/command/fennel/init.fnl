@@ -46,7 +46,7 @@
 (λ resolve-missing-modules [callback old-fnl-code compiler-options]
   "Insert `(local missing :missing)` to `old-fnl-code` regardless of the module
 existences.
-@param callback fun(fnl-code: string): any
+@param callback fun(fnl-code: string, compiler-options: table): any
 @param old-fnl-code string
 @param compiler-options table
 @return any callback results"
