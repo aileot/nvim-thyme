@@ -62,7 +62,8 @@ local function should_include_buf_3f(buf)
     return nil
   end
 end
-local function resolve_missing_modules(callback, old_fnl_expr)
+local function resolve_missing_modules(callback, old_fnl_expr, compiler_options)
+  _G.assert((nil ~= compiler_options), "Missing argument compiler-options on fnl/thyme/user/command/fennel/init.fnl:46")
   _G.assert((nil ~= old_fnl_expr), "Missing argument old-fnl-expr on fnl/thyme/user/command/fennel/init.fnl:46")
   _G.assert((nil ~= callback), "Missing argument callback on fnl/thyme/user/command/fennel/init.fnl:46")
   local new_fnl_expr = old_fnl_expr
@@ -71,7 +72,7 @@ local function resolve_missing_modules(callback, old_fnl_expr)
   while continue_3f do
     local _14_
     local function _15_()
-      return callback(new_fnl_expr)
+      return callback(new_fnl_expr, compiler_options)
     end
     _14_ = {pcall(_15_)}
     if (_14_[1] == true) then
