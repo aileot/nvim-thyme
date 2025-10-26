@@ -64,7 +64,11 @@ existences.
                                                    (: :format ;
                                                       missing-sym ;
                                                       missing-sym))]
-                                  (set new-fnl-code (.. new-line new-fnl-code))))))
+                                  (set new-fnl-code (.. new-line new-fnl-code)))
+                    _ (do
+                        ;; On hitting any other error, give up the attempt.
+                        (set continue? false)
+                        (error msg)))))
   (unpack results))
 
 (fn M.setup! []

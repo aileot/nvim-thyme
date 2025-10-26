@@ -87,6 +87,9 @@ local function resolve_missing_modules(callback, old_fnl_code, compiler_options)
         local new_line = ("(local %s (require %q))\n"):format(missing_sym, missing_sym)
         new_fnl_code = (new_line .. new_fnl_code)
       else
+        local _ = _16_
+        continue_3f = false
+        error(msg)
       end
     else
     end
