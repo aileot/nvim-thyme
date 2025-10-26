@@ -25,13 +25,16 @@
       (set package.loaded.missing nil)
       (vim.fn.delete fnl-path)))
   (describe* "with the option `command.implicit-resolve`"
-    (it* "set to `true` should not complete any missing modules"
+    (it* "set to `true` should complete missing modules in the arguments"
       (let [perv-target-opt Config.command.implicit-resolve
-            fnl-path (prepare-config-fnl-file! "missing.fnl" "{:inc #(+ $ 1)}")]
+            foo-path (prepare-config-fnl-file! "foo.fnl" "{:inc #(+ $ 1)}")
+            bar-path (prepare-config-fnl-file! "bar.fnl" "{:twice #(* $ 2)}")]
         (set Config.command.implicit-resolve true)
-        (assert.equals "2" (execute "Fnl (missing.inc 1)"))
-        (set package.loaded.missing nil)
-        (vim.fn.delete fnl-path)
+        (assert.equals "4" (execute "Fnl (-> 1 (foo.inc) (bar.twice)"))
+        (set package.loaded.foo nil)
+        (set package.loaded.bar nil)
+        (vim.fn.delete foo-path)
+        (vim.fn.delete bar-path)
         (set Config.command.implicit-resolve perv-target-opt)))
     (describe* "set to `false` should not complete any missing modules;"
       (it* "thus, it should throw an error due to a compile error: unknown identifier"
