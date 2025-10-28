@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/aileot/nvim-thyme/compare/v1.6.1...v1.6.2) (2025-10-28)
+
+
+### Bug Fixes
+
+* **parinfer:** fill in default options on the first run ([#118](https://github.com/aileot/nvim-thyme/issues/118)) ([9b5be25](https://github.com/aileot/nvim-thyme/commit/9b5be256bf38ad1763981a2820c2b0fa727423aa))
+
 ## [1.6.1](https://github.com/aileot/nvim-thyme/compare/v1.6.0...v1.6.1) (2025-10-17)
 
 
