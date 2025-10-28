@@ -10,11 +10,11 @@ local function map_keys_in_cmdline_21()
   local plug_map_insert = "<Plug>(thyme-dropin-insert-Fnl-if-needed)"
   local plug_map_complete = "<Plug>(thyme-dropin-complete-with-Fnl-if-needed)"
   do
-    local case_2_ = opts.cmdline["enter-key"]
-    if (case_2_ == false) then
-    elseif (case_2_ == "") then
-    elseif (nil ~= case_2_) then
-      local key = case_2_
+    local _2_ = opts.cmdline["enter-key"]
+    if (_2_ == false) then
+    elseif (_2_ == "") then
+    elseif (nil ~= _2_) then
+      local key = _2_
       local function _3_()
         return M.cmdline.replace(vim.fn.getcmdline())
       end
@@ -23,13 +23,13 @@ local function map_keys_in_cmdline_21()
     else
     end
   end
-  local case_5_ = opts.cmdline["completion-key"]
-  if (case_5_ == false) then
+  local _5_ = opts.cmdline["completion-key"]
+  if (_5_ == false) then
     return nil
-  elseif (case_5_ == "") then
+  elseif (_5_ == "") then
     return nil
-  elseif (nil ~= case_5_) then
-    local key = case_5_
+  elseif (nil ~= _5_) then
+    local key = _5_
     local function _6_()
       return M.cmdline.complete(vim.fn.getcmdline())
     end
@@ -49,13 +49,13 @@ local function map_keys_in_cmdwin_21(buf)
     return M.cmdwin.replace(vim.fn.line("."))
   end
   vim.api.nvim_set_keymap("i", plug_map_insert, "", {noremap = true, callback = _9_})
-  local case_10_ = Config.dropin.cmdwin["enter-key"]
-  if (case_10_ == false) then
+  local _10_ = Config.dropin.cmdwin["enter-key"]
+  if (_10_ == false) then
     return nil
-  elseif (case_10_ == "") then
+  elseif (_10_ == "") then
     return nil
-  elseif (nil ~= case_10_) then
-    local key = case_10_
+  elseif (nil ~= _10_) then
+    local key = _10_
     vim.api.nvim_buf_set_keymap(buf, "n", key, (plug_map_insert .. "<CR>"), {noremap = true, nowait = true})
     return vim.api.nvim_buf_set_keymap(buf, "i", key, (plug_map_insert .. "<CR>"), {noremap = true, nowait = true})
   else

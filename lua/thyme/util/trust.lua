@@ -32,11 +32,11 @@ M["allowed?"] = function(raw_path)
     local trusted_3f = false
     for _, line in ipairs(trust_contents) do
       if trusted_3f then break end
-      local case_5_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
-      if (case_5_ == nil) then
+      local _5_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
+      if (_5_ == nil) then
         trusted_3f = false
       else
-        local _0 = case_5_
+        local _0 = _5_
         if line:find(allowed_pattern) then
           trusted_3f = true
         else
@@ -58,11 +58,11 @@ M["denied?"] = function(raw_path)
     local trusted_3f = false
     for _, line in ipairs(trust_contents) do
       if trusted_3f then break end
-      local case_9_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
-      if (case_9_ == nil) then
+      local _9_ = (line:find((" " .. config_path), 1, true) or line:find((" " .. resolved_path)))
+      if (_9_ == nil) then
         trusted_3f = false
       else
-        local _0 = case_9_
+        local _0 = _9_
         if line:find(denied_pattern) then
           trusted_3f = true
         else

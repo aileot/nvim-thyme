@@ -16,20 +16,20 @@ local mk_fennel_wrapper_command_callback = _local_3_["mk-fennel-wrapper-command-
 local fnl_file_compile = require("thyme.user.command.fennel.fnl-file-compile")
 local M = {}
 local function open_buf_21(buf_7cpath, _4_)
-  local split = _4_.split
-  local tab = _4_.tab
+  local split = _4_["split"]
+  local tab = _4_["tab"]
   local mods = _4_
   local split_3f = ((-1 ~= tab) or ("" ~= split))
   local cmd
   do
-    local case_5_ = type(buf_7cpath)
-    if (case_5_ == "number") then
+    local _5_ = type(buf_7cpath)
+    if (_5_ == "number") then
       if split_3f then
         cmd = "sbuffer"
       else
         cmd = "buffer"
       end
-    elseif (case_5_ == "string") then
+    elseif (_5_ == "string") then
       if split_3f then
         cmd = "split"
       else
@@ -119,23 +119,23 @@ M["setup!"] = function()
     vim.api.nvim_create_user_command("FnlCompileBuf", cb, cmd_opts)
   end
   local function _23_(_21_)
-    local _arg_22_ = _21_.fargs
+    local _arg_22_ = _21_["fargs"]
     local _3fpath = _arg_22_[1]
-    local mods = _21_.smods
+    local mods = _21_["smods"]
     local input_path = vim.fn.expand((_3fpath or "%:p"))
     local output_path
     do
-      local case_24_ = input_path:sub(-4)
-      if (case_24_ == ".fnl") then
-        local case_25_ = DependencyLogger["fnl-path->lua-path"](DependencyLogger, input_path)
-        if (nil ~= case_25_) then
-          local lua_path = case_25_
+      local _24_ = input_path:sub(-4)
+      if (_24_ == ".fnl") then
+        local _25_ = DependencyLogger["fnl-path->lua-path"](DependencyLogger, input_path)
+        if (nil ~= _25_) then
+          local lua_path = _25_
           output_path = lua_path
         else
-          local _ = case_25_
-          local case_26_ = (input_path:sub(1, -4) .. "lua")
-          if (nil ~= case_26_) then
-            local lua_path = case_26_
+          local _ = _25_
+          local _26_ = (input_path:sub(1, -4) .. "lua")
+          if (nil ~= _26_) then
+            local lua_path = _26_
             if file_readable_3f(lua_path) then
               output_path = lua_path
             else
@@ -145,14 +145,14 @@ M["setup!"] = function()
             output_path = nil
           end
         end
-      elseif (case_24_ == ".lua") then
+      elseif (_24_ == ".lua") then
         if vim.startswith(input_path, lua_cache_prefix) then
           output_path = vim.api.nvim_get_runtime_file(input_path:sub(#lua_cache_prefix):gsub("%.lua$", ".fnl"):gsub("^", "*"), false)[1]
         else
           output_path = vim.fn.glob(input_path:gsub("/lua/", "/*/"):gsub("%.lua$", ".fnl"), false)
         end
       else
-        local _ = case_24_
+        local _ = _24_
         output_path = error("expected a fnl or lua file, got", input_path)
       end
     end

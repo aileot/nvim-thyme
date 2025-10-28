@@ -2,21 +2,21 @@ local ffi = require("ffi")
 local Path = require("thyme.util.path")
 local _local_1_ = require("thyme.wrapper.nvim")
 local get_runtime_files = _local_1_["get-runtime-files"]
-local json_encode = vim.json.encode
-local json_decode = vim.json.decode
+local json_encode = vim.json["encode"]
+local json_decode = vim.json["decode"]
 local cache = {["parinfer-loader"] = nil}
 local vim_var_suffixes
 do
   local vim_var_prefix = "parinfer_"
-  local tbl_21_ = {}
+  local tbl_16_ = {}
   for k, v in pairs({mode = "mode", enabled = "enabled", trail_highlight = "trail_highlight", trail_highlight_group = "trail_highlight_group", force_balance = "forceBalance", comment_char = "commentChar", string_delimiters = "stringDelimiters", lisp_vline_symbols = "lispVlineSymbols", lisp_block_comments = "lispBlockComments", guile_block_comments = "guileBlockComments", scheme_sexp_comments = "schemeSexpComments", janet_long_strings = "janetLongStrings"}) do
-    local k_22_, v_23_ = (vim_var_prefix .. k), v
-    if ((k_22_ ~= nil) and (v_23_ ~= nil)) then
-      tbl_21_[k_22_] = v_23_
+    local k_17_, v_18_ = (vim_var_prefix .. k), v
+    if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+      tbl_16_[k_17_] = v_18_
     else
     end
   end
-  vim_var_suffixes = tbl_21_
+  vim_var_suffixes = tbl_16_
 end
 local function vim_var__3elib_opts(_3fval)
   if ("number" == type(_3fval)) then
@@ -26,36 +26,40 @@ local function vim_var__3elib_opts(_3fval)
   end
 end
 local function collect_gvar_options()
-  local tbl_21_ = {}
+  if not vim.g.parinfer_loaded then
+    vim.cmd("runtime plugin/parinfer.vim")
+  else
+  end
+  local tbl_16_ = {}
   for vim_var_suffix, lib_opt_name in pairs(vim_var_suffixes) do
-    local k_22_, v_23_ = lib_opt_name, vim_var__3elib_opts(vim.g[vim_var_suffix])
-    if ((k_22_ ~= nil) and (v_23_ ~= nil)) then
-      tbl_21_[k_22_] = v_23_
+    local k_17_, v_18_ = lib_opt_name, vim_var__3elib_opts(vim.g[vim_var_suffix])
+    if ((k_17_ ~= nil) and (v_18_ ~= nil)) then
+      tbl_16_[k_17_] = v_18_
     else
     end
   end
-  return tbl_21_
+  return tbl_16_
 end
 local function search_parinfer_lib()
   local parinfer_lib
   do
-    local case_5_ = ffi.os:lower()
-    if (case_5_ == "windows") then
+    local _6_ = ffi.os:lower()
+    if (_6_ == "windows") then
       parinfer_lib = "parinfer_rust.dll"
-    elseif (case_5_ == "osx") then
+    elseif (_6_ == "osx") then
       parinfer_lib = "libparinfer_rust.dylib"
     else
-      local _ = case_5_
+      local _ = _6_
       parinfer_lib = "libparinfer_rust.so"
     end
   end
   local rtp_paths_to_parinfer_lib = {Path.join("target", "release", parinfer_lib), parinfer_lib}
-  local case_7_ = get_runtime_files(rtp_paths_to_parinfer_lib, false)
-  if ((_G.type(case_7_) == "table") and (nil ~= case_7_[1])) then
-    local lib = case_7_[1]
+  local _8_ = get_runtime_files(rtp_paths_to_parinfer_lib, false)
+  if ((_G.type(_8_) == "table") and (nil ~= _8_[1])) then
+    local lib = _8_[1]
     return lib
   else
-    local _ = case_7_
+    local _ = _8_
     return error(("failed to find %s. Please make sure to install %s iu your &runtimepath"):format(parinfer_lib, "https://github.com/eraserhd/parinfer-rust"))
   end
 end
@@ -63,10 +67,10 @@ local function load_parinfer()
   local lib = search_parinfer_lib()
   local parinfer_lib = ffi.load(lib)
   ffi.cdef("char *run_parinfer(const char *json);")
-  local function _9_(request)
+  local function _10_(request)
     return json_decode(ffi.string(parinfer_lib.run_parinfer(json_encode(request))))
   end
-  return _9_
+  return _10_
 end
 local function apply_parinfer(text, _3fopts)
   if (nil == cache["parinfer-loader"]) then
@@ -85,7 +89,7 @@ local function apply_parinfer(text, _3fopts)
   if result.success then
     return result.text
   else
-    local msg = ("Error in applying parinfer to the text:\n%s\nPassed Options:\n%s\nParinfer Result:\n%s"):format(text, vim.inspect((_3fopts or {})), vim.inspect(result))
+    local msg = ("Error in applying parinfer to the text:\n%s\nPassed Options:\n%s\nParinfer Result:\n%s"):format(text, vim.inspect(options), vim.inspect(result))
     return error(msg)
   end
 end

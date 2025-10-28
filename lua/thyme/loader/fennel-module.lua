@@ -45,11 +45,11 @@ end
 local function locate_fennel_path_21()
   local _9_
   do
-    local case_8_ = vim.api.nvim_get_runtime_file("fennel.lua", false)
-    if ((_G.type(case_8_) == "table") and (nil ~= case_8_[1])) then
-      local fennel_lua_path = case_8_[1]
+    local _8_ = vim.api.nvim_get_runtime_file("fennel.lua", false)
+    if ((_G.type(_8_) == "table") and (nil ~= _8_[1])) then
+      local fennel_lua_path = _8_[1]
       _9_ = fennel_lua_path
-    elseif ((_G.type(case_8_) == "table") and (case_8_[1] == nil)) then
+    elseif ((_G.type(_8_) == "table") and (_8_[1] == nil)) then
       _9_ = false
     else
       _9_ = nil
@@ -58,12 +58,12 @@ local function locate_fennel_path_21()
   local or_13_ = _9_
   if not or_13_ then
     local rtp = vim.api.nvim_get_option_value("rtp", {})
-    local case_15_ = (rtp:match(Path.join("([^,]+", "fennel),")) or rtp:match(Path.join("([^,]+", "fennel)$")))
-    if (nil ~= case_15_) then
-      local fennel_repo_path = case_15_
+    local _15_ = (rtp:match(Path.join("([^,]+", "fennel),")) or rtp:match(Path.join("([^,]+", "fennel)$")))
+    if (nil ~= _15_) then
+      local fennel_repo_path = _15_
       or_13_ = compile_fennel_into_rtp_21(fennel_repo_path)
     else
-      local _ = case_15_
+      local _ = _15_
       or_13_ = error("No `fennel.lua`, no `fennel`, and no Fennel repo found.\nPlease make sure to add the path to fennel repo in `&runtimepath`, or install a `fennel` executable.")
     end
   end
@@ -87,14 +87,14 @@ local function cache_fennel_lua_21(fennel_lua_path)
 end
 local function load_fennel(fennel_lua_path)
   local cached_fennel_path = cache_fennel_lua_21(fennel_lua_path)
-  local case_22_, case_23_ = loadfile(cached_fennel_path)
-  if ((case_22_ == false) and (nil ~= case_23_)) then
-    local err_msg = case_23_
+  local _22_, _23_ = loadfile(cached_fennel_path)
+  if ((_22_ == false) and (nil ~= _23_)) then
+    local err_msg = _23_
     local msg = LoaderMessenger["mk-failure-reason"](LoaderMessenger, ("Failed to load fennel.lua.\nError Message:\n%s\nContents:\n%s"):format(err_msg, read_file(cached_fennel_path)))
     fs.unlink(cached_fennel_path)
     return msg
-  elseif (nil ~= case_22_) then
-    local lua_chunk = case_22_
+  elseif (nil ~= _22_) then
+    local lua_chunk = _22_
     return lua_chunk
   else
     return nil

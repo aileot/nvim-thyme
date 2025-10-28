@@ -123,7 +123,7 @@
 
 ;; This lib is based on https://raw.githubusercontent.com/harrygallagher4/nvim-parinfer-rust/main/LICENSE.
 
-(import-macros {: error-fmt} :thyme.macros)
+(import-macros {: when-not : error-fmt} :thyme.macros)
 
 (local ffi (require :ffi))
 (local Path (require :thyme.util.path))
@@ -170,6 +170,10 @@
       ?val))
 
 (fn collect-gvar-options []
+  (when-not vim.g.parinfer_loaded
+    ;; Make sure all the parinfer's vim.g options are filled with the default
+    ;; values at least.
+    (vim.cmd "runtime plugin/parinfer.vim"))
   (collect [vim-var-suffix lib-opt-name (pairs vim-var-suffixes)]
     (values lib-opt-name (vim-var->lib-opts (. vim.g vim-var-suffix)))))
 
@@ -226,7 +230,7 @@ Passed Options:
 Parinfer Result:
 %s"
                       (: :format text ;
-                         (vim.inspect (or ?opts {})) ;
+                         (vim.inspect options) ;
                          (vim.inspect result)))]
           (error msg)))))
 

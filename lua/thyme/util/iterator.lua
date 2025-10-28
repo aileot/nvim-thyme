@@ -37,9 +37,9 @@ local function uncouple_substrings(str, delimiter)
     if not ("" == rest) then
       result = rest
       do
-        local case_6_ = reversed_str:find(delimiter, 1, true)
-        if (nil ~= case_6_) then
-          local idx = case_6_
+        local _6_ = reversed_str:find(delimiter, 1, true)
+        if (nil ~= _6_) then
+          local idx = _6_
           rest = str:sub(1, (-1 - idx))
         else
         end
@@ -75,17 +75,17 @@ end
 local function pairs_from_longer_key(tbl)
   local keys
   do
-    local tbl_26_ = {}
-    local i_27_ = 0
+    local tbl_21_ = {}
+    local i_22_ = 0
     for k, _ in pairs(tbl) do
-      local val_28_ = k
-      if (nil ~= val_28_) then
-        i_27_ = (i_27_ + 1)
-        tbl_26_[i_27_] = val_28_
+      local val_23_ = k
+      if (nil ~= val_23_) then
+        i_22_ = (i_22_ + 1)
+        tbl_21_[i_22_] = val_23_
       else
       end
     end
-    keys = tbl_26_
+    keys = tbl_21_
   end
   local function _13_(a, b)
     return (#b < #a)
