@@ -26,6 +26,10 @@ local function vim_var__3elib_opts(_3fval)
   end
 end
 local function collect_gvar_options()
+  if not vim.g.parinfer_loaded then
+    vim.cmd("runtime plugin/parinfer.vim")
+  else
+  end
   local tbl_16_ = {}
   for vim_var_suffix, lib_opt_name in pairs(vim_var_suffixes) do
     local k_17_, v_18_ = lib_opt_name, vim_var__3elib_opts(vim.g[vim_var_suffix])
@@ -39,23 +43,23 @@ end
 local function search_parinfer_lib()
   local parinfer_lib
   do
-    local _5_ = ffi.os:lower()
-    if (_5_ == "windows") then
+    local _6_ = ffi.os:lower()
+    if (_6_ == "windows") then
       parinfer_lib = "parinfer_rust.dll"
-    elseif (_5_ == "osx") then
+    elseif (_6_ == "osx") then
       parinfer_lib = "libparinfer_rust.dylib"
     else
-      local _ = _5_
+      local _ = _6_
       parinfer_lib = "libparinfer_rust.so"
     end
   end
   local rtp_paths_to_parinfer_lib = {Path.join("target", "release", parinfer_lib), parinfer_lib}
-  local _7_ = get_runtime_files(rtp_paths_to_parinfer_lib, false)
-  if ((_G.type(_7_) == "table") and (nil ~= _7_[1])) then
-    local lib = _7_[1]
+  local _8_ = get_runtime_files(rtp_paths_to_parinfer_lib, false)
+  if ((_G.type(_8_) == "table") and (nil ~= _8_[1])) then
+    local lib = _8_[1]
     return lib
   else
-    local _ = _7_
+    local _ = _8_
     return error(("failed to find %s. Please make sure to install %s iu your &runtimepath"):format(parinfer_lib, "https://github.com/eraserhd/parinfer-rust"))
   end
 end
@@ -63,10 +67,10 @@ local function load_parinfer()
   local lib = search_parinfer_lib()
   local parinfer_lib = ffi.load(lib)
   ffi.cdef("char *run_parinfer(const char *json);")
-  local function _9_(request)
+  local function _10_(request)
     return json_decode(ffi.string(parinfer_lib.run_parinfer(json_encode(request))))
   end
-  return _9_
+  return _10_
 end
 local function apply_parinfer(text, _3fopts)
   if (nil == cache["parinfer-loader"]) then
