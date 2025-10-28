@@ -31,12 +31,12 @@ local function define_commands_21(_3fopts)
   end
   vim.api.nvim_create_user_command("ThymeConfigRecommend", _4_, {desc = "[thyme] open a readonly buffer to demonstrate the recommended config file"})
   local function _5_()
-    local case_6_ = vim.fn.confirm("Delete all the thyme's cache, state, and data files? It will NOT modify your config files.", "&No\n&yes", 1, "Warning")
-    if (case_6_ == 2) then
+    local _6_ = vim.fn.confirm("Delete all the thyme's cache, state, and data files? It will NOT modify your config files.", "&No\n&yes", 1, "Warning")
+    if (_6_ == 2) then
       local files = {lua_cache_prefix, Path.join(vim.fn.stdpath("cache"), "thyme"), Path.join(vim.fn.stdpath("state"), "thyme"), Path.join(vim.fn.stdpath("data"), "thyme")}
       do
-        local case_7_ = vim.secure.trust({action = "remove", path = config_path})
-        if (case_7_ == true) then
+        local _7_ = vim.secure.trust({action = "remove", path = config_path})
+        if (_7_ == true) then
           UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "successfully untrust .nvim-thyme.fnl")
         else
         end
@@ -44,11 +44,11 @@ local function define_commands_21(_3fopts)
       for _, path in ipairs(files) do
         assert_is_file_of_thyme(path)
         if directory_3f(path) then
-          local case_9_ = vim.fn.delete(path, "rf")
-          if (case_9_ == 0) then
+          local _9_ = vim.fn.delete(path, "rf")
+          if (_9_ == 0) then
             UninstallCommandMessenger["notify!"](UninstallCommandMessenger, ("successfully deleted " .. path))
           else
-            local _0 = case_9_
+            local _0 = _9_
             error(("failed to delete " .. path))
           end
         else
@@ -56,7 +56,7 @@ local function define_commands_21(_3fopts)
       end
       return UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "successfully uninstalled")
     else
-      local _ = case_6_
+      local _ = _6_
       return UninstallCommandMessenger["notify!"](UninstallCommandMessenger, "aborted")
     end
   end

@@ -1,16 +1,16 @@
 local function buf_get_text_in_range(buf, start, _end)
   local _3_
   do
-    local case_1_, case_2_ = start, _end
-    if (((_G.type(case_1_) == "table") and (nil ~= case_1_[1]) and (nil ~= case_1_[2])) and ((_G.type(case_2_) == "table") and (nil ~= case_2_[1]) and (nil ~= case_2_[2]))) then
-      local row1 = case_1_[1]
-      local col01 = case_1_[2]
-      local row2 = case_2_[1]
-      local col02 = case_2_[2]
+    local _1_, _2_ = start, _end
+    if (((_G.type(_1_) == "table") and (nil ~= _1_[1]) and (nil ~= _1_[2])) and ((_G.type(_2_) == "table") and (nil ~= _2_[1]) and (nil ~= _2_[2]))) then
+      local row1 = _1_[1]
+      local col01 = _1_[2]
+      local row2 = _2_[1]
+      local col02 = _2_[2]
       _3_ = vim.api.nvim_buf_get_text(buf, (row1 - 1), col01, (row2 - 1), (col02 + 1), {})
-    elseif ((nil ~= case_1_) and (nil ~= case_2_)) then
-      local row1 = case_1_
-      local row2 = case_2_
+    elseif ((nil ~= _1_) and (nil ~= _2_)) then
+      local row1 = _1_
+      local row2 = _2_
       _3_ = vim.api.nvim_buf_get_lines(buf, (row1 - 1), row2, true)
     else
       _3_ = nil
@@ -19,26 +19,26 @@ local function buf_get_text_in_range(buf, start, _end)
   return table.concat(_3_, "\n")
 end
 local function buf_marks__3etext(...)
-  local buf, mark1, mark2
+  local buf, mark1, mark2 = nil, nil, nil
   do
-    local case_7_ = select("#", ...)
-    if (case_7_ == 2) then
+    local _7_ = select("#", ...)
+    if (_7_ == 2) then
       buf, mark1, mark2 = 0, ...
-    elseif (case_7_ == 3) then
+    elseif (_7_ == 3) then
       buf, mark1, mark2 = ...
     else
-      local _ = case_7_
+      local _ = _7_
       buf, mark1, mark2 = error(("expected 2 or 3 args, got " .. table.concat({...}, ",")))
     end
   end
-  local start, _end
+  local start, _end = nil, nil
   do
-    local case_9_, case_10_ = vim.api.nvim_buf_get_mark(buf, mark1), vim.api.nvim_buf_get_mark(buf, mark2)
-    if (((_G.type(case_9_) == "table") and (nil ~= case_9_[1])) and ((_G.type(case_10_) == "table") and (nil ~= case_10_[1]))) then
-      local row1 = case_9_[1]
-      local start0 = case_9_
-      local row2 = case_10_[1]
-      local _end0 = case_10_
+    local _9_, _10_ = vim.api.nvim_buf_get_mark(buf, mark1), vim.api.nvim_buf_get_mark(buf, mark2)
+    if (((_G.type(_9_) == "table") and (nil ~= _9_[1])) and ((_G.type(_10_) == "table") and (nil ~= _10_[1]))) then
+      local row1 = _9_[1]
+      local start0 = _9_
+      local row2 = _10_[1]
+      local _end0 = _10_
       if (row1 <= row2) then
         start, _end = start0, _end0
       else
