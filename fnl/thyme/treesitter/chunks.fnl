@@ -11,7 +11,7 @@
 (local hl-chunk-cache (new-matrix))
 (local idx-empty-hl-name true)
 
-(local special-chunk {:whitespace [" "] :newline ["\n"]})
+(local special-chunks {:whitespace [" "] :newline ["\n"]})
 
 (fn set-hl-chunk-cache! [text ?hl-name]
   (let [?hl-group (when ?hl-name
@@ -82,7 +82,7 @@
                     (vim.split "\n" {:plain true})
                     (length))
         end-col vim.go.columns
-        hl-chunk-matrix (new-matrix end-row end-col special-chunk.whitespace)
+        hl-chunk-matrix (new-matrix end-row end-col special-chunks.whitespace)
         cb (fn [ts-tree tree]
              (when ts-tree
                (let [lang (tree:lang)
@@ -120,7 +120,7 @@
       (for [i 1 end-row]
         (for [j 1 end-col &until (= "\n" (first (. hl-chunk-matrix i j)))]
           (table.insert hl-chunks (. hl-chunk-matrix i j)))
-        (table.insert hl-chunks special-chunk.newline))
+        (table.insert hl-chunks special-chunks.newline))
       (when (not= "\n" (text:sub -1))
         (table.remove hl-chunks))
       (values hl-chunks))))
