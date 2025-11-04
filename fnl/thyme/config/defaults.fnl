@@ -28,6 +28,13 @@
  ;; disable treesitter highlights and make nvim-thyme return plain text
  ;; outputs instead on the keymap and command features.
  :disable-treesitter-highlights false
+ :treesitter {:enabled true
+              :highlight {:enabled true
+                          :indent {:enabled true
+                                   :first-char-only true
+                                   :chunks [["│" {:fg "#3a515d"}]
+                                            ["│" {:fg "#3a515d"}]
+                                            ["│" {:fg "#3a515d"}]]}}}
  :command {:compiler-options false
            :cmd-history {:method "overwrite" :trailing-parens "omit"}
            :Fnl {;; (experimental)

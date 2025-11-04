@@ -11,7 +11,16 @@
 (local hl-chunk-cache (new-matrix))
 (local idx-empty-hl-name true)
 
-(local special-chunks {:whitespace [" "] :newline ["\n"]})
+(vim.api.nvim_set_hl 0 "ThymeTSPrint1" {:fg "#355364"})
+(vim.api.nvim_set_hl 0 "ThymeTSPrint2" {:fg "#646135"})
+(vim.api.nvim_set_hl 0 "ThymeTSPrint3" {:fg "#643543"})
+
+(local special-chunks
+       {:whitespace [" "]
+        :newline ["\n"]
+        :indents [["│" "ThymeTSPrint1"]
+                  ["│" "ThymeTSPrint2"]
+                  ["│" "ThymeTSPrint3"]]})
 
 (fn set-hl-chunk-cache! [text ?hl-name]
   (let [?hl-group (when ?hl-name
@@ -116,10 +125,32 @@
     (doto lang-tree
       (: :parse)
       (: :for_each_tree cb))
-    (let [hl-chunks []]
+    (let [hl-chunks []
+          ;; NOTE: For index and last col comparison, fill in 0 by default.
+          semantic-indent-cols [0]]
       (for [i 1 end-row]
-        (for [j 1 end-col &until (= "\n" (first (. hl-chunk-matrix i j)))]
-          (table.insert hl-chunks (. hl-chunk-matrix i j)))
+        (var should-indent? true)
+        (var current-depth 0)
+        (let [last-semantic-indent-idx (length semantic-indent-cols)]
+          (for [j 1 end-col &until (= "\n" (first (. hl-chunk-matrix i j)))]
+            (let [new-chunk (. hl-chunk-matrix i j)]
+              (if (and should-indent? (= " " (first new-chunk)))
+                  (do
+                    (var depth 0)
+                    (for [k 1 (length semantic-indent-cols)]
+                      (when (< (. semantic-indent-cols k) j)
+                        (set depth k)))
+                    (let [color-idx (inc (% depth
+                                            (length special-chunks.indents)))
+                          indent-chunk (or (. special-chunks.indents color-idx)
+                                           special-chunks.whitespace)]
+                      (table.insert hl-chunks indent-chunk)))
+                  (do
+                    (set should-indent? false)
+                    (when-not (= " " (first new-chunk))
+                      (table.insert semantic-indent-cols j)
+                      (set current-depth (length semantic-indent-cols)))
+                    (table.insert hl-chunks new-chunk))))))
         (table.insert hl-chunks special-chunks.newline))
       (when (not= "\n" (text:sub -1))
         (table.remove hl-chunks))

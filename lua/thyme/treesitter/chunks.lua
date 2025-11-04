@@ -9,7 +9,10 @@ local ts = vim.treesitter
 local hl_cache = {}
 local hl_chunk_cache = new_matrix()
 local idx_empty_hl_name = true
-local special_chunks = {whitespace = {" "}, newline = {"\n"}}
+vim.api.nvim_set_hl(0, "ThymeTSPrint1", {fg = "#355364"})
+vim.api.nvim_set_hl(0, "ThymeTSPrint2", {fg = "#646135"})
+vim.api.nvim_set_hl(0, "ThymeTSPrint3", {fg = "#643543"})
+local special_chunks = {whitespace = {" "}, newline = {"\n"}, indents = {{"\226\148\130", "ThymeTSPrint1"}, {"\226\148\130", "ThymeTSPrint2"}, {"\226\148\130", "ThymeTSPrint3"}}}
 local function set_hl_chunk_cache_21(text, _3fhl_name)
   local _3fhl_group
   if _3fhl_name then
@@ -96,16 +99,16 @@ local function compose_hl_chunks(text, lang_tree)
       hl_query = or_11_
       local iter = hl_query:iter_captures(ts_tree:root(), text, top_row0, bottom_row0)
       for id, node, metadata in iter do
-        local case_13_ = hl_query.captures[id]
-        if ((case_13_ == "spell") or (case_13_ == "nospell")) then
+        local _13_ = hl_query.captures[id]
+        if ((_13_ == "spell") or (_13_ == "nospell")) then
         else
-          local and_14_ = (nil ~= case_13_)
+          local and_14_ = (nil ~= _13_)
           if and_14_ then
-            local capture = case_13_
+            local capture = _13_
             and_14_ = not vim.startswith(capture, "_")
           end
           if and_14_ then
-            local capture = case_13_
+            local capture = _13_
             local txt = ts.get_node_text(node, text)
             local hl_name = ("@" .. capture)
             local row01, col01 = node:range()
@@ -135,10 +138,40 @@ local function compose_hl_chunks(text, lang_tree)
     lang_tree:for_each_tree(cb)
   end
   local hl_chunks = {}
+  local semantic_indent_cols = {0}
   for i = 1, end_row do
-    for j = 1, end_col do
-      if ("\n" == hl_chunk_matrix[i][j][1]) then break end
-      table.insert(hl_chunks, hl_chunk_matrix[i][j])
+    local should_indent_3f = true
+    local current_depth = 0
+    do
+      local last_semantic_indent_idx = #semantic_indent_cols
+      for j = 1, end_col do
+        if ("\n" == hl_chunk_matrix[i][j][1]) then break end
+        local new_chunk = hl_chunk_matrix[i][j]
+        local and_19_ = should_indent_3f
+        if and_19_ then
+          and_19_ = (" " == new_chunk[1])
+        end
+        if and_19_ then
+          local depth = 0
+          for k = 1, #semantic_indent_cols do
+            if (semantic_indent_cols[k] < j) then
+              depth = k
+            else
+            end
+          end
+          local color_idx = ((depth % #special_chunks.indents) + 1)
+          local indent_chunk = (special_chunks.indents[color_idx] or special_chunks.whitespace)
+          table.insert(hl_chunks, indent_chunk)
+        else
+          should_indent_3f = false
+          if not (" " == new_chunk[1]) then
+            table.insert(semantic_indent_cols, j)
+            current_depth = #semantic_indent_cols
+          else
+          end
+          table.insert(hl_chunks, new_chunk)
+        end
+      end
     end
     table.insert(hl_chunks, special_chunks.newline)
   end
@@ -149,10 +182,7 @@ local function compose_hl_chunks(text, lang_tree)
   return hl_chunks
 end
 local function text__3ehl_chunks(text, _3fopts)
-  if (nil == text) then
-    _G.error("Missing argument text on fnl/thyme/treesitter/chunks.fnl:128", 2)
-  else
-  end
+  _G.assert((nil ~= text), "Missing argument text on fnl/thyme/treesitter/chunks.fnl:159")
   validate_type("string", text)
   if Config["disable-treesitter-highlights"] then
     return {{text}}
@@ -160,26 +190,26 @@ local function text__3ehl_chunks(text, _3fopts)
     local opts = (_3fopts or {})
     local base_lang = (opts.lang or "fennel")
     local tmp_text
-    local _21_
+    local _24_
     if (base_lang == "fennel") then
-      _21_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
+      _24_ = text:gsub("#<(%a+):(%s+0x%x+)>", "#(%1 %2)")
     elseif (base_lang == "lua") then
-      _21_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
+      _24_ = text:gsub("<(%a+%s+%d+)>", "\"%1\"")
     else
       local _ = base_lang
-      _21_ = text
+      _24_ = text
     end
-    tmp_text = _21_:gsub("\\", "\\\\")
+    tmp_text = _24_:gsub("\\", "\\\\")
     local fixed_text = text:gsub("\\", "\\\\")
     validate_type("table", opts)
-    local case_26_, case_27_ = pcall(ts.get_string_parser, tmp_text, base_lang)
-    if ((case_26_ == false) and (nil ~= case_27_)) then
-      local msg = case_27_
+    local _29_, _30_ = pcall(ts.get_string_parser, tmp_text, base_lang)
+    if ((_29_ == false) and (nil ~= _30_)) then
+      local msg = _30_
       local chunks = {{text}}
       vim.notify_once(msg, vim.log.levels.WARN)
       return chunks
-    elseif ((case_26_ == true) and (nil ~= case_27_)) then
-      local lang_tree = case_27_
+    elseif ((_29_ == true) and (nil ~= _30_)) then
+      local lang_tree = _30_
       return compose_hl_chunks(fixed_text, lang_tree)
     else
       return nil
