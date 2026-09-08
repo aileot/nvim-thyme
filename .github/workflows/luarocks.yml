@@ -21,6 +21,7 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           fetch-tags: true
+          persist-credentials: false
       - name: Upload package to luarocks
         uses: lumen-oss/luarocks-tag-release@adbca66e871a519055f4917c6af5fbf19f656f5d # v7
         env:
