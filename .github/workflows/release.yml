@@ -1,5 +1,8 @@
 name: Release
 on:
+  # Only runs release-please with a dedicated PAT on main; no untrusted
+  # code is executed with repository credentials.
+  # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows:
       - Test
