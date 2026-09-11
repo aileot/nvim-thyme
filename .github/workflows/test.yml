@@ -14,7 +14,7 @@ jobs:
           - stable
           - nightly
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       # TODO: Revert to gh-actions-lua when it's fixed to be up-to-date, and
@@ -32,8 +32,8 @@ jobs:
           sudo luarocks --lua-version=5.1 install fennel
           sudo luarocks --lua-version=5.1 install vusted
       - name: Install cargo for parinfer-rust dependent test
-        uses: moonrepo/setup-rust@abb2d32350334249b178c401e5ec5836e0cd88d3 # v1
-      - uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7 # v1
+        uses: moonrepo/setup-rust@abb2d32350334249b178c401e5ec5836e0cd88d3 # v1.3.0
+      - uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7 # v1.6.1
         id: vim
         with:
           neovim: true
