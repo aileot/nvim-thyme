@@ -35,6 +35,15 @@ jobs:
           sudo luarocks --lua-version=5.1 install vusted
       - name: Install cargo for parinfer-rust dependent test
         uses: moonrepo/setup-rust@abb2d32350334249b178c401e5ec5836e0cd88d3 # v1.3.0
+      # NOTE: nvim-treesitter main depends on `tree-sitter` cli.
+      - name: Install tree-sitter CLI for nvim-treesitter dependent test
+        run: |
+          curl --silent --show-error --fail --location --retry 7 \
+            --output /tmp/tree-sitter.gz \
+            https://github.com/tree-sitter/tree-sitter/releases/download/v0.26.1/tree-sitter-linux-x64.gz
+          gunzip /tmp/tree-sitter.gz
+          sudo install -m 0755 /tmp/tree-sitter /usr/local/bin/tree-sitter
+          tree-sitter --version
       - uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7 # v1.6.1
         id: vim
         with:
