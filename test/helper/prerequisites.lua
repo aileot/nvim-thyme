@@ -2,7 +2,12 @@ local deps = {
   "https://git.sr.ht/~technomancy/fennel",
   {
     "https://github.com/nvim-treesitter/nvim-treesitter",
-    build = ":lua require('nvim-treesitter.configs').setup({ sync_install = true, ensure_installed = { 'vim', 'fennel', 'lua' } })",
+    -- NOTE: The default branch (main) is an incompatible rewrite, which
+    -- installs parsers on demand via `tree-sitter` CLI instead of the removed
+    -- `nvim-treesitter.configs` module. Point `install_dir` at the pack dir so
+    -- parsers land on the isolated runtimepath; its queries live under
+    -- `runtime/`.
+    build = ":lua require('nvim-treesitter').setup({ install_dir = vim.env.DEPS_DIR }); require('nvim-treesitter').install({ 'vim', 'fennel', 'lua' }):wait(300000)",
   },
   {
     "https://github.com/eraserhd/parinfer-rust",
@@ -48,14 +53,13 @@ local function bootstrap(spec)
   local was_installed = uv.fs_stat(path)
   if not was_installed then
     print("Installing " .. url .. " to " .. path)
-    local out = vim.fn.system({
-      "git",
-      "clone",
-      "--depth=1",
-      "--filter=blob:none",
-      url,
-      path,
-    })
+    local clone = { "git", "clone", "--depth=1", "--filter=blob:none" }
+    local branch = type(spec) == "table" and spec.branch
+    if branch then
+      vim.list_extend(clone, { "--branch", branch })
+    end
+    vim.list_extend(clone, { url, path })
+    local out = vim.fn.system(clone)
     if vim.v.shell_error ~= 0 then
       vim.fn.delete(path, "rf")
       error(out)
@@ -162,8 +166,8 @@ local function setup()
   for _, spec in pairs(deps) do
     bootstrap(spec)
   end
-  -- NOTE: nvim-treesitter >=1.0 keeps its runtime files (queries, etc.)
-  -- under `runtime/`, which must be added to the runtimepath explicitly.
+  -- NOTE: nvim-treesitter main keeps its runtime files (queries, etc.) under
+  -- `runtime/`, which must be added to the runtimepath explicitly.
   local nvim_ts_runtime = joinpath(pack_dir, "nvim-treesitter", "runtime")
   if uv.fs_stat(nvim_ts_runtime) then
     vim.opt.runtimepath:prepend(nvim_ts_runtime)
