@@ -6,7 +6,7 @@ on:
   pull_request:
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     strategy:
@@ -35,7 +35,8 @@ jobs:
           sudo luarocks --lua-version=5.1 install vusted
       - name: Install cargo for parinfer-rust dependent test
         uses: moonrepo/setup-rust@abb2d32350334249b178c401e5ec5836e0cd88d3 # v1.3.0
-      # NOTE: nvim-treesitter main depends on `tree-sitter` cli.
+      # NOTE: nvim-treesitter main depends on `tree-sitter` CLI >= 0.26.1, whose
+      # released Linux binaries require glibc >= 2.39 (hence the 24.04 runner).
       - name: Install tree-sitter CLI for nvim-treesitter dependent test
         run: |
           curl --silent --show-error --fail --location --retry 7 \
