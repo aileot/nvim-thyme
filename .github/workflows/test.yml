@@ -12,7 +12,9 @@ jobs:
     strategy:
       matrix:
         nvim_version:
-          - v0.10.2
+          # NOTE: nvim-treesitter main requires nvim 0.12+ (health.lua), so the
+          # min matrix version must track it.
+          - v0.12.0
           - stable
           - nightly
     steps:
