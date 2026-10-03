@@ -105,25 +105,6 @@ local function setup()
       vim.list_extend(parser_sources, vim.fn.glob(dir .. "/parser/*.so", false, true))
     end
   end
-  -- NOTE: Last-resort fallback for read-only Nix runtimes that ship extra
-  -- grammars (e.g. fennel) as /nix/store/*-tree-sitter-<lang>-*/parser.
-  local extra_parsers = {}
-  for _, lang in ipairs({ "vim", "fennel", "lua" }) do
-    local present = false
-    for _, src in ipairs(parser_sources) do
-      if vim.fs.basename(src) == lang .. ".so" then
-        present = true
-        break
-      end
-    end
-    if not present then
-      local found = vim.fn.glob("/nix/store/*-tree-sitter-" .. lang .. "-*/parser", false, true)[1]
-      if found and (uv.fs_stat(found) or {}).type == "file" then
-        extra_parsers[lang] = found
-      end
-    end
-  end
-
   vim.opt.runtimepath = {
     vim.fn.stdpath("config"),
     vim.env.VIMRUNTIME,
@@ -155,9 +136,6 @@ local function setup()
   end
   for name, src in pairs(parser_files) do
     link_parser(src, name)
-  end
-  for lang, src in pairs(extra_parsers) do
-    link_parser(src, lang .. ".so")
   end
   vim.opt.runtimepath:append(parsers_dir)
 
