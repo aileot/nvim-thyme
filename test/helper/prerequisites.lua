@@ -53,13 +53,14 @@ local function bootstrap(spec)
   local was_installed = uv.fs_stat(path)
   if not was_installed then
     print("Installing " .. url .. " to " .. path)
-    local clone = { "git", "clone", "--depth=1", "--filter=blob:none" }
-    local branch = type(spec) == "table" and spec.branch
-    if branch then
-      vim.list_extend(clone, { "--branch", branch })
-    end
-    vim.list_extend(clone, { url, path })
-    local out = vim.fn.system(clone)
+    local out = vim.fn.system({
+      "git",
+      "clone",
+      "--depth=1",
+      "--filter=blob:none",
+      url,
+      path,
+    })
     if vim.v.shell_error ~= 0 then
       vim.fn.delete(path, "rf")
       error(out)
