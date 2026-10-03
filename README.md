@@ -88,7 +88,7 @@ below.
 
 ## ✔️ Requirements
 
-- Neovim v0.11.1+
+- Neovim v0.12.0+
 - [Fennel][Fennel] on your [`&runtimepath`][&runtimepath],
   in short, [`&rtp`][&runtimepath].\
   (_not embedded_ unlike [the alternative plugins][comparisons]. See [Installation][installation].)

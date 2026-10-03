@@ -2,7 +2,12 @@ local deps = {
   "https://git.sr.ht/~technomancy/fennel",
   {
     "https://github.com/nvim-treesitter/nvim-treesitter",
-    build = ":lua require('nvim-treesitter.configs').setup({ sync_install = true, ensure_installed = { 'vim', 'fennel', 'lua' } })",
+    -- NOTE: The default branch (main) is an incompatible rewrite, which
+    -- installs parsers on demand via `tree-sitter` CLI instead of the removed
+    -- `nvim-treesitter.configs` module. Point `install_dir` at the pack dir so
+    -- parsers land on the isolated runtimepath; its queries live under
+    -- `runtime/`.
+    build = ":lua require('nvim-treesitter').setup({ install_dir = vim.env.DEPS_DIR }); require('nvim-treesitter').install({ 'vim', 'fennel', 'lua' }):wait(300000)",
   },
   {
     "https://github.com/eraserhd/parinfer-rust",
@@ -91,14 +96,60 @@ local function setup()
   vim.o.swapfile = false
   vim.o.writebackup = false
   vim.o.shortmess = "WF"
+
+  -- NOTE: Treesitter parsers bundled with nvim can live outside $VIMRUNTIME
+  -- (e.g. Nix keeps them in lib/nvim/parser). Collect them before the
+  -- runtimepath is isolated below.
+  local parser_sources = vim.api.nvim_get_runtime_file("parser/*.so", true)
+  for _, dir in ipairs(vim.split(vim.env.THYME_PARSER_DIRS or "", ":", { plain = true })) do
+    if dir ~= "" then
+      vim.list_extend(parser_sources, vim.fn.glob(dir .. "/parser/*.so", false, true))
+    end
+  end
   vim.opt.runtimepath = {
     vim.fn.stdpath("config"),
     vim.env.VIMRUNTIME,
   }
+
+  -- NOTE: Expose parsers from a writable directory on the isolated
+  -- runtimepath. Tests that simulate a parser-less nvim do so by renaming
+  -- this directory, which is impossible for read-only system runtimes.
+  local parsers_dir = joinpath(pack_dir, "parsers")
+  -- NOTE: `setup` runs once per spec, and each run appends `parsers_dir` to the
+  -- runtimepath. Resolve symlinks to their real targets first so a later run
+  -- does not collect the links it created last time and recreate them as
+  -- self-referential loops.
+  local parser_files = {}
+  for _, src in ipairs(parser_sources) do
+    local name = vim.fs.basename(src)
+    parser_files[name] = uv.fs_realpath(src) or src
+  end
+  vim.fn.delete(joinpath(parsers_dir, "parser"), "rf")
+  vim.fn.mkdir(joinpath(parsers_dir, "parser"), "p")
+  local function link_parser(src, name)
+    local dst = joinpath(parsers_dir, "parser", name)
+    if src == dst then
+      return
+    end
+    if not pcall(uv.fs_symlink, src, dst, {}) then
+      pcall(uv.fs_copyfile, src, dst, {})
+    end
+  end
+  for name, src in pairs(parser_files) do
+    link_parser(src, name)
+  end
+  vim.opt.runtimepath:append(parsers_dir)
+
   vim.cmd("filetype off")
   vim.cmd("filetype plugin indent off")
   for _, spec in pairs(deps) do
     bootstrap(spec)
+  end
+  -- NOTE: nvim-treesitter main keeps its runtime files (queries, etc.) under
+  -- `runtime/`, which must be added to the runtimepath explicitly.
+  local nvim_ts_runtime = joinpath(pack_dir, "nvim-treesitter", "runtime")
+  if uv.fs_stat(nvim_ts_runtime) then
+    vim.opt.runtimepath:prepend(nvim_ts_runtime)
   end
   local compile_dir = joinpath(vim.fn.stdpath("cache"), "thyme", "compile")
   vim.opt.rtp:prepend(compile_dir)

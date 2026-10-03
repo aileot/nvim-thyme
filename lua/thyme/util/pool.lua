@@ -6,14 +6,14 @@ local file_readable_3f = _local_2_["file-readable?"]
 local assert_is_file_readable = _local_2_["assert-is-file-readable"]
 local read_file = _local_2_["read-file"]
 local fs = _local_2_
-local _local_3_ = require("thyme.util.uri")
-local uri_encode = _local_3_["uri-encode"]
-local _local_4_ = require("thyme.util.iterator")
-local each_file = _local_4_["each-file"]
+local _local_3_ = require("thyme.util.iterator")
+local each_file = _local_3_["each-file"]
 local pool_prefix = Path.join(state_prefix, "pool")
+local readable_length = 120
 vim.fn.mkdir(pool_prefix, "p")
 local function path__3epool_path(path)
-  return Path.join(pool_prefix, uri_encode(path))
+  local readable = path:gsub("[:/\\]", "-")
+  return Path.join(pool_prefix, (readable:sub(( - readable_length)) .. "-" .. vim.fn.sha256(path)))
 end
 local function hide_file_21(path)
   assert_is_file_readable(path)
@@ -39,4 +39,4 @@ end
 local function get_root()
   return pool_prefix
 end
-return {["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["hide-files-in-dir!"] = hide_files_in_dir_21, ["has-hidden-file?"] = has_hidden_file_3f, ["can-restore-file?"] = can_restore_file_3f, ["get-root"] = get_root}
+return {["path->pool-path"] = path__3epool_path, ["hide-file!"] = hide_file_21, ["restore-file!"] = restore_file_21, ["hide-files-in-dir!"] = hide_files_in_dir_21, ["has-hidden-file?"] = has_hidden_file_3f, ["can-restore-file?"] = can_restore_file_3f, ["get-root"] = get_root}

@@ -4,10 +4,15 @@
 (local {: file-readable? : assert-is-file-readable : read-file &as fs}
        (require :thyme.util.fs))
 
-(local {: uri-encode} (require :thyme.util.uri))
 (local {: each-file} (require :thyme.util.iterator))
 
 (local pool-prefix (Path.join state-prefix :pool))
+
+;; NOTE: Pool filenames keep this many bytes of `path` so they can still be
+;; found with a filename filter; the digest that follows keeps them unique and
+;; within NAME_MAX. `path` is treated as an opaque identity: it may or may not
+;; already be encoded, and the pool never interprets it.
+(local readable-length 120)
 
 (vim.fn.mkdir pool-prefix :p)
 
@@ -15,7 +20,13 @@
   "Determine the unique pool-path for `path`.
 @param path string
 @return string"
-  (Path.join pool-prefix (uri-encode path)))
+  ;; NOTE: Flatten path separators (and the Windows drive colon) so the name is
+  ;; a single component, then keep only the tail to stay within NAME_MAX.
+  (let [readable (path:gsub "[:/\\]" "-")]
+    (Path.join pool-prefix
+               (.. (readable:sub (- readable-length))
+                   "-"
+                   (vim.fn.sha256 path)))))
 
 (fn hide-file! [path]
   "Move `path` to its own pool-path.
@@ -64,7 +75,8 @@ respectively.
 @return string the root path"
   pool-prefix)
 
-{: hide-file!
+{: path->pool-path
+ : hide-file!
  : restore-file!
  : hide-files-in-dir!
  : has-hidden-file?

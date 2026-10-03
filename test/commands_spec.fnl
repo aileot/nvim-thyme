@@ -34,11 +34,15 @@
   (describe* ":ThymeCacheClear"
     (it* "clears lua cache files"
       (vim.cmd "silent ThymeCacheClear")
-      (assert.is_nil (next (vim.fs.find (fn [name _path]
-                                          (= ".lua" (string.sub name -4)))
-                                        {:type :file
-                                         :upward false
-                                         :path lua-cache-prefix})))))
+      ;; NOTE: `vim.fs.find` returns `(matches, errors)` since nvim 0.13.0
+      ;; (commit 4e04dff2287eed576cdb1063d5b7c00bf91b9fad, PR #40114), so
+      ;; compare the first return value directly instead of `next()`, which
+      ;; would treat the second as a key.
+      (assert.is_same [] (vim.fs.find (fn [name _path]
+                                        (= ".lua" (string.sub name -4)))
+                                      {:type :file
+                                       :upward false
+                                       :path lua-cache-prefix}))))
   (describe* ":ThymeUninstall"
     (let [raw-confirm vim.fn.confirm]
       (before_each (fn []

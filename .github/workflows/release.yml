@@ -1,5 +1,8 @@
 name: Release
 on:
+  # Only runs release-please with a dedicated PAT on main; no untrusted
+  # code is executed with repository credentials.
+  # zizmor: ignore[dangerous-triggers]
   workflow_run:
     workflows:
       - Test
@@ -9,13 +12,13 @@ on:
       - main
 jobs:
   release-pr:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
       issues: write
       pull-requests: write
     steps:
-      - uses: googleapis/release-please-action@v4
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
         with:
           token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
           config-file: .github/release-please/config.json
